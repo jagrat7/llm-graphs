@@ -3,10 +3,9 @@ import { Fragment } from "react"
 
 import type { Axis } from "#/ui/components/metric-select"
 import type { Metric } from "#/ui/lib/metrics"
-import type { Model, ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/ui/lib/orpc-client"
 
 import { MetricSelect } from "#/ui/components/metric-select"
-import { ModelPicker } from "#/ui/components/model-picker"
 import { SourceSelect } from "#/ui/components/source-select"
 import { Button } from "#/ui/components/ui/button"
 import { Separator } from "#/ui/components/ui/separator"
@@ -46,18 +45,15 @@ export function AxisControls({
   axes,
   onAxisChange,
   onSwapAxes,
-  models,
-  selected,
-  onSelectedChange,
   disabled = false,
+  children,
 }: {
   axes: AxisState
   onAxisChange: (axis: AxisKey, change: Partial<AxisSetting>) => void
   onSwapAxes: (first: AxisKey, second: AxisKey) => void
-  models: Array<Model>
-  selected: Array<string>
-  onSelectedChange: (models: Array<string>) => void
   disabled?: boolean
+  /** The strip's right-hand side — the model picker in practice. */
+  children?: React.ReactNode
 }) {
   const used = AXIS_KEYS.map((key) => axes[key].metric).filter(
     (metric): metric is Metric => metric != null,
@@ -115,13 +111,7 @@ export function AxisControls({
       <Separator className="sm:hidden" />
       <Separator orientation="vertical" className="hidden self-stretch sm:block" />
 
-      <ModelPicker
-        models={models}
-        selected={selected}
-        onChange={onSelectedChange}
-        disabled={disabled}
-        className="sm:w-80"
-      />
+      {children}
     </div>
   )
 }

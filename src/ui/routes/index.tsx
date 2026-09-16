@@ -139,6 +139,15 @@ function ComparePage() {
   const selectedModelIds = new Set(selected)
   const selectedModels = data?.models.filter((model) => selectedModelIds.has(model.model)) ?? []
   const controlsDisabled = isPending ? true : isError
+  const picker = (
+    <ModelPicker
+      models={data?.models ?? []}
+      selected={selected}
+      onChange={(models) => updateSearch({ models })}
+      disabled={controlsDisabled}
+      className="sm:w-80"
+    />
+  )
 
   return (
     <PageShell className="pt-8 pb-6">
@@ -147,11 +156,10 @@ function ComparePage() {
         axes={axes}
         onAxisChange={handleAxisChange}
         onSwapAxes={handleSwapAxes}
-        models={data?.models ?? []}
-        selected={selected}
-        onSelectedChange={(models) => updateSearch({ models })}
         disabled={controlsDisabled}
-      />
+      >
+        {picker}
+      </AxisControls>
       <p aria-live="polite" className="sr-only">
         {search.z ? `3D chart, depth axis ${METRIC_CONFIG[search.z].label}` : "2D chart, two axes"}
       </p>
@@ -160,18 +168,13 @@ function ComparePage() {
       {isError ? (
         <DataError className={CHART_HEIGHT_CLASS}>Unable to load model data</DataError>
       ) : null}
-      {data && selected.length === 0 ? (
-        <DataState className={CHART_HEIGHT_CLASS} title="Select models to compare">
-          <ModelPicker
-            models={data.models}
-            selected={selected}
-            onChange={(models) => updateSearch({ models })}
-            className="mx-auto max-w-sm"
-          />
-        </DataState>
-      ) : null}
-      {data && selected.length > 0 && selectedModels.length === 0 ? (
-        <DataState className={CHART_HEIGHT_CLASS} title="No selected models are available">
+      {data && selectedModels.length === 0 ? (
+        <DataState
+          className={CHART_HEIGHT_CLASS}
+          title={
+            selected.length === 0 ? "Select models to compare" : "No selected models are available"
+          }
+        >
           <ModelPicker
             models={data.models}
             selected={selected}
