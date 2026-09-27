@@ -25,7 +25,7 @@ function AppMark() {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="size-5 shrink-0 transition-transform duration-300 ease-[var(--expo-out)] group-hover/mark:-translate-y-px"
+      className="text-foreground size-5 shrink-0 transition-transform duration-300 ease-[var(--expo-out)] group-hover/mark:-translate-y-px"
     >
       {DOMINATED_POINTS.map((point) => (
         <circle
@@ -74,13 +74,11 @@ export default function AppHeader() {
           to="/"
           search={{ x: "cost", y: "score" }}
           aria-label={`${APP_NAME} home`}
-          className="group/mark text-foreground -ml-1 flex min-h-11 items-center gap-2 rounded-md px-1 text-base font-semibold tracking-[-0.03em] no-underline sm:min-h-8"
+          className="group/mark text-muted-foreground hover:text-foreground -ml-1 flex min-h-11 items-center gap-2 rounded-md px-1 text-base font-semibold tracking-[-0.03em] no-underline sm:min-h-8"
         >
           <AppMark />
           {/* The link's label already names the app, so the styled spelling stays visual only. */}
-          <span aria-hidden="true">
-            llm<span className="text-primary">·</span>graphs
-          </span>
+          <span aria-hidden="true">llm·graphs</span>
         </Link>
 
         <ThemeToggle />
