@@ -22,11 +22,7 @@ const DOMINATED_POINTS = [
 /** Kept in step with `public/favicon.svg`, which draws the same mark on a tile. */
 function AppMark() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="text-foreground size-5 shrink-0 transition-transform duration-300 ease-[var(--expo-out)] group-hover/mark:-translate-y-px"
-    >
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="size-6 shrink-0">
       {DOMINATED_POINTS.map((point) => (
         <circle
           key={point.cx}
@@ -52,7 +48,7 @@ function AppMark() {
 
 /**
  * One destination, so there is nothing to navigate between — the bar carries the
- * wordmark and the theme control and stays out of the chart's way.
+ * mark and the theme control and stays out of the chart's way.
  */
 export default function AppHeader() {
   return (
@@ -74,11 +70,9 @@ export default function AppHeader() {
           to="/"
           search={{ x: "cost", y: "score" }}
           aria-label={`${APP_NAME} home`}
-          className="group/mark text-muted-foreground hover:text-foreground -ml-1 flex min-h-11 items-center gap-2 rounded-md px-1 text-base font-semibold tracking-[-0.03em] no-underline sm:min-h-8"
+          className="text-foreground -ml-1 flex min-h-11 items-center rounded-md px-1 sm:min-h-8"
         >
           <AppMark />
-          {/* The link's label already names the app, so the styled spelling stays visual only. */}
-          <span aria-hidden="true">llm·graphs</span>
         </Link>
 
         <ThemeToggle />
