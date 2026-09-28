@@ -78,6 +78,10 @@ const AXES = ["x", "y", "z"] as const
 const CUBE_HALF = 1
 /** Tuned so a point reads at the 2D chart's 10px diameter from the default camera. */
 const POINT_RADIUS = 0.026
+/** Logo sprites span a sphere's diameter, so switching markers keeps the cube's density. */
+const LOGO_SPRITE_SIZE = POINT_RADIUS * 2
+/** Logos are rasterized once at this size, then scaled by the GPU. */
+const LOGO_TEXTURE_PIXELS = 128
 const ACTIVE_POINT_SCALE = CHART_ACTIVE_SCALE
 const MORPH_DURATION = 0.7
 const PRESET_DURATION = 0.55
@@ -290,6 +294,63 @@ function PlotFrame({
   )
 }
 
+/**
+ * Rasterizes each vendor logo into a white silhouette, so a sprite's colour tints it to the
+ * vendor hue. A logo that fails to load keeps its point a sphere.
+ */
+function useLogoTextures(urls: ReadonlyArray<string>) {
+  const [textures, setTextures] = useState<ReadonlyMap<string, THREE.Texture>>(() => new Map())
+  const urlKey = urls.join("\n")
+
+  useEffect(() => {
+    let cancelled = false
+    const loaded = new Map<string, THREE.Texture>()
+
+    for (const url of urlKey === "" ? [] : urlKey.split("\n")) {
+      const image = new Image()
+
+      image.addEventListener("load", () => {
+        if (cancelled) return
+
+        const canvas = document.createElement("canvas")
+        canvas.width = LOGO_TEXTURE_PIXELS
+        canvas.height = LOGO_TEXTURE_PIXELS
+        const context = canvas.getContext("2d")
+        if (!context) return
+
+        const scale = LOGO_TEXTURE_PIXELS / Math.max(image.width || 1, image.height || 1)
+        const width = (image.width || 1) * scale
+        const height = (image.height || 1) * scale
+        context.drawImage(
+          image,
+          (LOGO_TEXTURE_PIXELS - width) / 2,
+          (LOGO_TEXTURE_PIXELS - height) / 2,
+          width,
+          height,
+        )
+        context.globalCompositeOperation = "source-in"
+        context.fillStyle = "#ffffff"
+        context.fillRect(0, 0, LOGO_TEXTURE_PIXELS, LOGO_TEXTURE_PIXELS)
+
+        const texture = new THREE.CanvasTexture(canvas)
+        texture.colorSpace = THREE.SRGBColorSpace
+        loaded.set(url, texture)
+        setTextures(new Map(loaded))
+        invalidate()
+      })
+      image.src = url
+    }
+
+    return () => {
+      cancelled = true
+      for (const texture of loaded.values()) texture.dispose()
+      setTextures(new Map())
+    }
+  }, [urlKey])
+
+  return textures
+}
+
 function PlotPoints({
   data,
   positions,
@@ -305,7 +366,7 @@ function PlotPoints({
   scene: React.RefObject<SceneRefs>
   onActivate: (id: string | null) => void
 }) {
-  const meshesRef = useRef<Array<THREE.Mesh | null>>([])
+  const meshesRef = useRef<Array<THREE.Object3D | null>>([])
   const haloRef = useRef<THREE.Mesh>(null)
   const appliedDepth = useRef(-1)
   const geometry = useMemo(() => new THREE.SphereGeometry(POINT_RADIUS, 24, 16), [])
@@ -320,6 +381,36 @@ function PlotPoints({
 
     return byColor
   }, [data, resolveColor])
+  const logoUrls = useMemo(
+    () =>
+      [
+        ...new Set(data.points.flatMap((point) => (point.logoUrl ? [point.logoUrl] : []))),
+      ].toSorted(),
+    [data],
+  )
+  const textures = useLogoTextures(logoUrls)
+  // One sprite material per vendor colour and logo; the texture is white, so colour tints it.
+  const spriteMaterials = useMemo(() => {
+    const byMarker = new Map<string, THREE.SpriteMaterial>()
+
+    for (const point of data.points) {
+      const texture = point.logoUrl ? textures.get(point.logoUrl) : undefined
+      const key = `${point.color}\n${point.logoUrl}`
+      if (!texture || byMarker.has(key)) continue
+
+      byMarker.set(
+        key,
+        new THREE.SpriteMaterial({
+          map: texture,
+          color: resolveColor(point.color),
+          transparent: true,
+          alphaTest: 0.1,
+        }),
+      )
+    }
+
+    return byMarker
+  }, [data, resolveColor, textures])
   // `<line>` collides with the SVG intrinsic element, so the runs are plain three
   // objects mounted through `<primitive>`.
   const seriesLines = useMemo(
@@ -357,12 +448,13 @@ function PlotPoints({
       geometry.dispose()
       haloGeometry.dispose()
       for (const material of materials.values()) material.dispose()
+      for (const material of spriteMaterials.values()) material.dispose()
       for (const entry of seriesLines) {
         entry.object.geometry.dispose()
         entry.object.material.dispose()
       }
     },
-    [geometry, haloGeometry, materials, seriesLines],
+    [geometry, haloGeometry, materials, seriesLines, spriteMaterials],
   )
 
   useFrame(() => {
@@ -395,12 +487,14 @@ function PlotPoints({
     for (const [index, mesh] of meshesRef.current.entries()) {
       if (!mesh) continue
 
+      // Sprites carry their size in their scale; spheres carry it in their geometry.
+      const base = mesh instanceof THREE.Sprite ? LOGO_SPRITE_SIZE : 1
       const target = data.points[index]?.id === activeId ? ACTIVE_POINT_SCALE : 1
-      const next = THREE.MathUtils.lerp(mesh.scale.x, target, 0.24)
+      const next = THREE.MathUtils.lerp(mesh.scale.x / base, target, 0.24)
 
-      if (Math.abs(next - target) < 0.002) mesh.scale.setScalar(target)
+      if (Math.abs(next - target) < 0.002) mesh.scale.setScalar(target * base)
       else {
-        mesh.scale.setScalar(next)
+        mesh.scale.setScalar(next * base)
         needsFrame = true
       }
     }
@@ -424,34 +518,53 @@ function PlotPoints({
         <primitive key={entry.series.key} object={entry.object} />
       ))}
 
-      {data.points.map((point, index) => (
-        <mesh
-          key={point.id}
-          ref={(node) => {
-            meshesRef.current[index] = node
-          }}
-          geometry={geometry}
-          material={materials.get(point.color)}
-          position={[
-            positions[index].x,
-            positions[index].y,
-            positions[index].z * scene.current.depth,
-          ]}
-          onPointerOver={(event) => {
+      {data.points.map((point, index) => {
+        const position: [number, number, number] = [
+          positions[index].x,
+          positions[index].y,
+          positions[index].z * scene.current.depth,
+        ]
+        const spriteMaterial = spriteMaterials.get(`${point.color}\n${point.logoUrl}`)
+        const pointer = {
+          onPointerOver: (event: { stopPropagation: () => void }) => {
             event.stopPropagation()
             document.body.style.cursor = "pointer"
             onActivate(point.id)
-          }}
-          onPointerOut={() => {
+          },
+          onPointerOut: () => {
             document.body.style.cursor = ""
             onActivate(null)
-          }}
-          onClick={(event) => {
+          },
+          onClick: (event: { stopPropagation: () => void }) => {
             event.stopPropagation()
             onActivate(point.id)
-          }}
-        />
-      ))}
+          },
+        }
+        const ref = (node: THREE.Object3D | null) => {
+          meshesRef.current[index] = node
+        }
+
+        // Sprites always face the camera, so a logo reads the same from any orbit angle.
+        return spriteMaterial ? (
+          <sprite
+            key={point.id}
+            ref={ref}
+            material={spriteMaterial}
+            position={position}
+            scale={LOGO_SPRITE_SIZE}
+            {...pointer}
+          />
+        ) : (
+          <mesh
+            key={point.id}
+            ref={ref}
+            geometry={geometry}
+            material={materials.get(point.color)}
+            position={position}
+            {...pointer}
+          />
+        )
+      })}
 
       <mesh ref={haloRef} geometry={haloGeometry} visible={false}>
         <meshBasicMaterial color={haloColor} transparent opacity={0.3} side={THREE.BackSide} />
