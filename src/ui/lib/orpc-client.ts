@@ -11,23 +11,11 @@ import router from "#/server/orpc/router"
 
 export { PROVIDERS } from "#/server/services/provider/provider.types"
 export type { ProviderName } from "#/server/services/provider/provider.types"
+export type { MetricKey, ReasoningMode } from "#/server/services/registry"
 
 type AppClient = RouterClient<typeof router>
 
-export type ProviderModel = Awaited<ReturnType<AppClient["models"]["list"]>>[number]
-export type MetricValue = Awaited<ReturnType<AppClient["models"]["score"]>>
-export type Model = ProviderModel & {
-  score: MetricValue
-  costPerMTokens: MetricValue
-  tokensPerSecond: MetricValue
-  durationSeconds: MetricValue
-  sources: {
-    score: "DeepSWE" | null
-    costPerMTokens: "DeepSWE" | null
-    tokensPerSecond: "Artificial Analysis" | null
-    durationSeconds: "DeepSWE" | null
-  }
-}
+export type RegistrySnapshot = Awaited<ReturnType<AppClient["registry"]["snapshot"]>>
 
 const getORPCClient = createIsomorphicFn()
   .server(() =>

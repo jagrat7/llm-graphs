@@ -1,12 +1,28 @@
+import type { CSSProperties } from "react"
+
 import type { ProviderName } from "#/ui/lib/orpc-client"
 
-import { logoAccentClass, logoBrandStyle } from "#/ui/components/model-logo"
 import { cn } from "#/ui/lib/utils"
+
+type LogoBrandStyle = CSSProperties & { "--logo-brand": string }
+
+function logoBrandStyle(brand: string | undefined): LogoBrandStyle | undefined {
+  return brand ? { "--logo-brand": brand } : undefined
+}
+
+/** Activates `--logo-brand` when a `group/mark` ancestor is hovered, focused, or selected. */
+const LOGO_BRAND_ACCENT_CLASS =
+  "transition-colors duration-150 ease-out group-hover/mark:text-(--logo-brand) group-focus-within/mark:text-(--logo-brand) group-data-[highlighted]/mark:text-(--logo-brand) group-data-[selected]/mark:text-(--logo-brand) group-has-[:checked]/mark:text-(--logo-brand) in-[[data-slot=select-trigger]]:text-(--logo-brand)"
+
+function logoAccentClass(brand: string | undefined, accent: boolean) {
+  if (!brand) return undefined
+  return accent ? "text-(--logo-brand)" : LOGO_BRAND_ACCENT_CLASS
+}
 
 type SourceMark = { viewBox: string; paths: ReadonlyArray<string>; brand?: string }
 
 /**
- * Data-source marks, flattened to `currentColor` like the model marks so a source never
+ * Data-source marks, flattened to `currentColor` so a source never
  * competes with the chart's own colour encoding at rest. Brand colour surfaces on hover/select;
  * native black/white marks use light-dark() with the site's exact off-black / off-white.
  * Sources: artificialanalysis.ai, datacurve.ai (DeepSWE). Trademarks of their owners.

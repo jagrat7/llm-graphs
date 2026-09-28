@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { lazy, Suspense, useState } from "react"
+import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
 import type { AxisKey, AxisSetting, AxisState } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { MetricBinding } from "#/ui/lib/registry-view"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
@@ -14,8 +15,9 @@ import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { METRICS, METRIC_CONFIG, resolveSource } from "#/ui/lib/metrics"
+import { defaultPicks, offeredVariants } from "#/ui/lib/registry-view"
 import { isSource } from "#/ui/lib/sources"
-import { useModels } from "#/ui/lib/use-models"
+import { useRegistrySnapshot } from "#/ui/lib/use-registry"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
 const ComparisonChart = lazy(() =>
@@ -63,6 +65,13 @@ function axisSetting(metric: Metric | null, source: ProviderName | undefined): A
   return { metric, source: metric == null ? null : resolveSource(metric, source) }
 }
 
+/** Each filled axis reads its metric from its own source. */
+function axisBindings(axes: AxisState): Array<MetricBinding> {
+  return Object.values(axes).flatMap(({ metric, source }) =>
+    metric == null || source == null ? [] : [{ metric: METRIC_CONFIG[metric].dataKey, source }],
+  )
+}
+
 function ComparePage() {
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
@@ -72,7 +81,22 @@ function ComparePage() {
     y: axisSetting(search.y, search.ySource),
     z: axisSetting(search.z ?? null, search.zSource),
   }
-  const { data, isPending, isError } = useModels()
+  const { data: snapshot, isPending, isError } = useRegistrySnapshot()
+  // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
+  const data = useMemo(() => {
+    if (!snapshot) return undefined
+
+    const viewAxes: AxisState = {
+      x: axisSetting(search.x, search.xSource),
+      y: axisSetting(search.y, search.ySource),
+      z: axisSetting(search.z ?? null, search.zSource),
+    }
+    const models = offeredVariants(snapshot, axisBindings(viewAxes))
+    const scoreSource =
+      Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
+
+    return { models, defaultModels: defaultPicks(snapshot, models, scoreSource) }
+  }, [snapshot, search.x, search.xSource, search.y, search.ySource, search.z, search.zSource])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
 

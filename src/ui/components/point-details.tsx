@@ -1,10 +1,14 @@
 import type { Metric } from "#/ui/lib/metrics"
+import type { ProviderName } from "#/ui/lib/orpc-client"
 import type { PlotAxis, PlotPoint } from "#/ui/lib/comparison-plot-data"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { formatMetric, METRIC_CONFIG } from "#/ui/lib/metrics"
 
-const SOURCE_ABBREVIATIONS = { DeepSWE: "D", "Artificial Analysis": "AA" } as const
+const SOURCE_ABBREVIATIONS: Record<ProviderName, string> = {
+  deepswe: "D",
+  artificialAnalysis: "AA",
+}
 
 function sourceAbbreviation(point: PlotPoint, metric: Metric) {
   const source = point.model.sources[METRIC_CONFIG[metric].dataKey]
@@ -32,7 +36,10 @@ export function PointDetails({
   return (
     <div className={className}>
       <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium">
-        <ModelLogo family={point.model.family} className="size-3.5 shrink-0" accent />
+        <ModelLogo
+          logoUrl={point.model.logoUrl}
+          className="text-muted-foreground size-3.5 shrink-0"
+        />
         <span className="truncate">{point.model.displayName}</span>
         {effort ? (
           <span className="text-muted-foreground shrink-0 text-xs font-normal">· {effort}</span>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import type { Model } from "#/ui/lib/orpc-client"
+import type { Model } from "#/ui/lib/registry-view"
 
 import { axisTicks, buildPlotData, describePlot, padDomain } from "#/ui/lib/comparison-plot-data"
 
@@ -9,11 +9,10 @@ type ModelOverrides = Partial<Model> & { model: string }
 function makeModel({
   model,
   displayName = model,
-  family = "openai",
-  chartColor = "var(--chart-1)",
+  vendor = "openai",
+  chartColor = "oklch(0.62 0.15 339)",
   effort = "default",
   effortOrder = 0,
-  isDefault = false,
   score = 50,
   costPerMTokens = 10,
   tokensPerSecond = 100,
@@ -24,20 +23,23 @@ function makeModel({
   return {
     model,
     displayName,
-    family,
+    vendor,
+    releaseDate: null,
     chartColor,
+    logoUrl: null,
+    mode: effort === "default" ? "unknown" : "on",
+    level: effort === "default" ? "unknown" : effort,
     effort,
     effortOrder,
-    isDefault,
     score,
     costPerMTokens,
     tokensPerSecond,
     durationSeconds,
     sources: sources ?? {
-      score: "DeepSWE",
-      costPerMTokens: "DeepSWE",
-      tokensPerSecond: "Artificial Analysis",
-      durationSeconds: "DeepSWE",
+      score: "deepswe",
+      costPerMTokens: "deepswe",
+      tokensPerSecond: "artificialAnalysis",
+      durationSeconds: "deepswe",
     },
     ...rest,
   }
@@ -136,15 +138,19 @@ describe("buildPlotData", () => {
       XY,
     )
 
-    expect(data.series.map((series) => series.anchorId)).toEqual(["a-high", "b-xhigh", "c-default"])
+    expect(data.series.map((series) => series.anchorId)).toEqual([
+      "a-on-high",
+      "b-on-xhigh",
+      "c-unknown-unknown",
+    ])
   })
 
-  it("alternates label placement between series of the same family", () => {
+  it("alternates label placement between series of the same vendor", () => {
     const data = buildPlotData(
       [
-        makeModel({ model: "a", family: "openai" }),
-        makeModel({ model: "b", family: "openai" }),
-        makeModel({ model: "c", family: "anthropic" }),
+        makeModel({ model: "a", vendor: "openai" }),
+        makeModel({ model: "b", vendor: "openai" }),
+        makeModel({ model: "c", vendor: "anthropic" }),
       ],
       XY,
     )
@@ -159,7 +165,7 @@ describe("buildPlotData", () => {
     )
 
     expect(data.points.map((point) => point.index)).toEqual([0, 1])
-    expect(data.pointById.get("a-high")?.label).toBe("a [high]")
+    expect(data.pointById.get("a-on-high")?.label).toBe("a [high]")
     expect(data.pointById.size).toBe(data.points.length)
   })
 

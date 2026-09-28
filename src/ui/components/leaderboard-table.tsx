@@ -11,7 +11,7 @@ import {
 import { RiArrowDownLine, RiArrowUpDownLine, RiArrowUpLine } from "@remixicon/react"
 import { useState } from "react"
 
-import type { Model } from "#/ui/lib/orpc-client"
+import type { Model } from "#/ui/lib/registry-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { SourceLogo } from "#/ui/components/source-logo"
@@ -28,7 +28,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"
 import { BELOW_HEADER_OFFSET_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
 import { formatMetric, METRIC_CONFIG } from "#/ui/lib/metrics"
-import { sourceLabel as providerLabel, uniqueSources } from "#/ui/lib/sources"
+import { sourceLabel as providerLabel } from "#/ui/lib/sources"
 import { cn } from "#/ui/lib/utils"
 
 const columnHelper = createColumnHelper<Model>()
@@ -45,7 +45,7 @@ const STICKY_COLUMN_CLASS = "sticky left-0 z-10 bg-background lg:static"
 type BarStyle = CSSProperties & { "--bar": string }
 
 function modelSources(model: Model) {
-  return uniqueSources(Object.values(model.sources))
+  return [...new Set(Object.values(model.sources).filter((source) => source != null))]
 }
 
 function renderModelCell({ row, getValue }: { row: { original: Model }; getValue: () => string }) {
@@ -55,7 +55,7 @@ function renderModelCell({ row, getValue }: { row: { original: Model }; getValue
   return (
     <Tooltip>
       <TooltipTrigger render={<div className="flex w-48 max-w-48 items-center gap-2 text-left" />}>
-        <ModelLogo family={row.original.family} className="text-muted-foreground size-3.5" />
+        <ModelLogo logoUrl={row.original.logoUrl} className="text-muted-foreground size-3.5" />
         <div className="truncate">
           <span className="text-foreground font-medium">{getValue()}</span>
           {effortLabel ? (
