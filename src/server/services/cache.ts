@@ -83,10 +83,21 @@ function defaultStore(): CacheStore {
  * once it is older than the source's refresh window, one background refresh starts.
  */
 export class SourceCache {
+  private resolvedStore: CacheStore | undefined
+
   constructor(
-    private readonly store: CacheStore = defaultStore(),
+    store?: CacheStore,
     private readonly now: () => number = Date.now,
-  ) {}
+  ) {
+    this.resolvedStore = store
+  }
+
+  /** Resolved on first use: the router module also loads in the client bundle, which has no env. */
+  private get store() {
+    this.resolvedStore ??= defaultStore()
+
+    return this.resolvedStore
+  }
 
   async read<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only this source writes its key
