@@ -46,7 +46,7 @@ export type DeepSWERow = {
 
 export type ArtificialAnalysisRow = {
   id: string
-  name: string
+  name: string | null
   slug: string
   release_date: string | null
   model_creator: { name: string } | null

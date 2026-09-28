@@ -77,4 +77,14 @@ describe("ArtificialAnalysisProvider", () => {
     expect(payload.rows.map((model) => model.slug)).toEqual(["gpt-6-astra"])
     expect(payload.dropped).toEqual([{ id: "broken", reason: expect.stringContaining("id") }])
   })
+
+  it("keeps a row that has metrics but no name", async () => {
+    const { name: _name, ...nameless } = row("gpt-6-astra")
+    globalThis.fetch = vi.fn(async () => page([nameless]))
+
+    const payload = await new ArtificialAnalysisProvider().fetchPayload()
+
+    expect(payload.rows).toEqual([expect.objectContaining({ slug: "gpt-6-astra", name: null })])
+    expect(payload.dropped).toEqual([])
+  })
 })
