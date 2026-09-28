@@ -3,7 +3,7 @@ import type { ProviderName } from "#/ui/lib/orpc-client"
 import { PROVIDERS } from "#/ui/lib/orpc-client"
 
 export function isSource(value: string): value is ProviderName {
-  return value in PROVIDERS
+  return Object.hasOwn(PROVIDERS, value)
 }
 
 export function sourceLabel(source: ProviderName) {

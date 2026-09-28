@@ -136,7 +136,12 @@ export function buildDiagnostics(derivation: Derivation): DiagnosticsReport {
       const entry = entryById.get(from.id)
       const fetchedAt =
         from.metadataFrom === "derived" ? null : snapshot.fetchedAt[from.metadataFrom]
-      if (!entry?.releaseDate || !fetchedAt || entry.releaseDate <= fetchedAt.slice(0, 10)) {
+      // Compared by day: a source may give a full timestamp, and a same-day release isn't future.
+      if (
+        !entry?.releaseDate ||
+        !fetchedAt ||
+        entry.releaseDate.slice(0, 10) <= fetchedAt.slice(0, 10)
+      ) {
         return []
       }
 

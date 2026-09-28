@@ -27,11 +27,14 @@ export function stripTrailingParentheticals(name: string) {
   return stripped.length > 0 ? stripped : name.trim()
 }
 
-/** The shortest name after stripping, ties broken alphabetically. */
-export function pickSourceName(names: ReadonlyArray<string>) {
-  return names
-    .map((name) => stripTrailingParentheticals(name))
-    .toSorted((left, right) => left.length - right.length || left.localeCompare(right))[0]
+/** The shortest name after stripping, ties broken alphabetically. Null when no row has one. */
+export function pickSourceName(names: ReadonlyArray<string | null>) {
+  return (
+    names
+      .filter((name): name is string => name != null && name.trim() !== "")
+      .map((name) => stripTrailingParentheticals(name))
+      .toSorted((left, right) => left.length - right.length || left.localeCompare(right))[0] ?? null
+  )
 }
 
 export function earliestDate(dates: ReadonlyArray<string | null>) {
