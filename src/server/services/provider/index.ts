@@ -59,7 +59,7 @@ function artificialAnalysisModels(
 
     return {
       ...base,
-      displayName: row.name,
+      displayName: row.name ?? base.displayName,
       tokensPerSecond: row.median_output_tokens_per_second,
     }
   })
