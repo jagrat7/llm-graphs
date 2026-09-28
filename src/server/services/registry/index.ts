@@ -9,7 +9,7 @@ import type {
   ModelsDevPayload,
   SourceDefinition,
 } from "../provider/provider.types"
-import { deriveRegistry } from "./derive"
+import { deriveRegistry, type Derivation } from "./derive"
 import { buildDiagnostics, diagnosticsLogLine, type DiagnosticsReport } from "./diagnostics"
 import { inputsVersion, registryInputs } from "./inputs"
 
@@ -22,9 +22,19 @@ type RegistrySources = {
 /** One derivation per process, rebuilt only when a source's cached copy changes. */
 let latest: {
   version: string
-  snapshot: RegistrySnapshot
-  report: DiagnosticsReport
+  derivation: Derivation
+  report: DiagnosticsReport | null
 } | null = null
+
+/** Builds the report once per derivation and writes its one log line. */
+function reportFor(current: NonNullable<typeof latest>) {
+  if (!current.report) {
+    current.report = buildDiagnostics(current.derivation)
+    console.info(diagnosticsLogLine(current.report, current.derivation.snapshot.entries.length))
+  }
+
+  return current.report
+}
 
 export class RegistryService {
   constructor(
@@ -36,13 +46,13 @@ export class RegistryService {
     },
   ) {}
 
-  async getSnapshot() {
-    return (await this.derive()).snapshot
+  async getSnapshot(): Promise<RegistrySnapshot> {
+    return (await this.derive()).derivation.snapshot
   }
 
   /** The same derivation production serves, so it shows what today's rules do with new models. */
   async getDiagnostics() {
-    return (await this.derive()).report
+    return reportFor(await this.derive())
   }
 
   private async derive() {
@@ -55,10 +65,10 @@ export class RegistryService {
     const version = inputsVersion(cached)
 
     if (latest?.version !== version) {
-      const derivation = deriveRegistry(registryInputs(cached))
-      const report = buildDiagnostics(derivation)
-      console.info(diagnosticsLogLine(report, derivation.snapshot.entries.length))
-      latest = { version, snapshot: derivation.snapshot, report }
+      const rebuilt = { version, derivation: deriveRegistry(registryInputs(cached)), report: null }
+      latest = rebuilt
+      // The report costs several times the derivation, so it runs after the snapshot is served.
+      setTimeout(() => reportFor(rebuilt), 0)
     }
 
     return latest

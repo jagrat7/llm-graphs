@@ -18,7 +18,7 @@ const REQUEST_TIMEOUT_MS = 20_000
 const rowSchema: z.ZodType<ArtificialAnalysisRow> = z
   .object({
     id: z.string().min(1),
-    name: z.string().min(1),
+    name: z.string().nullish(),
     slug: z.string().min(1),
     release_date: z.string().nullish(),
     model_creator: z.object({ name: z.string().min(1) }).nullish(),
@@ -26,7 +26,8 @@ const rowSchema: z.ZodType<ArtificialAnalysisRow> = z
   })
   .transform((row) => ({
     id: row.id,
-    name: row.name,
+    // A nameless row still has metrics; the registry names it from its id instead.
+    name: row.name || null,
     slug: row.slug,
     release_date: row.release_date ?? null,
     model_creator: row.model_creator ? { name: row.model_creator.name } : null,

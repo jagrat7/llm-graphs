@@ -12,6 +12,16 @@ function source(fetchPayload: () => Promise<string>): SourceDefinition<string> {
   return { name: "deepswe", cacheKey: "test:source", refreshWindowMs: HOUR, fetchPayload }
 }
 
+/** A fetch the test finishes by hand, to hold a request open. */
+function pendingFetch() {
+  const pending = { finish: (_value: string) => {} }
+  const promise = new Promise<string>((resolve) => {
+    pending.finish = resolve
+  })
+
+  return { ...pending, fetch: vi.fn(() => promise) }
+}
+
 async function flush() {
   await new Promise((resolve) => setTimeout(resolve, 0))
 }
@@ -74,5 +84,37 @@ describe("SourceCache", () => {
     await expect(cache.read(source(async () => Promise.reject(new Error("down"))))).resolves.toBe(
       null,
     )
+  })
+
+  it("fetches once when concurrent reads find nothing cached", async () => {
+    const { fetch: fetchPayload, finish } = pendingFetch()
+    const cache = new SourceCache(new MemoryStore(), () => 0)
+
+    const reads = Promise.all([
+      cache.read(source(fetchPayload)),
+      cache.read(source(fetchPayload)),
+      cache.read(source(fetchPayload)),
+    ])
+    await flush()
+    finish("v1")
+
+    expect((await reads).map((read) => read?.payload)).toEqual(["v1", "v1", "v1"])
+    expect(fetchPayload).toHaveBeenCalledTimes(1)
+  })
+
+  it("never lets a slower, older fetch overwrite a newer copy", async () => {
+    let now = 0
+    const store = new MemoryStore()
+    const cache = new SourceCache(store, () => now)
+    const { fetch: slow, finish } = pendingFetch()
+
+    const read = cache.read(source(slow))
+    await flush()
+    now = 10
+    await store.set("test:source", { payload: "newer", fetchedAt: new Date(5).toISOString() })
+    finish("older")
+
+    await expect(read).resolves.toMatchObject({ payload: "newer" })
+    await expect(store.get("test:source")).resolves.toMatchObject({ payload: "newer" })
   })
 })
