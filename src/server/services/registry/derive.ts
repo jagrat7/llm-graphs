@@ -340,7 +340,7 @@ function resolveMetadata(
     const fallbackVendor = catalog.vendorForFirstWord(firstWord(id))
 
     return {
-      name: pickSourceName(metadata.map((value) => value.name)),
+      name: pickSourceName(metadata.map((value) => value.name)) ?? deriveName(id, catalog),
       vendor: resolved?.vendor ?? fallbackVendor,
       releaseDate: earliestDate(metadata.map((value) => value.releaseDate)),
       metadataFrom: source,

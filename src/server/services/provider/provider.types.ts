@@ -129,7 +129,7 @@ export type MetricRow = {
   mode: ReasoningMode
   level: string
   metrics: Partial<Record<MetricKey, number | null>>
-  metadata: { name: string; creator: string | null; releaseDate: string | null } | null
+  metadata: { name: string | null; creator: string | null; releaseDate: string | null } | null
   /** Set when the row's own labels contradict each other, which refuses its effort match. */
   effortConflict: string | null
 }

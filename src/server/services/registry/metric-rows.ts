@@ -35,7 +35,7 @@ export function deepsweMetricRows(payload: DeepSWEPayload): Array<MetricRow> {
 /** AA states effort in the name's labels; slug markers corroborate them. */
 export function artificialAnalysisMetricRows(payload: ArtificialAnalysisPayload): Array<MetricRow> {
   return payload.rows.map((row) => ({
-    ...parseArtificialAnalysisEffort(row.slug, row.name, trailingDateLength),
+    ...parseArtificialAnalysisEffort(row.slug, row.name ?? "", trailingDateLength),
     rawId: row.slug,
     metrics: { tokensPerSecond: row.median_output_tokens_per_second },
     metadata: {
