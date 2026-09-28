@@ -18,6 +18,8 @@
     "public/**",
     "src/routeTree.gen.ts",
     "**/*.gen.ts",
-    "bun.lock"
+    "bun.lock",
+    "src/server/services/registry/fixtures/**",
+    "**/__snapshots__/**"
   ]
 }
