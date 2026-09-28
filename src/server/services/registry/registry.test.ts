@@ -1,0 +1,126 @@
+import { describe, expect, it } from "vitest"
+
+import type {
+  ArtificialAnalysisPayload,
+  DeepSWEPayload,
+  ModelsDevPayload,
+} from "../provider/provider.types"
+import type { CachedPayload } from "../cache"
+
+import { deriveRegistry, type Derivation } from "./derive"
+import artificialAnalysisFixture from "./fixtures/artificial-analysis.json"
+import deepsweFixture from "./fixtures/deepswe.json"
+import modelsDevFixture from "./fixtures/models-dev.json"
+import { registryInputs } from "./inputs"
+
+const derivation = deriveRegistry(
+  registryInputs({
+    deepswe: deepsweFixture satisfies CachedPayload<DeepSWEPayload>,
+    artificialAnalysis:
+      artificialAnalysisFixture satisfies CachedPayload<ArtificialAnalysisPayload>,
+    modelsDev: modelsDevFixture satisfies CachedPayload<ModelsDevPayload>,
+  }),
+)
+const { snapshot } = derivation
+
+function entry(id: string) {
+  return snapshot.entries.find((candidate) => candidate.id === id)
+}
+
+function provenance(id: string) {
+  return derivation.provenance.find((candidate) => candidate.id === id)
+}
+
+function variants(source: "deepswe" | "artificialAnalysis", id: string) {
+  return snapshot.variants[source]
+    .filter((variant) => variant.entryId === id)
+    .map((variant) => `${variant.mode}/${variant.level}`)
+}
+
+describe("registry derivation", () => {
+  it("names a model the way models.dev does: gpt-6-astra is GPT-6 Astra", () => {
+    expect(entry("gpt-6-astra")).toMatchObject({ name: "GPT-6 Astra", vendor: "openai" })
+  })
+
+  it("keeps max in qwen3-8-max's id instead of reading it as effort", () => {
+    expect(entry("qwen3-8-max")).toBeDefined()
+    expect(entry("qwen3-8")).toBeUndefined()
+    expect(variants("artificialAnalysis", "qwen3-8-max")).toEqual(["unknown/unknown"])
+  })
+
+  it("pairs undated claude-3-7-sonnet with models.dev's -20250219", () => {
+    expect(provenance("claude-3-7-sonnet-20250219")).toMatchObject({
+      joinedBy: "date",
+      members: [
+        { source: "artificialAnalysis", id: "claude-3-7-sonnet" },
+        { source: "modelsDev", id: "anthropic/claude-3-7-sonnet-20250219" },
+      ],
+    })
+  })
+
+  it("never pairs two different command-r dates", () => {
+    const commandR = derivation.provenance.filter((candidate) => /^command-r-\d/.test(candidate.id))
+
+    expect(commandR.length).toBeGreaterThan(0)
+    for (const candidate of commandR) expect(candidate.joinedBy).toBe("key")
+    expect(
+      derivation.unresolvedDateGroups.some((group) =>
+        group.ids.some((member) => member.id.startsWith("command-r-0")),
+      ),
+    ).toBe(true)
+  })
+
+  it("maps AA's Kimi creator to models.dev's moonshotai vendor", () => {
+    const kimi = derivation.provenance.find(
+      (candidate) =>
+        candidate.creator === "Kimi" && candidate.metadataFrom === "artificialAnalysis",
+    )
+
+    expect(kimi?.vendorRule).toBe("creator vote")
+    expect(entry(kimi?.id ?? "")?.vendor).toBe("moonshotai")
+  })
+
+  it("keeps every DeepSWE id as the entry id", () => {
+    const deepsweIds = new Set(deepsweFixture.payload.rows.map((row) => row.model))
+    const entryIds = new Set(snapshot.variants.deepswe.map((variant) => variant.entryId))
+
+    expect(deepsweIds.size).toBe(28)
+    expect(entryIds).toEqual(deepsweIds)
+  })
+
+  it("never lends Fable 5's AA on/max speed to its DeepSWE low row", () => {
+    expect(variants("deepswe", "claude-fable-5")).toContain("on/low")
+    expect(variants("artificialAnalysis", "claude-fable-5")).toEqual(["on/max"])
+  })
+
+  it("matches the committed whole-registry snapshot", async () => {
+    await expect(registrySnapshotText(derivation)).toMatchFileSnapshot(
+      "./__snapshots__/registry.jsonl",
+    )
+  })
+})
+
+/** One line per entry, so a rule change diffs as exactly the entries it touched. */
+function registrySnapshotText({ snapshot: result, provenance: sources }: Derivation) {
+  const lines = result.entries.map((registryEntry, index) => {
+    const from = sources[index]
+    const variantsOf = (source: "deepswe" | "artificialAnalysis") =>
+      result.variants[source]
+        .filter((variant) => variant.entryId === registryEntry.id)
+        .map((variant) => `${variant.mode}/${variant.level}${variant.refused ? "!" : ""}`)
+
+    return JSON.stringify({
+      ...registryEntry,
+      logo: registryEntry.vendor != null && registryEntry.vendor in result.logos,
+      metadataFrom: from.metadataFrom,
+      vendorRule: from.vendorRule,
+      creator: from.creator,
+      joinedBy: from.joinedBy,
+      members: from.members.map((member) => `${member.source}:${member.id}`),
+      deepswe: variantsOf("deepswe"),
+      artificialAnalysis: variantsOf("artificialAnalysis"),
+    })
+  })
+
+  return `${lines.join("\n")}\n`
+}

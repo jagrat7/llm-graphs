@@ -1,0 +1,708 @@
+{
+  "fetchedAt": "2026-09-28T01:55:05.920Z",
+  "payload": {
+    "rows": [
+      {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.7411504424778761,
+        "mean_duration_seconds": 1132.4004424778761,
+        "mean_input_tokens": 1456927.0929203539,
+        "mean_output_tokens": 29557.327433628318,
+        "mean_cost_usd": 4.429117203539823
+      },
+      {
+        "model": "gemini-3-8-flash",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.738255033557047,
+        "mean_duration_seconds": 686.7691519843399,
+        "mean_input_tokens": 21734449.25279642,
+        "mean_output_tokens": 143242.6644295302,
+        "mean_cost_usd": 2.362349413758389
+      },
+      {
+        "model": "claude-opus-5",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.7364864864864865,
+        "mean_duration_seconds": 1911.819866231982,
+        "mean_input_tokens": 15025834.39864865,
+        "mean_output_tokens": 117565.6936936937,
+        "mean_cost_usd": 11.837583271396396
+      },
+      {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoning_effort": "high",
+        "pass_rate": 0.7323008849557522,
+        "mean_duration_seconds": 1038.6858407079646,
+        "mean_input_tokens": 1283270.8030973452,
+        "mean_output_tokens": 26505.853982300883,
+        "mean_cost_usd": 3.9237237909292038
+      },
+      {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoning_effort": "max",
+        "pass_rate": 0.7323008849557522,
+        "mean_duration_seconds": 1982.966814159292,
+        "mean_input_tokens": 2183033.681415929,
+        "mean_output_tokens": 61148.50663716814,
+        "mean_cost_usd": 7.497827996681416
+      },
+      {
+        "model": "claude-opus-5",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.7315436241610739,
+        "mean_duration_seconds": 1559.5597273221476,
+        "mean_input_tokens": 11292729.463087248,
+        "mean_output_tokens": 91672.01565995526,
+        "mean_cost_usd": 9.07220232326622
+      },
+      {
+        "model": "claude-opus-5",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.7282850779510023,
+        "mean_duration_seconds": 1163.8627881514476,
+        "mean_input_tokens": 7233879.0824053455,
+        "mean_output_tokens": 64207.43429844098,
+        "mean_cost_usd": 6.076084489977728
+      },
+      {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoning_effort": "medium",
+        "pass_rate": 0.7278761061946902,
+        "mean_duration_seconds": 883.9358407079646,
+        "mean_input_tokens": 1008238.2898230088,
+        "mean_output_tokens": 20361.809734513274,
+        "mean_cost_usd": 3.0754742975663714
+      },
+      {
+        "model": "gpt-5-6-sol",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.7266666666666667,
+        "mean_duration_seconds": 1128.624910331111,
+        "mean_input_tokens": 7907652.344444444,
+        "mean_output_tokens": 60013.64444444444,
+        "mean_cost_usd": 8.386436346666667
+      },
+      {
+        "model": "gemini-3-8-flash",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.7101769911504425,
+        "mean_duration_seconds": 826.5496385464602,
+        "mean_input_tokens": 16863939.814159293,
+        "mean_output_tokens": 124684.36283185841,
+        "mean_cost_usd": 1.9671024789823006
+      },
+      {
+        "model": "gpt-5-6-sol",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.7073170731707317,
+        "mean_duration_seconds": 800.5459875388026,
+        "mean_input_tokens": 4259318.379157428,
+        "mean_output_tokens": 40744.59201773836,
+        "mean_cost_usd": 4.703663860310422
+      },
+      {
+        "model": "claude-fable-5",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.6991150442477876,
+        "mean_duration_seconds": 1411.5830643938054,
+        "mean_input_tokens": 7329160.601769911,
+        "mean_output_tokens": 80352.1703539823,
+        "mean_cost_usd": 13.414521495535714
+      },
+      {
+        "model": "claude-fable-5",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6972477064220184,
+        "mean_duration_seconds": 2092.0106240022938,
+        "mean_input_tokens": 12638832.12614679,
+        "mean_output_tokens": 118592.77293577982,
+        "mean_cost_usd": 21.634702092592594
+      },
+      {
+        "model": "gpt-5-6-terra",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6962305986696231,
+        "mean_duration_seconds": 1016.6698429312638,
+        "mean_input_tokens": 9230560.541019956,
+        "mean_output_tokens": 71938.62527716186,
+        "mean_cost_usd": 4.945847263858093
+      },
+      {
+        "model": "gpt-5-6-sol",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.6940133037694013,
+        "mean_duration_seconds": 594.230510789357,
+        "mean_input_tokens": 2713572.2505543237,
+        "mean_output_tokens": 28450.31929046563,
+        "mean_cost_usd": 3.4698331108647453
+      },
+      {
+        "model": "glm-5-3",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6895787139689579,
+        "mean_duration_seconds": 2116.1784804168515,
+        "mean_input_tokens": 13272344.266075388,
+        "mean_output_tokens": 80435.60975609756,
+        "mean_cost_usd": 3.9933584893126386
+      },
+      {
+        "model": "claude-opus-5",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.6890380313199105,
+        "mean_duration_seconds": 759.2254874630873,
+        "mean_input_tokens": 3579815.3601789707,
+        "mean_output_tokens": 36981.530201342284,
+        "mean_cost_usd": 3.28978764541387
+      },
+      {
+        "model": "claude-fable-5",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.686046511627907,
+        "mean_duration_seconds": 1062.3037221116278,
+        "mean_input_tokens": 4833178.365116279,
+        "mean_output_tokens": 57287.06976744186,
+        "mean_cost_usd": 9.177638214788733
+      },
+      {
+        "model": "kimi-k3",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6851441241685144,
+        "mean_duration_seconds": 4541.447376412417,
+        "mean_input_tokens": 9695436.246119734,
+        "mean_output_tokens": 81499.84257206209,
+        "mean_cost_usd": 4.654682129933482
+      },
+      {
+        "model": "grok-4-6",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.6747787610619469,
+        "mean_duration_seconds": 895.5380579646018,
+        "mean_input_tokens": 5725195.139380531,
+        "mean_output_tokens": 49763.99778761062,
+        "mean_cost_usd": 3.4489837522123894
+      },
+      {
+        "model": "gpt-5-6-luna",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.671875,
+        "mean_duration_seconds": 1122.9470243995536,
+        "mean_input_tokens": 15443718.330357144,
+        "mean_output_tokens": 73399.70758928571,
+        "mean_cost_usd": 3.028116810267857
+      },
+      {
+        "model": "gpt-5-5",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.6703539823008849,
+        "mean_duration_seconds": 1806.3251869889382,
+        "mean_input_tokens": 8372927.630530974,
+        "mean_output_tokens": 46294.72345132743,
+        "mean_cost_usd": 7.226236674778761
+      },
+      {
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoning_effort": "low",
+        "pass_rate": 0.6703539823008849,
+        "mean_duration_seconds": 613.4247787610619,
+        "mean_input_tokens": 494506.91150442476,
+        "mean_output_tokens": 10579.53982300885,
+        "mean_cost_usd": 1.595223439159292
+      },
+      {
+        "model": "grok-4-6",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.6674057649667405,
+        "mean_duration_seconds": 1272.3478393858093,
+        "mean_input_tokens": 9344022.093126386,
+        "mean_output_tokens": 71403.54323725056,
+        "mean_cost_usd": 5.497668745011087
+      },
+      {
+        "model": "gemini-3-7-flash",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.6548672566371682,
+        "mean_duration_seconds": 1240.376194079646,
+        "mean_input_tokens": 15332065.907079646,
+        "mean_output_tokens": 93990.8517699115,
+        "mean_cost_usd": 2.0251351826880533
+      },
+      {
+        "model": "claude-fable-5",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.6536697247706422,
+        "mean_duration_seconds": 810.8967150733945,
+        "mean_input_tokens": 2942251.607798165,
+        "mean_output_tokens": 40201.35321100918,
+        "mean_cost_usd": 6.088186528935186
+      },
+      {
+        "model": "gemini-3-7-flash",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.6526548672566371,
+        "mean_duration_seconds": 1244.9565387986725,
+        "mean_input_tokens": 16999853.159292035,
+        "mean_output_tokens": 107248.30309734514,
+        "mean_cost_usd": 2.1762860351216813
+      },
+      {
+        "model": "grok-4-6",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.6518847006651884,
+        "mean_duration_seconds": 1083.6365204833703,
+        "mean_input_tokens": 7348488.252771619,
+        "mean_output_tokens": 61160.94456762749,
+        "mean_cost_usd": 4.3848732239467845
+      },
+      {
+        "model": "gpt-5-5",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.6438053097345132,
+        "mean_duration_seconds": 2048.0589126172567,
+        "mean_input_tokens": 4617781.876106195,
+        "mean_output_tokens": 31159.49778761062,
+        "mean_cost_usd": 5.100437004424779
+      },
+      {
+        "model": "glm-5-3-flash",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6339285714285714,
+        "mean_duration_seconds": 1537.7995419129463,
+        "mean_input_tokens": 12387025.401785715,
+        "mean_output_tokens": 72829.77008928571,
+        "mean_cost_usd": 0.48196371245535713
+      },
+      {
+        "model": "deepseek-v4-pro",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.6283185840707964,
+        "mean_duration_seconds": 2212.510104011062,
+        "mean_input_tokens": 24191606.099557523,
+        "mean_output_tokens": 105998.91814159292,
+        "mean_cost_usd": 0.24138687892256638
+      },
+      {
+        "model": "gpt-5-6-sol",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.6106194690265486,
+        "mean_duration_seconds": 423.3752944181416,
+        "mean_input_tokens": 1505793.9557522123,
+        "mean_output_tokens": 18425.216814159292,
+        "mean_cost_usd": 1.8620318075221238
+      },
+      {
+        "model": "gpt-5-6-terra",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.6017699115044248,
+        "mean_duration_seconds": 584.0832282876107,
+        "mean_input_tokens": 3246355.4668141594,
+        "mean_output_tokens": 39616.53982300885,
+        "mean_cost_usd": 2.127191725663717
+      },
+      {
+        "model": "claude-fable-5",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.5958429561200924,
+        "mean_duration_seconds": 634.7057336951501,
+        "mean_input_tokens": 1691250.452655889,
+        "mean_output_tokens": 25242.833718244805,
+        "mean_cost_usd": 3.757873125874126
+      },
+      {
+        "model": "claude-opus-4-8",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.5897435897435898,
+        "mean_duration_seconds": 3492.740812641026,
+        "mean_input_tokens": 17047938.554778554,
+        "mean_output_tokens": 135031.67132867133,
+        "mean_cost_usd": 13.222583593240094
+      },
+      {
+        "model": "claude-opus-5",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.5812917594654788,
+        "mean_duration_seconds": 468.87542417149217,
+        "mean_input_tokens": 1564287.6570155902,
+        "mean_output_tokens": 19884.3140311804,
+        "mean_cost_usd": 1.6626223919821828
+      },
+      {
+        "model": "qwen3-8-max",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5746102449888641,
+        "mean_duration_seconds": 2567.2746634654786,
+        "mean_input_tokens": 12996066.461024499,
+        "mean_output_tokens": 95075.18262806236,
+        "mean_cost_usd": 3.7290646500445437
+      },
+      {
+        "model": "gpt-5-6-luna",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5685840707964602,
+        "mean_duration_seconds": 731.6846703871681,
+        "mean_input_tokens": 7610577.53539823,
+        "mean_output_tokens": 44677.900442477876,
+        "mean_cost_usd": 1.5356192685840708
+      },
+      {
+        "model": "muse-spark-1-2",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5486725663716814,
+        "mean_duration_seconds": 927.8692516349557,
+        "mean_input_tokens": 13693824.435840707,
+        "mean_output_tokens": 99226.38053097345,
+        "mean_cost_usd": 3.6955048180309733
+      },
+      {
+        "model": "claude-opus-4-8",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5436241610738255,
+        "mean_duration_seconds": 2198.774075261745,
+        "mean_input_tokens": 9854652.170022372,
+        "mean_output_tokens": 86088.7874720358,
+        "mean_cost_usd": 8.006355704138702
+      },
+      {
+        "model": "gpt-5-5",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.5398230088495575,
+        "mean_duration_seconds": 1288.995063800885,
+        "mean_input_tokens": 2438539.053097345,
+        "mean_output_tokens": 19625.433628318584,
+        "mean_cost_usd": 2.749342734513274
+      },
+      {
+        "model": "claude-sonnet-5",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.5384615384615384,
+        "mean_duration_seconds": 4803.543157789592,
+        "mean_input_tokens": 72415756.48642534,
+        "mean_output_tokens": 214117.54977375566,
+        "mean_cost_usd": 26.399858950791852
+      },
+      {
+        "model": "gemini-3-7-flash",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.5376106194690266,
+        "mean_duration_seconds": 1252.0731730707964,
+        "mean_input_tokens": 15056565.075221239,
+        "mean_output_tokens": 73364.9557522124,
+        "mean_cost_usd": 1.8322645629424779
+      },
+      {
+        "model": "gpt-5-6-terra",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.5376106194690266,
+        "mean_duration_seconds": 364.2859819269911,
+        "mean_input_tokens": 1557052.774336283,
+        "mean_output_tokens": 21517.03982300885,
+        "mean_cost_usd": 1.1343762765486725
+      },
+      {
+        "model": "grok-4-5",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.5376106194690266,
+        "mean_duration_seconds": 484.7029359800885,
+        "mean_input_tokens": 4059182.975663717,
+        "mean_output_tokens": 35525.33185840708,
+        "mean_cost_usd": 2.4157481725663716
+      },
+      {
+        "model": "deepseek-v4-flash",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.5331858407079646,
+        "mean_duration_seconds": 1438.9961937522125,
+        "mean_input_tokens": 19829931.451327432,
+        "mean_output_tokens": 107687.02212389381,
+        "mean_cost_usd": 0.10023560370265487
+      },
+      {
+        "model": "muse-spark-1-1",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5331858407079646,
+        "mean_duration_seconds": 897.5133296747788,
+        "mean_input_tokens": 12005399.261061948,
+        "mean_output_tokens": 74008.4203539823,
+        "mean_cost_usd": 2.361142644469026
+      },
+      {
+        "model": "claude-opus-4-8",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.5176991150442478,
+        "mean_duration_seconds": 1066.903783732301,
+        "mean_input_tokens": 4908687.0265486725,
+        "mean_output_tokens": 50063.52654867257,
+        "mean_cost_usd": 4.281940017699115
+      },
+      {
+        "model": "gpt-5-4",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.5176991150442478,
+        "mean_duration_seconds": 1368.707164818584,
+        "mean_input_tokens": 9418920.763274336,
+        "mean_output_tokens": 71408.87389380531,
+        "mean_cost_usd": 5.6524577245575225
+      },
+      {
+        "model": "claude-sonnet-5",
+        "provider": null,
+        "reasoning_effort": "xhigh",
+        "pass_rate": 0.49667405764966743,
+        "mean_duration_seconds": 2414.4529098159646,
+        "mean_input_tokens": 30695627.87804878,
+        "mean_output_tokens": 120698.59201773835,
+        "mean_cost_usd": 11.890634540022173
+      },
+      {
+        "model": "claude-opus-4-8",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.48672566371681414,
+        "mean_duration_seconds": 880.0083837986726,
+        "mean_input_tokens": 3843602.6681415928,
+        "mean_output_tokens": 41313.45132743363,
+        "mean_cost_usd": 3.4438571028761062
+      },
+      {
+        "model": "claude-sonnet-5",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.4823008849557522,
+        "mean_duration_seconds": 1728.2193087920355,
+        "mean_input_tokens": 18254491.34368071,
+        "mean_output_tokens": 87294.75609756098,
+        "mean_cost_usd": 7.425560161197339
+      },
+      {
+        "model": "gemini-3-6-flash",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.4668141592920354,
+        "mean_duration_seconds": 1477.8607510707964,
+        "mean_input_tokens": 12595957.344444444,
+        "mean_output_tokens": 95844.86222222222,
+        "mean_cost_usd": 4.419013277333334
+      },
+      {
+        "model": "gpt-5-6-sol",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.45353982300884954,
+        "mean_duration_seconds": 262.2510164579646,
+        "mean_input_tokens": 690833.657079646,
+        "mean_output_tokens": 10579.141592920354,
+        "mean_cost_usd": 1.0742664646017699
+      },
+      {
+        "model": "gpt-5-6-luna",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.4424778761061947,
+        "mean_duration_seconds": 473.83880740929203,
+        "mean_input_tokens": 3372477.7876106193,
+        "mean_output_tokens": 25778.274336283186,
+        "mean_cost_usd": 0.7779007499999999
+      },
+      {
+        "model": "glm-5-2",
+        "provider": null,
+        "reasoning_effort": "max",
+        "pass_rate": 0.43777777777777777,
+        "mean_duration_seconds": 2629.2083211311115,
+        "mean_input_tokens": 12606560.215555556,
+        "mean_output_tokens": 78175.30666666667,
+        "mean_cost_usd": 3.9199075743111114
+      },
+      {
+        "model": "grok-4-6",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.41648106904231624,
+        "mean_duration_seconds": 325.05958362360803,
+        "mean_input_tokens": 1646919.8017817372,
+        "mean_output_tokens": 16458.3429844098,
+        "mean_cost_usd": 1.0423604231625836
+      },
+      {
+        "model": "claude-opus-4-8",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.4079822616407982,
+        "mean_duration_seconds": 651.8271712993347,
+        "mean_input_tokens": 2417987.955654102,
+        "mean_output_tokens": 28922.736141906873,
+        "mean_cost_usd": 2.293369216740577
+      },
+      {
+        "model": "claude-sonnet-5",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.3977777777777778,
+        "mean_duration_seconds": 1121.270593551111,
+        "mean_input_tokens": 9286962.313333333,
+        "mean_output_tokens": 56816.753333333334,
+        "mean_cost_usd": 4.079036229
+      },
+      {
+        "model": "glm-5-2",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.36283185840707965,
+        "mean_duration_seconds": 1794.4733617809734,
+        "mean_input_tokens": 9070605.707964601,
+        "mean_output_tokens": 54245.50442477876,
+        "mean_cost_usd": 2.8355164725663715
+      },
+      {
+        "model": "gemini-3-5-flash",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.3606194690265487,
+        "mean_duration_seconds": 1125.1601607057523,
+        "mean_input_tokens": 7629071.858093127,
+        "mean_output_tokens": 75730.19290465632,
+        "mean_cost_usd": 3.4467114588691796
+      },
+      {
+        "model": "gpt-5-6-terra",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.3511111111111111,
+        "mean_duration_seconds": 229.60274282444442,
+        "mean_input_tokens": 725100.8355555555,
+        "mean_output_tokens": 11746.56,
+        "mean_cost_usd": 0.5832493688888889
+      },
+      {
+        "model": "kimi-k2-7-code",
+        "provider": null,
+        "reasoning_effort": null,
+        "pass_rate": 0.3053097345132743,
+        "mean_duration_seconds": 2163.7950712809734,
+        "mean_input_tokens": 13008041.482300885,
+        "mean_output_tokens": 59297.24778761062,
+        "mean_cost_usd": 2.815536243274336
+      },
+      {
+        "model": "claude-sonnet-5",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.3051224944320713,
+        "mean_duration_seconds": 734.9105084298441,
+        "mean_input_tokens": 4534475.699331849,
+        "mean_output_tokens": 35595.08240534521,
+        "mean_cost_usd": 2.1865550832962137
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.29933481152993346,
+        "mean_duration_seconds": 2815.01307943459,
+        "mean_input_tokens": 12870627.738359202,
+        "mean_output_tokens": 76160.31263858093,
+        "mean_cost_usd": 5.5223517987804875
+      },
+      {
+        "model": "gpt-5-5",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.26991150442477874,
+        "mean_duration_seconds": 569.9958436615044,
+        "mean_input_tokens": 776751.5840707965,
+        "mean_output_tokens": 9442.774336283186,
+        "mean_cost_usd": 1.2002025442477877
+      },
+      {
+        "model": "gpt-5-6-terra",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.24053452115812918,
+        "mean_duration_seconds": 176.52513473942093,
+        "mean_input_tokens": 480565.34521158127,
+        "mean_output_tokens": 8572.26280623608,
+        "mean_cost_usd": 0.4277452605790646
+      },
+      {
+        "model": "gemini-3-1-pro-preview",
+        "provider": null,
+        "reasoning_effort": "high",
+        "pass_rate": 0.1172566371681416,
+        "mean_duration_seconds": 867.7979107013274,
+        "mean_input_tokens": 2403677.331111111,
+        "mean_output_tokens": 28368.884444444444,
+        "mean_cost_usd": 2.1434045568888886
+      },
+      {
+        "model": "gpt-5-6-luna",
+        "provider": null,
+        "reasoning_effort": "medium",
+        "pass_rate": 0.11283185840707964,
+        "mean_duration_seconds": 181.5252541438053,
+        "mean_input_tokens": 617827.4800884955,
+        "mean_output_tokens": 8179.570796460177,
+        "mean_cost_usd": 0.21630978982300886
+      },
+      {
+        "model": "gpt-5-6-luna",
+        "provider": null,
+        "reasoning_effort": "low",
+        "pass_rate": 0.015486725663716814,
+        "mean_duration_seconds": 77.14656007522123,
+        "mean_input_tokens": 150031.52876106196,
+        "mean_output_tokens": 3127.754424778761,
+        "mean_cost_usd": 0.07240623938053097
+      }
+    ],
+    "dropped": []
+  }
+}
