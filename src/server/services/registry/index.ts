@@ -2,13 +2,15 @@ import { SourceCache } from "../cache"
 import { ArtificialAnalysisProvider } from "../provider/artificial-analysis"
 import { DeepSWEProvider } from "../provider/deep-swe"
 import { ModelsDevProvider } from "../provider/models-dev"
+import type { RegistrySnapshot } from "./registry.types"
 import type {
   ArtificialAnalysisPayload,
   DeepSWEPayload,
   ModelsDevPayload,
   SourceDefinition,
 } from "../provider/provider.types"
-import { deriveRegistry, type Derivation } from "./derive"
+import { deriveRegistry } from "./derive"
+import { buildDiagnostics, diagnosticsLogLine, type DiagnosticsReport } from "./diagnostics"
 import { inputsVersion, registryInputs } from "./inputs"
 
 type RegistrySources = {
@@ -18,7 +20,11 @@ type RegistrySources = {
 }
 
 /** One derivation per process, rebuilt only when a source's cached copy changes. */
-let latest: { version: string; derivation: Derivation } | null = null
+let latest: {
+  version: string
+  snapshot: RegistrySnapshot
+  report: DiagnosticsReport
+} | null = null
 
 export class RegistryService {
   constructor(
@@ -34,6 +40,11 @@ export class RegistryService {
     return (await this.derive()).snapshot
   }
 
+  /** The same derivation production serves, so it shows what today's rules do with new models. */
+  async getDiagnostics() {
+    return (await this.derive()).report
+  }
+
   private async derive() {
     const [deepswe, artificialAnalysis, modelsDev] = await Promise.all([
       this.cache.read(this.sources.deepswe),
@@ -44,10 +55,13 @@ export class RegistryService {
     const version = inputsVersion(cached)
 
     if (latest?.version !== version) {
-      latest = { version, derivation: deriveRegistry(registryInputs(cached)) }
+      const derivation = deriveRegistry(registryInputs(cached))
+      const report = buildDiagnostics(derivation)
+      console.info(diagnosticsLogLine(report, derivation.snapshot.entries.length))
+      latest = { version, snapshot: derivation.snapshot, report }
     }
 
-    return latest.derivation
+    return latest
   }
 }
 

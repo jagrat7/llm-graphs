@@ -63,6 +63,8 @@ export type Derivation = {
   /** Creator labels whose matched models point at more than one models.dev vendor. */
   splitCreators: Array<{ source: ProviderName; creator: string; vendors: Array<string> }>
   catalogVendors: ReadonlySet<string>
+  /** Every metric row that became a variant. Any row missing here is a Failure. */
+  attachedRows: ReadonlySet<MetricRow>
   inputs: RegistryInputs
 }
 
@@ -413,6 +415,7 @@ export function deriveRegistry(inputs: RegistryInputs): Derivation {
   const provenance: Array<EntryProvenance> = []
   const variants = emptyVariants()
   const vendors = new Set<string>()
+  const attachedRows = new Set<MetricRow>()
 
   for (const { id, cluster } of clusters) {
     const metadata = resolveMetadata(id, cluster, catalog, vendorByCreator)
@@ -443,6 +446,7 @@ export function deriveRegistry(inputs: RegistryInputs): Derivation {
       if (!isMetricSource(member.source)) continue
 
       for (const row of member.rows) {
+        attachedRows.add(row)
         variants[member.source].push({
           entryId: id,
           mode: row.mode,
@@ -483,6 +487,7 @@ export function deriveRegistry(inputs: RegistryInputs): Derivation {
     unresolvedDateGroups: unresolved,
     splitCreators,
     catalogVendors: new Set(catalogModels.map((model) => catalogVendor(model))),
+    attachedRows,
     inputs,
   }
 }

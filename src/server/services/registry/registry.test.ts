@@ -8,6 +8,7 @@ import type {
 import type { CachedPayload } from "../cache"
 
 import { deriveRegistry, type Derivation } from "./derive"
+import { buildDiagnostics } from "./diagnostics"
 import artificialAnalysisFixture from "./fixtures/artificial-analysis.json"
 import deepsweFixture from "./fixtures/deepswe.json"
 import modelsDevFixture from "./fixtures/models-dev.json"
@@ -22,6 +23,7 @@ const derivation = deriveRegistry(
   }),
 )
 const { snapshot } = derivation
+const report = buildDiagnostics(derivation)
 
 function entry(id: string) {
   return snapshot.entries.find((candidate) => candidate.id === id)
@@ -93,9 +95,43 @@ describe("registry derivation", () => {
     expect(variants("artificialAnalysis", "claude-fable-5")).toEqual(["on/max"])
   })
 
-  it("matches the committed whole-registry snapshot", async () => {
+  it("breaks no invariant on real payloads", () => {
+    expect(report.failures).toEqual({
+      duplicateEntryIds: [],
+      emptyNames: [],
+      unattachedRows: [],
+      futureReleaseDates: [],
+      droppedRows: [],
+    })
+    expect(report.counts.failures).toBe(0)
+  })
+
+  it("reports declined matches per source and per model, never per pair of sources", () => {
+    expect(Object.keys(report.sources).toSorted()).toEqual([
+      "artificialAnalysis",
+      "deepswe",
+      "modelsDev",
+    ])
+    expect(report.unresolvedDateGroups).toContainEqual(
+      expect.objectContaining({
+        ids: expect.arrayContaining([
+          { source: "modelsDev", id: "mistral/mistral-large-2411" },
+          { source: "modelsDev", id: "mistral/mistral-large-2512" },
+        ]),
+      }),
+    )
+    expect(report.models.noSharedVariant).toContainEqual({
+      id: "claude-sonnet-4-6",
+      variants: { artificialAnalysis: ["off/high", "off/low", "on/max"], deepswe: ["on/high"] },
+    })
+  })
+
+  it("matches the committed whole-registry snapshot and report", async () => {
     await expect(registrySnapshotText(derivation)).toMatchFileSnapshot(
       "./__snapshots__/registry.jsonl",
+    )
+    await expect(`${JSON.stringify(report, null, 2)}\n`).toMatchFileSnapshot(
+      "./__snapshots__/diagnostics.json",
     )
   })
 })
