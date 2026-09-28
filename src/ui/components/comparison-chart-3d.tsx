@@ -448,13 +448,19 @@ function PlotPoints({
       geometry.dispose()
       haloGeometry.dispose()
       for (const material of materials.values()) material.dispose()
-      for (const material of spriteMaterials.values()) material.dispose()
       for (const entry of seriesLines) {
         entry.object.geometry.dispose()
         entry.object.material.dispose()
       }
     },
-    [geometry, haloGeometry, materials, seriesLines, spriteMaterials],
+    [geometry, haloGeometry, materials, seriesLines],
+  )
+  // Sprite materials turn over as each logo loads; that must not dispose the spheres and lines.
+  useEffect(
+    () => () => {
+      for (const material of spriteMaterials.values()) material.dispose()
+    },
+    [spriteMaterials],
   )
 
   useFrame(() => {
