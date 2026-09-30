@@ -93,6 +93,33 @@ describe("registry derivation", () => {
     expect(variants("artificialAnalysis", "claude-fable-5")).toEqual(["on/max"])
   })
 
+  it("reads a nameless AA row's effort from its slug, but never -max", () => {
+    const nameless = new Set(["gpt-6-astra-low", "qwen3-8-max"])
+    const { snapshot: result } = deriveRegistry(
+      registryInputs({
+        deepswe: deepsweFixture,
+        artificialAnalysis: {
+          ...artificialAnalysisFixture,
+          payload: {
+            ...artificialAnalysisFixture.payload,
+            rows: artificialAnalysisFixture.payload.rows.map((row) =>
+              nameless.has(row.slug) ? { ...row, name: null } : row,
+            ),
+          },
+        },
+        modelsDev: modelsDevFixture,
+      }),
+    )
+    const variantsOf = (id: string) =>
+      result.variants.artificialAnalysis
+        .filter((variant) => variant.entryId === id)
+        .map((variant) => `${variant.mode}/${variant.level}`)
+
+    expect(result.entries.some((candidate) => candidate.id === "gpt-6-astra-low")).toBe(false)
+    expect(variantsOf("gpt-6-astra")).toContain("on/low")
+    expect(variantsOf("qwen3-8-max")).toEqual(["unknown/unknown"])
+  })
+
   it("matches the committed whole-registry snapshot", async () => {
     await expect(registrySnapshotText(derivation)).toMatchFileSnapshot(
       "./__snapshots__/registry.jsonl",
