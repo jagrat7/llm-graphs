@@ -1,0 +1,4549 @@
+{
+  "date": "2026-09-30",
+  "branch": "fix/graph-metric-combinations",
+  "browser": "T3 Code collaborative preview",
+  "fetchedAt": {
+    "artificialAnalysis": "2026-09-30T05:35:01.913Z",
+    "deepswe": "2026-09-30T07:48:40.112Z",
+    "modelsDev": "2026-09-30T04:42:08.692Z"
+  },
+  "finalBatchFetchedAt": {
+    "artificialAnalysis": "2026-09-30T05:35:01.913Z",
+    "deepswe": "2026-09-30T07:48:40.112Z",
+    "modelsDev": "2026-09-30T04:42:08.692Z"
+  },
+  "total": 80,
+  "summary": {
+    "twoD": 20,
+    "threeD": 60,
+    "dataAndDomFailures": 0,
+    "visual3D": "passed: all 60 combinations rendered in the visible T3 preview",
+    "initialVisualRun": "unverified: preview hidden; animation frames paused; screenshot capture failed",
+    "visual2D": "passed: all 20 combinations rendered with valid SVG paths",
+    "renderingFailures": 0,
+    "screenshots": 80
+  },
+  "results": [
+    {
+      "canvas": null,
+      "combo": {
+        "x": "score",
+        "y": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Score, Y Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofogsh-4ed8f19f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14387,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "cost",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Task cost, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofohyb-54156eba.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11687,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "cost",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Task cost, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofojs1-b5eb1d8a.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14260,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "cost",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Task cost, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofol0r-5050daad.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "score",
+        "y": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Score, Y Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofom9t-7cc0496f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13943,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "price",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Token price, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofonh0-baaf8144.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13180,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "price",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Token price, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofoosl-50756160.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15867,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "price",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Token price, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofopx5-1996e0fd.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "score",
+        "y": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Score, Y Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofj4mh-40d2cb31.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11567,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "speed",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Output speed, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofj5w0-778c83fa.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13512,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "speed",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Output speed, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofj75i-23b012a3.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13454,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "speed",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Output speed, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 12,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofj8sx-6ab4ccb6.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "score",
+        "y": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Score, Y Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjax9-0f2c9235.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13827,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "duration",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Task duration, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjc9e-ea0aa860.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 16012,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "duration",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Score, Y Task duration, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 8,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjdf6-4edf82a2.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13271,
+        "width": 1233
+      },
+      "combo": {
+        "x": "score",
+        "y": "duration",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Score, Y Task duration, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 12,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjemb-93eab0cb.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "cost",
+        "y": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task cost, Y Score. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjfwr-c5f39322.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14313,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "score",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Score, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjh5h-eb86c7c5.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11590,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "score",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Score, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjif7-32ab1d47.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14122,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "score",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Score, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofjk1p-0c205bba.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "cost",
+        "y": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task cost, Y Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk0gl-ada36666.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13997,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "price",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Token price, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk1ou-96b252dc.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12701,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "price",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Token price, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk333-8113006d.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15174,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "price",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Token price, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk49o-f8b0f152.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "cost",
+        "y": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Task cost, Y Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk5ha-a3256eda.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11642,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "speed",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Output speed, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk6rs-0633b399.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12984,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "speed",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Output speed, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk8bu-626fca6a.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12787,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "speed",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Output speed, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofk9gf-1d9da2d5.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "cost",
+        "y": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task cost, Y Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkb6q-16361cbb.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13922,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "duration",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Task duration, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkcgu-5201bb11.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15309,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "duration",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task cost, Y Task duration, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 7,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkdr3-a1826cfe.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12649,
+        "width": 1233
+      },
+      "combo": {
+        "x": "cost",
+        "y": "duration",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task cost, Y Task duration, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkeyj-34f1ddda.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "price",
+        "y": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Token price, Y Score. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkg31-ab5730b4.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14145,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "score",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Score, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkhfa-2849d95d.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13196,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "score",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Score, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkisw-2361ae49.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15991,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "score",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Score, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkjxe-109505d1.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "price",
+        "y": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Token price, Y Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofkyvd-636dfc6f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14311,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "cost",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Task cost, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl0bz-ad0ad4d5.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12845,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "cost",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Task cost, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl1ke-b670cd02.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15400,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "cost",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Task cost, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 11,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl2of-3565e756.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "price",
+        "y": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 337,
+      "points": 19,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (19 effort variants) by X Token price, Y Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl40h-69a8300e.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13381,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "speed",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Output speed, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl560-87859c5f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12803,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "speed",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Output speed, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 7,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl6fx-a1b6a90a.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14580,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "speed",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Output speed, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl7tz-6b6c9c63.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "price",
+        "y": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Token price, Y Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofl9gx-70230589.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15913,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "duration",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Task duration, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflatf-beba0d36.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15121,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "duration",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Token price, Y Task duration, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 8,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflc0o-2a0bd12b.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14394,
+        "width": 1233
+      },
+      "combo": {
+        "x": "price",
+        "y": "duration",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 20,
+          "min": 1.5
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Token price, Y Task duration, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 12,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofld8f-4c7c43c8.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "speed",
+        "y": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Output speed, Y Score. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflecu-20c47bc7.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11628,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "score",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Score, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflfgb-5f628574.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13510,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "score",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Score, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 7,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflgk1-11e68034.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13477,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "score",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Score, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflhrd-2768fd38.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "speed",
+        "y": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muoflzye-4bc8748e.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 11755,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "cost",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task cost, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 53,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm186-e1dfe5ac.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13061,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "cost",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task cost, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm2el-0ae81ee2.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12911,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "cost",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task cost, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 12,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm3o4-c95e27c4.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "speed",
+        "y": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 337,
+      "points": 19,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (19 effort variants) by X Output speed, Y Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm50x-0f58cba6.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13239,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "price",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Token price, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm68s-a132ce7f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12722,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "price",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Token price, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 7,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm7h9-3c6de04a.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14486,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "price",
+        "z": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Token price, Z Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofm8o0-07f92102.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "speed",
+        "y": "duration"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task duration. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofma8p-7de34f16.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13361,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "duration",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task duration, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmbh9-85c6f5a8.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12660,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "duration",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task duration, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 7,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmcod-c7fe17fe.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14589,
+        "width": 1233
+      },
+      "combo": {
+        "x": "speed",
+        "y": "duration",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "y": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Output speed, Y Task duration, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 10,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmdwc-c7f7fd9c.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "duration",
+        "y": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task duration, Y Score. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmf6w-bb84bad9.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13944,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "score",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Score, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmges-8577042a.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15996,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "score",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Score, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 7,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmhl0-e07dabe4.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13289,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "score",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Score, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofmir5-b14d4d84.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "duration",
+        "y": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task duration, Y Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn09t-a148699c.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14123,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "cost",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 70,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Task cost, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 64,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn1jj-53c803a8.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15388,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "cost",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Task cost, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 7,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn2rf-a4ba7d2f.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12719,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "cost",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Task cost, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 10,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn408-3dc68e94.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "duration",
+        "y": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (18 effort variants) by X Task duration, Y Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn56q-9d4c997d.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 15755,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "price",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Token price, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 4,
+          "lines": 72,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn6fm-1acce6e3.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14986,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "price",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 57,
+      "points": 18,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (18 effort variants) by X Task duration, Y Token price, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 26,
+          "frame": 8,
+          "lines": 70,
+          "points": 0,
+          "triangles": 36
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn7s4-627a602b.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14318,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "price",
+        "z": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 20,
+          "min": 1.5
+        },
+        "z": {
+          "max": 238.74,
+          "min": 38.79
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Token price, Z Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 12,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofn9ga-50848bb6.png"
+    },
+    {
+      "canvas": null,
+      "combo": {
+        "x": "duration",
+        "y": "speed"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 1,
+          "min": 0
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "description": "2D scatter plot of 6 models (17 effort variants) by X Task duration, Y Output speed. Use arrow keys to move between points.",
+        "raf": true,
+        "svg": {
+          "height": 630,
+          "invalidPaths": 0,
+          "paths": 6,
+          "width": 1233
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofnaqn-e31a1695.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 13364,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "speed",
+        "z": "score"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 74.11504424778761,
+          "min": 41.648106904231625
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Score \u00b7 %",
+            "title": "Score \u00b7 % (DeepSWE v1.1 pass rate)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Output speed, Z Score. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 4,
+          "lines": 61,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofnc18-9cb1b598.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 12641,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "speed",
+        "z": "cost"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 11.837583271396396,
+          "min": 1.0423604231625836
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task cost \u00b7 $/task",
+            "title": "Task cost \u00b7 $/task (mean cost per evaluated task)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Output speed, Z Task cost. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 8,
+          "lines": 59,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofnd92-92b7fb0b.png"
+    },
+    {
+      "canvas": {
+        "height": 630,
+        "nonBackground": 14600,
+        "width": 1233
+      },
+      "combo": {
+        "x": "duration",
+        "y": "speed",
+        "z": "price"
+      },
+      "domains": {
+        "x": {
+          "max": 4541.447376412417,
+          "min": 325.05958362360803
+        },
+        "y": {
+          "max": 238.74,
+          "min": 38.79
+        },
+        "z": {
+          "max": 20,
+          "min": 1.5
+        }
+      },
+      "failures": [],
+      "models": 6,
+      "offered": 55,
+      "points": 17,
+      "rendering": {
+        "axisLabels": [
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Task duration \u00b7 s",
+            "title": "Task duration \u00b7 s (mean wall time per evaluated task)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Output speed \u00b7 tokens/s",
+            "title": "Output speed \u00b7 tokens/s (AA output-generation benchmark)"
+          },
+          {
+            "clipped": false,
+            "opacity": "1",
+            "text": "Token price \u00b7 $/M tokens",
+            "title": "Token price \u00b7 $/M tokens (3:1 input/output blend)"
+          }
+        ],
+        "camera": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+        "description": "3D scatter plot of 6 models (17 effort variants) by X Task duration, Y Output speed, Z Token price. Use arrow keys to move between points.",
+        "raf": true,
+        "render": {
+          "calls": 24,
+          "frame": 11,
+          "lines": 67,
+          "points": 0,
+          "triangles": 34
+        }
+      },
+      "screenshotPath": "/home/hp-probook/.t3/userdata/browser-artifacts/browser-screenshot-localhost-muofneaw-04fbc931.png"
+    }
+  ],
+  "visualViewport": {
+    "width": 1281,
+    "height": 900
+  },
+  "screenshotSheets": [
+    "graph-combination-screenshots-1.jpg",
+    "graph-combination-screenshots-2.jpg",
+    "graph-combination-screenshots-3.jpg",
+    "graph-combination-screenshots-4.jpg"
+  ],
+  "cameraChecks": {
+    "metrics": {
+      "x": "score",
+      "y": "price",
+      "z": "duration"
+    },
+    "Front": [0, 0, 5.4],
+    "Top": [0, 5.382729214034145, 0.43153934743353256],
+    "Perspective": [3.2512149974985016, 2.201906446521679, 3.7069136813267036],
+    "status": "camera positions and screenshots checked; Top respects OrbitControls polar-angle limit"
+  }
+}
