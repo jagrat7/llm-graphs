@@ -24,7 +24,7 @@ export type Model = {
   logoUrl: string | null
   mode: ReasoningMode
   level: string
-  /** Short label for the variant; `default` when the source says nothing about effort. */
+  /** Published effort label; unreported reasoning settings are stated explicitly. */
   effort: string
   effortOrder: number
   score: number | null
@@ -59,7 +59,11 @@ export function logoDataUrl(svg: string | undefined) {
 
 export function effortLabel(mode: ReasoningMode, level: string) {
   if (level === "unknown") {
-    return mode === "on" ? "reasoning" : mode === "off" ? "non-reasoning" : "default"
+    return mode === "on"
+      ? "reasoning, effort not reported"
+      : mode === "off"
+        ? "non-reasoning"
+        : "reasoning not reported"
   }
 
   return mode === "off" ? `${level} non-reasoning` : level

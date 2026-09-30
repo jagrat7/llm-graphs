@@ -46,6 +46,8 @@ One compact fixture test checks all 212 cases through the shared graph rules. It
 
 The follow-up provider-selection check evaluates all 176 benchmark-containing axis orders against the live browser snapshot: every closest usable comparison retains its requested score provider and varies on every axis. Native selector interactions verify the AA 3D → METR 2D transition, METR's disabled task cost/runtime/speed choices and disabled third axis, and the AA 3D → Arena 3D transition. The existing fixture matrix includes one default-switch check per provider and the specific METR regression; the suite remains 99 tests.
 
+An effort-label follow-up found that Arena's parenthesized labels and Muse Spark suffixes were imported as unspecified configurations. The Arena adapter now preserves `(xHigh)`, `(thinking-minimal)`, Muse Spark `-max`, and explicit thinking/non-thinking distinctions. Product names such as Qwen Max and budget/date-qualified variants stay intact. The shared readout states unreported reasoning settings instead of hiding them as a default. The existing parser/view tests cover these failures without adding test cases. All 12 supported Arena/METR axis layouts pass a fresh native-browser rendering, label, camera-visibility and variation audit; the full 212-case fixture matrix and 99-test suite pass.
+
 Representative screenshots: [AA Intelligence Index in 3D](aa-index-3d.png), [METR horizon and confidence interval](metr-horizon-2d.png), [Arena in mobile 3D](arena-3d-mobile.png).
 
 `bun run lint`, `bun run typecheck`, `bun run test` (99 tests, including the 212-case matrix), `bun run fmt:check`, and `bun run build` pass. The build retains the existing warning about the large lazy-loaded 3D bundle. Tests make no upstream requests.

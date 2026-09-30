@@ -47,6 +47,15 @@ describe("Arena first-party leaderboard", () => {
     expect(payload.dropped).toHaveLength(1)
   })
   it("preserves model-name max and budget/date variants rather than borrowing another effort", () => {
+    for (const [id, sourceModelId, mode, level] of [
+      ["muse-spark-1.2 (xHigh)", "muse-spark-1.2", "on", "xhigh"],
+      ["muse-spark-1.3-max", "muse-spark-1.3", "on", "max"],
+      ["gemini-3-flash (thinking-minimal)", "gemini-3-flash", "on", "minimal"],
+      ["mimo-v2-flash (non-thinking)", "mimo-v2-flash", "off", "unknown"],
+      ["mimo-v2-flash (thinking)", "mimo-v2-flash", "on", "unknown"],
+      ["qwen3-235b-a22b-no-thinking", "qwen3-235b-a22b", "off", "unknown"],
+    ])
+      expect(arenaEffort(id), id).toEqual({ sourceModelId, mode, level })
     expect(arenaEffort("qwen3.8-max")).toMatchObject({
       sourceModelId: "qwen3.8-max",
       level: "unknown",

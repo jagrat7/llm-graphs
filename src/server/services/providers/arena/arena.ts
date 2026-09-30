@@ -80,10 +80,38 @@ export function parseArenaPage(html: string): ArenaPayload {
 
 /** Only explicit labels identify effort; model names such as qwen3.8-max remain model names. */
 export function arenaEffort(id: string) {
-  const suffix = /-(minimal|low|medium|high|xhigh|max)$/.exec(id)
-  const effortModel = /^(gpt-|claude-|gemini-)/.test(id)
+  const labeled =
+    /\s+\((?:thinking[- ]|reasoning[- ])?(minimal|low|medium|high|xhigh|max)\)$/i.exec(id)
+  if (labeled)
+    return {
+      sourceModelId: id.slice(0, -labeled[0].length),
+      mode: "on" as const,
+      level: labeled[1].toLowerCase(),
+    }
+  const parentheticalMode = /\s+\((thinking|reasoning|non-thinking|non-reasoning)\)$/i.exec(id)
+  if (parentheticalMode)
+    return {
+      sourceModelId: id.slice(0, -parentheticalMode[0].length),
+      mode: parentheticalMode[1].toLowerCase().startsWith("non-")
+        ? ("off" as const)
+        : ("on" as const),
+      level: "unknown",
+    }
+  const suffix = /-(minimal|low|medium|high|xhigh|max)$/i.exec(id)
+  const effortModel = /^(gpt-|claude-|gemini-|muse-spark-)/i.test(id)
   if (suffix && effortModel)
-    return { sourceModelId: id.slice(0, -suffix[0].length), mode: "on" as const, level: suffix[1] }
+    return {
+      sourceModelId: id.slice(0, -suffix[0].length),
+      mode: "on" as const,
+      level: suffix[1].toLowerCase(),
+    }
+  const nonReasoning = /-(no-thinking|non-thinking|non-reasoning)$/i.exec(id)
+  if (nonReasoning)
+    return {
+      sourceModelId: id.slice(0, -nonReasoning[0].length),
+      mode: "off" as const,
+      level: "unknown",
+    }
   const reasoning = /-(thinking|reasoning)$/.exec(id)
   if (reasoning)
     return {

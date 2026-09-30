@@ -5,7 +5,7 @@ import type { MetricBinding } from "#/ui/lib/model-view"
 import { aggregateModels } from "#/server/services/model-aggregator/derive"
 import { fixtureInputs, fixtures } from "#/server/services/model-aggregator/fixture-inputs"
 import { ProvidersService } from "#/server/services/providers"
-import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
+import { defaultPicks, offeredVariants, effortLabel } from "#/ui/lib/model-view"
 
 const info = ProvidersService.info()
 const { snapshot } = aggregateModels(fixtureInputs())
@@ -110,6 +110,9 @@ describe("offeredVariants", () => {
   })
 
   it("preserves the server's effort rank instead of recomputing it in the UI", () => {
+    expect(effortLabel("unknown", "unknown")).toBe("reasoning not reported")
+    expect(effortLabel("on", "unknown")).toBe("reasoning, effort not reported")
+    expect(effortLabel("off", "unknown")).toBe("non-reasoning")
     const variant = snapshot.variants.deepswe[0]
     const ranked = {
       ...snapshot,
