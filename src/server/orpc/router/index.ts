@@ -1,8 +1,8 @@
-import { registryDiagnosticsProcedure, registrySnapshotProcedure } from "./registry"
+import { modelDiagnosticsProcedure, modelSnapshotProcedure } from "./models"
 
 export default {
-  registry: {
-    snapshot: registrySnapshotProcedure,
-    diagnostics: registryDiagnosticsProcedure,
+  models: {
+    snapshot: modelSnapshotProcedure,
+    diagnostics: modelDiagnosticsProcedure,
   },
 }

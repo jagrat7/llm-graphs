@@ -8,7 +8,7 @@ import { useEffect, useId, useMemo, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
-import type { Model } from "#/ui/lib/registry-view"
+import type { Model } from "#/ui/lib/model-view"
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
 import type { SeriesLabel } from "#/ui/lib/plot-labels"
 

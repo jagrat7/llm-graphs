@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useMemo } from "react"
 
-import type { MetricBinding } from "#/ui/lib/registry-view"
+import type { MetricBinding } from "#/ui/lib/model-view"
 
 import { TableSkeleton } from "#/ui/components/chart-skeleton"
 import { DataError, DataState } from "#/ui/components/data-state"
@@ -9,8 +9,8 @@ import { LeaderboardTable } from "#/ui/components/leaderboard-table"
 import { PageShell } from "#/ui/components/page-shell"
 import { SourceFooter } from "#/ui/components/source-attribution"
 import { Badge } from "#/ui/components/ui/badge"
-import { offeredVariants } from "#/ui/lib/registry-view"
-import { useRegistrySnapshot } from "#/ui/lib/use-registry"
+import { offeredVariants } from "#/ui/lib/model-view"
+import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 
 export const Route = createFileRoute("/leaderboard")({
   component: LeaderboardPage,
@@ -25,7 +25,7 @@ const LEADERBOARD_BINDINGS: Array<MetricBinding> = [
 ]
 
 function LeaderboardPage() {
-  const { data: snapshot, isPending, isError } = useRegistrySnapshot()
+  const { data: snapshot, isPending, isError } = useModelSnapshot()
   const data = useMemo(
     () => (snapshot ? { models: offeredVariants(snapshot, LEADERBOARD_BINDINGS) } : undefined),
     [snapshot],

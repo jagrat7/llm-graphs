@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "#/ui/components/ui/select"
-import { METRIC_CONFIG } from "#/ui/lib/metrics"
+import { metricProviders } from "#/ui/lib/metrics"
 import { isSource, sourceLabel } from "#/ui/lib/sources"
 import { cn } from "#/ui/lib/utils"
 
@@ -39,7 +39,7 @@ export function SourceSelect({
   className?: string
   disabled?: boolean
 }) {
-  const { sources } = METRIC_CONFIG[metric]
+  const sources = metricProviders(metric)
 
   if (sources.length < 2) {
     return (

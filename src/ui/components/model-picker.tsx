@@ -3,7 +3,7 @@ import type { CSSProperties } from "react"
 import { RiArrowDownSLine, RiCloseLine, RiSearchLine } from "@remixicon/react"
 import { useEffect, useId, useMemo, useState } from "react"
 
-import type { Model } from "#/ui/lib/registry-view"
+import type { Model } from "#/ui/lib/model-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"

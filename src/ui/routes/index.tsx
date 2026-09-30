@@ -6,7 +6,7 @@ import type { AxisKey, AxisSetting, AxisState } from "#/ui/components/axis-contr
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
-import type { MetricBinding } from "#/ui/lib/registry-view"
+import type { MetricBinding } from "#/ui/lib/model-view"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
@@ -15,9 +15,9 @@ import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { METRICS, METRIC_CONFIG, resolveSource } from "#/ui/lib/metrics"
-import { defaultPicks, offeredVariants } from "#/ui/lib/registry-view"
+import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { isSource } from "#/ui/lib/sources"
-import { useRegistrySnapshot } from "#/ui/lib/use-registry"
+import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
 const ComparisonChart = lazy(() =>
@@ -81,7 +81,7 @@ function ComparePage() {
     y: axisSetting(search.y, search.ySource),
     z: axisSetting(search.z ?? null, search.zSource),
   }
-  const { data: snapshot, isPending, isError } = useRegistrySnapshot()
+  const { data: snapshot, isPending, isError } = useModelSnapshot()
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
   const data = useMemo(() => {
     if (!snapshot) return undefined

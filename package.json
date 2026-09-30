@@ -21,7 +21,7 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:studio": "drizzle-kit studio",
-    "fixtures:registry": "bun dev/refresh-registry-fixtures.ts"
+    "fixtures:models": "bun dev/refresh-model-fixtures.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

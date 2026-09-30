@@ -1,11 +1,11 @@
 import type { ProviderName } from "#/ui/lib/orpc-client"
 
-import { PROVIDERS } from "#/ui/lib/orpc-client"
+import { ProvidersService } from "#/ui/lib/orpc-client"
 
 export function isSource(value: string): value is ProviderName {
-  return Object.hasOwn(PROVIDERS, value)
+  return Object.hasOwn(ProvidersService.metricSources, value)
 }
 
 export function sourceLabel(source: ProviderName) {
-  return PROVIDERS[source].displayName
+  return ProvidersService.metricSources[source].displayName
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import type { Model } from "#/ui/lib/registry-view"
+import type { Model } from "#/ui/lib/model-view"
 
 import { axisTicks, buildPlotData, describePlot, padDomain } from "#/ui/lib/comparison-plot-data"
 

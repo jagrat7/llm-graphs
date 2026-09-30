@@ -1,10 +1,10 @@
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { MetricKey, ProviderName } from "#/ui/lib/orpc-client"
+
+import { ProvidersService } from "#/server/services/providers"
 
 export const METRICS = ["score", "cost", "speed", "duration"] as const
 
 export type Metric = (typeof METRICS)[number]
-
-export type MetricDataKey = "score" | "costPerMTokens" | "tokensPerSecond" | "durationSeconds"
 
 export function isMetric(value: string): value is Metric {
   return (METRICS as ReadonlyArray<string>).includes(value)
@@ -16,10 +16,7 @@ export const METRIC_CONFIG: Record<
     label: string
     shortLabel: string
     unit: string
-    dataKey: MetricDataKey
-    /** Providers publishing this metric, best first. The head is the default source. */
-    sources: ReadonlyArray<ProviderName>
-    sourceNotes?: Partial<Record<ProviderName, string>>
+    dataKey: MetricKey
   }
 > = {
   score: {
@@ -27,44 +24,43 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Score",
     unit: "%",
     dataKey: "score",
-    sources: ["deepswe"],
   },
   cost: {
     label: "Cost",
     shortLabel: "Cost $/M",
     unit: "$/M tokens",
     dataKey: "costPerMTokens",
-    sources: ["deepswe"],
-    sourceNotes: {
-      deepswe: "observed input/output mix",
-    },
   },
   speed: {
     label: "Speed",
     shortLabel: "Tokens/s",
     unit: "tokens/s",
     dataKey: "tokensPerSecond",
-    sources: ["artificialAnalysis"],
   },
   duration: {
     label: "Duration",
     shortLabel: "Duration",
     unit: "s",
     dataKey: "durationSeconds",
-    sources: ["deepswe"],
   },
 }
 
 export function metricAxisTitle(metric: Metric, source: ProviderName | null) {
   const config = METRIC_CONFIG[metric]
-  const sourceNote = source == null ? null : config.sourceNotes?.[source]
+  const sourceNote =
+    source == null ? null : ProvidersService.metricSources[source].metrics[config.dataKey]?.note
 
   return `${config.label} · ${config.unit}${sourceNote == null ? "" : ` (${sourceNote})`}`
 }
 
 /** Falls back to the metric's default source, so a stale URL source never sticks. */
+/** The providers the chart offers for a metric. The first one is the default. */
+export function metricProviders(metric: Metric) {
+  return ProvidersService.providersFor(METRIC_CONFIG[metric].dataKey)
+}
+
 export function resolveSource(metric: Metric, source: ProviderName | undefined): ProviderName {
-  const { sources } = METRIC_CONFIG[metric]
+  const sources = metricProviders(metric)
 
   return source != null && sources.includes(source) ? source : sources[0]
 }

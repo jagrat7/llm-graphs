@@ -1,5 +1,5 @@
 import type { Metric } from "#/ui/lib/metrics"
-import type { Model } from "#/ui/lib/registry-view"
+import type { Model } from "#/ui/lib/model-view"
 
 import { METRIC_CONFIG } from "#/ui/lib/metrics"
 

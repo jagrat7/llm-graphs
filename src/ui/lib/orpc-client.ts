@@ -9,13 +9,13 @@ import { getRequestHeaders } from "@tanstack/react-start/server"
 
 import router from "#/server/orpc/router"
 
-export { PROVIDERS } from "#/server/services/provider/provider.types"
-export type { ProviderName } from "#/server/services/provider/provider.types"
-export type { MetricKey, ReasoningMode } from "#/server/services/registry"
+export { ProvidersService } from "#/server/services/providers"
+export type { ProviderName } from "#/server/services/providers"
+export type { MetricKey, ReasoningMode } from "#/server/services/model-aggregator"
 
 type AppClient = RouterClient<typeof router>
 
-export type RegistrySnapshot = Awaited<ReturnType<AppClient["registry"]["snapshot"]>>
+export type ModelSnapshot = Awaited<ReturnType<AppClient["models"]["snapshot"]>>
 
 const getORPCClient = createIsomorphicFn()
   .server(() =>

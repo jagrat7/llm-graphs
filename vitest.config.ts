@@ -9,5 +9,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // `src/env.ts` checks this on import. Tests never connect to the database.
+    env: { DATABASE_URL: "postgres://test@localhost/test" },
   },
 })

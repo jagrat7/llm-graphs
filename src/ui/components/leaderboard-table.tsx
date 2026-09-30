@@ -11,7 +11,7 @@ import {
 import { RiArrowDownLine, RiArrowUpDownLine, RiArrowUpLine } from "@remixicon/react"
 import { useState } from "react"
 
-import type { Model } from "#/ui/lib/registry-view"
+import type { Model } from "#/ui/lib/model-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { SourceLogo } from "#/ui/components/source-logo"
