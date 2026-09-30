@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { SourceDefinition } from "./provider/provider.types"
 
@@ -25,6 +25,26 @@ function pendingFetch() {
 async function flush() {
   await new Promise((resolve) => setTimeout(resolve, 0))
 }
+
+afterEach(() => {
+  vi.useRealTimers()
+})
+
+describe("MemoryStore locks", () => {
+  it("won't let a holder whose lock expired release the next holder's lock", async () => {
+    vi.useFakeTimers()
+    const store = new MemoryStore()
+    const first = await store.acquireLock("lock", 60)
+
+    vi.advanceTimersByTime(61_000)
+    const second = await store.acquireLock("lock", 60)
+    await store.releaseLock("lock", first ?? "")
+
+    expect(first).not.toBeNull()
+    expect(second).not.toBeNull()
+    await expect(store.acquireLock("lock", 60)).resolves.toBeNull()
+  })
+})
 
 describe("SourceCache", () => {
   it("fetches once on a cold cache, then answers from the stored copy", async () => {
@@ -116,5 +136,37 @@ describe("SourceCache", () => {
 
     await expect(read).resolves.toMatchObject({ payload: "newer" })
     await expect(store.get("test:source")).resolves.toMatchObject({ payload: "newer" })
+  })
+
+  it("keeps waiting on another instance's cold fetch, however long it runs", async () => {
+    vi.useFakeTimers()
+    const store = new MemoryStore()
+    const cache = new SourceCache(store, () => 0)
+    const fetchPayload = vi.fn(async () => "mine")
+    await store.acquireLock("test:source:lock", 5 * 60)
+
+    const read = cache.read(source(fetchPayload))
+    await vi.advanceTimersByTimeAsync(2 * 60 * 1000)
+    await store.set("test:source", { payload: "theirs", fetchedAt: new Date(0).toISOString() })
+    await vi.advanceTimersByTimeAsync(1000)
+
+    await expect(read).resolves.toMatchObject({ payload: "theirs" })
+    expect(fetchPayload).not.toHaveBeenCalled()
+  })
+
+  it("fetches itself once another instance's cold fetch gives up", async () => {
+    vi.useFakeTimers()
+    const store = new MemoryStore()
+    const cache = new SourceCache(store, () => 0)
+    const fetchPayload = vi.fn(async () => "mine")
+    const theirs = await store.acquireLock("test:source:lock", 5 * 60)
+
+    const read = cache.read(source(fetchPayload))
+    await vi.advanceTimersByTimeAsync(10_000)
+    await store.releaseLock("test:source:lock", theirs ?? "")
+    await vi.advanceTimersByTimeAsync(1000)
+
+    await expect(read).resolves.toMatchObject({ payload: "mine" })
+    expect(fetchPayload).toHaveBeenCalledTimes(1)
   })
 })
