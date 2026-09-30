@@ -104,3 +104,32 @@ export type ProviderModelDataByProvider = {
 }
 
 export type ProviderModelData = ProviderModelDataByProvider[ProviderName]
+
+export const METRIC_KEYS = [
+  "score",
+  "costPerMTokens",
+  "tokensPerSecond",
+  "durationSeconds",
+] as const
+
+export type MetricKey = (typeof METRIC_KEYS)[number]
+
+/** Whether a variant thinks at all. `unknown` means the source doesn't say, not a default. */
+export type ReasoningMode = "on" | "off" | "unknown"
+
+/**
+ * One metric-source row after its adapter has split effort off the model id. `level` is one of
+ * `minimal`…`max`, `unknown`, or a new level word kept as the source spelled it (lowercased).
+ */
+export type MetricRow = {
+  /** The model id with effort split off, as the source spells it. */
+  sourceModelId: string
+  /** The row's id exactly as the source gave it. */
+  rawId: string
+  mode: ReasoningMode
+  level: string
+  metrics: Partial<Record<MetricKey, number | null>>
+  metadata: { name: string | null; creator: string | null; releaseDate: string | null } | null
+  /** Set when the row's own labels contradict each other, which refuses its effort match. */
+  effortConflict: string | null
+}
