@@ -126,8 +126,8 @@ describe("registry derivation", () => {
     })
   })
 
-  it("reads a nameless AA row's effort from its slug, but never -max", () => {
-    const nameless = new Set(["gpt-6-astra-low", "qwen3-8-max"])
+  it("reads a nameless AA row's slug level only where named rows state levels for its model", () => {
+    const nameless = new Set(["gpt-6-astra-low", "qwen3-8-max", "mistral-medium"])
     const { snapshot: result } = deriveRegistry(
       registryInputs({
         deepswe: deepsweFixture,
@@ -151,6 +151,7 @@ describe("registry derivation", () => {
     expect(result.entries.some((candidate) => candidate.id === "gpt-6-astra-low")).toBe(false)
     expect(variantsOf("gpt-6-astra")).toContain("on/low")
     expect(variantsOf("qwen3-8-max")).toEqual(["unknown/unknown"])
+    expect(variantsOf("mistral-medium")).toEqual(["unknown/unknown"])
   })
 
   it("matches the committed whole-registry snapshot and report", async () => {

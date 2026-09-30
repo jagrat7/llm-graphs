@@ -87,25 +87,15 @@ function peelMarkers(words: Array<string>, nameLevel: string | null): SlugEffort
 }
 
 /**
- * A nameless row has no label to confirm a trailing level word, so the slug's own counts, except
- * `max`, which is as likely part of the model's id.
- */
-function slugLevel(slug: string) {
-  const last = slug.toLowerCase().split("-").at(-1) ?? ""
-
-  return isKnownLevel(last) && last !== "max" ? last : null
-}
-
-/**
  * Splits an AA row into its model id, reasoning mode, and effort level. The name's labels come
  * first, slug markers corroborate or fill in, and an explicit contradiction is flagged.
  */
 export function parseArtificialAnalysisEffort(
   slug: string,
-  name: string | null,
+  name: string,
   trailingDateLength: (words: ReadonlyArray<string>) => number,
 ) {
-  const fromName = name == null ? { mode: null, level: slugLevel(slug) } : parseNameEffort(name)
+  const fromName = parseNameEffort(name)
   let { words, mode: slugMode } = peelMarkers(slug.toLowerCase().split("-"), fromName.level)
   const dateLength = trailingDateLength(words)
 
