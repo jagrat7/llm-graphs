@@ -2,11 +2,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
-import type { AxisKey, AxisSetting, AxisState } from "#/ui/components/axis-controls"
+import type { AxisKey, AxisSetting } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
-import type { MetricBinding } from "#/ui/lib/model-view"
+import type { ProviderName } from "#/ui/lib/orpc-client"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
@@ -14,7 +13,16 @@ import { DataError, DataState } from "#/ui/components/data-state"
 import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
-import { METRICS, METRIC_CONFIG, metricProviders, resolveSource } from "#/ui/lib/metrics"
+import { METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
+import {
+  axisSettings,
+  axisBindings,
+  AXIS_SOURCE_KEY,
+  unavailableMetrics,
+} from "#/ui/lib/graph-state"
+import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
+import { Alert, AlertTitle } from "#/ui/components/ui/alert"
+import { Button } from "#/ui/components/ui/button"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
@@ -63,60 +71,33 @@ export const Route = createFileRoute("/")({
   component: ComparePage,
 })
 
-/** Each axis parks its source override under its own search param. */
-const AXIS_SOURCE_KEY = { x: "xSource", y: "ySource", z: "zSource" } as const
-
-function axisSetting(
-  metric: Metric | null,
-  source: string | undefined,
-  info: ProvidersInfo,
-  scoreSource: ProviderName | null,
-): AxisSetting {
-  return {
-    metric,
-    source: metric == null ? null : resolveSource(metric, source, info, scoreSource),
-  }
-}
-
-function axisSettings(search: z.infer<typeof compareSearchSchema>, info: ProvidersInfo): AxisState {
-  const scoreAxis = (["x", "y", "z"] as const).find((axis) => search[axis] === "score")
-  const scoreSource =
-    scoreAxis == null ? null : resolveSource("score", search[AXIS_SOURCE_KEY[scoreAxis]], info)
-  return {
-    x: axisSetting(search.x, search.xSource, info, scoreSource),
-    y: axisSetting(search.y, search.ySource, info, scoreSource),
-    z: axisSetting(search.z ?? null, search.zSource, info, scoreSource),
-  }
-}
-
-/** Each filled axis reads its metric from its own source. */
-function axisBindings(axes: AxisState): Array<MetricBinding> {
-  return Object.values(axes).flatMap(({ metric, source }) =>
-    metric == null || source == null ? [] : [{ metric: METRIC_CONFIG[metric].dataKey, source }],
-  )
-}
-
 function ComparePage() {
   const info = useProvidersInfo()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
-  const unavailableTaskCost = Object.values(axes).some(
-    ({ metric, source }) =>
-      metric === "cost" && source != null && !metricProviders(metric, info).includes(source),
-  )
+  const unavailable = unavailableMetrics(axes, info)
   const { data: snapshot, isPending, isError } = useModelSnapshot()
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
   const data = useMemo(() => {
     if (!snapshot) return undefined
 
     const viewAxes = axisSettings(search, info)
-    const models = offeredVariants(snapshot, axisBindings(viewAxes))
+    const models = offeredVariants(snapshot, axisBindings(viewAxes, info))
     const scoreSource =
       Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
 
-    return { models, defaultModels: defaultPicks(snapshot, models, scoreSource, info) }
+    return {
+      models,
+      defaultModels: defaultPicks(
+        snapshot,
+        models,
+        scoreSource,
+        info,
+        axisBindings(viewAxes, info).map((binding) => binding.metric),
+      ),
+    }
   }, [snapshot, info, search])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
@@ -183,6 +164,9 @@ function ComparePage() {
   const selected = search.models ?? data?.defaultModels ?? []
   const selectedModelIds = new Set(selected)
   const selectedModels = data?.models.filter((model) => selectedModelIds.has(model.model)) ?? []
+  const quality = plotQuality(
+    buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z }),
+  )
   const controlsDisabled = isPending ? true : isError
   const picker = (
     <ModelPicker
@@ -217,8 +201,8 @@ function ComparePage() {
         <DataState
           className={CHART_HEIGHT_CLASS}
           title={
-            unavailableTaskCost
-              ? "Task cost is unavailable for this score benchmark"
+            unavailable.length > 0
+              ? `${unavailable.map(({ metric }) => METRIC_CONFIG[metric!].label).join(" and ")} unavailable for this score benchmark`
               : data.models.length === 0
                 ? "No model configurations have all selected metrics"
                 : selected.length === 0
@@ -226,6 +210,41 @@ function ComparePage() {
                   : "No selected models are available"
           }
         >
+          <p className="text-muted-foreground mx-auto mb-3 max-w-sm text-sm">
+            {unavailable.length > 0
+              ? "This benchmark does not publish these measurements. Compare token price instead, or choose another score source."
+              : "Only matching measured configurations can be compared. Try different metrics or restore the default comparison."}
+          </p>
+          <Button
+            variant="outline"
+            onClick={() =>
+              updateSearch(
+                unavailable.length > 0
+                  ? {
+                      x: "price",
+                      y: "score",
+                      z: undefined,
+                      xSource: undefined,
+                      ySource:
+                        Object.values(axes).find((axis) => axis.metric === "score")?.source ??
+                        undefined,
+                      zSource: undefined,
+                      models: undefined,
+                    }
+                  : {
+                      x: "cost",
+                      y: "score",
+                      z: undefined,
+                      xSource: undefined,
+                      ySource: undefined,
+                      zSource: undefined,
+                      models: undefined,
+                    },
+              )
+            }
+          >
+            {unavailable.length > 0 ? "Compare token price" : "Restore default comparison"}
+          </Button>
           <ModelPicker
             models={data.models}
             selected={selected}
@@ -233,6 +252,15 @@ function ComparePage() {
             className="mx-auto max-w-sm"
           />
         </DataState>
+      ) : null}
+      {data && selectedModels.length > 0 && !quality.meaningful ? (
+        <Alert className="mb-3">
+          <AlertTitle>
+            {quality.flatAxes.length > 0
+              ? `No variation on ${quality.flatAxes.map((axis) => `${axis.toUpperCase()} (${METRIC_CONFIG[search[axis]!].label})`).join(" and ")}. Add models with different measured values or change metrics.`
+              : "Select at least two models for a meaningful comparison."}
+          </AlertTitle>
+        </Alert>
       ) : null}
       {data && selectedModels.length > 0 ? (
         <Suspense fallback={<ChartSkeleton />}>

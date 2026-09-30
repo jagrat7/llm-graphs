@@ -27,6 +27,50 @@ function variantsOf(bindings: Array<MetricBinding>, model: string) {
 }
 
 describe("offeredVariants", () => {
+  it("requires unanimous prices and rejects speed joins for unspecified configurations", () => {
+    const variant = snapshot.variants.deepswe[0]
+    for (const { prices, refused, expected } of [
+      { prices: [2, 2], refused: false, expected: 1 },
+      { prices: [2, 3], refused: false, expected: 0 },
+      { prices: [2, null], refused: false, expected: 0 },
+      { prices: [2], refused: true, expected: 0 },
+    ]) {
+      const input = {
+        ...snapshot,
+        variants: {
+          ...snapshot.variants,
+          deepswe: [
+            {
+              ...variant,
+              mode: "unknown" as const,
+              level: "unknown",
+              configurationKnown: false as const,
+            },
+          ],
+          artificialAnalysis: prices.map((price, index) => ({
+            ...variant,
+            mode: index === 0 ? ("unknown" as const) : ("on" as const),
+            level: index === 0 ? "unknown" : "high",
+            ...(refused ? { refused: true as const } : {}),
+            metrics: { costPerMTokens: price, tokensPerSecond: 120 },
+          })),
+        },
+      }
+      expect(
+        offeredVariants(input, [
+          { metric: "score", source: "deepswe" },
+          { metric: "costPerMTokens", source: "artificialAnalysis", scope: "model" },
+        ]),
+      ).toHaveLength(expected)
+      expect(
+        offeredVariants(input, [
+          { metric: "score", source: "deepswe" },
+          { metric: "tokensPerSecond", source: "artificialAnalysis" },
+        ]),
+      ).toEqual([])
+    }
+  })
+
   it("excludes missing required measurements but leaves optional measurements unavailable", () => {
     const variant = snapshot.variants.deepswe[0]
     const missing = {
@@ -50,6 +94,7 @@ describe("offeredVariants", () => {
     const conflicting = {
       ...snapshot,
       variants: {
+        ...snapshot.variants,
         deepswe: [variant],
         artificialAnalysis: [
           { ...variant, refused: true as const, metrics: { tokensPerSecond: 120 } },
@@ -91,7 +136,22 @@ describe("offeredVariants", () => {
     expect(variantsOf(SPEED_BY_SCORE, "claude-fable-5")).toEqual(["on/max"])
     expect(variantsOf(SPEED_BY_SCORE, "claude-sonnet-4-6")).toEqual([])
     // AA lists the matching variant but has no speed measurement for it.
-    expect(variantsOf(SPEED_BY_SCORE, "kimi-k2-7-code")).toEqual([])
+    const missingSpeed = {
+      ...snapshot,
+      variants: {
+        ...snapshot.variants,
+        artificialAnalysis: snapshot.variants.artificialAnalysis.map((variant) =>
+          variant.entryId === "kimi-k2-7-code"
+            ? { ...variant, metrics: { ...variant.metrics, tokensPerSecond: null } }
+            : variant,
+        ),
+      },
+    }
+    expect(
+      offeredVariants(missingSpeed, SPEED_BY_SCORE).filter(
+        (model) => model.model === "kimi-k2-7-code",
+      ),
+    ).toEqual([])
   })
 
   it("reads each axis metric from that axis's source", () => {
@@ -124,6 +184,23 @@ describe("offeredVariants", () => {
 })
 
 describe("defaultPicks", () => {
+  it("extends a flat default axis with a real measurement when one is available", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const original = defaultPicks(snapshot, offered, "deepswe", info)
+    const extra = offered.find((model) => !original.includes(model.model))!
+    const flat = offered.map((model) => ({
+      ...model,
+      costPerTask: model.model === extra.model ? 2 : 1,
+    }))
+    const picks = defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask", "score"])
+    expect(picks).toContain(extra.model)
+    expect(picks).toEqual([...original, extra.model])
+    expect(
+      new Set(flat.filter((model) => picks.includes(model.model)).map((model) => model.costPerTask))
+        .size,
+    ).toBe(2)
+  })
+
   it("opens Cost × Score on each of the six strongest vendors' strongest model", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
 
@@ -158,6 +235,15 @@ describe("defaultPicks", () => {
       (model) => !snapshot.variants.deepswe.some((variant) => variant.entryId === model.model),
     )
 
-    expect(defaultPicks(snapshot, offered, null, info)).toEqual([])
+    const unscored = {
+      ...snapshot,
+      variants: ProvidersService.record((source) =>
+        snapshot.variants[source].map((variant) => ({
+          ...variant,
+          metrics: { ...variant.metrics, score: null },
+        })),
+      ),
+    }
+    expect(defaultPicks(unscored, offered, null, info)).toEqual([])
   })
 })

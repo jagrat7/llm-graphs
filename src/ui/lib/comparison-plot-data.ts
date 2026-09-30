@@ -253,3 +253,28 @@ export function describePlot(data: PlotData) {
 
   return `${data.is3D ? "3D" : "2D"} scatter plot of ${data.modelCount} ${modelNoun} (${data.points.length} effort ${variantNoun}) by ${axisSummary}. Use arrow keys to move between points.`
 }
+
+/** Variation is evidence, not padding: flat axes never pass a meaningful-comparison audit. */
+export function plotQuality(data: PlotData) {
+  const axes = data.axes.map((axis) => {
+    const counts = new Map<number, number>()
+    for (const point of data.points)
+      counts.set(point.values[axis], (counts.get(point.values[axis]) ?? 0) + 1)
+    return {
+      axis,
+      distinctValues: counts.size,
+      largestShare:
+        data.points.length === 0 ? 0 : Math.max(...counts.values()) / data.points.length,
+    }
+  })
+  const flatAxes = axes.filter((axis) => axis.distinctValues < 2).map((axis) => axis.axis)
+  const distinctPoints = new Set(
+    data.points.map((point) => data.axes.map((axis) => point.values[axis]).join("/")),
+  ).size
+  return {
+    axes,
+    flatAxes,
+    distinctPoints,
+    meaningful: data.modelCount > 1 && flatAxes.length === 0,
+  }
+}

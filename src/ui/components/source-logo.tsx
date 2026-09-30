@@ -27,7 +27,7 @@ type SourceMark = { viewBox: string; paths: ReadonlyArray<string>; brand?: strin
  * native black/white marks use light-dark() with the site's exact off-black / off-white.
  * Sources: artificialanalysis.ai, datacurve.ai (DeepSWE). Trademarks of their owners.
  */
-const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
+const SOURCE_MARKS: Partial<Record<ProviderName, SourceMark>> = {
   artificialAnalysis: {
     viewBox: "0 0 53 53",
     brand: "#7F4BF3",
@@ -60,6 +60,16 @@ export function SourceLogo({
   accent?: boolean
 }) {
   const mark = SOURCE_MARKS[source]
+
+  if (!mark)
+    return (
+      <span
+        aria-hidden="true"
+        className={cn("text-muted-foreground shrink-0 text-[9px] font-semibold", className)}
+      >
+        {source === "metr" ? "M" : source === "arena" ? "A" : source.slice(0, 1).toUpperCase()}
+      </span>
+    )
 
   return (
     <svg

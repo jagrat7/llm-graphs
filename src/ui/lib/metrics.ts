@@ -50,10 +50,26 @@ export const METRIC_CONFIG: Record<
 }
 
 export function metricAxisTitle(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
-  const config = METRIC_CONFIG[metric]
-  const sourceNote = source == null ? null : info.notes[source][config.dataKey]
+  const config = metricPresentation(metric, source, info)
+  const sourceNote = source == null ? null : info.notes[source][METRIC_CONFIG[metric].dataKey]
 
   return `${config.label} · ${config.unit}${sourceNote == null ? "" : ` (${sourceNote})`}`
+}
+
+export function metricPresentation(
+  metric: Metric,
+  source: ProviderName | null,
+  info?: ProvidersInfo,
+) {
+  const fallback = { ...METRIC_CONFIG[metric], format: metric === "score" ? "percent" : "number" }
+  return source == null
+    ? fallback
+    : (info?.presentation[source]?.[METRIC_CONFIG[metric].dataKey] ?? fallback)
+}
+
+export function metricAxisLabel(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
+  const config = metricPresentation(metric, source, info)
+  return `${config.label} · ${config.unit}`
 }
 
 /** The providers the chart offers for a metric. The first one is the default. */
@@ -68,14 +84,20 @@ export function resolveSource(
   info: ProvidersInfo,
   scoreSource?: ProviderName | null,
 ): ProviderName {
-  if (metric === "cost") return scoreSource ?? info.metricProviders.score[0]
+  if (metric === "cost" || metric === "duration")
+    return scoreSource ?? info.metricProviders.score[0]
 
   const sources = metricProviders(metric, info)
 
   return sources.find((candidate) => candidate === source) ?? sources[0]
 }
 
-export function formatMetric(value: number | null, metric: Metric) {
+export function formatMetric(
+  value: number | null,
+  metric: Metric,
+  source: ProviderName | null = null,
+  info?: ProvidersInfo,
+) {
   if (value == null) return "—"
   if (!Number.isFinite(value)) return "—"
 
@@ -98,7 +120,11 @@ export function formatMetric(value: number | null, metric: Metric) {
   }
 
   if (metric === "score") {
-    return `${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}%`
+    const presentation = metricPresentation(metric, source, info)
+    const number = value.toLocaleString("en-US", {
+      maximumFractionDigits: presentation.format === "hours" && Math.abs(value) < 1 ? 3 : 1,
+    })
+    return `${number}${presentation.format === "percent" ? "%" : presentation.format === "hours" ? " h" : ""}`
   }
 
   if (metric === "cost" || metric === "price") {

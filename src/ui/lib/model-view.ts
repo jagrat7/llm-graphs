@@ -34,6 +34,7 @@ export type Model = {
   durationSeconds: number | null
   /** Which source each metric value came from. */
   sources: Record<MetricKey, ProviderName | null>
+  measurements?: ModelVariant["measurements"]
 }
 
 /** A metric the view reads, and the source it reads it from. */
@@ -42,6 +43,7 @@ export type MetricBinding = {
   source: ProviderName
   /** A variant is offered only when every required source lists it. Defaults to true. */
   required?: boolean
+  scope?: "model"
 }
 
 /** How many vendors the chart opens on. */
@@ -71,7 +73,7 @@ function indexVariants(variants: ReadonlyArray<ModelVariant>, excludeRefused: bo
   const index = new Map<string, ModelVariant>()
 
   for (const variant of variants) {
-    if (excludeRefused && variant.refused) continue
+    if (excludeRefused && (variant.refused || variant.configurationKnown === false)) continue
     index.set(variantKey(variant.entryId, variant.mode, variant.level), variant)
   }
 
@@ -88,9 +90,12 @@ export function offeredVariants(
 ): Array<Model> {
   const required = [
     ...new Set(
-      bindings.filter((binding) => binding.required !== false).map((binding) => binding.source),
+      bindings
+        .filter((binding) => binding.required !== false && binding.scope !== "model")
+        .map((binding) => binding.source),
     ),
   ]
+  if (required.length === 0 && bindings[0]) required.push(bindings[0].source)
   const [base, ...others] = required
   if (base == null) return []
 
@@ -101,11 +106,25 @@ export function offeredVariants(
       indexVariants(snapshot.variants[source], joined || source !== base),
     ]),
   )
+  const modelValues = new Map<string, number | null>()
+  for (const binding of bindings.filter((candidate) => candidate.scope === "model")) {
+    const groups = new Map<string, Set<number | null | undefined>>()
+    for (const row of snapshot.variants[binding.source]) {
+      if (row.refused) continue
+      const values = groups.get(row.entryId) ?? new Set()
+      values.add(row.metrics[binding.metric])
+      groups.set(row.entryId, values)
+    }
+    for (const [id, values] of groups) {
+      const value = values.size === 1 ? [...values][0] : null
+      modelValues.set(`${binding.source}/${binding.metric}/${id}`, value ?? null)
+    }
+  }
   const entries = new Map(snapshot.entries.map((entry) => [entry.id, entry]))
   const models: Array<Model> = []
 
   for (const variant of snapshot.variants[base]) {
-    if (joined && variant.refused) continue
+    if (joined && (variant.refused || variant.configurationKnown === false)) continue
 
     const key = variantKey(variant.entryId, variant.mode, variant.level)
     if (others.some((source) => !indexes.get(source)?.has(key))) continue
@@ -113,7 +132,7 @@ export function offeredVariants(
     const entry = entries.get(variant.entryId)
     if (!entry) continue
 
-    const model = toModel(entry, variant, bindings, indexes, snapshot.logos)
+    const model = toModel(entry, variant, base, bindings, indexes, snapshot.logos, modelValues)
     if (
       bindings.some(
         (binding) =>
@@ -131,9 +150,11 @@ export function offeredVariants(
 function toModel(
   entry: ModelEntry,
   variant: ModelVariant,
+  base: ProviderName,
   bindings: ReadonlyArray<MetricBinding>,
   indexes: Map<ProviderName, Map<string, ModelVariant>>,
   logos: Record<string, string>,
+  modelValues: Map<string, number | null>,
 ): Model {
   const values: Record<MetricKey, number | null> = {
     score: null,
@@ -150,13 +171,24 @@ function toModel(
     durationSeconds: null,
   }
   const key = variantKey(variant.entryId, variant.mode, variant.level)
+  const measurements: NonNullable<ModelVariant["measurements"]> = {}
 
   for (const binding of bindings) {
-    const value = indexes.get(binding.source)?.get(key)?.metrics[binding.metric]
+    // Two unspecified configurations do not establish an exact pricing match.
+    const measured =
+      binding.scope === "model" && binding.source !== base && variant.configurationKnown === false
+        ? undefined
+        : indexes.get(binding.source)?.get(key)
+    let value = measured?.metrics[binding.metric]
+    if (value == null && binding.scope === "model") {
+      value = modelValues.get(`${binding.source}/${binding.metric}/${variant.entryId}`)
+    }
     if (value == null || !Number.isFinite(value)) continue
 
     values[binding.metric] = value
     sources[binding.metric] = binding.source
+    const measurement = measured?.measurements?.[binding.metric]
+    if (measurement) measurements[binding.metric] = measurement
   }
 
   return {
@@ -172,6 +204,7 @@ function toModel(
     effortOrder: variant.effortOrder,
     ...values,
     sources,
+    ...(Object.keys(measurements).length ? { measurements } : {}),
   }
 }
 
@@ -240,6 +273,7 @@ export function defaultPicks(
   offered: ReadonlyArray<Model>,
   scoreSource: ProviderName | null,
   info: ProvidersInfo,
+  metrics: ReadonlyArray<MetricKey> = [],
 ) {
   const strength = strengths(snapshot, scoreSource, info)
   const bestByVendor = new Map<string, Candidate>()
@@ -255,8 +289,22 @@ export function defaultPicks(
     if (!best || compareCandidates(candidate, best) < 0) bestByVendor.set(vendor, candidate)
   }
 
-  return [...bestByVendor.values()]
+  const picks = [...bestByVendor.values()]
     .toSorted(compareCandidates)
     .slice(0, DEFAULT_VENDOR_COUNT)
     .map((candidate) => candidate.id)
+  // Extend only a degenerate default selection; never jitter or alter published measurements.
+  for (const metric of metrics) {
+    const values = new Set(
+      offered.filter((model) => picks.includes(model.model)).map((model) => model[metric]),
+    )
+    if (values.size !== 1) continue
+    const different = offered
+      .filter((model) => strength.has(model.model) && !values.has(model[metric]))
+      .toSorted(
+        (a, b) => (strength.get(b.model) ?? -Infinity) - (strength.get(a.model) ?? -Infinity),
+      )[0]
+    if (different && !picks.includes(different.model)) picks.push(different.model)
+  }
+  return picks
 }
