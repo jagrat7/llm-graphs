@@ -16,6 +16,7 @@ METR's latest dashboard update is May 8, 2026, with limited model coverage. Aren
 ## Failures turned into protections
 
 - Task cost and runtime follow the selected score benchmark. Missing benchmark measurements produce an explanation and a working recovery button rather than borrowing another benchmark's data.
+- Switching score providers now selects the closest meaningful comparison and eligible default models. Selecting METR from the AA cost/score/speed cube opens token price versus task horizon in 2D. Axis menus disable combinations without enough compatible measured values, including adding a third axis to METR. Explicit unsupported links still show their explanation and recovery action.
 - METR and unspecified Arena configurations cannot join AA output speed. Explicit configurations match on model, reasoning mode and level. Token pricing can join independently of effort only when published model prices agree; equal `unknown` labels do not establish an exact configuration match.
 - Shared provider validation prevents invalid values and semantically empty HTTP-200 refreshes from replacing the last good cache copy. Source parsers detect benchmark, category, adjustment and API-version changes.
 - Default selections add a genuinely different measured model if their strongest-vendor selection makes an axis constant. User-selected constant axes keep their real values and show `No variation on …`; no points are jittered to create apparent variation.
@@ -42,6 +43,8 @@ The visible shared T3 preview visits all 212 cases at 1280 × 800. All supported
 Additional checks cover [37 representative cases at 390 × 844](provider-graph-mobile-results.jsonl), METR and Arena confidence-interval readouts, AA's Front and Top cameras, both recovery buttons, and an injected constant task-cost axis. The injection produced the expected warning and was removed afterward. These checks cover default selections plus targeted edge cases; they do not claim every subset of models, camera rotation or viewport was visually inspected. Reports use JSON Lines: one summary followed by one record per case.
 
 One compact fixture test checks all 212 cases through the shared graph rules. It replaces the original overlapping matrix, rather than adding hundreds of separate tests. Small regressions cover the actual parser, cache, configuration, constant-axis and camera failures.
+
+The follow-up provider-selection check evaluates all 176 benchmark-containing axis orders against the live browser snapshot: every closest usable comparison retains its requested score provider and varies on every axis. Native selector interactions verify the AA 3D → METR 2D transition, METR's disabled task cost/runtime/speed choices and disabled third axis, and the AA 3D → Arena 3D transition. The existing fixture matrix includes one default-switch check per provider and the specific METR regression; the suite remains 99 tests.
 
 Representative screenshots: [AA Intelligence Index in 3D](aa-index-3d.png), [METR horizon and confidence interval](metr-horizon-2d.png), [Arena in mobile 3D](arena-3d-mobile.png).
 

@@ -10,6 +10,8 @@ import {
   axisBindings,
   unavailableMetrics,
   scoreSourceOf,
+  compatibleComparison,
+  hasMeaningfulComparison,
 } from "./graph-state"
 import { defaultPicks, offeredVariants } from "./model-view"
 
@@ -17,6 +19,15 @@ it("validates every registered benchmark and axis order against one shared snaps
   const info = ProvidersService.info()
   const derivation = aggregateModels(allFixtureInputs())
   const { snapshot } = derivation
+  const measuredByEntry = ProvidersService.record((source) => {
+    const rows = new Map<string, (typeof snapshot.variants)[typeof source]>()
+    for (const row of snapshot.variants[source]) {
+      const group = rows.get(row.entryId) ?? []
+      group.push(row)
+      rows.set(row.entryId, group)
+    }
+    return rows
+  })
   const cases = graphCases(info)
   // Five metrics: 36 orders without Score, 44 per registered score source.
   expect(cases).toHaveLength(36 + 44 * info.metricProviders.score.length)
@@ -52,9 +63,7 @@ it("validates every registered benchmark and axis order against one shared snaps
     )
     const validProvenance = plot.points.every((point) =>
       bindings.every((binding) => {
-        const measured = snapshot.variants[binding.source].filter(
-          (row) => row.entryId === point.model.model,
-        )
+        const measured = measuredByEntry[binding.source].get(point.model.model) ?? []
         const exact = measured.find(
           (row) => row.mode === point.model.mode && row.level === point.model.level,
         )
@@ -75,4 +84,16 @@ it("validates every registered benchmark and axis order against one shared snaps
       key,
     ).toEqual({ meaningful: true, excluded: 0, validCoordinates: true, validProvenance: true })
   }
+  for (const source of info.metricProviders.score) {
+    const compatible = compatibleComparison(
+      { x: "cost", y: "score", z: "speed", ySource: source },
+      info,
+      snapshot,
+    )
+    expect(hasMeaningfulComparison(compatible, info, snapshot), source).toBe(true)
+    expect(scoreSourceOf(axisSettings(compatible, info))).toBe(source)
+  }
+  expect(
+    compatibleComparison({ x: "cost", y: "score", z: "speed", ySource: "metr" }, info, snapshot),
+  ).toEqual({ x: "price", y: "score", ySource: "metr" })
 })

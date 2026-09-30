@@ -19,6 +19,8 @@ import {
   axisBindings,
   AXIS_SOURCE_KEY,
   unavailableMetrics,
+  compatibleComparison,
+  hasMeaningfulComparison,
 } from "#/ui/lib/graph-state"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
@@ -110,8 +112,30 @@ function ComparePage() {
   }
 
   function handleSourceChange(axis: AxisKey, source: ProviderName) {
-    updateSearch({ [AXIS_SOURCE_KEY[axis]]: source })
+    const next = { ...search, [AXIS_SOURCE_KEY[axis]]: source }
+    const compatible = snapshot ? compatibleComparison(next, info, snapshot) : next
+    setMorphPhase("instant")
+    updateSearch({
+      ...compatible,
+      z: compatible.z,
+      xSource: compatible.xSource,
+      ySource: compatible.ySource,
+      zSource: compatible.zSource,
+      models: undefined,
+    })
   }
+
+  const unavailableChoices = useMemo(() => {
+    const choices = (axis: AxisKey) =>
+      snapshot
+        ? METRICS.filter((metric) => {
+            if (search[axis] === metric) return false
+            const candidate = { ...search, [axis]: metric, [AXIS_SOURCE_KEY[axis]]: undefined }
+            return !hasMeaningfulComparison(candidate, info, snapshot)
+          })
+        : []
+    return { x: choices("x"), y: choices("y"), z: choices("z") }
+  }, [search, info, snapshot])
 
   /** Changing a metric drops its source override so the new metric starts on its own default. */
   function handleMetricChange(axis: AxisKey, metric: Metric | null) {
@@ -186,6 +210,7 @@ function ComparePage() {
         onAxisChange={handleAxisChange}
         onSwapAxes={handleSwapAxes}
         disabled={controlsDisabled}
+        unavailableMetrics={unavailableChoices}
       >
         {picker}
       </AxisControls>
