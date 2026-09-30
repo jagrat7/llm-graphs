@@ -169,4 +169,33 @@ describe("SourceCache", () => {
     await expect(read).resolves.toMatchObject({ payload: "mine" })
     expect(fetchPayload).toHaveBeenCalledTimes(1)
   })
+
+  it("keeps a slow cold fetch's lock alive for as long as it runs", async () => {
+    vi.useFakeTimers()
+    const store = new MemoryStore()
+    const cache = new SourceCache(store, () => 0)
+    const { fetch: slow, finish } = pendingFetch()
+
+    const read = cache.read(source(slow))
+    await vi.advanceTimersByTimeAsync(2 * 60 * 1000)
+
+    await expect(store.acquireLock("test:source:lock", 30)).resolves.toBeNull()
+    finish("v1")
+    await expect(read).resolves.toMatchObject({ payload: "v1" })
+  })
+
+  it("takes a turn within seconds when a cold fetch's holder dies", async () => {
+    vi.useFakeTimers()
+    const store = new MemoryStore()
+    const cache = new SourceCache(store, () => 0)
+    const fetchPayload = vi.fn(async () => "mine")
+    // Taken and never extended or released, as by a process that died mid-fetch.
+    await store.acquireLock("test:source:lock", 30)
+
+    const read = cache.read(source(fetchPayload))
+    await vi.advanceTimersByTimeAsync(31_000)
+
+    await expect(read).resolves.toMatchObject({ payload: "mine" })
+    expect(fetchPayload).toHaveBeenCalledTimes(1)
+  })
 })
