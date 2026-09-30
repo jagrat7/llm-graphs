@@ -47,6 +47,7 @@ type SphericalView = { yaw: number; pitch: number; radius: number }
 type LabelItem = {
   key: string
   text: string
+  title?: string
   /** Effort tier drawn under a point label's model name; null for axis furniture. */
   effort?: string | null
   color?: string
@@ -1028,7 +1029,8 @@ export function ComparisonChart3D({
 
       items.push({
         key: `axis-${axis}`,
-        text: metricAxisTitle(metric, sources[axis], info),
+        text: `${METRIC_CONFIG[metric].label} · ${METRIC_CONFIG[metric].unit}`,
+        title: metricAxisTitle(metric, sources[axis], info),
         kind: "axis",
         axis,
         fraction: 0.5,
@@ -1249,6 +1251,7 @@ export function ComparisonChart3D({
               {labelItems.map((item, index) => (
                 <div
                   key={item.key}
+                  title={item.title}
                   ref={(node) => {
                     labelNodes.current[index] = node
                   }}
@@ -1256,7 +1259,7 @@ export function ComparisonChart3D({
                     item.kind === "point"
                       ? "font-semibold"
                       : item.kind === "axis"
-                        ? "text-muted-foreground font-medium"
+                        ? "text-muted-foreground pointer-events-auto font-medium"
                         : "text-muted-foreground tabular-nums"
                   }`}
                   style={{

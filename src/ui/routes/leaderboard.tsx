@@ -19,8 +19,8 @@ export const Route = createFileRoute("/leaderboard")({
 /** DeepSWE's model×effort rows, with AA's speed wherever AA lists the same variant. */
 const LEADERBOARD_BINDINGS: Array<MetricBinding> = [
   { metric: "score", source: "deepswe" },
-  { metric: "costPerMTokens", source: "deepswe" },
-  { metric: "durationSeconds", source: "deepswe" },
+  { metric: "costPerTask", source: "deepswe", required: false },
+  { metric: "durationSeconds", source: "deepswe", required: false },
   { metric: "tokensPerSecond", source: "artificialAnalysis", required: false },
 ]
 

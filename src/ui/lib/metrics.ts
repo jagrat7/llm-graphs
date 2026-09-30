@@ -1,6 +1,6 @@
 import type { MetricKey, ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 
-export const METRICS = ["score", "cost", "speed", "duration"] as const
+export const METRICS = ["score", "cost", "price", "speed", "duration"] as const
 
 export type Metric = (typeof METRICS)[number]
 
@@ -24,19 +24,25 @@ export const METRIC_CONFIG: Record<
     dataKey: "score",
   },
   cost: {
-    label: "Cost",
-    shortLabel: "Cost $/M",
+    label: "Task cost",
+    shortLabel: "Task cost $/task",
+    unit: "$/task",
+    dataKey: "costPerTask",
+  },
+  price: {
+    label: "Token price",
+    shortLabel: "Token price $/M",
     unit: "$/M tokens",
     dataKey: "costPerMTokens",
   },
   speed: {
-    label: "Speed",
+    label: "Output speed",
     shortLabel: "Tokens/s",
     unit: "tokens/s",
     dataKey: "tokensPerSecond",
   },
   duration: {
-    label: "Duration",
+    label: "Task duration",
     shortLabel: "Duration",
     unit: "s",
     dataKey: "durationSeconds",
@@ -55,12 +61,15 @@ export function metricProviders(metric: Metric, info: ProvidersInfo) {
   return info.metricProviders[METRIC_CONFIG[metric].dataKey]
 }
 
-/** Falls back to the metric's default source, so a stale URL source never sticks. */
+/** Task cost always describes the Score benchmark; other metrics choose their own source. */
 export function resolveSource(
   metric: Metric,
   source: string | undefined,
   info: ProvidersInfo,
+  scoreSource?: ProviderName | null,
 ): ProviderName {
+  if (metric === "cost") return scoreSource ?? info.metricProviders.score[0]
+
   const sources = metricProviders(metric, info)
 
   return sources.find((candidate) => candidate === source) ?? sources[0]
@@ -92,8 +101,10 @@ export function formatMetric(value: number | null, metric: Metric) {
     return `${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}%`
   }
 
-  if (metric === "cost") {
-    return `$${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`
+  if (metric === "cost" || metric === "price") {
+    return `$${value.toLocaleString("en-US", {
+      maximumFractionDigits: value !== 0 && Math.abs(value) < 0.01 ? 4 : 2,
+    })}`
   }
 
   if (Math.abs(value) >= 1000) {

@@ -4,10 +4,14 @@ import { z } from "zod"
 import { METRICS } from "#/ui/lib/metrics"
 
 const metricSchema = z.enum(METRICS)
+const sourceSchema = z.string().optional().catch(undefined)
 const graphSearchSchema = z.object({
   x: metricSchema.catch("cost").default("cost"),
+  xSource: sourceSchema,
   y: metricSchema.catch("score").default("score"),
+  ySource: sourceSchema,
   z: metricSchema.catch("speed").default("speed"),
+  zSource: sourceSchema,
 })
 
 /** The third axis now lives on Compare; old links keep working through this redirect. */
@@ -16,7 +20,7 @@ export const Route = createFileRoute("/graph-3d")({
   beforeLoad: ({ search }) => {
     throw redirect({
       to: "/",
-      search: { x: search.x, y: search.y, z: search.z },
+      search,
       replace: true,
     })
   },

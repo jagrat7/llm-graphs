@@ -44,7 +44,7 @@ export function SourceSelect({
   const info = useProvidersInfo()
   const sources = metricProviders(metric, info)
 
-  if (sources.length < 2) {
+  if (metric === "cost" || sources.length < 2) {
     return (
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
