@@ -9,9 +9,10 @@ import type { SourceDefinition } from "./provider/provider.types"
  * start while the first is still running. A failed background refresh retries once it expires.
  */
 const REFRESH_LOCK_SECONDS = 5 * 60
-/** How long a cold read waits for another request's fetch before giving up. */
-const COLD_WAIT_MS = 30_000
 const COLD_POLL_MS = 500
+/** Deletes the lock only while it still holds the caller's token. */
+const RELEASE_LOCK_SCRIPT =
+  'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) end return 0'
 
 export type CachedPayload<T> = {
   payload: T
@@ -21,9 +22,13 @@ export type CachedPayload<T> = {
 export interface CacheStore {
   get(key: string): Promise<unknown>
   set(key: string, value: unknown): Promise<void>
-  /** Resolves true for exactly one caller until the lock expires or is released. */
-  acquireLock(key: string, ttlSeconds: number): Promise<boolean>
-  releaseLock(key: string): Promise<void>
+  /** Resolves a token for exactly one caller until the lock expires or is released; else null. */
+  acquireLock(key: string, ttlSeconds: number): Promise<string | null>
+  /**
+   * Releases the lock only while `token` still holds it: a holder whose lock expired mid-fetch
+   * must not free the lock another request has since taken.
+   */
+  releaseLock(key: string, token: string): Promise<void>
 }
 
 class RedisStore implements CacheStore {
@@ -46,16 +51,21 @@ class RedisStore implements CacheStore {
   }
 
   async acquireLock(key: string, ttlSeconds: number) {
+    const token = crypto.randomUUID()
+
     try {
-      return (await this.redis.set(key, 1, { nx: true, ex: ttlSeconds })) === "OK"
+      return (await this.redis.set(key, token, { nx: true, ex: ttlSeconds })) === "OK"
+        ? token
+        : null
     } catch {
-      return false
+      // With Redis unreachable nothing can be shared, so each request fetches for itself.
+      return token
     }
   }
 
-  async releaseLock(key: string) {
+  async releaseLock(key: string, token: string) {
     try {
-      await this.redis.del(key)
+      await this.redis.eval(RELEASE_LOCK_SCRIPT, [key], [token])
     } catch {
       // The lock expires on its own.
     }
@@ -65,7 +75,7 @@ class RedisStore implements CacheStore {
 /** Stands in for Redis when it isn't configured, so local dev still caches per process. */
 export class MemoryStore implements CacheStore {
   private readonly values = new Map<string, unknown>()
-  private readonly locks = new Map<string, number>()
+  private readonly locks = new Map<string, { token: string; expiresAt: number }>()
 
   async get(key: string) {
     return this.values.get(key) ?? null
@@ -77,14 +87,15 @@ export class MemoryStore implements CacheStore {
 
   async acquireLock(key: string, ttlSeconds: number) {
     const now = Date.now()
-    if ((this.locks.get(key) ?? 0) > now) return false
+    if ((this.locks.get(key)?.expiresAt ?? 0) > now) return null
 
-    this.locks.set(key, now + ttlSeconds * 1000)
-    return true
+    const token = crypto.randomUUID()
+    this.locks.set(key, { token, expiresAt: now + ttlSeconds * 1000 })
+    return token
   }
 
-  async releaseLock(key: string) {
-    this.locks.delete(key)
+  async releaseLock(key: string, token: string) {
+    if (this.locks.get(key)?.token === token) this.locks.delete(key)
   }
 }
 
@@ -142,23 +153,29 @@ export class SourceCache {
 
   /**
    * With nothing cached, one request fetches behind the lock and the rest wait for its copy,
-   * so a cold start never multiplies requests to a rate-limited source.
+   * so a cold start never multiplies requests to a rate-limited source. A waiter waits as long
+   * as the lock is held, however slow the fetch, and takes its own turn once the lock frees up
+   * with nothing stored: the fetch failed, or its holder died and the lock expired.
    */
   private async fillCold<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
-    const running = inFlight.get(source.cacheKey)
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- keyed by this source
-    if (running) return (await running) as CachedPayload<T> | null
+    const lockKey = this.lockKey(source)
 
-    if (await this.store.acquireLock(this.lockKey(source), REFRESH_LOCK_SECONDS)) {
-      try {
-        return await this.refresh(source)
-      } finally {
-        // A failed cold fetch has nothing to protect, so the next request may try again.
-        await this.store.releaseLock(this.lockKey(source))
+    // Bounded as a safety net only: the lock expires within this time, so a waiter gets a turn.
+    for (let waited = 0; waited <= REFRESH_LOCK_SECONDS * 1000; waited += COLD_POLL_MS) {
+      const running = inFlight.get(source.cacheKey)
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- keyed by this source
+      if (running) return (await running) as CachedPayload<T> | null
+
+      const token = await this.store.acquireLock(lockKey, REFRESH_LOCK_SECONDS)
+      if (token) {
+        try {
+          return await this.refresh(source)
+        } finally {
+          // A failed cold fetch has nothing to protect, so the next request may try again.
+          await this.store.releaseLock(lockKey, token)
+        }
       }
-    }
 
-    for (let waited = 0; waited < COLD_WAIT_MS; waited += COLD_POLL_MS) {
       await new Promise((resolve) => setTimeout(resolve, COLD_POLL_MS))
       const cached = await this.stored(source)
       if (cached) return cached
@@ -170,8 +187,9 @@ export class SourceCache {
   private async refreshInBackground<T>(source: SourceDefinition<T>) {
     if (inFlight.has(source.cacheKey)) return
 
-    const locked = await this.store.acquireLock(this.lockKey(source), REFRESH_LOCK_SECONDS)
-    if (locked) await this.refresh(source)
+    // Left to expire rather than released, so a failed refresh isn't retried on every read.
+    const token = await this.store.acquireLock(this.lockKey(source), REFRESH_LOCK_SECONDS)
+    if (token) await this.refresh(source)
   }
 
   private refresh<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
