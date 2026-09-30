@@ -143,10 +143,14 @@ describe("SourceCache", () => {
     const store = new MemoryStore()
     const cache = new SourceCache(store, () => 0)
     const fetchPayload = vi.fn(async () => "mine")
-    await store.acquireLock("test:source:lock", 5 * 60)
+    const theirs = await store.acquireLock("test:source:lock", 30)
 
     const read = cache.read(source(fetchPayload))
-    await vi.advanceTimersByTimeAsync(2 * 60 * 1000)
+    // The other instance's heartbeat keeps its lock through a ten-minute fetch.
+    for (let elapsed = 0; elapsed < 10 * 60 * 1000; elapsed += 20_000) {
+      await store.extendLock("test:source:lock", theirs ?? "", 30)
+      await vi.advanceTimersByTimeAsync(20_000)
+    }
     await store.set("test:source", { payload: "theirs", fetchedAt: new Date(0).toISOString() })
     await vi.advanceTimersByTimeAsync(1000)
 

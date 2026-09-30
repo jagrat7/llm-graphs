@@ -186,8 +186,9 @@ export class SourceCache {
   private async fillCold<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
     const lockKey = this.lockKey(source)
 
-    // Bounded as a safety net only; a waiter gets a copy or a turn long before this.
-    for (let waited = 0; waited <= REFRESH_LOCK_SECONDS * 1000; waited += COLD_POLL_MS) {
+    // Unbounded on purpose: a live holder keeps the lock only while its fetch runs, a dead one's
+    // lock frees within COLD_LOCK_SECONDS, and an unreachable store hands out a turn.
+    for (;;) {
       const running = inFlight.get(source.cacheKey)
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- keyed by this source
       if (running) return (await running) as CachedPayload<T> | null
@@ -212,8 +213,6 @@ export class SourceCache {
       const cached = await this.stored(source)
       if (cached) return cached
     }
-
-    return null
   }
 
   private async refreshInBackground<T>(source: SourceDefinition<T>) {
