@@ -3,7 +3,7 @@ import type { CSSProperties } from "react"
 import { RiArrowDownSLine, RiCloseLine, RiSearchLine } from "@remixicon/react"
 import { useEffect, useId, useMemo, useState } from "react"
 
-import type { Model } from "#/ui/lib/orpc-client"
+import type { Model } from "#/ui/lib/registry-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"
@@ -234,7 +234,7 @@ export function ModelPicker({
                   value={model}
                   className="group/mark min-h-11 text-sm sm:min-h-8"
                 >
-                  <ModelLogo family={model.family} className="text-muted-foreground size-3.5" />
+                  <ModelLogo logoUrl={model.logoUrl} className="text-muted-foreground size-3.5" />
                   <span className="truncate">{model.displayName}</span>
                 </ComboboxItem>
               )}

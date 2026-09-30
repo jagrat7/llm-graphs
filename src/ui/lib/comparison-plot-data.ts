@@ -1,5 +1,5 @@
 import type { Metric } from "#/ui/lib/metrics"
-import type { Model } from "#/ui/lib/orpc-client"
+import type { Model } from "#/ui/lib/registry-view"
 
 import { METRIC_CONFIG } from "#/ui/lib/metrics"
 
@@ -165,7 +165,7 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
 
     const values: Record<PlotAxis, number> = { x, y, z }
     const point: PlotPoint = {
-      id: `${model.model}-${model.effort}`,
+      id: `${model.model}-${model.mode}-${model.level}`,
       index: points.length,
       label: pointLabel(model),
       color: model.chartColor,
@@ -208,13 +208,13 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     for (const axis of axes) point.unit[axis] = normalize(point.values[axis], domains[axis])
   }
 
-  // Alternating placement per family spreads labels apart before collision culling.
-  const familyOccurrences = new Map<Model["family"], number>()
+  // Alternating placement per vendor spreads labels apart before collision culling.
+  const vendorOccurrences = new Map<string | null, number>()
   const series = Array.from(seriesByModel.values(), (modelSeries) => {
-    const family = modelSeries.points[0].model.family
-    const occurrence = familyOccurrences.get(family) ?? 0
+    const vendor = modelSeries.points[0].model.vendor
+    const occurrence = vendorOccurrences.get(vendor) ?? 0
 
-    familyOccurrences.set(family, occurrence + 1)
+    vendorOccurrences.set(vendor, occurrence + 1)
     modelSeries.labelPlacement = occurrence % 2 === 0 ? "top" : "bottom"
     modelSeries.points.sort((left, right) => left.model.effortOrder - right.model.effortOrder)
     modelSeries.anchorId = anchorPoint(modelSeries.points).id

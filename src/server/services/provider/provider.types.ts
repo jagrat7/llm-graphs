@@ -1,5 +1,3 @@
-import type { ModelFamily } from "./model-config"
-
 export const PROVIDERS = {
   deepswe: { displayName: "DeepSWE" },
   artificialAnalysis: { displayName: "Artificial Analysis" },
@@ -77,33 +75,6 @@ export type ModelsDevPayload = SourcePayload<ModelsDevModel> & {
 
 export type DeepSWEPayload = SourcePayload<DeepSWERow>
 export type ArtificialAnalysisPayload = SourcePayload<ArtificialAnalysisRow>
-
-export type ProviderModel = {
-  model: string
-  displayName: string
-  family: ModelFamily
-  chartColor: string
-  isDefault: boolean
-  effort: string
-  effortOrder: number
-}
-
-export type DeepSWEProviderModel = ProviderModel & {
-  score: number | null
-  costPerMTokens: number | null
-  durationSeconds: number | null
-}
-
-export type ArtificialAnalysisProviderModel = ProviderModel & {
-  tokensPerSecond: number | null
-}
-
-export type ProviderModelDataByProvider = {
-  deepswe: DeepSWEProviderModel
-  artificialAnalysis: ArtificialAnalysisProviderModel
-}
-
-export type ProviderModelData = ProviderModelDataByProvider[ProviderName]
 
 export const METRIC_KEYS = [
   "score",

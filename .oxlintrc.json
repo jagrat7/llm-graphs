@@ -11,7 +11,9 @@
       "specifier": "./dev/oxlint/index.mjs"
     }
   ],
-  "options": { "typeAware": true },
+  "options": {
+    "typeAware": true
+  },
   "ignorePatterns": [
     "node_modules/**",
     ".output/**",
@@ -55,6 +57,12 @@
     },
     {
       "files": ["src/ui/routes/**/*.{ts,tsx}", "src/ui/lib/orpc-client.ts"],
+      "rules": {
+        "local/no-server-deep-imports": "off"
+      }
+    },
+    {
+      "files": ["src/**/*.test.ts"],
       "rules": {
         "local/no-server-deep-imports": "off"
       }

@@ -25,7 +25,7 @@ const FALLBACK_COLORS: ThemeColors = {
   ring: "#3b82f6",
 }
 
-const VARIABLE_PATTERN = /^var\(\s*(--[\w-]+)\s*\)$/
+const VARIABLE_PATTERN = /var\(\s*(--[\w-]+)\s*\)/g
 const cache = new Map<string, string>()
 
 let probe: CanvasRenderingContext2D | null | undefined
@@ -55,7 +55,7 @@ function paintToHex(color: string) {
   return `#${((red << 16) | (green << 8) | blue).toString(16).padStart(6, "0")}`
 }
 
-/** Resolves `var(--token)`, `oklch(...)`, or any CSS colour into an `#rrggbb` string. */
+/** Resolves `var(--token)`, `oklch(...)` with or without variables, or any CSS colour to `#rrggbb`. */
 export function resolveCssColor(value: string, fallback = "#888888") {
   if (typeof document === "undefined") return fallback
 
@@ -64,10 +64,11 @@ export function resolveCssColor(value: string, fallback = "#888888") {
 
   if (cached != null) return cached
 
-  const variable = VARIABLE_PATTERN.exec(value.trim())
-  const raw = variable
-    ? getComputedStyle(document.documentElement).getPropertyValue(variable[1]).trim()
-    : value
+  // Substitutes every variable, so `oklch(var(--vendor-l) var(--vendor-c) 339)` resolves too.
+  const styles = getComputedStyle(document.documentElement)
+  const raw = value
+    .trim()
+    .replaceAll(VARIABLE_PATTERN, (_, name: string) => styles.getPropertyValue(name).trim())
   const resolved = (raw === "" ? null : paintToHex(raw)) ?? fallback
 
   cache.set(key, resolved)
