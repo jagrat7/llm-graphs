@@ -28,7 +28,12 @@ import {
 } from "#/ui/lib/chart-styles"
 import { buildPlotData, describePlot, padDomain } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
-import { formatMetric, metricAxisTitle, METRIC_CONFIG } from "#/ui/lib/metrics"
+import {
+  formatMetric,
+  metricAxisLabel,
+  metricAxisTitle,
+  metricPresentation,
+} from "#/ui/lib/metrics"
 import {
   labelBlockSize,
   LABEL_COLLISION_GAP,
@@ -548,7 +553,7 @@ export function ComparisonChart({
               numTicks={layout.yTicks}
               stroke="var(--border)"
               tickStroke="var(--border)"
-              tickFormat={(value) => formatMetric(Number(value), yMetric)}
+              tickFormat={(value) => formatMetric(Number(value), yMetric, sources.y, info)}
               tickLabelProps={() => ({ ...AXIS_TICK_PROPS, dx: -4, dy: 3, textAnchor: "end" })}
             />
             <AxisBottom
@@ -557,7 +562,7 @@ export function ComparisonChart({
               numTicks={layout.xTicks}
               stroke="var(--border)"
               tickStroke="var(--border)"
-              tickFormat={(value) => formatMetric(Number(value), xMetric)}
+              tickFormat={(value) => formatMetric(Number(value), xMetric, sources.x, info)}
               tickLabelProps={() => ({ ...AXIS_TICK_PROPS, dy: 2, textAnchor: "middle" })}
             />
 
@@ -582,7 +587,8 @@ export function ComparisonChart({
             fontSize={CHART_AXIS_TITLE_SIZE}
             fontWeight={500}
           >
-            {metricAxisTitle(xMetric, sources.x, info)}
+            <title>{metricAxisTitle(xMetric, sources.x, info)}</title>
+            {metricAxisLabel(xMetric, sources.x, info)}
           </text>
           <text
             transform={`translate(16 ${MARGIN.top + layout.innerHeight / 2}) rotate(-90)`}
@@ -591,7 +597,8 @@ export function ComparisonChart({
             fontSize={CHART_AXIS_TITLE_SIZE}
             fontWeight={500}
           >
-            {metricAxisTitle(yMetric, sources.y, info)}
+            <title>{metricAxisTitle(yMetric, sources.y, info)}</title>
+            {metricAxisLabel(yMetric, sources.y, info)}
           </text>
         </svg>
       ) : null}
@@ -632,7 +639,7 @@ export function ComparisonChart({
             type="button"
             tabIndex={point.index === 0 ? 0 : -1}
             data-chart-keyboard-point={point.index}
-            aria-label={`${point.label}, ${METRIC_CONFIG[xMetric].label} ${formatMetric(point.values.x, xMetric)}, ${METRIC_CONFIG[yMetric].label} ${formatMetric(point.values.y, yMetric)}`}
+            aria-label={`${point.label}, ${metricPresentation(xMetric, sources.x, info).label} ${formatMetric(point.values.x, xMetric, sources.x, info)}, ${metricPresentation(yMetric, sources.y, info).label} ${formatMetric(point.values.y, yMetric, sources.y, info)}`}
             onFocus={() => setActiveId(point.id)}
             onBlur={() => setActiveId(null)}
             onClick={() => setActiveId(point.id)}
