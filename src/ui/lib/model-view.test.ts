@@ -27,6 +27,43 @@ function variantsOf(bindings: Array<MetricBinding>, model: string) {
 }
 
 describe("offeredVariants", () => {
+  it("excludes missing required measurements but leaves optional measurements unavailable", () => {
+    const variant = snapshot.variants.deepswe[0]
+    const missing = {
+      ...snapshot,
+      variants: {
+        ...snapshot.variants,
+        deepswe: [{ ...variant, metrics: { ...variant.metrics, costPerTask: null } }],
+      },
+    }
+    expect(offeredVariants(missing, COST_BY_SCORE)).toEqual([])
+    expect(
+      offeredVariants(missing, [
+        { metric: "score", source: "deepswe" },
+        { metric: "costPerTask", source: "deepswe", required: false },
+      ]),
+    ).toHaveLength(1)
+  })
+
+  it("never lends a conflicting optional source's measurement to a benchmark result", () => {
+    const variant = snapshot.variants.deepswe[0]
+    const conflicting = {
+      ...snapshot,
+      variants: {
+        deepswe: [variant],
+        artificialAnalysis: [
+          { ...variant, refused: true as const, metrics: { tokensPerSecond: 120 } },
+        ],
+      },
+    }
+    const [model] = offeredVariants(conflicting, [
+      { metric: "score", source: "deepswe" },
+      { metric: "tokensPerSecond", source: "artificialAnalysis", required: false },
+    ])
+    expect(model?.tokensPerSecond).toBeNull()
+    expect(model?.sources.tokensPerSecond).toBeNull()
+  })
+
   it("preserves the server's effort rank instead of recomputing it in the UI", () => {
     const variant = snapshot.variants.deepswe[0]
     const ranked = {
@@ -53,7 +90,8 @@ describe("offeredVariants", () => {
   it("offers a variant only when every axis source lists the same mode and level", () => {
     expect(variantsOf(SPEED_BY_SCORE, "claude-fable-5")).toEqual(["on/max"])
     expect(variantsOf(SPEED_BY_SCORE, "claude-sonnet-4-6")).toEqual([])
-    expect(variantsOf(SPEED_BY_SCORE, "kimi-k2-7-code")).toEqual(["unknown/unknown"])
+    // AA lists the matching variant but has no speed measurement for it.
+    expect(variantsOf(SPEED_BY_SCORE, "kimi-k2-7-code")).toEqual([])
   })
 
   it("reads each axis metric from that axis's source", () => {
