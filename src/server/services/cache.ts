@@ -9,10 +9,19 @@ import type { SourceDefinition } from "./provider/provider.types"
  * start while the first is still running. A failed background refresh retries once it expires.
  */
 const REFRESH_LOCK_SECONDS = 5 * 60
+/**
+ * A cold fetch holds a short lock and keeps extending it while it runs, so a slow fetch keeps
+ * its lock but one whose holder died frees it quickly for a waiting request.
+ */
+const COLD_LOCK_SECONDS = 30
+const COLD_HEARTBEAT_MS = 10_000
 const COLD_POLL_MS = 500
 /** Deletes the lock only while it still holds the caller's token. */
 const RELEASE_LOCK_SCRIPT =
   'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) end return 0'
+/** Extends the lock only while it still holds the caller's token. */
+const EXTEND_LOCK_SCRIPT =
+  'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("expire", KEYS[1], ARGV[2]) end return 0'
 
 export type CachedPayload<T> = {
   payload: T
@@ -29,6 +38,8 @@ export interface CacheStore {
    * must not free the lock another request has since taken.
    */
   releaseLock(key: string, token: string): Promise<void>
+  /** Pushes the lock's expiry out to `ttlSeconds` from now, only while `token` still holds it. */
+  extendLock(key: string, token: string, ttlSeconds: number): Promise<void>
 }
 
 class RedisStore implements CacheStore {
@@ -70,6 +81,14 @@ class RedisStore implements CacheStore {
       // The lock expires on its own.
     }
   }
+
+  async extendLock(key: string, token: string, ttlSeconds: number) {
+    try {
+      await this.redis.eval(EXTEND_LOCK_SCRIPT, [key], [token, ttlSeconds])
+    } catch {
+      // The next heartbeat tries again.
+    }
+  }
 }
 
 /** Stands in for Redis when it isn't configured, so local dev still caches per process. */
@@ -96,6 +115,13 @@ export class MemoryStore implements CacheStore {
 
   async releaseLock(key: string, token: string) {
     if (this.locks.get(key)?.token === token) this.locks.delete(key)
+  }
+
+  async extendLock(key: string, token: string, ttlSeconds: number) {
+    const lock = this.locks.get(key)
+    if (lock?.token === token && lock.expiresAt > Date.now()) {
+      lock.expiresAt = Date.now() + ttlSeconds * 1000
+    }
   }
 }
 
@@ -155,22 +181,28 @@ export class SourceCache {
    * With nothing cached, one request fetches behind the lock and the rest wait for its copy,
    * so a cold start never multiplies requests to a rate-limited source. A waiter waits as long
    * as the lock is held, however slow the fetch, and takes its own turn once the lock frees up
-   * with nothing stored: the fetch failed, or its holder died and the lock expired.
+   * with nothing stored: the fetch failed, or its holder died and stopped extending the lock.
    */
   private async fillCold<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
     const lockKey = this.lockKey(source)
 
-    // Bounded as a safety net only: the lock expires within this time, so a waiter gets a turn.
+    // Bounded as a safety net only; a waiter gets a copy or a turn long before this.
     for (let waited = 0; waited <= REFRESH_LOCK_SECONDS * 1000; waited += COLD_POLL_MS) {
       const running = inFlight.get(source.cacheKey)
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- keyed by this source
       if (running) return (await running) as CachedPayload<T> | null
 
-      const token = await this.store.acquireLock(lockKey, REFRESH_LOCK_SECONDS)
+      const token = await this.store.acquireLock(lockKey, COLD_LOCK_SECONDS)
       if (token) {
+        const heartbeat = setInterval(
+          () => void this.store.extendLock(lockKey, token, COLD_LOCK_SECONDS),
+          COLD_HEARTBEAT_MS,
+        )
+
         try {
           return await this.refresh(source)
         } finally {
+          clearInterval(heartbeat)
           // A failed cold fetch has nothing to protect, so the next request may try again.
           await this.store.releaseLock(lockKey, token)
         }
