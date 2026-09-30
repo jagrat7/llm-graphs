@@ -10,6 +10,9 @@ describe("METR Time Horizon", () => {
     const measured = fixture.payload.rows.find((row) => row.id === "gpt_5_4")!
     const [row] = provider.toMetricRows({ rows: [measured], dropped: [] })
     expect(row.metrics.score).toBeCloseTo(341.735147 / 60, 2)
+    expect(row.metrics.horizon80Hours).toBeCloseTo(measured.p80.estimate / 60)
+    expect(row.metrics.averageTaskScore).toBeCloseTo(measured.average_score * 100)
+    expect(row.measurements?.horizon80Hours?.interval?.low).toBe(measured.p80.ci_low / 60)
     expect(row.mode).toBe("unknown")
     expect(row.level).toBe("unknown")
     expect(row.configurationKnown).toBe(false)
@@ -17,6 +20,16 @@ describe("METR Time Horizon", () => {
     expect(row.measurements?.score?.detail).toContain(measured.scaffolds[0])
     expect(row.metrics.durationSeconds).toBeUndefined()
     expect(row.metrics.costPerTask).toBeUndefined()
+    const historical = provider.toMetricRows({
+      rows: fixture.payload.rows.filter(
+        (historicalRow) => historicalRow.id === "gpt2" || historicalRow.id === "davinci_002",
+      ),
+      dropped: [],
+    })
+    expect(historical.map((historicalRow) => historicalRow.metadata?.creator)).toEqual([
+      "OpenAI",
+      "OpenAI",
+    ])
   })
   it("does not present unreliable extrapolations above 16 hours or invalid bounds as measured capability", () => {
     const provider = new METRProvider()
@@ -27,6 +40,14 @@ describe("METR Time Horizon", () => {
     expect(
       provider.readMetrics({ ...row, p50: { estimate: 12, ci_low: 20, ci_high: 25 } }).score,
     ).toBeNull()
+    expect(
+      provider.readMetrics({ ...row, p80: { estimate: 961, ci_low: 950, ci_high: 1200 } })
+        .horizon80Hours,
+    ).toBeNull()
+    expect(provider.readMetrics({ ...row, p80: null, average_score: null })).toMatchObject({
+      horizon80Hours: null,
+      averageTaskScore: null,
+    })
   })
   it("accepts legacy unspecified scaffolds but refuses a different suite", async () => {
     const result = {

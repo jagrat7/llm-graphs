@@ -9,5 +9,11 @@ export type ArenaRow = {
   votes: number
   releaseType: string | null
   updatedAt: string
+  inputPricePerMillion: number | null
+  outputPricePerMillion: number | null
+  contextLength: number | null
+  rank: number | null
+  rankLower: number | null
+  rankUpper: number | null
 }
 export type ArenaPayload = SourcePayload<ArenaRow>

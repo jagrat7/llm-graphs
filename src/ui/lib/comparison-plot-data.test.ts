@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import type { Model } from "#/ui/lib/model-view"
+import { metricRecord } from "./metrics"
 
 import {
   axisTicks,
@@ -27,6 +28,7 @@ function makeModel({
   ...rest
 }: ModelOverrides): Model {
   return {
+    ...metricRecord<number | null>(() => null),
     model,
     displayName,
     vendor,
@@ -43,6 +45,7 @@ function makeModel({
     tokensPerSecond,
     durationSeconds,
     sources: sources ?? {
+      ...metricRecord<Model["sources"]["score"]>(() => null),
       score: "deepswe",
       costPerTask: "deepswe",
       costPerMTokens: null,

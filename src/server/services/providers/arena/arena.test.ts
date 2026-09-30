@@ -23,6 +23,38 @@ describe("Arena first-party leaderboard", () => {
       interval: { low: board.entries[0].ratingLower, high: board.entries[0].ratingUpper },
     })
     expect(row.metrics.costPerTask).toBeUndefined()
+    const [priced] = provider.toMetricRows(
+      parseArenaPage(
+        html({
+          ...board,
+          entries: [
+            {
+              ...board.entries[0],
+              inputPricePerMillion: 0,
+              outputPricePerMillion: 12,
+              contextLength: 200000,
+              rank: 2,
+              rankLower: 3,
+              rankUpper: 1,
+            },
+          ],
+        }),
+      ),
+    )
+    expect(priced.metrics).toMatchObject({
+      costPerMTokens: 3,
+      inputPricePerMTokens: 0,
+      outputPricePerMTokens: 12,
+      contextTokens: 200000,
+      votes: board.entries[0].votes,
+    })
+    expect(priced.measurements?.score?.detail).toContain("rank 2 (1–3)")
+    expect(
+      provider.readMetrics({ ...payload.rows[0], inputPricePerMillion: null }).costPerMTokens,
+    ).toBeNull()
+    expect(parseArenaPage(html({ ...board, arenaSlug: "image" }) + html()).rows).toHaveLength(
+      board.entries.length,
+    )
   })
   it("fails refresh rather than accidentally import another category or adjustment", () => {
     expect(() =>

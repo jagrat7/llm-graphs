@@ -22,17 +22,20 @@ export function PointDetails({
 }) {
   const info = useProvidersInfo()
   const effort = point.model.effort === "default" ? null : point.model.effort
+  const displayedDetails = new Set<string>()
 
   return (
     <div className={className}>
-      <div className="flex min-w-0 items-center gap-1.5 text-sm font-medium">
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-sm font-medium">
         <ModelLogo
           logoUrl={point.model.logoUrl}
           className="text-muted-foreground size-3.5 shrink-0"
         />
-        <span className="truncate">{point.model.displayName}</span>
+        <span className="min-w-0 flex-1 truncate">{point.model.displayName}</span>
         {effort ? (
-          <span className="text-muted-foreground shrink-0 text-xs font-normal">· {effort}</span>
+          <span className="text-muted-foreground basis-full pl-5 text-xs font-normal">
+            {effort}
+          </span>
         ) : null}
       </div>
       <dl className="mt-2 flex flex-col gap-1">
@@ -44,6 +47,10 @@ export function PointDetails({
           const source = point.model.sources[METRIC_CONFIG[metric].dataKey]
           const abbreviation = source == null ? null : info.sources[source].abbreviation
           const measurement = point.model.measurements?.[METRIC_CONFIG[metric].dataKey]
+          const presentation = metricPresentation(metric, source, info)
+          const detail = measurement?.detail
+          const showDetail = detail != null && !displayedDetails.has(detail)
+          if (detail) displayedDetails.add(detail)
 
           return (
             <div
@@ -57,14 +64,20 @@ export function PointDetails({
             >
               <dt className="text-muted-foreground min-w-0 truncate">
                 <span className="text-foreground font-medium">{axis.toUpperCase()}</span>{" "}
-                {metricPresentation(metric, source, info).label}
+                {presentation.label}
               </dt>
               <dd className="flex flex-wrap items-baseline gap-x-1 font-medium tabular-nums">
                 {formatMetric(point.values[axis], metric, source, info)}
-                {metric === "cost" ? "/task" : metric === "price" ? "/M tokens" : null}
+                {metric === "cost"
+                  ? "/task"
+                  : presentation.format === "currency"
+                    ? "/M tokens"
+                    : null}
                 {metric === "speed" ? " tokens/s" : null}
-                {metric === "score" && metricPresentation(metric, source, info).format === "number"
-                  ? ` ${metricPresentation(metric, source, info).unit}`
+                {presentation.format === "tokens" ? " tokens" : null}
+                {metric === "votes" ? " votes" : null}
+                {metric === "score" && presentation.format === "number"
+                  ? ` ${presentation.unit}`
                   : null}
                 {measurement?.interval ? (
                   <span className="text-muted-foreground font-normal whitespace-nowrap">
@@ -79,6 +92,14 @@ export function PointDetails({
                   <span className="text-muted-foreground font-normal">{abbreviation}</span>
                 ) : null}
               </dd>
+              {showDetail ? (
+                <dd className="text-muted-foreground text-xs wrap-anywhere">{detail}</dd>
+              ) : null}
+              {measurement?.updatedAt ? (
+                <dd className="text-muted-foreground text-xs">
+                  Updated {measurement.updatedAt.slice(0, 10)}
+                </dd>
+              ) : null}
             </div>
           )
         })}

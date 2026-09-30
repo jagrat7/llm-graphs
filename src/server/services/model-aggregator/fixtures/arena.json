@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-30T21:02:10.271Z",
+  "fetchedAt": "2026-09-30T23:07:16.887Z",
   "payload": {
     "rows": [
       {
@@ -11,7 +11,13 @@
         "ratingUpper": 1533.6522225128247,
         "votes": 4942,
         "releaseType": "pre_release",
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 10,
+        "contextLength": 1000000,
+        "rank": 1,
+        "rankLower": 1,
+        "rankUpper": 1
       },
       {
         "modelKey": "claude-opus-4-6-thinking",
@@ -22,7 +28,13 @@
         "ratingUpper": 1508.9101900074934,
         "votes": 77193,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 2,
+        "rankLower": 7,
+        "rankUpper": 2
       },
       {
         "modelKey": "claude-fable-5-text",
@@ -33,7 +45,13 @@
         "ratingUpper": 1509.2816559294024,
         "votes": 37900,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 10,
+        "outputPricePerMillion": 50,
+        "contextLength": 1000000,
+        "rank": 3,
+        "rankLower": 9,
+        "rankUpper": 2
       },
       {
         "modelKey": "claude-opus-5.5-high-vertex",
@@ -44,7 +62,13 @@
         "ratingUpper": 1513.644109583352,
         "votes": 3932,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 4,
+        "outputPricePerMillion": 20,
+        "contextLength": 1000000,
+        "rank": 4,
+        "rankLower": 14,
+        "rankUpper": 2
       },
       {
         "modelKey": "claude-opus-4-7-thinking",
@@ -55,7 +79,13 @@
         "ratingUpper": 1505.4599504309008,
         "votes": 64607,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 5,
+        "rankLower": 11,
+        "rankUpper": 2
       },
       {
         "modelKey": "claude-fable-5.1-max-text",
@@ -66,7 +96,13 @@
         "ratingUpper": 1507.7467437714113,
         "votes": 11241,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 10,
+        "outputPricePerMillion": 50,
+        "contextLength": 1000000,
+        "rank": 6,
+        "rankLower": 14,
+        "rankUpper": 2
       },
       {
         "modelKey": "claude-opus-4-6",
@@ -77,7 +113,13 @@
         "ratingUpper": 1500.6977307434713,
         "votes": 81769,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 7,
+        "rankLower": 15,
+        "rankUpper": 3
       },
       {
         "modelKey": "muse-spark-1-3-max-bhma-text",
@@ -88,7 +130,13 @@
         "ratingUpper": 1500.9315466940361,
         "votes": 11698,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 4.25,
+        "contextLength": 1000000,
+        "rank": 8,
+        "rankLower": 20,
+        "rankUpper": 3
       },
       {
         "modelKey": "claude-opus-4-7",
@@ -99,7 +147,13 @@
         "ratingUpper": 1498.1141641577606,
         "votes": 65705,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 9,
+        "rankLower": 17,
+        "rankUpper": 4
       },
       {
         "modelKey": "muse-spark-1.2-xhigh-text",
@@ -110,7 +164,13 @@
         "ratingUpper": 1503.8385319186605,
         "votes": 3833,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 4.25,
+        "contextLength": null,
+        "rank": 10,
+        "rankLower": 26,
+        "rankUpper": 2
       },
       {
         "modelKey": "skimaki-kwc6",
@@ -121,7 +181,13 @@
         "ratingUpper": 1499.1810163010296,
         "votes": 24828,
         "releaseType": "pre_release",
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 3.75,
+        "contextLength": 1048576,
+        "rank": 11,
+        "rankLower": 20,
+        "rankUpper": 4
       },
       {
         "modelKey": "super-nova-ext-3tam-text",
@@ -132,7 +198,13 @@
         "ratingUpper": 1496.2593666760426,
         "votes": 36558,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 4.25,
+        "contextLength": null,
+        "rank": 12,
+        "rankLower": 22,
+        "rankUpper": 5
       },
       {
         "modelKey": "claude-opus-5-high-text",
@@ -143,7 +215,13 @@
         "ratingUpper": 1495.0046723710602,
         "votes": 58380,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 13,
+        "rankLower": 22,
+        "rankUpper": 5
       },
       {
         "modelKey": "claude-opus-5-max-text",
@@ -154,7 +232,13 @@
         "ratingUpper": 1494.0748774859544,
         "votes": 28351,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 14,
+        "rankLower": 27,
+        "rankUpper": 7
       },
       {
         "modelKey": "eureka",
@@ -165,7 +249,13 @@
         "ratingUpper": 1494.795146033095,
         "votes": 14128,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 15,
+        "rankLower": 27,
+        "rankUpper": 5
       },
       {
         "modelKey": "andwise-evfd",
@@ -176,7 +266,13 @@
         "ratingUpper": 1493.5247481657693,
         "votes": 20851,
         "releaseType": "pre_release",
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 3.75,
+        "contextLength": 1048576,
+        "rank": 16,
+        "rankLower": 28,
+        "rankUpper": 8
       },
       {
         "modelKey": "kimi-k3-v3-text",
@@ -187,7 +283,13 @@
         "ratingUpper": 1492.819775367549,
         "votes": 27719,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 17,
+        "rankLower": 27,
+        "rankUpper": 8
       },
       {
         "modelKey": "gemini-3.1-pro-preview",
@@ -198,7 +300,13 @@
         "ratingUpper": 1489.9786821690554,
         "votes": 121225,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 6,
+        "contextLength": 1048576,
+        "rank": 18,
+        "rankLower": 27,
+        "rankUpper": 9
       },
       {
         "modelKey": "gemini-3-pro",
@@ -209,7 +317,13 @@
         "ratingUpper": 1489.2718100208704,
         "votes": 41910,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 12,
+        "contextLength": 1048576,
+        "rank": 19,
+        "rankLower": 28,
+        "rankUpper": 9
       },
       {
         "modelKey": "gpt-5.6-sol-xhigh-text",
@@ -220,7 +334,13 @@
         "ratingUpper": 1488.222720727043,
         "votes": 36002,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 4,
+        "outputPricePerMillion": 20,
+        "contextLength": null,
+        "rank": 20,
+        "rankLower": 34,
+        "rankUpper": 11
       },
       {
         "modelKey": "gemini-3.6-flash",
@@ -231,7 +351,13 @@
         "ratingUpper": 1487.529623137706,
         "votes": 35640,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 3.75,
+        "contextLength": 1048576,
+        "rank": 21,
+        "rankLower": 37,
+        "rankUpper": 11
       },
       {
         "modelKey": "gpt-5.5-high-text",
@@ -242,7 +368,13 @@
         "ratingUpper": 1485.0725596972306,
         "votes": 69312,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 30,
+        "contextLength": 1050000,
+        "rank": 22,
+        "rankLower": 39,
+        "rankUpper": 13
       },
       {
         "modelKey": "claude-opus-4-8-thinking-text",
@@ -253,7 +385,13 @@
         "ratingUpper": 1485.1687689165701,
         "votes": 63577,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 23,
+        "rankLower": 40,
+        "rankUpper": 13
       },
       {
         "modelKey": "kinsley-mrp8",
@@ -264,7 +402,13 @@
         "ratingUpper": 1486.1092405304407,
         "votes": 22809,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.69,
+        "outputPricePerMillion": 5.07,
+        "contextLength": 1000000,
+        "rank": 24,
+        "rankLower": 42,
+        "rankUpper": 13
       },
       {
         "modelKey": "mimo-v2-6-pro-mw0j-text",
@@ -275,7 +419,13 @@
         "ratingUpper": 1489.0086841972748,
         "votes": 4074,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.435,
+        "outputPricePerMillion": 0.87,
+        "contextLength": 1050000,
+        "rank": 25,
+        "rankLower": 48,
+        "rankUpper": 9
       },
       {
         "modelKey": "glm-5.3",
@@ -286,7 +436,13 @@
         "ratingUpper": 1485.0011472659908,
         "votes": 17268,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.4,
+        "outputPricePerMillion": 4.4,
+        "contextLength": 1048576,
+        "rank": 26,
+        "rankLower": 44,
+        "rankUpper": 13
       },
       {
         "modelKey": "gemini-3.5-flash-high-public",
@@ -297,7 +453,13 @@
         "ratingUpper": 1480.9687272505585,
         "votes": 47981,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 4.5,
+        "contextLength": 1048576,
+        "rank": 27,
+        "rankLower": 44,
+        "rankUpper": 20
       },
       {
         "modelKey": "gpt-5.5-text",
@@ -308,7 +470,13 @@
         "ratingUpper": 1480.4217587862054,
         "votes": 70894,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 30,
+        "contextLength": 1050000,
+        "rank": 28,
+        "rankLower": 44,
+        "rankUpper": 20
       },
       {
         "modelKey": "gemini-3.5-flash-medium",
@@ -319,7 +487,13 @@
         "ratingUpper": 1480.3580872163557,
         "votes": 46735,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 4.5,
+        "contextLength": 1048576,
+        "rank": 29,
+        "rankLower": 46,
+        "rankUpper": 20
       },
       {
         "modelKey": "gpt-6-astra-max-text",
@@ -330,7 +504,13 @@
         "ratingUpper": 1483.1946647697396,
         "votes": 8565,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 30,
+        "rankLower": 51,
+        "rankUpper": 18
       },
       {
         "modelKey": "gpt-5.2-chat-latest",
@@ -341,7 +521,13 @@
         "ratingUpper": 1479.8035732719695,
         "votes": 35943,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.75,
+        "outputPricePerMillion": 14,
+        "contextLength": 128000,
+        "rank": 31,
+        "rankLower": 46,
+        "rankUpper": 20
       },
       {
         "modelKey": "glm-5.2-text",
@@ -352,7 +538,13 @@
         "ratingUpper": 1479.735381804031,
         "votes": 44949,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.4,
+        "outputPricePerMillion": 4.4,
+        "contextLength": 1000000,
+        "rank": 32,
+        "rankLower": 46,
+        "rankUpper": 20
       },
       {
         "modelKey": "gpt-5.4-high-no-system-prompt",
@@ -363,7 +555,13 @@
         "ratingUpper": 1478.9552961061195,
         "votes": 64648,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2.5,
+        "outputPricePerMillion": 15,
+        "contextLength": 1050000,
+        "rank": 33,
+        "rankLower": 46,
+        "rankUpper": 21
       },
       {
         "modelKey": "clanker-text",
@@ -374,7 +572,13 @@
         "ratingUpper": 1479.2033981864001,
         "votes": 27840,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 34,
+        "rankLower": 49,
+        "rankUpper": 21
       },
       {
         "modelKey": "melyora-9qr6",
@@ -385,7 +589,13 @@
         "ratingUpper": 1484.3511639852659,
         "votes": 3924,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.475,
+        "outputPricePerMillion": 4.425,
+        "contextLength": 1000000,
+        "rank": 35,
+        "rankLower": 57,
+        "rankUpper": 14
       },
       {
         "modelKey": "claude-opus-4-8-text",
@@ -396,7 +606,13 @@
         "ratingUpper": 1478.3752705681036,
         "votes": 64711,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 1000000,
+        "rank": 36,
+        "rankLower": 48,
+        "rankUpper": 22
       },
       {
         "modelKey": "claude-opus-4-5-20251101-thinking-32k",
@@ -407,7 +623,13 @@
         "ratingUpper": 1477.5101150844625,
         "votes": 37446,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 200000,
+        "rank": 37,
+        "rankLower": 49,
+        "rankUpper": 23
       },
       {
         "modelKey": "glm-5.3-flash-text",
@@ -418,7 +640,13 @@
         "ratingUpper": 1479.0967432140433,
         "votes": 21644,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.06,
+        "outputPricePerMillion": 0.2,
+        "contextLength": 1048576,
+        "rank": 38,
+        "rankLower": 53,
+        "rankUpper": 21
       },
       {
         "modelKey": "gpt-5.5-instant",
@@ -429,7 +657,13 @@
         "ratingUpper": 1478.2166091841073,
         "votes": 27101,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 30,
+        "contextLength": 1050000,
+        "rank": 39,
+        "rankLower": 55,
+        "rankUpper": 22
       },
       {
         "modelKey": "deepseek-v4.1-flash-max-20260910-text",
@@ -440,7 +674,13 @@
         "ratingUpper": 1479.8408146556912,
         "votes": 8125,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 1000000,
+        "rank": 40,
+        "rankLower": 56,
+        "rankUpper": 20
       },
       {
         "modelKey": "gemini-3-flash",
@@ -451,7 +691,13 @@
         "ratingUpper": 1477.0700603637956,
         "votes": 31255,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 3,
+        "contextLength": 1048576,
+        "rank": 41,
+        "rankLower": 53,
+        "rankUpper": 24
       },
       {
         "modelKey": "claude-sonnet-4-6",
@@ -462,7 +708,13 @@
         "ratingUpper": 1475.6517536025276,
         "votes": 70828,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.5,
+        "outputPricePerMillion": 7.5,
+        "contextLength": 1000000,
+        "rank": 42,
+        "rankLower": 51,
+        "rankUpper": 24
       },
       {
         "modelKey": "grok-4.20-beta-0309-reasoning",
@@ -473,7 +725,13 @@
         "ratingUpper": 1475.2929432931219,
         "votes": 66372,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1000000,
+        "rank": 43,
+        "rankLower": 55,
+        "rankUpper": 25
       },
       {
         "modelKey": "grok-4.20-multi-agent-beta-0309",
@@ -484,7 +742,13 @@
         "ratingUpper": 1474.4159697659534,
         "votes": 64838,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1000000,
+        "rank": 44,
+        "rankLower": 55,
+        "rankUpper": 25
       },
       {
         "modelKey": "claude-opus-4-5-20251101",
@@ -495,7 +759,13 @@
         "ratingUpper": 1472.9057112459545,
         "votes": 72799,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 200000,
+        "rank": 45,
+        "rankLower": 55,
+        "rankUpper": 28
       },
       {
         "modelKey": "zero-prism",
@@ -506,7 +776,13 @@
         "ratingUpper": 1472.291297113512,
         "votes": 39421,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5634,
+        "outputPricePerMillion": 2.5353,
+        "contextLength": 119000,
+        "rank": 46,
+        "rankLower": 58,
+        "rankUpper": 28
       },
       {
         "modelKey": "mimo-v2.5-pro-text",
@@ -517,7 +793,13 @@
         "ratingUpper": 1471.0004051365122,
         "votes": 70317,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.435,
+        "outputPricePerMillion": 0.87,
+        "contextLength": 1050000,
+        "rank": 47,
+        "rankLower": 58,
+        "rankUpper": 32
       },
       {
         "modelKey": "grok-4.5-text",
@@ -528,7 +810,13 @@
         "ratingUpper": 1470.1948465183868,
         "votes": 39339,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 6,
+        "contextLength": 500000,
+        "rank": 48,
+        "rankLower": 63,
+        "rankUpper": 34
       },
       {
         "modelKey": "grok-4.1-thinking",
@@ -539,7 +827,13 @@
         "ratingUpper": 1468.389855416975,
         "votes": 66373,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 49,
+        "rankLower": 60,
+        "rankUpper": 38
       },
       {
         "modelKey": "gpt-5.6-terra-xhigh-text",
@@ -550,7 +844,13 @@
         "ratingUpper": 1469.5563927376593,
         "votes": 37056,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 12,
+        "contextLength": null,
+        "rank": 50,
+        "rankLower": 64,
+        "rankUpper": 36
       },
       {
         "modelKey": "gpt-5.4-no-system-prompt",
@@ -561,7 +861,13 @@
         "ratingUpper": 1468.560861297262,
         "votes": 67753,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2.5,
+        "outputPricePerMillion": 15,
+        "contextLength": 1050000,
+        "rank": 51,
+        "rankLower": 64,
+        "rankUpper": 38
       },
       {
         "modelKey": "kiteki",
@@ -572,7 +878,13 @@
         "ratingUpper": 1469.739006699057,
         "votes": 22566,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.2,
+        "outputPricePerMillion": 6,
+        "contextLength": null,
+        "rank": 52,
+        "rankLower": 66,
+        "rankUpper": 36
       },
       {
         "modelKey": "glm-5.1-text",
@@ -583,7 +895,13 @@
         "ratingUpper": 1468.208406475807,
         "votes": 57877,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.4,
+        "outputPricePerMillion": 4.4,
+        "contextLength": 202752,
+        "rank": 53,
+        "rankLower": 64,
+        "rankUpper": 40
       },
       {
         "modelKey": "deepseek-v4-pro-high-20260813-text",
@@ -594,7 +912,13 @@
         "ratingUpper": 1470.7690107411768,
         "votes": 9825,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.32,
+        "outputPricePerMillion": 3.96,
+        "contextLength": null,
+        "rank": 54,
+        "rankLower": 74,
+        "rankUpper": 32
       },
       {
         "modelKey": "claude-sonnet-5-text",
@@ -605,7 +929,13 @@
         "ratingUpper": 1466.0503102424236,
         "votes": 45191,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 10,
+        "contextLength": 1000000,
+        "rank": 55,
+        "rankLower": 74,
+        "rankUpper": 44
       },
       {
         "modelKey": "kimi-k2.6-text",
@@ -616,7 +946,13 @@
         "ratingUpper": 1465.4438184948458,
         "votes": 39950,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.95,
+        "outputPricePerMillion": 4,
+        "contextLength": 262144,
+        "rank": 56,
+        "rankLower": 74,
+        "rankUpper": 45
       },
       {
         "modelKey": "kizen-beta",
@@ -627,7 +963,13 @@
         "ratingUpper": 1468.2245766900414,
         "votes": 5408,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.027,
+        "outputPricePerMillion": 6.162,
+        "contextLength": 262144,
+        "rank": 57,
+        "rankLower": 79,
+        "rankUpper": 40
       },
       {
         "modelKey": "grok-4.1",
@@ -638,7 +980,13 @@
         "ratingUpper": 1462.2587308209759,
         "votes": 68498,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 58,
+        "rankLower": 74,
+        "rankUpper": 48
       },
       {
         "modelKey": "gemini-3-flash-thinking-minimal",
@@ -649,7 +997,13 @@
         "ratingUpper": 1461.2185884134824,
         "votes": 90888,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 3,
+        "contextLength": 1048576,
+        "rank": 59,
+        "rankLower": 75,
+        "rankUpper": 50
       },
       {
         "modelKey": "deepseek-v4-pro-ch1-text",
@@ -660,7 +1014,13 @@
         "ratingUpper": 1461.6223558463862,
         "votes": 57549,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.32,
+        "outputPricePerMillion": 3.96,
+        "contextLength": 1048576,
+        "rank": 60,
+        "rankLower": 76,
+        "rankUpper": 49
       },
       {
         "modelKey": "glm-5",
@@ -671,7 +1031,13 @@
         "ratingUpper": 1461.9057086362159,
         "votes": 29203,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 3.2,
+        "contextLength": 204800,
+        "rank": 61,
+        "rankLower": 77,
+        "rankUpper": 49
       },
       {
         "modelKey": "hy3-tencent-cloud-text",
@@ -682,7 +1048,13 @@
         "ratingUpper": 1464.0220440860999,
         "votes": 10239,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.0825,
+        "outputPricePerMillion": 0.33,
+        "contextLength": 262144,
+        "rank": 62,
+        "rankLower": 81,
+        "rankUpper": 46
       },
       {
         "modelKey": "claude-sonnet-4-5-20250929-thinking-32k",
@@ -693,7 +1065,13 @@
         "ratingUpper": 1459.3547942160194,
         "votes": 83682,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 1000000,
+        "rank": 63,
+        "rankLower": 76,
+        "rankUpper": 54
       },
       {
         "modelKey": "dola-seed-2.0-pro-text",
@@ -704,7 +1082,13 @@
         "ratingUpper": 1459.9505844153305,
         "votes": 78956,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 64,
+        "rankLower": 78,
+        "rankUpper": 54
       },
       {
         "modelKey": "qwen3.7-plus",
@@ -715,7 +1099,13 @@
         "ratingUpper": 1460.23020721403,
         "votes": 42001,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.32,
+        "outputPricePerMillion": 1.28,
+        "contextLength": 1000000,
+        "rank": 65,
+        "rankLower": 79,
+        "rankUpper": 53
       },
       {
         "modelKey": "gpt-6-sol-max-text",
@@ -726,7 +1116,13 @@
         "ratingUpper": 1463.1225351057997,
         "votes": 7574,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 10,
+        "contextLength": 1050000,
+        "rank": 66,
+        "rankLower": 85,
+        "rankUpper": 48
       },
       {
         "modelKey": "gpt-5.1-high",
@@ -737,7 +1133,13 @@
         "ratingUpper": 1459.398539704644,
         "votes": 41568,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.625,
+        "outputPricePerMillion": 5,
+        "contextLength": 400000,
+        "rank": 67,
+        "rankLower": 79,
+        "rankUpper": 54
       },
       {
         "modelKey": "claude-sonnet-4-5-20250929",
@@ -748,7 +1150,13 @@
         "ratingUpper": 1458.0475822559374,
         "votes": 82438,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 1000000,
+        "rank": 68,
+        "rankLower": 79,
+        "rankUpper": 54
       },
       {
         "modelKey": "deepseek-v4-pro-ch1-thinking-text",
@@ -759,7 +1167,13 @@
         "ratingUpper": 1458.9698372152802,
         "votes": 54823,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.32,
+        "outputPricePerMillion": 3.96,
+        "contextLength": 1048576,
+        "rank": 69,
+        "rankLower": 79,
+        "rankUpper": 54
       },
       {
         "modelKey": "gemini-3.5-flash-lite",
@@ -770,7 +1184,13 @@
         "ratingUpper": 1458.6014113659894,
         "votes": 35335,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 1.25,
+        "contextLength": 1048576,
+        "rank": 70,
+        "rankLower": 85,
+        "rankUpper": 54
       },
       {
         "modelKey": "mimo-v2-6-flash-text",
@@ -781,7 +1201,13 @@
         "ratingUpper": 1461.9111610726404,
         "votes": 5465,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.14,
+        "outputPricePerMillion": 0.28,
+        "contextLength": 1000000,
+        "rank": 71,
+        "rankLower": 90,
+        "rankUpper": 49
       },
       {
         "modelKey": "gpt-5.6-luna-xhigh-text",
@@ -792,7 +1218,13 @@
         "ratingUpper": 1457.821268538828,
         "votes": 37593,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 1.2,
+        "contextLength": null,
+        "rank": 72,
+        "rankLower": 85,
+        "rankUpper": 54
       },
       {
         "modelKey": "grok-4.6-high-public-text",
@@ -803,7 +1235,13 @@
         "ratingUpper": 1458.5081064623987,
         "votes": 23012,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 6,
+        "contextLength": 500000,
+        "rank": 73,
+        "rankLower": 85,
+        "rankUpper": 54
       },
       {
         "modelKey": "pteronura-text",
@@ -814,7 +1252,13 @@
         "ratingUpper": 1460.169588136107,
         "votes": 6137,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.99,
+        "outputPricePerMillion": 1.49,
+        "contextLength": 131072,
+        "rank": 74,
+        "rankLower": 90,
+        "rankUpper": 53
       },
       {
         "modelKey": "kimi-k2.5-text",
@@ -825,7 +1269,13 @@
         "ratingUpper": 1453.5042290989954,
         "votes": 74623,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 3,
+        "contextLength": null,
+        "rank": 75,
+        "rankLower": 88,
+        "rankUpper": 61
       },
       {
         "modelKey": "gpt-5.3-chat-latest",
@@ -836,7 +1286,13 @@
         "ratingUpper": 1454.3314362089186,
         "votes": 34303,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.75,
+        "outputPricePerMillion": 14,
+        "contextLength": 128000,
+        "rank": 76,
+        "rankLower": 89,
+        "rankUpper": 59
       },
       {
         "modelKey": "claude-opus-4-1-20250805-thinking-16k",
@@ -847,7 +1303,13 @@
         "ratingUpper": 1453.2196030952882,
         "votes": 49334,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 15,
+        "outputPricePerMillion": 75,
+        "contextLength": 200000,
+        "rank": 77,
+        "rankLower": 88,
+        "rankUpper": 62
       },
       {
         "modelKey": "ernie-5.0-preview-1203",
@@ -858,7 +1320,13 @@
         "ratingUpper": 1455.3613485590686,
         "votes": 9788,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 78,
+        "rankLower": 96,
+        "rankUpper": 58
       },
       {
         "modelKey": "claude-opus-4-1-20250805",
@@ -869,7 +1337,13 @@
         "ratingUpper": 1451.0110304167051,
         "votes": 76927,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 7.5,
+        "outputPricePerMillion": 37.5,
+        "contextLength": 200000,
+        "rank": 79,
+        "rankLower": 91,
+        "rankUpper": 68
       },
       {
         "modelKey": "mimo-v2-pro",
@@ -880,7 +1354,13 @@
         "ratingUpper": 1452.4366986179261,
         "votes": 25397,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1,
+        "outputPricePerMillion": 3.3,
+        "contextLength": 1000000,
+        "rank": 80,
+        "rankLower": 95,
+        "rankUpper": 63
       },
       {
         "modelKey": "gpt-5.4-mini-high",
@@ -891,7 +1371,13 @@
         "ratingUpper": 1450.8044254243487,
         "votes": 63311,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 4.5,
+        "contextLength": 400000,
+        "rank": 81,
+        "rankLower": 95,
+        "rankUpper": 69
       },
       {
         "modelKey": "ernie-5.0-0110",
@@ -902,7 +1388,13 @@
         "ratingUpper": 1450.434465019077,
         "votes": 36422,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 82,
+        "rankLower": 95,
+        "rankUpper": 69
       },
       {
         "modelKey": "gemini-2.5-pro",
@@ -913,7 +1405,13 @@
         "ratingUpper": 1447.999079393233,
         "votes": 124859,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 10,
+        "contextLength": 1048576,
+        "rank": 83,
+        "rankLower": 95,
+        "rankUpper": 73
       },
       {
         "modelKey": "gpt-4.5-preview-2025-02-27",
@@ -924,7 +1422,13 @@
         "ratingUpper": 1450.4176524094341,
         "votes": 14547,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 75,
+        "outputPricePerMillion": 150,
+        "contextLength": 128000,
+        "rank": 84,
+        "rankLower": 101,
+        "rankUpper": 69
       },
       {
         "modelKey": "gpt-6-luna-max-text",
@@ -935,7 +1439,13 @@
         "ratingUpper": 1451.0182381545087,
         "votes": 7654,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 1050000,
+        "rank": 85,
+        "rankLower": 106,
+        "rankUpper": 68
       },
       {
         "modelKey": "qwen3.6-plus-text",
@@ -946,7 +1456,13 @@
         "ratingUpper": 1447.4967263706444,
         "votes": 48092,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.325,
+        "outputPricePerMillion": 1.95,
+        "contextLength": 1000000,
+        "rank": 86,
+        "rankLower": 101,
+        "rankUpper": 73
       },
       {
         "modelKey": "chatgpt-4o-latest-20250326",
@@ -957,7 +1473,13 @@
         "ratingUpper": 1445.7458921175044,
         "votes": 81601,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 15,
+        "contextLength": 128000,
+        "rank": 87,
+        "rankLower": 100,
+        "rankUpper": 76
       },
       {
         "modelKey": "grok-4.7-xhigh-public",
@@ -968,7 +1490,13 @@
         "ratingUpper": 1450.6187754771277,
         "votes": 5675,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 6,
+        "contextLength": 500000,
+        "rank": 88,
+        "rankLower": 111,
+        "rankUpper": 69
       },
       {
         "modelKey": "inkling-text",
@@ -979,7 +1507,13 @@
         "ratingUpper": 1446.2718314362887,
         "votes": 34594,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 4.05,
+        "contextLength": 524288,
+        "rank": 89,
+        "rankLower": 105,
+        "rankUpper": 75
       },
       {
         "modelKey": "qwen3.5-397b-a17b-text",
@@ -990,7 +1524,13 @@
         "ratingUpper": 1444.7242559917358,
         "votes": 88092,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.55,
+        "outputPricePerMillion": 3.5,
+        "contextLength": 262144,
+        "rank": 90,
+        "rankLower": 104,
+        "rankUpper": 79
       },
       {
         "modelKey": "glm-4.7",
@@ -1001,7 +1541,13 @@
         "ratingUpper": 1447.5914670887591,
         "votes": 12219,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 2.2,
+        "contextLength": 204800,
+        "rank": 91,
+        "rankLower": 109,
+        "rankUpper": 73
       },
       {
         "modelKey": "grok-4.3-text",
@@ -1012,7 +1558,13 @@
         "ratingUpper": 1445.1309635397324,
         "votes": 71269,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1000000,
+        "rank": 92,
+        "rankLower": 105,
+        "rankUpper": 78
       },
       {
         "modelKey": "minimax-m3",
@@ -1023,7 +1575,13 @@
         "ratingUpper": 1443.6921475483596,
         "votes": 58171,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 524288,
+        "rank": 93,
+        "rankLower": 109,
+        "rankUpper": 79
       },
       {
         "modelKey": "qwen3.8-27b",
@@ -1034,7 +1592,13 @@
         "ratingUpper": 1443.978031705955,
         "votes": 17777,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 3,
+        "contextLength": 262144,
+        "rank": 94,
+        "rankLower": 115,
+        "rankUpper": 79
       },
       {
         "modelKey": "gpt-5.1",
@@ -1045,7 +1609,13 @@
         "ratingUpper": 1442.076599543875,
         "votes": 44311,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.625,
+        "outputPricePerMillion": 5,
+        "contextLength": 400000,
+        "rank": 95,
+        "rankLower": 110,
+        "rankUpper": 84
       },
       {
         "modelKey": "deepseek-v4-ch3-thinking-text",
@@ -1056,7 +1626,13 @@
         "ratingUpper": 1442.5904876079976,
         "votes": 51691,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 1048576,
+        "rank": 96,
+        "rankLower": 111,
+        "rankUpper": 83
       },
       {
         "modelKey": "significant-otter-text",
@@ -1067,7 +1643,13 @@
         "ratingUpper": 1444.9341064715923,
         "votes": 6083,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 97,
+        "rankLower": 118,
+        "rankUpper": 79
       },
       {
         "modelKey": "gpt-5.2-high",
@@ -1078,7 +1660,13 @@
         "ratingUpper": 1440.8879359358307,
         "votes": 49549,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.875,
+        "outputPricePerMillion": 7,
+        "contextLength": 400000,
+        "rank": 98,
+        "rankLower": 111,
+        "rankUpper": 84
       },
       {
         "modelKey": "frieza",
@@ -1089,7 +1677,13 @@
         "ratingUpper": 1441.0744419799903,
         "votes": 29235,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 99,
+        "rankLower": 115,
+        "rankUpper": 84
       },
       {
         "modelKey": "deepseek-v4-ch3-text",
@@ -1100,7 +1694,13 @@
         "ratingUpper": 1439.9300872891267,
         "votes": 51869,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 1048576,
+        "rank": 100,
+        "rankLower": 115,
+        "rankUpper": 85
       },
       {
         "modelKey": "gpt-5.2",
@@ -1111,7 +1711,13 @@
         "ratingUpper": 1438.7922975752558,
         "votes": 83682,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.875,
+        "outputPricePerMillion": 7,
+        "contextLength": 400000,
+        "rank": 101,
+        "rankLower": 115,
+        "rankUpper": 87
       },
       {
         "modelKey": "gpt-5-high",
@@ -1122,7 +1728,13 @@
         "ratingUpper": 1438.962018856526,
         "votes": 31487,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.625,
+        "outputPricePerMillion": 5,
+        "contextLength": 400000,
+        "rank": 102,
+        "rankLower": 118,
+        "rankUpper": 87
       },
       {
         "modelKey": "qwen3-max-preview",
@@ -1133,7 +1745,13 @@
         "ratingUpper": 1438.9488067011298,
         "votes": 27239,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.78,
+        "outputPricePerMillion": 3.9,
+        "contextLength": 262144,
+        "rank": 103,
+        "rankLower": 118,
+        "rankUpper": 87
       },
       {
         "modelKey": "glm-5v-turbo",
@@ -1144,7 +1762,13 @@
         "ratingUpper": 1440.3385123332123,
         "votes": 10448,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.2,
+        "outputPricePerMillion": 4,
+        "contextLength": 202752,
+        "rank": 104,
+        "rankLower": 122,
+        "rankUpper": 84
       },
       {
         "modelKey": "mimo-v2.5-text",
@@ -1155,7 +1779,13 @@
         "ratingUpper": 1437.9704042539379,
         "votes": 47292,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.14,
+        "outputPricePerMillion": 0.28,
+        "contextLength": 1050000,
+        "rank": 105,
+        "rankLower": 118,
+        "rankUpper": 88
       },
       {
         "modelKey": "gemini-3.1-flash-lite-preview",
@@ -1166,7 +1796,13 @@
         "ratingUpper": 1436.324796103514,
         "votes": 64094,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 1.5,
+        "contextLength": 1048576,
+        "rank": 106,
+        "rankLower": 119,
+        "rankUpper": 91
       },
       {
         "modelKey": "o3-2025-04-16",
@@ -1177,7 +1813,13 @@
         "ratingUpper": 1435.2452324955998,
         "votes": 58598,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 8,
+        "contextLength": 200000,
+        "rank": 107,
+        "rankLower": 122,
+        "rankUpper": 93
       },
       {
         "modelKey": "mimo-v2-omni",
@@ -1188,7 +1830,13 @@
         "ratingUpper": 1436.5474186692054,
         "votes": 20611,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.44,
+        "outputPricePerMillion": 2.2,
+        "contextLength": 256000,
+        "rank": 108,
+        "rankLower": 127,
+        "rankUpper": 91
       },
       {
         "modelKey": "kimi-k2.5-instant",
@@ -1199,7 +1847,13 @@
         "ratingUpper": 1437.0174273742145,
         "votes": 8355,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.45,
+        "outputPricePerMillion": 2.25,
+        "contextLength": 262144,
+        "rank": 109,
+        "rankLower": 130,
+        "rankUpper": 90
       },
       {
         "modelKey": "grok-4-1-fast-reasoning",
@@ -1210,7 +1864,13 @@
         "ratingUpper": 1433.466507097995,
         "votes": 57425,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 128000,
+        "rank": 110,
+        "rankLower": 124,
+        "rankUpper": 97
       },
       {
         "modelKey": "kimi-k2-thinking-turbo",
@@ -1221,7 +1881,13 @@
         "ratingUpper": 1433.1380809519324,
         "votes": 63225,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.57,
+        "outputPricePerMillion": 2.3,
+        "contextLength": 131072,
+        "rank": 111,
+        "rankLower": 125,
+        "rankUpper": 97
       },
       {
         "modelKey": "mistral-medium-3.5-text",
@@ -1232,7 +1898,13 @@
         "ratingUpper": 1433.344339542874,
         "votes": 11757,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.75,
+        "outputPricePerMillion": 3.75,
+        "contextLength": 262144,
+        "rank": 112,
+        "rankLower": 134,
+        "rankUpper": 97
       },
       {
         "modelKey": "gpt-5-chat",
@@ -1243,7 +1915,13 @@
         "ratingUpper": 1431.062309770059,
         "votes": 31017,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 30,
+        "contextLength": null,
+        "rank": 113,
+        "rankLower": 134,
+        "rankUpper": 101
       },
       {
         "modelKey": "beluga-0304-1",
@@ -1254,7 +1932,13 @@
         "ratingUpper": 1436.4193305691397,
         "votes": 3519,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 114,
+        "rankLower": 139,
+        "rankUpper": 91
       },
       {
         "modelKey": "may26-chatbot4-3x57",
@@ -1265,7 +1949,13 @@
         "ratingUpper": 1433.3121099546202,
         "votes": 11532,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 115,
+        "rankLower": 136,
+        "rankUpper": 97
       },
       {
         "modelKey": "claude-opus-4-20250514-thinking-16k",
@@ -1276,7 +1966,13 @@
         "ratingUpper": 1430.4931650854046,
         "votes": 35693,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 15,
+        "outputPricePerMillion": 75,
+        "contextLength": 200000,
+        "rank": 116,
+        "rankLower": 134,
+        "rankUpper": 101
       },
       {
         "modelKey": "onyx-v1-4-33s7",
@@ -1287,7 +1983,13 @@
         "ratingUpper": 1434.6203971568702,
         "votes": 3897,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 117,
+        "rankLower": 144,
+        "rankUpper": 94
       },
       {
         "modelKey": "deepseek-v3.2-exp-thinking",
@@ -1298,7 +2000,13 @@
         "ratingUpper": 1431.4767132820407,
         "votes": 8948,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.27,
+        "outputPricePerMillion": 0.41,
+        "contextLength": 163840,
+        "rank": 118,
+        "rankLower": 139,
+        "rankUpper": 101
       },
       {
         "modelKey": "deepseek-v3.2",
@@ -1309,7 +2017,13 @@
         "ratingUpper": 1428.3797218171662,
         "votes": 48004,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.28,
+        "outputPricePerMillion": 0.42,
+        "contextLength": 163840,
+        "rank": 119,
+        "rankLower": 134,
+        "rankUpper": 106
       },
       {
         "modelKey": "glm-4.6",
@@ -1320,7 +2034,13 @@
         "ratingUpper": 1428.115031837564,
         "votes": 35668,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.43,
+        "outputPricePerMillion": 1.75,
+        "contextLength": 204800,
+        "rank": 120,
+        "rankLower": 135,
+        "rankUpper": 106
       },
       {
         "modelKey": "qwen3-max-2025-09-23",
@@ -1331,7 +2051,13 @@
         "ratingUpper": 1429.489944276616,
         "votes": 8969,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.78,
+        "outputPricePerMillion": 3.9,
+        "contextLength": 262144,
+        "rank": 121,
+        "rankLower": 140,
+        "rankUpper": 105
       },
       {
         "modelKey": "deepseek-v3.2-thinking",
@@ -1342,7 +2068,13 @@
         "ratingUpper": 1426.2193188720294,
         "votes": 41966,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.28,
+        "outputPricePerMillion": 0.42,
+        "contextLength": 163840,
+        "rank": 122,
+        "rankLower": 136,
+        "rankUpper": 110
       },
       {
         "modelKey": "qwen3-235b-a22b-instruct-2507",
@@ -1353,7 +2085,13 @@
         "ratingUpper": 1424.9215012609975,
         "votes": 97808,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.264,
+        "outputPricePerMillion": 1.06,
+        "contextLength": null,
+        "rank": 123,
+        "rankLower": 136,
+        "rankUpper": 111
       },
       {
         "modelKey": "deepseek-v3.2-exp",
@@ -1364,7 +2102,13 @@
         "ratingUpper": 1428.4166441119028,
         "votes": 11943,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.27,
+        "outputPricePerMillion": 0.41,
+        "contextLength": 163840,
+        "rank": 124,
+        "rankLower": 144,
+        "rankUpper": 106
       },
       {
         "modelKey": "deepseek-r1-0528",
@@ -1375,7 +2119,13 @@
         "ratingUpper": 1427.2821468767797,
         "votes": 18060,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 2.15,
+        "contextLength": 163840,
+        "rank": 125,
+        "rankLower": 143,
+        "rankUpper": 108
       },
       {
         "modelKey": "grok-4-fast-chat",
@@ -1386,7 +2136,13 @@
         "ratingUpper": 1426.8188259590365,
         "votes": 6323,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 256000,
+        "rank": 126,
+        "rankLower": 147,
+        "rankUpper": 110
       },
       {
         "modelKey": "ernie-5.0-preview-1022",
@@ -1397,7 +2153,13 @@
         "ratingUpper": 1427.4337620439273,
         "votes": 4724,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 127,
+        "rankLower": 150,
+        "rankUpper": 108
       },
       {
         "modelKey": "kimi-k2-0905-preview",
@@ -1408,7 +2170,13 @@
         "ratingUpper": 1425.1690645159224,
         "votes": 11539,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 262144,
+        "rank": 128,
+        "rankLower": 146,
+        "rankUpper": 111
       },
       {
         "modelKey": "kimi-k2-0711-preview",
@@ -1419,7 +2187,13 @@
         "ratingUpper": 1423.085762231629,
         "votes": 26967,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 131072,
+        "rank": 129,
+        "rankLower": 145,
+        "rankUpper": 112
       },
       {
         "modelKey": "deepseek-v3.1",
@@ -1430,7 +2204,13 @@
         "ratingUpper": 1423.231184037159,
         "votes": 14540,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.23,
+        "outputPricePerMillion": 4.9399999999999995,
+        "contextLength": null,
+        "rank": 130,
+        "rankLower": 147,
+        "rankUpper": 112
       },
       {
         "modelKey": "deepseek-v3.1-terminus-thinking",
@@ -1441,7 +2221,13 @@
         "ratingUpper": 1427.0561419271517,
         "votes": 3357,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1,
+        "contextLength": 163840,
+        "rank": 131,
+        "rankLower": 154,
+        "rankUpper": 109
       },
       {
         "modelKey": "qwen3.5-122b-a10b",
@@ -1452,7 +2238,13 @@
         "ratingUpper": 1420.3787211423128,
         "votes": 29666,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.26,
+        "outputPricePerMillion": 2.08,
+        "contextLength": 262144,
+        "rank": 132,
+        "rankLower": 147,
+        "rankUpper": 116
       },
       {
         "modelKey": "deepseek-v3.1-thinking",
@@ -1463,7 +2255,13 @@
         "ratingUpper": 1422.6791825376645,
         "votes": 11413,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.23,
+        "outputPricePerMillion": 4.9399999999999995,
+        "contextLength": null,
+        "rank": 133,
+        "rankLower": 150,
+        "rankUpper": 112
       },
       {
         "modelKey": "deep-octo",
@@ -1474,7 +2272,13 @@
         "ratingUpper": 1418.3462014442875,
         "votes": 79403,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 204800,
+        "rank": 134,
+        "rankLower": 147,
+        "rankUpper": 120
       },
       {
         "modelKey": "gpt-4.1-2025-04-14",
@@ -1485,7 +2289,13 @@
         "ratingUpper": 1418.5531213999907,
         "votes": 50007,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 8,
+        "contextLength": 1047576,
+        "rank": 135,
+        "rankLower": 147,
+        "rankUpper": 120
       },
       {
         "modelKey": "deepseek-v3.1-terminus",
@@ -1496,7 +2306,13 @@
         "ratingUpper": 1424.446118178873,
         "votes": 3602,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1,
+        "contextLength": 163840,
+        "rank": 136,
+        "rankLower": 157,
+        "rankUpper": 111
       },
       {
         "modelKey": "claude-opus-4-20250514",
@@ -1507,7 +2323,13 @@
         "ratingUpper": 1418.3776361114374,
         "votes": 42804,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 25,
+        "contextLength": 200000,
+        "rank": 137,
+        "rankLower": 150,
+        "rankUpper": 120
       },
       {
         "modelKey": "mistral-large-3",
@@ -1518,7 +2340,13 @@
         "ratingUpper": 1416.6191402989816,
         "votes": 78986,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 1.5,
+        "contextLength": null,
+        "rank": 138,
+        "rankLower": 147,
+        "rankUpper": 122
       },
       {
         "modelKey": "claude-haiku-4-5-20251001",
@@ -1529,7 +2357,13 @@
         "ratingUpper": 1415.9925442464523,
         "votes": 142743,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 5,
+        "contextLength": 200000,
+        "rank": 139,
+        "rankLower": 147,
+        "rankUpper": 123
       },
       {
         "modelKey": "qwen3-vl-235b-a22b-instruct",
@@ -1540,7 +2374,13 @@
         "ratingUpper": 1419.93979023688,
         "votes": 11250,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.21,
+        "outputPricePerMillion": 1.9,
+        "contextLength": 262144,
+        "rank": 140,
+        "rankLower": 154,
+        "rankUpper": 117
       },
       {
         "modelKey": "beluga-0213-1",
@@ -1551,7 +2391,13 @@
         "ratingUpper": 1422.800016469539,
         "votes": 3534,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 141,
+        "rankLower": 159,
+        "rankUpper": 112
       },
       {
         "modelKey": "grok-3-preview-02-24",
@@ -1562,7 +2408,13 @@
         "ratingUpper": 1415.7732207067174,
         "votes": 32389,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 131072,
+        "rank": 142,
+        "rankLower": 153,
+        "rankUpper": 124
       },
       {
         "modelKey": "glm-4.5",
@@ -1573,7 +2425,13 @@
         "ratingUpper": 1416.225032093203,
         "votes": 23668,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 2.2,
+        "contextLength": 131072,
+        "rank": 143,
+        "rankLower": 156,
+        "rankUpper": 123
       },
       {
         "modelKey": "grok-4-0709",
@@ -1584,7 +2442,13 @@
         "ratingUpper": 1414.9027911750622,
         "votes": 39409,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 256000,
+        "rank": 144,
+        "rankLower": 154,
+        "rankUpper": 126
       },
       {
         "modelKey": "gemini-2.5-flash",
@@ -1595,7 +2459,13 @@
         "ratingUpper": 1411.8364376657064,
         "votes": 125029,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1048576,
+        "rank": 145,
+        "rankLower": 154,
+        "rankUpper": 128
       },
       {
         "modelKey": "hunyuan-hy3-preview-text",
@@ -1606,7 +2476,13 @@
         "ratingUpper": 1416.3551060494024,
         "votes": 6871,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.29,
+        "outputPricePerMillion": 1.17,
+        "contextLength": 262144,
+        "rank": 146,
+        "rankLower": 162,
+        "rankUpper": 123
       },
       {
         "modelKey": "qwen3.5-27b",
@@ -1617,7 +2493,13 @@
         "ratingUpper": 1413.1473472931175,
         "votes": 28618,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.195,
+        "outputPricePerMillion": 1.56,
+        "contextLength": 262144,
+        "rank": 147,
+        "rankLower": 158,
+        "rankUpper": 127
       },
       {
         "modelKey": "mistral-medium-2508",
@@ -1628,7 +2510,13 @@
         "ratingUpper": 1410.561523716432,
         "votes": 94995,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 2,
+        "contextLength": 131072,
+        "rank": 148,
+        "rankLower": 157,
+        "rankUpper": 135
       },
       {
         "modelKey": "inkling-small",
@@ -1639,7 +2527,13 @@
         "ratingUpper": 1410.0344883420526,
         "votes": 26446,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.45,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 524288,
+        "rank": 149,
+        "rankLower": 162,
+        "rankUpper": 135
       },
       {
         "modelKey": "grok-4-fast-reasoning",
@@ -1650,7 +2544,13 @@
         "ratingUpper": 1409.8967060313785,
         "votes": 18148,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.5,
+        "contextLength": null,
+        "rank": 150,
+        "rankLower": 162,
+        "rankUpper": 135
       },
       {
         "modelKey": "gemini-2.5-flash-preview-09-2025",
@@ -1661,7 +2561,13 @@
         "ratingUpper": 1407.1939673727234,
         "votes": 32847,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1048576,
+        "rank": 151,
+        "rankLower": 164,
+        "rankUpper": 138
       },
       {
         "modelKey": "qwen3-235b-a22b-no-thinking",
@@ -1672,7 +2578,13 @@
         "ratingUpper": 1407.0530690241376,
         "votes": 37284,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.455,
+        "outputPricePerMillion": 1.8199999999999998,
+        "contextLength": 131072,
+        "rank": 152,
+        "rankLower": 165,
+        "rankUpper": 139
       },
       {
         "modelKey": "o1-2024-12-17",
@@ -1683,7 +2595,13 @@
         "ratingUpper": 1406.7313531873324,
         "votes": 27807,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 15,
+        "outputPricePerMillion": 60,
+        "contextLength": 200000,
+        "rank": 153,
+        "rankLower": 165,
+        "rankUpper": 143
       },
       {
         "modelKey": "claude-sonnet-4-20250514-thinking-32k",
@@ -1694,7 +2612,13 @@
         "ratingUpper": 1406.0723513822822,
         "votes": 33923,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 154,
+        "rankLower": 165,
+        "rankUpper": 144
       },
       {
         "modelKey": "longcat-flash-chat",
@@ -1705,7 +2629,13 @@
         "ratingUpper": 1407.572531704287,
         "votes": 11123,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.8,
+        "contextLength": 131072,
+        "rank": 155,
+        "rankLower": 171,
+        "rankUpper": 138
       },
       {
         "modelKey": "gpt-5.4-nano-high",
@@ -1716,7 +2646,13 @@
         "ratingUpper": 1404.919281358199,
         "votes": 62300,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 1.25,
+        "contextLength": 400000,
+        "rank": 156,
+        "rankLower": 165,
+        "rankUpper": 146
       },
       {
         "modelKey": "qwen3-235b-a22b-thinking-2507",
@@ -1727,7 +2663,13 @@
         "ratingUpper": 1406.6159644059949,
         "votes": 8776,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.23,
+        "outputPricePerMillion": 2.3,
+        "contextLength": 131072,
+        "rank": 157,
+        "rankLower": 173,
+        "rankUpper": 143
       },
       {
         "modelKey": "qwen3-next-80b-a3b-instruct",
@@ -1738,7 +2680,13 @@
         "ratingUpper": 1403.7065326101824,
         "votes": 22607,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 1.1,
+        "contextLength": 262144,
+        "rank": 158,
+        "rankLower": 172,
+        "rankUpper": 147
       },
       {
         "modelKey": "deepseek-r1",
@@ -1749,7 +2697,13 @@
         "ratingUpper": 1403.0269620608806,
         "votes": 18524,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.7,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 64000,
+        "rank": 159,
+        "rankLower": 174,
+        "rankUpper": 148
       },
       {
         "modelKey": "qwen3.5-flash",
@@ -1760,7 +2714,13 @@
         "ratingUpper": 1399.6811948124187,
         "votes": 61687,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 160,
+        "rankLower": 176,
+        "rankUpper": 151
       },
       {
         "modelKey": "deepseek-v3-0324",
@@ -1771,7 +2731,13 @@
         "ratingUpper": 1399.545401539201,
         "votes": 44762,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1400000000000001,
+        "outputPricePerMillion": 4.5600000000000005,
+        "contextLength": null,
+        "rank": 161,
+        "rankLower": 178,
+        "rankUpper": 151
       },
       {
         "modelKey": "hunyuan-vision-1.5-thinking",
@@ -1782,7 +2748,13 @@
         "ratingUpper": 1407.353965173258,
         "votes": 2159,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 162,
+        "rankLower": 185,
+        "rankUpper": 138
       },
       {
         "modelKey": "qwen3-vl-235b-a22b-thinking",
@@ -1793,7 +2765,13 @@
         "ratingUpper": 1401.573377381606,
         "votes": 7809,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 4,
+        "contextLength": 131072,
+        "rank": 163,
+        "rankLower": 181,
+        "rankUpper": 148
       },
       {
         "modelKey": "beluga-1223-1",
@@ -1804,7 +2782,13 @@
         "ratingUpper": 1403.3911362069434,
         "votes": 3727,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 164,
+        "rankLower": 183,
+        "rankUpper": 148
       },
       {
         "modelKey": "qwen3.5-35b-a3b",
@@ -1815,7 +2799,13 @@
         "ratingUpper": 1398.1169009459431,
         "votes": 30410,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1625,
+        "outputPricePerMillion": 1.3,
+        "contextLength": 262144,
+        "rank": 165,
+        "rankLower": 180,
+        "rankUpper": 152
       },
       {
         "modelKey": "step-3.5-flash",
@@ -1826,7 +2816,13 @@
         "ratingUpper": 1396.7766742115966,
         "votes": 60236,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 262144,
+        "rank": 166,
+        "rankLower": 180,
+        "rankUpper": 156
       },
       {
         "modelKey": "mimo-v2-flash",
@@ -1837,7 +2833,13 @@
         "ratingUpper": 1395.1749029025586,
         "votes": 48012,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 262144,
+        "rank": 167,
+        "rankLower": 181,
+        "rankUpper": 156
       },
       {
         "modelKey": "minimax-m2.5",
@@ -1848,7 +2850,13 @@
         "ratingUpper": 1394.7362389336342,
         "votes": 42734,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.27,
+        "outputPricePerMillion": 1.08,
+        "contextLength": 204800,
+        "rank": 168,
+        "rankLower": 183,
+        "rankUpper": 156
       },
       {
         "modelKey": "o4-mini-2025-04-16",
@@ -1859,7 +2867,13 @@
         "ratingUpper": 1394.8111569793657,
         "votes": 44636,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1,
+        "outputPricePerMillion": 4.4,
+        "contextLength": 200000,
+        "rank": 169,
+        "rankLower": 183,
+        "rankUpper": 156
       },
       {
         "modelKey": "claude-sonnet-4-20250514",
@@ -1870,7 +2884,13 @@
         "ratingUpper": 1395.0720413067054,
         "votes": 38917,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 170,
+        "rankLower": 183,
+        "rankUpper": 156
       },
       {
         "modelKey": "gpt-5-mini-high",
@@ -1881,7 +2901,13 @@
         "ratingUpper": 1394.2849707269143,
         "votes": 26645,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.125,
+        "outputPricePerMillion": 1,
+        "contextLength": 400000,
+        "rank": 171,
+        "rankLower": 183,
+        "rankUpper": 157
       },
       {
         "modelKey": "o1-preview",
@@ -1892,7 +2918,13 @@
         "ratingUpper": 1393.5592377122925,
         "votes": 31122,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 15,
+        "outputPricePerMillion": 60,
+        "contextLength": null,
+        "rank": 172,
+        "rankLower": 183,
+        "rankUpper": 158
       },
       {
         "modelKey": "claude-3-7-sonnet-20250219-thinking-32k",
@@ -1903,7 +2935,13 @@
         "ratingUpper": 1392.5381331897497,
         "votes": 38036,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 173,
+        "rankLower": 183,
+        "rankUpper": 160
       },
       {
         "modelKey": "mistral-medium-2505",
@@ -1914,7 +2952,13 @@
         "ratingUpper": 1392.1643414474297,
         "votes": 32616,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 2,
+        "contextLength": 131072,
+        "rank": 174,
+        "rankLower": 185,
+        "rankUpper": 161
       },
       {
         "modelKey": "qwen3-coder-480b-a35b-instruct",
@@ -1925,7 +2969,13 @@
         "ratingUpper": 1392.3599054250762,
         "votes": 25011,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.65,
+        "outputPricePerMillion": 3.25,
+        "contextLength": 1000000,
+        "rank": 175,
+        "rankLower": 185,
+        "rankUpper": 160
       },
       {
         "modelKey": "hunyuan-t1-20250711",
@@ -1936,7 +2986,13 @@
         "ratingUpper": 1396.0092604591778,
         "votes": 4574,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 176,
+        "rankLower": 187,
+        "rankUpper": 156
       },
       {
         "modelKey": "mimo-v2-flash-thinking-v2",
@@ -1947,7 +3003,13 @@
         "ratingUpper": 1393.2665979559636,
         "votes": 11118,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 262144,
+        "rank": 177,
+        "rankLower": 185,
+        "rankUpper": 159
       },
       {
         "modelKey": "solar-pro4-20260805",
@@ -1958,7 +3020,13 @@
         "ratingUpper": 1391.7730069860936,
         "votes": 15135,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.09,
+        "outputPricePerMillion": 0.36,
+        "contextLength": 524288,
+        "rank": 178,
+        "rankLower": 185,
+        "rankUpper": 161
       },
       {
         "modelKey": "minimax-m2.1-preview",
@@ -1969,7 +3037,13 @@
         "ratingUpper": 1389.7375850843505,
         "votes": 17187,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 204800,
+        "rank": 179,
+        "rankLower": 186,
+        "rankUpper": 162
       },
       {
         "modelKey": "qwen3-30b-a3b-instruct-2507",
@@ -1980,7 +3054,13 @@
         "ratingUpper": 1387.6949459191217,
         "votes": 23182,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.04815,
+        "outputPricePerMillion": 0.19305,
+        "contextLength": 262144,
+        "rank": 180,
+        "rankLower": 188,
+        "rankUpper": 166
       },
       {
         "modelKey": "gpt-4.1-mini-2025-04-14",
@@ -1991,7 +3071,13 @@
         "ratingUpper": 1387.0864355170195,
         "votes": 38549,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 1.6,
+        "contextLength": 1047576,
+        "rank": 181,
+        "rankLower": 187,
+        "rankUpper": 166
       },
       {
         "modelKey": "hunyuan-turbos-20250416",
@@ -2002,7 +3088,13 @@
         "ratingUpper": 1389.2345507246337,
         "votes": 10577,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 182,
+        "rankLower": 191,
+        "rankUpper": 164
       },
       {
         "modelKey": "gemini-2.5-flash-lite-preview-09-2025-no-thinking",
@@ -2013,7 +3105,13 @@
         "ratingUpper": 1382.8194826435356,
         "votes": 47253,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 1048576,
+        "rank": 183,
+        "rankLower": 191,
+        "rankUpper": 173
       },
       {
         "modelKey": "glm-4.6v",
@@ -2024,7 +3122,13 @@
         "ratingUpper": 1390.0843275075604,
         "votes": 2830,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 0.9,
+        "contextLength": 131072,
+        "rank": 184,
+        "rankLower": 199,
+        "rankUpper": 162
       },
       {
         "modelKey": "trinity-large",
@@ -2035,7 +3139,13 @@
         "ratingUpper": 1382.8681225385274,
         "votes": 31220,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.45,
+        "contextLength": 131000,
+        "rank": 185,
+        "rankLower": 192,
+        "rankUpper": 173
       },
       {
         "modelKey": "qwen3-235b-a22b",
@@ -2046,7 +3156,13 @@
         "ratingUpper": 1379.965444108106,
         "votes": 25826,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.455,
+        "outputPricePerMillion": 1.8199999999999998,
+        "contextLength": 131072,
+        "rank": 186,
+        "rankLower": 194,
+        "rankUpper": 178
       },
       {
         "modelKey": "gemini-2.5-flash-lite-preview-06-17-thinking",
@@ -2057,7 +3173,13 @@
         "ratingUpper": 1379.3593022654359,
         "votes": 32178,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 1048576,
+        "rank": 187,
+        "rankLower": 194,
+        "rankUpper": 179
       },
       {
         "modelKey": "claude-3-5-sonnet-20241022",
@@ -2068,7 +3190,13 @@
         "ratingUpper": 1377.1862904429222,
         "votes": 87644,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 188,
+        "rankLower": 193,
+        "rankUpper": 182
       },
       {
         "modelKey": "qwen2.5-max",
@@ -2079,7 +3207,13 @@
         "ratingUpper": 1377.9445971564687,
         "votes": 32411,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 189,
+        "rankLower": 194,
+        "rankUpper": 181
       },
       {
         "modelKey": "glm-4.5-air",
@@ -2090,7 +3224,13 @@
         "ratingUpper": 1377.5452226325333,
         "votes": 30454,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.13,
+        "outputPricePerMillion": 0.85,
+        "contextLength": 131072,
+        "rank": 190,
+        "rankLower": 195,
+        "rankUpper": 182
       },
       {
         "modelKey": "claude-3-7-sonnet-20250219",
@@ -2101,7 +3241,13 @@
         "ratingUpper": 1376.449892258158,
         "votes": 42411,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 191,
+        "rankLower": 198,
+        "rankUpper": 182
       },
       {
         "modelKey": "qwen3-next-80b-a3b-thinking",
@@ -2112,7 +3258,13 @@
         "ratingUpper": 1375.2633805151136,
         "votes": 13382,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 262144,
+        "rank": 192,
+        "rankLower": 202,
+        "rankUpper": 184
       },
       {
         "modelKey": "trinity-large-thinking",
@@ -2123,7 +3275,13 @@
         "ratingUpper": 1372.0005306583857,
         "votes": 30281,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 0.8,
+        "contextLength": 262144,
+        "rank": 193,
+        "rankLower": 204,
+        "rankUpper": 185
       },
       {
         "modelKey": "gemma-3-27b-it",
@@ -2134,7 +3292,13 @@
         "ratingUpper": 1369.109291782434,
         "votes": 46437,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.08,
+        "outputPricePerMillion": 0.45,
+        "contextLength": 131072,
+        "rank": 194,
+        "rankLower": 205,
+        "rankUpper": 189
       },
       {
         "modelKey": "glm-4.7-flash-fireworks",
@@ -2145,7 +3309,13 @@
         "ratingUpper": 1370.5408659895795,
         "votes": 11979,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.0605,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 200000,
+        "rank": 195,
+        "rankLower": 208,
+        "rankUpper": 186
       },
       {
         "modelKey": "amazon-nova-experimental-chat-11-10",
@@ -2156,7 +3326,13 @@
         "ratingUpper": 1368.5884586192105,
         "votes": 25992,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 196,
+        "rankLower": 207,
+        "rankUpper": 190
       },
       {
         "modelKey": "minimax-m1",
@@ -2167,7 +3343,13 @@
         "ratingUpper": 1368.311808630664,
         "votes": 34048,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 2.2,
+        "contextLength": 1000000,
+        "rank": 197,
+        "rankLower": 207,
+        "rankUpper": 191
       },
       {
         "modelKey": "o3-mini-high",
@@ -2178,7 +3360,13 @@
         "ratingUpper": 1368.8541662472376,
         "votes": 18589,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1,
+        "outputPricePerMillion": 4.4,
+        "contextLength": 200000,
+        "rank": 198,
+        "rankLower": 208,
+        "rankUpper": 190
       },
       {
         "modelKey": "grok-3-mini-high",
@@ -2189,7 +3377,13 @@
         "ratingUpper": 1368.9584102468252,
         "votes": 15506,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 1.27,
+        "contextLength": null,
+        "rank": 199,
+        "rankLower": 208,
+        "rankUpper": 190
       },
       {
         "modelKey": "march26-chatbot1",
@@ -2200,7 +3394,13 @@
         "ratingUpper": 1367.6593695754882,
         "votes": 7861,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 200,
+        "rankLower": 219,
+        "rankUpper": 192
       },
       {
         "modelKey": "gemini-2.0-flash-001",
@@ -2211,7 +3411,13 @@
         "ratingUpper": 1363.7132556620932,
         "votes": 43317,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 1048576,
+        "rank": 201,
+        "rankLower": 213,
+        "rankUpper": 192
       },
       {
         "modelKey": "deepseek-v3",
@@ -2222,7 +3428,13 @@
         "ratingUpper": 1363.2075245291205,
         "votes": 21770,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1400000000000001,
+        "outputPricePerMillion": 4.5600000000000005,
+        "contextLength": null,
+        "rank": 202,
+        "rankLower": 219,
+        "rankUpper": 193
       },
       {
         "modelKey": "grok-3-mini-beta",
@@ -2233,7 +3445,13 @@
         "ratingUpper": 1362.8743680047864,
         "votes": 20814,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.25,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 131072,
+        "rank": 203,
+        "rankLower": 220,
+        "rankUpper": 193
       },
       {
         "modelKey": "mistral-small-2506",
@@ -2244,7 +3462,13 @@
         "ratingUpper": 1361.6919561258464,
         "votes": 17353,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 32000,
+        "rank": 204,
+        "rankLower": 223,
+        "rankUpper": 194
       },
       {
         "modelKey": "intellect-3",
@@ -2255,7 +3479,13 @@
         "ratingUpper": 1364.224716250506,
         "votes": 5421,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 1.1,
+        "contextLength": 131072,
+        "rank": 205,
+        "rankLower": 228,
+        "rankUpper": 192
       },
       {
         "modelKey": "command-a-03-2025",
@@ -2266,7 +3496,13 @@
         "ratingUpper": 1357.1774496732896,
         "votes": 55477,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2.5,
+        "outputPricePerMillion": 10,
+        "contextLength": 256000,
+        "rank": 206,
+        "rankLower": 226,
+        "rankUpper": 200
       },
       {
         "modelKey": "gemini-2.0-flash-lite-preview-02-05",
@@ -2277,7 +3513,13 @@
         "ratingUpper": 1357.8527210963437,
         "votes": 24955,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.075,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 1048576,
+        "rank": 207,
+        "rankLower": 228,
+        "rankUpper": 200
       },
       {
         "modelKey": "glm-4.5v",
@@ -2288,7 +3530,13 @@
         "ratingUpper": 1360.7100390680052,
         "votes": 4811,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 1.8,
+        "contextLength": 65536,
+        "rank": 208,
+        "rankLower": 230,
+        "rankUpper": 195
       },
       {
         "modelKey": "gpt-oss-120b",
@@ -2299,7 +3547,13 @@
         "ratingUpper": 1356.0787998850556,
         "votes": 30039,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 131072,
+        "rank": 209,
+        "rankLower": 228,
+        "rankUpper": 201
       },
       {
         "modelKey": "gemini-1.5-pro-002",
@@ -2310,7 +3564,13 @@
         "ratingUpper": 1354.6597832895804,
         "votes": 55606,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3.5,
+        "outputPricePerMillion": 10.5,
+        "contextLength": 2097152,
+        "rank": 210,
+        "rankLower": 228,
+        "rankUpper": 201
       },
       {
         "modelKey": "step-3",
@@ -2321,7 +3581,13 @@
         "ratingUpper": 1356.9219583953404,
         "votes": 6272,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.57,
+        "outputPricePerMillion": 1.42,
+        "contextLength": 65536,
+        "rank": 211,
+        "rankLower": 232,
+        "rankUpper": 200
       },
       {
         "modelKey": "hunyuan-turbos-20250226",
@@ -2332,7 +3598,13 @@
         "ratingUpper": 1360.6122910391878,
         "votes": 2220,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 212,
+        "rankLower": 240,
+        "rankUpper": 195
       },
       {
         "modelKey": "august26-chatbot1-fmme",
@@ -2343,7 +3615,13 @@
         "ratingUpper": 1354.7447826715306,
         "votes": 14326,
         "releaseType": "co_release",
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 213,
+        "rankLower": 231,
+        "rankUpper": 201
       },
       {
         "modelKey": "amazon-nova-experimental-chat-10-20",
@@ -2354,7 +3632,13 @@
         "ratingUpper": 1354.4187043243844,
         "votes": 11596,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 214,
+        "rankLower": 232,
+        "rankUpper": 201
       },
       {
         "modelKey": "o3-mini",
@@ -2365,7 +3649,13 @@
         "ratingUpper": 1351.6095968605287,
         "votes": 56573,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.55,
+        "outputPricePerMillion": 2.2,
+        "contextLength": 200000,
+        "rank": 215,
+        "rankLower": 229,
+        "rankUpper": 204
       },
       {
         "modelKey": "llama-3.1-nemotron-ultra-253b-v1",
@@ -2376,7 +3666,13 @@
         "ratingUpper": 1359.3196744720835,
         "votes": 2549,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 1.8,
+        "contextLength": 131072,
+        "rank": 216,
+        "rankLower": 242,
+        "rankUpper": 197
       },
       {
         "modelKey": "amazon-nova-experimental-chat-10-09",
@@ -2387,7 +3683,13 @@
         "ratingUpper": 1357.952282578967,
         "votes": 2765,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 217,
+        "rankLower": 242,
+        "rankUpper": 200
       },
       {
         "modelKey": "qwen3-32b",
@@ -2398,7 +3700,13 @@
         "ratingUpper": 1356.399886637062,
         "votes": 3926,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.08,
+        "outputPricePerMillion": 0.28,
+        "contextLength": 131072,
+        "rank": 218,
+        "rankLower": 240,
+        "rankUpper": 200
       },
       {
         "modelKey": "gpt-4o-2024-05-13",
@@ -2409,7 +3717,13 @@
         "ratingUpper": 1349.5427433020977,
         "votes": 112881,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 5,
+        "outputPricePerMillion": 15,
+        "contextLength": 128000,
+        "rank": 219,
+        "rankLower": 231,
+        "rankUpper": 206
       },
       {
         "modelKey": "qwen-plus-0125",
@@ -2420,7 +3734,13 @@
         "ratingUpper": 1354.2574072777365,
         "votes": 5819,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 131072,
+        "rank": 220,
+        "rankLower": 240,
+        "rankUpper": 201
       },
       {
         "modelKey": "ling-flash-2.0",
@@ -2431,7 +3751,13 @@
         "ratingUpper": 1351.1016723303908,
         "votes": 6889,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 221,
+        "rankLower": 241,
+        "rankUpper": 205
       },
       {
         "modelKey": "minimax-m2",
@@ -2442,7 +3768,13 @@
         "ratingUpper": 1350.9945344500093,
         "votes": 6819,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 204800,
+        "rank": 222,
+        "rankLower": 242,
+        "rankUpper": 205
       },
       {
         "modelKey": "mercury-2",
@@ -2453,7 +3785,13 @@
         "ratingUpper": 1353.7463303285126,
         "votes": 3198,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 0.75,
+        "contextLength": 128000,
+        "rank": 223,
+        "rankLower": 244,
+        "rankUpper": 201
       },
       {
         "modelKey": "claude-3-5-sonnet-20240620",
@@ -2464,7 +3802,13 @@
         "ratingUpper": 1346.5164725181996,
         "votes": 82419,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 224,
+        "rankLower": 238,
+        "rankUpper": 210
       },
       {
         "modelKey": "nvidia-llama-3.3-nemotron-super-49b-v1.5",
@@ -2475,7 +3819,13 @@
         "ratingUpper": 1352.9291631486515,
         "votes": 3308,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 131072,
+        "rank": 225,
+        "rankLower": 244,
+        "rankUpper": 203
       },
       {
         "modelKey": "glm-4-plus-0111",
@@ -2486,7 +3836,13 @@
         "ratingUpper": 1351.1086149145708,
         "votes": 5760,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 226,
+        "rankLower": 243,
+        "rankUpper": 205
       },
       {
         "modelKey": "gemma-3-12b-it",
@@ -2497,7 +3853,13 @@
         "ratingUpper": 1351.2658521898798,
         "votes": 3829,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.15,
+        "contextLength": 131072,
+        "rank": 227,
+        "rankLower": 244,
+        "rankUpper": 204
       },
       {
         "modelKey": "hunyuan-turbo-0110",
@@ -2508,7 +3870,13 @@
         "ratingUpper": 1352.2544110727354,
         "votes": 2290,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 228,
+        "rankLower": 249,
+        "rankUpper": 204
       },
       {
         "modelKey": "vantage",
@@ -2519,7 +3887,13 @@
         "ratingUpper": 1350.2134404280284,
         "votes": 3416,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 229,
+        "rankLower": 249,
+        "rankUpper": 206
       },
       {
         "modelKey": "gpt-5-nano-high",
@@ -2530,7 +3904,13 @@
         "ratingUpper": 1344.401804169089,
         "votes": 8115,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.025,
+        "outputPricePerMillion": 0.2,
+        "contextLength": 400000,
+        "rank": 230,
+        "rankLower": 247,
+        "rankUpper": 211
       },
       {
         "modelKey": "o1-mini",
@@ -2541,7 +3921,13 @@
         "ratingUpper": 1340.5181668390042,
         "votes": 51981,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.1,
+        "outputPricePerMillion": 4.4,
+        "contextLength": null,
+        "rank": 231,
+        "rankLower": 244,
+        "rankUpper": 216
       },
       {
         "modelKey": "gemini-advanced-0514",
@@ -2552,7 +3938,13 @@
         "ratingUpper": 1341.0607866392352,
         "votes": 50148,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 232,
+        "rankLower": 247,
+        "rankUpper": 216
       },
       {
         "modelKey": "qwq-32b",
@@ -2563,7 +3955,13 @@
         "ratingUpper": 1340.355619997063,
         "votes": 25084,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 1,
+        "contextLength": 16384,
+        "rank": 233,
+        "rankLower": 245,
+        "rankUpper": 216
       },
       {
         "modelKey": "grok-2-2024-08-13",
@@ -2574,7 +3972,13 @@
         "ratingUpper": 1339.3297353966357,
         "votes": 63498,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 10,
+        "contextLength": 131072,
+        "rank": 234,
+        "rankLower": 244,
+        "rankUpper": 217
       },
       {
         "modelKey": "gpt-4o-2024-08-06",
@@ -2585,7 +3989,13 @@
         "ratingUpper": 1339.7508673131233,
         "votes": 45499,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2.5,
+        "outputPricePerMillion": 10,
+        "contextLength": 128000,
+        "rank": 235,
+        "rankLower": 246,
+        "rankUpper": 216
       },
       {
         "modelKey": "llama-3.1-405b-instruct-bf16",
@@ -2596,7 +4006,13 @@
         "ratingUpper": 1339.0821943240712,
         "votes": 41375,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 4,
+        "outputPricePerMillion": 4,
+        "contextLength": 32768,
+        "rank": 236,
+        "rankLower": 245,
+        "rankUpper": 217
       },
       {
         "modelKey": "nova-2-lite",
@@ -2607,7 +4023,13 @@
         "ratingUpper": 1341.084348861401,
         "votes": 12393,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 2.5,
+        "contextLength": 1000000,
+        "rank": 237,
+        "rankLower": 249,
+        "rankUpper": 216
       },
       {
         "modelKey": "step-2-16k-exp-202412",
@@ -2618,7 +4040,13 @@
         "ratingUpper": 1342.1603378982293,
         "votes": 4833,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 238,
+        "rankLower": 255,
+        "rankUpper": 214
       },
       {
         "modelKey": "llama-3.1-405b-instruct-fp8",
@@ -2629,7 +4057,13 @@
         "ratingUpper": 1337.0949314483832,
         "votes": 59656,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 4,
+        "outputPricePerMillion": 4,
+        "contextLength": 32768,
+        "rank": 239,
+        "rankLower": 249,
+        "rankUpper": 220
       },
       {
         "modelKey": "olmo-3.1-32b-instruct",
@@ -2640,7 +4074,13 @@
         "ratingUpper": 1335.296247142136,
         "votes": 11794,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 65536,
+        "rank": 240,
+        "rankLower": 258,
+        "rankUpper": 224
       },
       {
         "modelKey": "yi-lightning",
@@ -2651,7 +4091,13 @@
         "ratingUpper": 1333.2230235428506,
         "votes": 27332,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 241,
+        "rankLower": 258,
+        "rankUpper": 225
       },
       {
         "modelKey": "llama-3.3-nemotron-49b-super-v1",
@@ -2662,7 +4108,13 @@
         "ratingUpper": 1339.9521629164224,
         "votes": 2218,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 242,
+        "rankLower": 269,
+        "rankUpper": 216
       },
       {
         "modelKey": "llama-4-maverick-17b-128e-instruct",
@@ -2673,7 +4125,13 @@
         "ratingUpper": 1331.2557662735553,
         "votes": 39266,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.63,
+        "outputPricePerMillion": 1.8,
+        "contextLength": 131072,
+        "rank": 243,
+        "rankLower": 258,
+        "rankUpper": 233
       },
       {
         "modelKey": "qwen3-30b-a3b",
@@ -2684,7 +4142,13 @@
         "ratingUpper": 1331.3277733131335,
         "votes": 26036,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.12,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 131072,
+        "rank": 244,
+        "rankLower": 259,
+        "rankUpper": 232
       },
       {
         "modelKey": "hunyuan-large-2025-02-10",
@@ -2695,7 +4159,13 @@
         "ratingUpper": 1336.0756610476187,
         "votes": 3738,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 245,
+        "rankLower": 269,
+        "rankUpper": 221
       },
       {
         "modelKey": "claude-3-5-haiku-20241022",
@@ -2706,7 +4176,13 @@
         "ratingUpper": 1327.8524439703244,
         "votes": 68877,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 5,
+        "contextLength": 200000,
+        "rank": 246,
+        "rankLower": 259,
+        "rankUpper": 239
       },
       {
         "modelKey": "gpt-4-turbo-2024-04-09",
@@ -2717,7 +4193,13 @@
         "ratingUpper": 1328.3825340356007,
         "votes": 98114,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 10,
+        "outputPricePerMillion": 30,
+        "contextLength": 128000,
+        "rank": 247,
+        "rankLower": 263,
+        "rankUpper": 239
       },
       {
         "modelKey": "gemini-1.5-pro-001",
@@ -2728,7 +4210,13 @@
         "ratingUpper": 1328.0151332989412,
         "votes": 79138,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3.5,
+        "outputPricePerMillion": 10.5,
+        "contextLength": 2097152,
+        "rank": 248,
+        "rankLower": 263,
+        "rankUpper": 239
       },
       {
         "modelKey": "deepseek-v2.5-1210",
@@ -2739,7 +4227,13 @@
         "ratingUpper": 1331.6723847630165,
         "votes": 6795,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 249,
+        "rankLower": 269,
+        "rankUpper": 230
       },
       {
         "modelKey": "ring-flash-2.0",
@@ -2750,7 +4244,13 @@
         "ratingUpper": 1329.9155834936992,
         "votes": 6934,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 250,
+        "rankLower": 269,
+        "rankUpper": 235
       },
       {
         "modelKey": "gpt-4.1-nano-2025-04-14",
@@ -2761,7 +4261,13 @@
         "ratingUpper": 1330.059523721186,
         "votes": 6103,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 1047576,
+        "rank": 251,
+        "rankLower": 271,
+        "rankUpper": 235
       },
       {
         "modelKey": "claude-3-opus-20240229",
@@ -2772,7 +4278,13 @@
         "ratingUpper": 1325.1356112240219,
         "votes": 194909,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 15,
+        "outputPricePerMillion": 75,
+        "contextLength": 200000,
+        "rank": 252,
+        "rankLower": 265,
+        "rankUpper": 239
       },
       {
         "modelKey": "molmo-2-8b",
@@ -2783,7 +4295,13 @@
         "ratingUpper": 1343.0515876475022,
         "votes": 818,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": 36864,
+        "rank": 253,
+        "rankLower": 283,
+        "rankUpper": 212
       },
       {
         "modelKey": "llama-4-scout-17b-16e-instruct",
@@ -2794,7 +4312,13 @@
         "ratingUpper": 1326.3267730623793,
         "votes": 29668,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.1,
+        "contextLength": 16384,
+        "rank": 254,
+        "rankLower": 268,
+        "rankUpper": 239
       },
       {
         "modelKey": "step-1o-turbo-202506",
@@ -2805,7 +4329,13 @@
         "ratingUpper": 1326.9417661833304,
         "votes": 8845,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 255,
+        "rankLower": 272,
+        "rankUpper": 239
       },
       {
         "modelKey": "glm-4-plus",
@@ -2816,7 +4346,13 @@
         "ratingUpper": 1324.2967751077895,
         "votes": 26126,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.44,
+        "outputPricePerMillion": 1.76,
+        "contextLength": 204800,
+        "rank": 256,
+        "rankLower": 271,
+        "rankUpper": 240
       },
       {
         "modelKey": "qwen-max-0919",
@@ -2827,7 +4363,13 @@
         "ratingUpper": 1323.7935231053175,
         "votes": 16478,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.6,
+        "outputPricePerMillion": 6.4,
+        "contextLength": 32768,
+        "rank": 257,
+        "rankLower": 273,
+        "rankUpper": 240
       },
       {
         "modelKey": "llama-3.3-70b-instruct",
@@ -2838,7 +4380,13 @@
         "ratingUpper": 1321.2979841036572,
         "votes": 54371,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.32,
+        "contextLength": 131072,
+        "rank": 258,
+        "rankLower": 271,
+        "rankUpper": 245
       },
       {
         "modelKey": "gpt-4o-mini-2024-07-18",
@@ -2849,7 +4397,13 @@
         "ratingUpper": 1321.2149345216358,
         "votes": 68697,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 128000,
+        "rank": 259,
+        "rankLower": 271,
+        "rankUpper": 245
       },
       {
         "modelKey": "gpt-oss-20b",
@@ -2860,7 +4414,13 @@
         "ratingUpper": 1324.0077863656306,
         "votes": 10371,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.024,
+        "outputPricePerMillion": 0.112,
+        "contextLength": 131072,
+        "rank": 260,
+        "rankLower": 277,
+        "rankUpper": 240
       },
       {
         "modelKey": "gemma-3n-e4b-it",
@@ -2871,7 +4431,13 @@
         "ratingUpper": 1322.5353158312314,
         "votes": 22038,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.06,
+        "outputPricePerMillion": 0.12,
+        "contextLength": 32768,
+        "rank": 261,
+        "rankLower": 274,
+        "rankUpper": 243
       },
       {
         "modelKey": "qwen2.5-plus-1127",
@@ -2882,7 +4448,13 @@
         "ratingUpper": 1320.9862058098747,
         "votes": 10187,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 262,
+        "rankLower": 278,
+        "rankUpper": 245
       },
       {
         "modelKey": "mistral-large-2407",
@@ -2893,7 +4465,13 @@
         "ratingUpper": 1318.30917312259,
         "votes": 45459,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 6,
+        "contextLength": 131072,
+        "rank": 263,
+        "rankLower": 277,
+        "rankUpper": 248
       },
       {
         "modelKey": "athene-v2-chat",
@@ -2904,7 +4482,13 @@
         "ratingUpper": 1318.720404902508,
         "votes": 24739,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 264,
+        "rankLower": 278,
+        "rankUpper": 248
       },
       {
         "modelKey": "nvidia-nemotron-3-nano-30b-a3b-bf16",
@@ -2915,7 +4499,13 @@
         "ratingUpper": 1319.0137229831903,
         "votes": 15724,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.06,
+        "outputPricePerMillion": 0.24,
+        "contextLength": 262144,
+        "rank": 265,
+        "rankLower": 278,
+        "rankUpper": 247
       },
       {
         "modelKey": "gpt-4-0125-preview",
@@ -2926,7 +4516,13 @@
         "ratingUpper": 1317.2787607496302,
         "votes": 93439,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 10,
+        "outputPricePerMillion": 30,
+        "contextLength": 128000,
+        "rank": 266,
+        "rankLower": 278,
+        "rankUpper": 248
       },
       {
         "modelKey": "gpt-4-1106-preview",
@@ -2937,7 +4533,13 @@
         "ratingUpper": 1316.6839122304636,
         "votes": 100105,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 10,
+        "outputPricePerMillion": 30,
+        "contextLength": 128000,
+        "rank": 267,
+        "rankLower": 278,
+        "rankUpper": 249
       },
       {
         "modelKey": "hunyuan-standard-2025-02-10",
@@ -2948,7 +4550,13 @@
         "ratingUpper": 1320.9535756448508,
         "votes": 3904,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 268,
+        "rankLower": 282,
+        "rankUpper": 245
       },
       {
         "modelKey": "gemini-1.5-flash-002",
@@ -2959,7 +4567,13 @@
         "ratingUpper": 1313.4736771992182,
         "votes": 34902,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.075,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 1048576,
+        "rank": 269,
+        "rankLower": 281,
+        "rankUpper": 257
       },
       {
         "modelKey": "grok-2-mini-2024-08-13",
@@ -2970,7 +4584,13 @@
         "ratingUpper": 1312.118427495785,
         "votes": 52567,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 10,
+        "contextLength": 131072,
+        "rank": 270,
+        "rankLower": 281,
+        "rankUpper": 260
       },
       {
         "modelKey": "deepseek-v2.5",
@@ -2981,7 +4601,13 @@
         "ratingUpper": 1311.907056493883,
         "votes": 24572,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 271,
+        "rankLower": 282,
+        "rankUpper": 260
       },
       {
         "modelKey": "athene-70b-0725",
@@ -2992,7 +4618,13 @@
         "ratingUpper": 1312.281495206129,
         "votes": 19621,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 272,
+        "rankLower": 282,
+        "rankUpper": 259
       },
       {
         "modelKey": "olmo-3-32b-think",
@@ -3003,7 +4635,13 @@
         "ratingUpper": 1314.73093025671,
         "votes": 5811,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 65536,
+        "rank": 273,
+        "rankLower": 284,
+        "rankUpper": 253
       },
       {
         "modelKey": "mercury",
@@ -3014,7 +4652,13 @@
         "ratingUpper": 1319.6174908407152,
         "votes": 1948,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 0.75,
+        "contextLength": 128000,
+        "rank": 274,
+        "rankLower": 294,
+        "rankUpper": 247
       },
       {
         "modelKey": "mistral-large-2411",
@@ -3025,7 +4669,13 @@
         "ratingUpper": 1309.9931104691445,
         "votes": 28073,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 6,
+        "contextLength": 128000,
+        "rank": 275,
+        "rankLower": 282,
+        "rankUpper": 262
       },
       {
         "modelKey": "magistral-medium-2506",
@@ -3036,7 +4686,13 @@
         "ratingUpper": 1311.2064509764073,
         "votes": 11435,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 5,
+        "contextLength": 40000,
+        "rank": 276,
+        "rankLower": 284,
+        "rankUpper": 260
       },
       {
         "modelKey": "granite-4.1-8b",
@@ -3047,7 +4703,13 @@
         "ratingUpper": 1314.7138559297496,
         "votes": 4166,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.1,
+        "contextLength": 131072,
+        "rank": 277,
+        "rankLower": 291,
+        "rankUpper": 253
       },
       {
         "modelKey": "gemma-3-4b-it",
@@ -3058,7 +4720,13 @@
         "ratingUpper": 1312.5560231755676,
         "votes": 4171,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.1,
+        "contextLength": 131072,
+        "rank": 278,
+        "rankLower": 291,
+        "rankUpper": 258
       },
       {
         "modelKey": "mistral-small-3.1-24b-instruct-2503",
@@ -3069,7 +4737,13 @@
         "ratingUpper": 1307.6303800141034,
         "votes": 32556,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 32000,
+        "rank": 279,
+        "rankLower": 284,
+        "rankUpper": 267
       },
       {
         "modelKey": "qwen2.5-72b-instruct",
@@ -3080,7 +4754,13 @@
         "ratingUpper": 1306.9466303554186,
         "votes": 39406,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.2,
+        "outputPricePerMillion": 1.2,
+        "contextLength": null,
+        "rank": 280,
+        "rankLower": 284,
+        "rankUpper": 267
       },
       {
         "modelKey": "llama-3.1-nemotron-70b-instruct",
@@ -3091,7 +4771,13 @@
         "ratingUpper": 1306.5067397799266,
         "votes": 7140,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.2,
+        "outputPricePerMillion": 1.2,
+        "contextLength": 131072,
+        "rank": 281,
+        "rankLower": 295,
+        "rankUpper": 267
       },
       {
         "modelKey": "hunyuan-large-vision",
@@ -3102,7 +4788,13 @@
         "ratingUpper": 1303.149661828897,
         "votes": 5250,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 282,
+        "rankLower": 297,
+        "rankUpper": 269
       },
       {
         "modelKey": "llama-3.1-70b-instruct",
@@ -3113,7 +4805,13 @@
         "ratingUpper": 1297.0700851188112,
         "votes": 55240,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.4,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 131072,
+        "rank": 283,
+        "rankLower": 295,
+        "rankUpper": 278
       },
       {
         "modelKey": "amazon-nova-pro-v1.0",
@@ -3124,7 +4822,13 @@
         "ratingUpper": 1294.687464732035,
         "votes": 24745,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.8,
+        "outputPricePerMillion": 3.2,
+        "contextLength": 300000,
+        "rank": 284,
+        "rankLower": 296,
+        "rankUpper": 278
       },
       {
         "modelKey": "gemma-2-27b-it",
@@ -3135,7 +4839,13 @@
         "ratingUpper": 1292.843137452277,
         "votes": 75754,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.65,
+        "outputPricePerMillion": 0.65,
+        "contextLength": 8192,
+        "rank": 285,
+        "rankLower": 296,
+        "rankUpper": 280
       },
       {
         "modelKey": "jamba-1.5-large",
@@ -3146,7 +4856,13 @@
         "ratingUpper": 1296.7393422234468,
         "votes": 8662,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2,
+        "outputPricePerMillion": 8,
+        "contextLength": 256000,
+        "rank": 286,
+        "rankLower": 299,
+        "rankUpper": 278
       },
       {
         "modelKey": "nimbus",
@@ -3157,7 +4873,13 @@
         "ratingUpper": 1300.7770677512144,
         "votes": 3266,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 287,
+        "rankLower": 305,
+        "rankUpper": 273
       },
       {
         "modelKey": "reka-core-20240904",
@@ -3168,7 +4890,13 @@
         "ratingUpper": 1295.1659470126613,
         "votes": 7312,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 288,
+        "rankLower": 299,
+        "rankUpper": 278
       },
       {
         "modelKey": "gpt-4-0314",
@@ -3179,7 +4907,13 @@
         "ratingUpper": 1292.4972341386456,
         "votes": 54173,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 30,
+        "outputPricePerMillion": 60,
+        "contextLength": 8192,
+        "rank": 289,
+        "rankLower": 297,
+        "rankUpper": 280
       },
       {
         "modelKey": "solace",
@@ -3190,7 +4924,13 @@
         "ratingUpper": 1298.7818710055312,
         "votes": 3255,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.06,
+        "outputPricePerMillion": 0.25,
+        "contextLength": 131072,
+        "rank": 290,
+        "rankLower": 305,
+        "rankUpper": 274
       },
       {
         "modelKey": "ibm-granite-h-small",
@@ -3201,7 +4941,13 @@
         "ratingUpper": 1295.2171079299885,
         "votes": 5581,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 291,
+        "rankLower": 305,
+        "rankUpper": 278
       },
       {
         "modelKey": "llama-3.1-nemotron-51b-instruct",
@@ -3212,7 +4958,13 @@
         "ratingUpper": 1296.518913150787,
         "votes": 3749,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 292,
+        "rankLower": 305,
+        "rankUpper": 278
       },
       {
         "modelKey": "gemini-1.5-flash-001",
@@ -3223,7 +4975,13 @@
         "ratingUpper": 1291.014900801138,
         "votes": 62833,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.075,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 1048576,
+        "rank": 293,
+        "rankLower": 299,
+        "rankUpper": 281
       },
       {
         "modelKey": "olmo-3.1-32b-think",
@@ -3234,7 +4992,13 @@
         "ratingUpper": 1293.7401844347614,
         "votes": 8278,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 65536,
+        "rank": 294,
+        "rankLower": 304,
+        "rankUpper": 280
       },
       {
         "modelKey": "llama-3.1-tulu-3-70b",
@@ -3245,7 +5009,13 @@
         "ratingUpper": 1296.5152260130767,
         "votes": 2846,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 295,
+        "rankLower": 305,
+        "rankUpper": 278
       },
       {
         "modelKey": "claude-3-sonnet-20240229",
@@ -3256,7 +5026,13 @@
         "ratingUpper": 1285.2297471504676,
         "votes": 109284,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 200000,
+        "rank": 296,
+        "rankLower": 305,
+        "rankUpper": 285
       },
       {
         "modelKey": "gemma-2-9b-it-simpo",
@@ -3267,7 +5043,13 @@
         "ratingUpper": 1287.2260556502238,
         "votes": 10072,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.03,
+        "outputPricePerMillion": 0.09,
+        "contextLength": 8192,
+        "rank": 297,
+        "rankLower": 305,
+        "rankUpper": 283
       },
       {
         "modelKey": "nemotron-4-340b-instruct",
@@ -3278,7 +5060,13 @@
         "ratingUpper": 1282.3951384362233,
         "votes": 19659,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 298,
+        "rankLower": 306,
+        "rankUpper": 287
       },
       {
         "modelKey": "llama-3-70b-instruct",
@@ -3289,7 +5077,13 @@
         "ratingUpper": 1280.0856133858688,
         "votes": 156876,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.51,
+        "outputPricePerMillion": 0.74,
+        "contextLength": 8192,
+        "rank": 299,
+        "rankLower": 305,
+        "rankUpper": 290
       },
       {
         "modelKey": "command-r-plus-08-2024",
@@ -3300,7 +5094,13 @@
         "ratingUpper": 1282.820805693682,
         "votes": 9866,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 2.5,
+        "outputPricePerMillion": 10,
+        "contextLength": 128000,
+        "rank": 300,
+        "rankLower": 308,
+        "rankUpper": 287
       },
       {
         "modelKey": "gpt-4-0613",
@@ -3311,7 +5111,13 @@
         "ratingUpper": 1280.1965544855125,
         "votes": 88723,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 30,
+        "outputPricePerMillion": 60,
+        "contextLength": 8192,
+        "rank": 301,
+        "rankLower": 306,
+        "rankUpper": 290
       },
       {
         "modelKey": "mistral-small-24b-instruct-2501",
@@ -3322,7 +5128,13 @@
         "ratingUpper": 1280.2976619349738,
         "votes": 14681,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.08,
+        "contextLength": 32768,
+        "rank": 302,
+        "rankLower": 308,
+        "rankUpper": 290
       },
       {
         "modelKey": "glm-4-0520",
@@ -3333,7 +5145,13 @@
         "ratingUpper": 1280.350909297239,
         "votes": 9788,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 303,
+        "rankLower": 309,
+        "rankUpper": 290
       },
       {
         "modelKey": "reka-flash-20240904",
@@ -3344,7 +5162,13 @@
         "ratingUpper": 1279.3485836949117,
         "votes": 7536,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 304,
+        "rankLower": 311,
+        "rankUpper": 290
       },
       {
         "modelKey": "qwen2.5-coder-32b-instruct",
@@ -3355,7 +5179,13 @@
         "ratingUpper": 1278.7119475640611,
         "votes": 5432,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.87,
+        "outputPricePerMillion": 0.87,
+        "contextLength": 32000,
+        "rank": 305,
+        "rankLower": 313,
+        "rankUpper": 291
       },
       {
         "modelKey": "c4ai-aya-expanse-32b",
@@ -3366,7 +5196,13 @@
         "ratingUpper": 1272.109458678879,
         "votes": 27124,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 1.5,
+        "contextLength": 128000,
+        "rank": 306,
+        "rankLower": 314,
+        "rankUpper": 299
       },
       {
         "modelKey": "gemma-2-9b-it",
@@ -3377,7 +5213,13 @@
         "ratingUpper": 1270.8067979739935,
         "votes": 54611,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.03,
+        "outputPricePerMillion": 0.09,
+        "contextLength": 8192,
+        "rank": 307,
+        "rankLower": 312,
+        "rankUpper": 301
       },
       {
         "modelKey": "deepseek-coder-v2",
@@ -3388,7 +5230,13 @@
         "ratingUpper": 1271.6024736397153,
         "votes": 15147,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.14,
+        "outputPricePerMillion": 0.28,
+        "contextLength": 128000,
+        "rank": 308,
+        "rankLower": 315,
+        "rankUpper": 301
       },
       {
         "modelKey": "qwen2-72b-instruct",
@@ -3399,7 +5247,13 @@
         "ratingUpper": 1266.7133748188514,
         "votes": 37325,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.9,
+        "outputPricePerMillion": 0.9,
+        "contextLength": 32768,
+        "rank": 309,
+        "rankLower": 316,
+        "rankUpper": 303
       },
       {
         "modelKey": "command-r-plus",
@@ -3410,7 +5264,13 @@
         "ratingUpper": 1266.0213501171265,
         "votes": 77554,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 3,
+        "outputPricePerMillion": 15,
+        "contextLength": 128000,
+        "rank": 310,
+        "rankLower": 315,
+        "rankUpper": 304
       },
       {
         "modelKey": "claude-3-haiku-20240307",
@@ -3421,7 +5281,13 @@
         "ratingUpper": 1265.3149518799778,
         "votes": 117701,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 1.25,
+        "contextLength": 200000,
+        "rank": 311,
+        "rankLower": 315,
+        "rankUpper": 305
       },
       {
         "modelKey": "amazon-nova-lite-v1.0",
@@ -3432,7 +5298,13 @@
         "ratingUpper": 1265.6210718396728,
         "votes": 19372,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.06,
+        "outputPricePerMillion": 0.24,
+        "contextLength": 300000,
+        "rank": 312,
+        "rankLower": 316,
+        "rankUpper": 304
       },
       {
         "modelKey": "gemini-1.5-flash-8b-001",
@@ -3443,7 +5315,13 @@
         "ratingUpper": 1263.0677370220697,
         "votes": 35558,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.075,
+        "outputPricePerMillion": 0.3,
+        "contextLength": 1048576,
+        "rank": 313,
+        "rankLower": 316,
+        "rankUpper": 306
       },
       {
         "modelKey": "phi-4",
@@ -3454,7 +5332,13 @@
         "ratingUpper": 1260.8812933078607,
         "votes": 24126,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.07,
+        "outputPricePerMillion": 0.14,
+        "contextLength": 16384,
+        "rank": 314,
+        "rankLower": 316,
+        "rankUpper": 308
       },
       {
         "modelKey": "olmo-2-0325-32b-instruct",
@@ -3465,7 +5349,13 @@
         "ratingUpper": 1262.4108392907708,
         "votes": 3334,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.2,
+        "contextLength": 128000,
+        "rank": 315,
+        "rankLower": 323,
+        "rankUpper": 307
       },
       {
         "modelKey": "command-r-08-2024",
@@ -3476,7 +5366,13 @@
         "ratingUpper": 1256.9591401196267,
         "votes": 10140,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 128000,
+        "rank": 316,
+        "rankLower": 322,
+        "rankUpper": 311
       },
       {
         "modelKey": "mistral-large-2402",
@@ -3487,7 +5383,13 @@
         "ratingUpper": 1247.1865942473955,
         "votes": 62436,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 8,
+        "outputPricePerMillion": 24,
+        "contextLength": 32000,
+        "rank": 317,
+        "rankLower": 325,
+        "rankUpper": 315
       },
       {
         "modelKey": "amazon-nova-micro-v1.0",
@@ -3498,7 +5400,13 @@
         "ratingUpper": 1245.8767845475877,
         "votes": 19364,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.035,
+        "outputPricePerMillion": 0.14,
+        "contextLength": 128000,
+        "rank": 318,
+        "rankLower": 325,
+        "rankUpper": 315
       },
       {
         "modelKey": "jamba-1.5-mini",
@@ -3509,7 +5417,13 @@
         "ratingUpper": 1246.9771306869916,
         "votes": 8858,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.4,
+        "contextLength": 256000,
+        "rank": 319,
+        "rankLower": 328,
+        "rankUpper": 315
       },
       {
         "modelKey": "ministral-8b-2410",
@@ -3520,7 +5434,13 @@
         "ratingUpper": 1246.6710876075865,
         "votes": 4781,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.1,
+        "contextLength": 131072,
+        "rank": 320,
+        "rankLower": 332,
+        "rankUpper": 315
       },
       {
         "modelKey": "gemini-pro-dev-api",
@@ -3531,7 +5451,13 @@
         "ratingUpper": 1244.086157648304,
         "votes": 18354,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.35,
+        "outputPricePerMillion": 1.05,
+        "contextLength": 32760,
+        "rank": 321,
+        "rankLower": 332,
+        "rankUpper": 315
       },
       {
         "modelKey": "qwen1.5-110b-chat",
@@ -3542,7 +5468,13 @@
         "ratingUpper": 1239.6748573629925,
         "votes": 26195,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 322,
+        "rankLower": 332,
+        "rankUpper": 317
       },
       {
         "modelKey": "reka-flash-21b-20240226-online",
@@ -3553,7 +5485,13 @@
         "ratingUpper": 1240.8601335531407,
         "votes": 15450,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 323,
+        "rankLower": 334,
+        "rankUpper": 316
       },
       {
         "modelKey": "qwen1.5-72b-chat",
@@ -3564,7 +5502,13 @@
         "ratingUpper": 1238.7281591488836,
         "votes": 39302,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 324,
+        "rankLower": 332,
+        "rankUpper": 317
       },
       {
         "modelKey": "hunyuan-standard-256k",
@@ -3575,7 +5519,13 @@
         "ratingUpper": 1244.9422303225838,
         "votes": 2728,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 325,
+        "rankLower": 335,
+        "rankUpper": 315
       },
       {
         "modelKey": "mixtral-8x22b-instruct-v0.1",
@@ -3586,7 +5536,13 @@
         "ratingUpper": 1234.0730234922762,
         "votes": 51416,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.9,
+        "outputPricePerMillion": 0.9,
+        "contextLength": 65536,
+        "rank": 326,
+        "rankLower": 334,
+        "rankUpper": 319
       },
       {
         "modelKey": "command-r",
@@ -3597,7 +5553,13 @@
         "ratingUpper": 1231.5798568327832,
         "votes": 54036,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 128000,
+        "rank": 327,
+        "rankLower": 335,
+        "rankUpper": 320
       },
       {
         "modelKey": "reka-flash-21b-20240226",
@@ -3608,7 +5570,13 @@
         "ratingUpper": 1232.6625476453182,
         "votes": 24806,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 328,
+        "rankLower": 335,
+        "rankUpper": 319
       },
       {
         "modelKey": "gpt-3.5-turbo-0125",
@@ -3619,7 +5587,13 @@
         "ratingUpper": 1230.1973672114145,
         "votes": 66207,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 1.5,
+        "contextLength": 16385,
+        "rank": 329,
+        "rankLower": 335,
+        "rankUpper": 320
       },
       {
         "modelKey": "llama-3-8b-instruct",
@@ -3630,7 +5604,13 @@
         "ratingUpper": 1227.301941578372,
         "votes": 104642,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.14,
+        "outputPricePerMillion": 0.14,
+        "contextLength": 8192,
+        "rank": 330,
+        "rankLower": 335,
+        "rankUpper": 324
       },
       {
         "modelKey": "gemini-pro",
@@ -3641,7 +5621,13 @@
         "ratingUpper": 1235.2725093514932,
         "votes": 6390,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.35,
+        "outputPricePerMillion": 1.05,
+        "contextLength": 32760,
+        "rank": 331,
+        "rankLower": 339,
+        "rankUpper": 319
       },
       {
         "modelKey": "c4ai-aya-expanse-8b",
@@ -3652,7 +5638,13 @@
         "ratingUpper": 1230.0062735192082,
         "votes": 9818,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 332,
+        "rankLower": 337,
+        "rankUpper": 320
       },
       {
         "modelKey": "mistral-medium",
@@ -3663,7 +5655,13 @@
         "ratingUpper": 1228.117980916665,
         "votes": 34550,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1.5,
+        "outputPricePerMillion": 7.5,
+        "contextLength": 262144,
+        "rank": 333,
+        "rankLower": 337,
+        "rankUpper": 324
       },
       {
         "modelKey": "llama-3.1-tulu-3-8b",
@@ -3674,7 +5672,13 @@
         "ratingUpper": 1231.1369710937438,
         "votes": 2896,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 334,
+        "rankLower": 340,
+        "rankUpper": 320
       },
       {
         "modelKey": "zephyr-orpo-141b-A35b-v0.1",
@@ -3685,7 +5689,13 @@
         "ratingUpper": 1223.715990202107,
         "votes": 4652,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 335,
+        "rankLower": 342,
+        "rankUpper": 326
       },
       {
         "modelKey": "yi-1.5-34b-chat",
@@ -3696,7 +5706,13 @@
         "ratingUpper": 1217.8295430464896,
         "votes": 24146,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 336,
+        "rankLower": 340,
+        "rankUpper": 331
       },
       {
         "modelKey": "llama-3.1-8b-instruct",
@@ -3707,7 +5723,13 @@
         "ratingUpper": 1215.3886919418337,
         "votes": 49605,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.08,
+        "contextLength": 131072,
+        "rank": 337,
+        "rankLower": 340,
+        "rankUpper": 333
       },
       {
         "modelKey": "granite-3.1-8b-instruct",
@@ -3718,7 +5740,13 @@
         "ratingUpper": 1219.5291472632512,
         "votes": 3090,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 338,
+        "rankLower": 346,
+        "rankUpper": 331
       },
       {
         "modelKey": "gpt-3.5-turbo-1106",
@@ -3729,7 +5757,13 @@
         "ratingUpper": 1212.87822225235,
         "votes": 16619,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 1,
+        "outputPricePerMillion": 2,
+        "contextLength": 16385,
+        "rank": 339,
+        "rankLower": 347,
+        "rankUpper": 333
       },
       {
         "modelKey": "qwen1.5-32b-chat",
@@ -3740,7 +5774,13 @@
         "ratingUpper": 1210.029090161547,
         "votes": 21741,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 340,
+        "rankLower": 346,
+        "rankUpper": 334
       },
       {
         "modelKey": "gemma-2-2b-it",
@@ -3751,7 +5791,13 @@
         "ratingUpper": 1204.1718301678238,
         "votes": 46616,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 341,
+        "rankLower": 347,
+        "rankUpper": 337
       },
       {
         "modelKey": "phi-3-medium-4k-instruct",
@@ -3762,7 +5808,13 @@
         "ratingUpper": 1202.9938022817682,
         "votes": 25055,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.17,
+        "outputPricePerMillion": 0.68,
+        "contextLength": null,
+        "rank": 342,
+        "rankLower": 348,
+        "rankUpper": 337
       },
       {
         "modelKey": "mixtral-8x7b-instruct-v0.1",
@@ -3773,7 +5825,13 @@
         "ratingUpper": 1201.3504239507643,
         "votes": 73503,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.63,
+        "outputPricePerMillion": 0.63,
+        "contextLength": 32000,
+        "rank": 343,
+        "rankLower": 348,
+        "rankUpper": 338
       },
       {
         "modelKey": "dbrx-instruct-preview",
@@ -3784,7 +5842,13 @@
         "ratingUpper": 1201.555936581709,
         "votes": 32191,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.6,
+        "outputPricePerMillion": 0.6,
+        "contextLength": 32768,
+        "rank": 344,
+        "rankLower": 353,
+        "rankUpper": 338
       },
       {
         "modelKey": "qwen1.5-14b-chat",
@@ -3795,7 +5859,13 @@
         "ratingUpper": 1198.1158368269457,
         "votes": 17839,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 0.3,
+        "contextLength": null,
+        "rank": 345,
+        "rankLower": 357,
+        "rankUpper": 338
       },
       {
         "modelKey": "internlm2_5-20b-chat",
@@ -3806,7 +5876,13 @@
         "ratingUpper": 1197.8903784115973,
         "votes": 9901,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0,
+        "outputPricePerMillion": 0,
+        "contextLength": 32768,
+        "rank": 346,
+        "rankLower": 357,
+        "rankUpper": 338
       },
       {
         "modelKey": "deepseek-llm-67b-chat",
@@ -3817,7 +5893,13 @@
         "ratingUpper": 1196.327521377697,
         "votes": 4932,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 347,
+        "rankLower": 364,
+        "rankUpper": 340
       },
       {
         "modelKey": "wizardlm-70b",
@@ -3828,7 +5910,13 @@
         "ratingUpper": 1194.0821178257588,
         "votes": 8214,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 348,
+        "rankLower": 363,
+        "rankUpper": 342
       },
       {
         "modelKey": "yi-34b-chat",
@@ -3839,7 +5927,13 @@
         "ratingUpper": 1190.49328176387,
         "votes": 15483,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.9,
+        "outputPricePerMillion": 0.9,
+        "contextLength": 4096,
+        "rank": 349,
+        "rankLower": 360,
+        "rankUpper": 344
       },
       {
         "modelKey": "granite-3.0-8b-instruct",
@@ -3850,7 +5944,13 @@
         "ratingUpper": 1191.7354345688855,
         "votes": 6638,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 350,
+        "rankLower": 364,
+        "rankUpper": 344
       },
       {
         "modelKey": "openchat-3.5",
@@ -3861,7 +5961,13 @@
         "ratingUpper": 1192.609738868845,
         "votes": 7968,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": null,
+        "rank": 351,
+        "rankLower": 364,
+        "rankUpper": 344
       },
       {
         "modelKey": "openchat-3.5-0106",
@@ -3872,7 +5978,13 @@
         "ratingUpper": 1190.6440810813992,
         "votes": 12637,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 352,
+        "rankLower": 363,
+        "rankUpper": 344
       },
       {
         "modelKey": "gemma-1.1-7b-it",
@@ -3883,7 +5995,13 @@
         "ratingUpper": 1188.596144325934,
         "votes": 23893,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.03,
+        "outputPricePerMillion": 0.09,
+        "contextLength": 8192,
+        "rank": 353,
+        "rankLower": 360,
+        "rankUpper": 345
       },
       {
         "modelKey": "snowflake-arctic-instruct",
@@ -3894,7 +6012,13 @@
         "ratingUpper": 1185.8737895948293,
         "votes": 32832,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 354,
+        "rankLower": 364,
+        "rankUpper": 345
       },
       {
         "modelKey": "granite-3.1-2b-instruct",
@@ -3905,7 +6029,13 @@
         "ratingUpper": 1189.9726183526313,
         "votes": 3188,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 355,
+        "rankLower": 364,
+        "rankUpper": 344
       },
       {
         "modelKey": "tulu-2-dpo-70b",
@@ -3916,7 +6046,13 @@
         "ratingUpper": 1187.3773415524274,
         "votes": 6535,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 356,
+        "rankLower": 364,
+        "rankUpper": 345
       },
       {
         "modelKey": "openhermes-2.5-mistral-7b",
@@ -3927,7 +6063,13 @@
         "ratingUpper": 1186.2616559249918,
         "votes": 5006,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.17,
+        "outputPricePerMillion": 0.17,
+        "contextLength": null,
+        "rank": 357,
+        "rankLower": 368,
+        "rankUpper": 345
       },
       {
         "modelKey": "vicuna-33b",
@@ -3938,7 +6080,13 @@
         "ratingUpper": 1179.0307540823833,
         "votes": 22479,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0,
+        "outputPricePerMillion": 0,
+        "contextLength": 2048,
+        "rank": 358,
+        "rankLower": 366,
+        "rankUpper": 347
       },
       {
         "modelKey": "phi-3-small-8k-instruct",
@@ -3949,7 +6097,13 @@
         "ratingUpper": 1176.9181772724874,
         "votes": 17766,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.6,
+        "contextLength": null,
+        "rank": 359,
+        "rankLower": 368,
+        "rankUpper": 347
       },
       {
         "modelKey": "starling-lm-7b-beta",
@@ -3960,7 +6114,13 @@
         "ratingUpper": 1178.2543188900643,
         "votes": 16056,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 360,
+        "rankLower": 370,
+        "rankUpper": 347
       },
       {
         "modelKey": "llama-2-70b-chat",
@@ -3971,7 +6131,13 @@
         "ratingUpper": 1176.0314204112647,
         "votes": 38492,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.7,
+        "outputPricePerMillion": 2.8,
+        "contextLength": 4096,
+        "rank": 361,
+        "rankLower": 368,
+        "rankUpper": 349
       },
       {
         "modelKey": "starling-lm-7b-alpha",
@@ -3982,7 +6148,13 @@
         "ratingUpper": 1175.375447358454,
         "votes": 10224,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 362,
+        "rankLower": 371,
+        "rankUpper": 349
       },
       {
         "modelKey": "llama-3.2-3b-instruct",
@@ -3993,7 +6165,13 @@
         "ratingUpper": 1174.43284318272,
         "votes": 7936,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.33,
+        "contextLength": 131072,
+        "rank": 363,
+        "rankLower": 371,
+        "rankUpper": 351
       },
       {
         "modelKey": "nous-hermes-2-mixtral-8x7b-dpo",
@@ -4004,7 +6182,13 @@
         "ratingUpper": 1176.206732089061,
         "votes": 3777,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.9,
+        "outputPricePerMillion": 0.9,
+        "contextLength": null,
+        "rank": 364,
+        "rankLower": 374,
+        "rankUpper": 349
       },
       {
         "modelKey": "granite-3.0-2b-instruct",
@@ -4015,7 +6199,13 @@
         "ratingUpper": 1164.9589258823307,
         "votes": 6837,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 365,
+        "rankLower": 377,
+        "rankUpper": 361
       },
       {
         "modelKey": "llama2-70b-steerlm-chat",
@@ -4026,7 +6216,13 @@
         "ratingUpper": 1167.215764833741,
         "votes": 3585,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 366,
+        "rankLower": 382,
+        "rankUpper": 357
       },
       {
         "modelKey": "qwq-32b-preview",
@@ -4037,7 +6233,13 @@
         "ratingUpper": 1165.6619466316226,
         "votes": 3231,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 1,
+        "contextLength": 16384,
+        "rank": 367,
+        "rankLower": 381,
+        "rankUpper": 358
       },
       {
         "modelKey": "solar-10.7b-instruct-v1.0",
@@ -4048,7 +6250,13 @@
         "ratingUpper": 1165.4892407589482,
         "votes": 4155,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 0.3,
+        "contextLength": null,
+        "rank": 368,
+        "rankLower": 384,
+        "rankUpper": 358
       },
       {
         "modelKey": "dolphin-2.2.1-mistral-7b",
@@ -4059,7 +6267,13 @@
         "ratingUpper": 1167.4767879185874,
         "votes": 1679,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 16384,
+        "rank": 369,
+        "rankLower": 386,
+        "rankUpper": 357
       },
       {
         "modelKey": "mpt-30b-chat",
@@ -4070,7 +6284,13 @@
         "ratingUpper": 1162.8845195598892,
         "votes": 2572,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 370,
+        "rankLower": 384,
+        "rankUpper": 362
       },
       {
         "modelKey": "wizardlm-13b",
@@ -4081,7 +6301,13 @@
         "ratingUpper": 1158.6392081391368,
         "votes": 7044,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 0.3,
+        "contextLength": null,
+        "rank": 371,
+        "rankLower": 382,
+        "rankUpper": 364
       },
       {
         "modelKey": "mistral-7b-instruct-v0.2",
@@ -4092,7 +6318,13 @@
         "ratingUpper": 1155.9522925866709,
         "votes": 19402,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": 32768,
+        "rank": 372,
+        "rankLower": 381,
+        "rankUpper": 364
       },
       {
         "modelKey": "falcon-180b-chat",
@@ -4103,7 +6335,13 @@
         "ratingUpper": 1165.0591770156634,
         "votes": 1295,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 373,
+        "rankLower": 388,
+        "rankUpper": 361
       },
       {
         "modelKey": "qwen1.5-7b-chat",
@@ -4114,7 +6352,13 @@
         "ratingUpper": 1153.6410382388815,
         "votes": 4737,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": null,
+        "rank": 374,
+        "rankLower": 387,
+        "rankUpper": 364
       },
       {
         "modelKey": "phi-3-mini-4k-instruct-june-2024",
@@ -4125,7 +6369,13 @@
         "ratingUpper": 1149.4898218374694,
         "votes": 12297,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.13,
+        "outputPricePerMillion": 0.52,
+        "contextLength": 4096,
+        "rank": 375,
+        "rankLower": 386,
+        "rankUpper": 365
       },
       {
         "modelKey": "vicuna-13b",
@@ -4136,7 +6386,13 @@
         "ratingUpper": 1148.1732504560507,
         "votes": 19367,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.3,
+        "outputPricePerMillion": 0.3,
+        "contextLength": null,
+        "rank": 376,
+        "rankLower": 386,
+        "rankUpper": 366
       },
       {
         "modelKey": "llama-2-13b-chat",
@@ -4147,7 +6403,13 @@
         "ratingUpper": 1148.0377999702155,
         "votes": 19174,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.25,
+        "outputPricePerMillion": 0.25,
+        "contextLength": 4096,
+        "rank": 377,
+        "rankLower": 386,
+        "rankUpper": 366
       },
       {
         "modelKey": "qwen-14b-chat",
@@ -4158,7 +6420,13 @@
         "ratingUpper": 1150.2073803462167,
         "votes": 4964,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 378,
+        "rankLower": 389,
+        "rankUpper": 365
       },
       {
         "modelKey": "palm-2",
@@ -4169,7 +6437,13 @@
         "ratingUpper": 1148.4429524371512,
         "votes": 8554,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.5,
+        "outputPricePerMillion": 0.5,
+        "contextLength": 25804,
+        "rank": 379,
+        "rankLower": 388,
+        "rankUpper": 365
       },
       {
         "modelKey": "gemma-7b-it",
@@ -4180,7 +6454,13 @@
         "ratingUpper": 1147.1552682354977,
         "votes": 8925,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.05,
+        "outputPricePerMillion": 0.08,
+        "contextLength": 8192,
+        "rank": 380,
+        "rankLower": 389,
+        "rankUpper": 366
       },
       {
         "modelKey": "codellama-34b-instruct",
@@ -4191,7 +6471,13 @@
         "ratingUpper": 1145.6476490995724,
         "votes": 7366,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.35,
+        "outputPricePerMillion": 1.4,
+        "contextLength": 16384,
+        "rank": 381,
+        "rankLower": 389,
+        "rankUpper": 366
       },
       {
         "modelKey": "zephyr-7b-beta",
@@ -4202,7 +6488,13 @@
         "ratingUpper": 1139.5395751500446,
         "votes": 11118,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.15,
+        "contextLength": 16384,
+        "rank": 382,
+        "rankLower": 391,
+        "rankUpper": 370
       },
       {
         "modelKey": "phi-3-mini-128k-instruct",
@@ -4213,7 +6505,13 @@
         "ratingUpper": 1137.170268394901,
         "votes": 20685,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.13,
+        "outputPricePerMillion": 0.52,
+        "contextLength": null,
+        "rank": 383,
+        "rankLower": 391,
+        "rankUpper": 372
       },
       {
         "modelKey": "phi-3-mini-4k-instruct",
@@ -4224,7 +6522,13 @@
         "ratingUpper": 1134.4161584825472,
         "votes": 20118,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.13,
+        "outputPricePerMillion": 0.52,
+        "contextLength": null,
+        "rank": 384,
+        "rankLower": 391,
+        "rankUpper": 376
       },
       {
         "modelKey": "guanaco-33b",
@@ -4235,7 +6539,13 @@
         "ratingUpper": 1139.4806648307838,
         "votes": 2921,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 385,
+        "rankLower": 393,
+        "rankUpper": 370
       },
       {
         "modelKey": "zephyr-7b-alpha",
@@ -4246,7 +6556,13 @@
         "ratingUpper": 1142.4124513263507,
         "votes": 1785,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 386,
+        "rankLower": 394,
+        "rankUpper": 368
       },
       {
         "modelKey": "stripedhyena-nous-7b",
@@ -4257,7 +6573,13 @@
         "ratingUpper": 1132.4918136879055,
         "votes": 5182,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": null,
+        "rank": 387,
+        "rankLower": 394,
+        "rankUpper": 377
       },
       {
         "modelKey": "codellama-70b-instruct",
@@ -4268,7 +6590,13 @@
         "ratingUpper": 1137.1918647062116,
         "votes": 1143,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.7,
+        "outputPricePerMillion": 2.8,
+        "contextLength": 16384,
+        "rank": 388,
+        "rankLower": 395,
+        "rankUpper": 372
       },
       {
         "modelKey": "gemma-1.1-2b-it",
@@ -4279,7 +6607,13 @@
         "ratingUpper": 1124.3287957901475,
         "votes": 10854,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 389,
+        "rankLower": 394,
+        "rankUpper": 382
       },
       {
         "modelKey": "vicuna-7b",
@@ -4290,7 +6624,13 @@
         "ratingUpper": 1124.3384313804158,
         "votes": 6923,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": null,
+        "rank": 390,
+        "rankLower": 394,
+        "rankUpper": 382
       },
       {
         "modelKey": "smollm2-1.7b-instruct",
@@ -4301,7 +6641,13 @@
         "ratingUpper": 1128.9678767176974,
         "votes": 2199,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 391,
+        "rankLower": 396,
+        "rankUpper": 379
       },
       {
         "modelKey": "llama-3.2-1b-instruct",
@@ -4312,7 +6658,13 @@
         "ratingUpper": 1118.940606541886,
         "votes": 8045,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.027,
+        "outputPricePerMillion": 0.201,
+        "contextLength": 60000,
+        "rank": 392,
+        "rankLower": 395,
+        "rankUpper": 385
       },
       {
         "modelKey": "mistral-7b-instruct",
@@ -4323,7 +6675,13 @@
         "ratingUpper": 1119.5497519101862,
         "votes": 8977,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.07,
+        "outputPricePerMillion": 0.28,
+        "contextLength": 4096,
+        "rank": 393,
+        "rankLower": 395,
+        "rankUpper": 385
       },
       {
         "modelKey": "llama-2-7b-chat",
@@ -4334,7 +6692,13 @@
         "ratingUpper": 1114.8598836068604,
         "votes": 14148,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.15,
+        "outputPricePerMillion": 0.15,
+        "contextLength": 4096,
+        "rank": 394,
+        "rankLower": 395,
+        "rankUpper": 386
       },
       {
         "modelKey": "gemma-2b-it",
@@ -4345,7 +6709,13 @@
         "ratingUpper": 1105.0604646390789,
         "votes": 4780,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.1,
+        "contextLength": null,
+        "rank": 395,
+        "rankLower": 398,
+        "rankUpper": 390
       },
       {
         "modelKey": "qwen1.5-4b-chat",
@@ -4356,7 +6726,13 @@
         "ratingUpper": 1100.3805781312858,
         "votes": 7597,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.1,
+        "outputPricePerMillion": 0.1,
+        "contextLength": null,
+        "rank": 396,
+        "rankLower": 398,
+        "rankUpper": 394
       },
       {
         "modelKey": "olmo-7b-instruct",
@@ -4367,7 +6743,13 @@
         "ratingUpper": 1084.665641574863,
         "votes": 6328,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.2,
+        "outputPricePerMillion": 0.2,
+        "contextLength": null,
+        "rank": 397,
+        "rankLower": 402,
+        "rankUpper": 395
       },
       {
         "modelKey": "koala-13b",
@@ -4378,7 +6760,13 @@
         "ratingUpper": 1080.6693040325358,
         "votes": 6965,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 398,
+        "rankLower": 402,
+        "rankUpper": 397
       },
       {
         "modelKey": "alpaca-13b",
@@ -4389,7 +6777,13 @@
         "ratingUpper": 1081.5434150282124,
         "votes": 5745,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 399,
+        "rankLower": 402,
+        "rankUpper": 397
       },
       {
         "modelKey": "gpt4all-13b-snoozy",
@@ -4400,7 +6794,13 @@
         "ratingUpper": 1082.7688948735208,
         "votes": 1743,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 400,
+        "rankLower": 403,
+        "rankUpper": 395
       },
       {
         "modelKey": "mpt-7b-chat",
@@ -4411,7 +6811,13 @@
         "ratingUpper": 1075.2759097057924,
         "votes": 3924,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 401,
+        "rankLower": 403,
+        "rankUpper": 397
       },
       {
         "modelKey": "chatglm3-6b",
@@ -4422,7 +6828,13 @@
         "ratingUpper": 1068.1311405644276,
         "votes": 4658,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 402,
+        "rankLower": 403,
+        "rankUpper": 397
       },
       {
         "modelKey": "RWKV-4-Raven-14B",
@@ -4433,7 +6845,13 @@
         "ratingUpper": 1053.57787977502,
         "votes": 4845,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 403,
+        "rankLower": 405,
+        "rankUpper": 400
       },
       {
         "modelKey": "chatglm2-6b",
@@ -4444,7 +6862,13 @@
         "ratingUpper": 1038.2356042361043,
         "votes": 2658,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 404,
+        "rankLower": 405,
+        "rankUpper": 403
       },
       {
         "modelKey": "oasst-pythia-12b",
@@ -4455,7 +6879,13 @@
         "ratingUpper": 1034.2513324906372,
         "votes": 6310,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 405,
+        "rankLower": 405,
+        "rankUpper": 403
       },
       {
         "modelKey": "chatglm-6b",
@@ -4466,7 +6896,13 @@
         "ratingUpper": 1008.2412076911386,
         "votes": 4914,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 406,
+        "rankLower": 409,
+        "rankUpper": 406
       },
       {
         "modelKey": "fastchat-t5-3b",
@@ -4477,7 +6913,13 @@
         "ratingUpper": 1004.7704861616154,
         "votes": 4203,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 407,
+        "rankLower": 409,
+        "rankUpper": 406
       },
       {
         "modelKey": "dolly-v2-12b",
@@ -4488,7 +6930,13 @@
         "ratingUpper": 995.8477142608393,
         "votes": 3412,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 408,
+        "rankLower": 409,
+        "rankUpper": 406
       },
       {
         "modelKey": "llama-13b",
@@ -4499,7 +6947,13 @@
         "ratingUpper": 990.7566689676493,
         "votes": 2391,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": 0.225,
+        "outputPricePerMillion": 0.225,
+        "contextLength": null,
+        "rank": 409,
+        "rankLower": 410,
+        "rankUpper": 406
       },
       {
         "modelKey": "stablelm-tuned-alpha-7b",
@@ -4510,7 +6964,13 @@
         "ratingUpper": 965.754384844168,
         "votes": 3287,
         "releaseType": null,
-        "updatedAt": "2026-09-30T14:00:00.000Z"
+        "updatedAt": "2026-09-30T14:00:00.000Z",
+        "inputPricePerMillion": null,
+        "outputPricePerMillion": null,
+        "contextLength": null,
+        "rank": 410,
+        "rankLower": 410,
+        "rankUpper": 409
       }
     ],
     "dropped": []

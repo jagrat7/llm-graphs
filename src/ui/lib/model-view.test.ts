@@ -6,6 +6,7 @@ import { aggregateModels } from "#/server/services/model-aggregator/derive"
 import { fixtureInputs, fixtures } from "#/server/services/model-aggregator/fixture-inputs"
 import { ProvidersService } from "#/server/services/providers"
 import { defaultPicks, offeredVariants, effortLabel } from "#/ui/lib/model-view"
+import { metricRecord } from "./metrics"
 
 const info = ProvidersService.info()
 const { snapshot } = aggregateModels(fixtureInputs())
@@ -163,6 +164,7 @@ describe("offeredVariants", () => {
     )
 
     expect(fable?.sources).toEqual({
+      ...metricRecord(() => null),
       score: "deepswe",
       costPerTask: null,
       costPerMTokens: null,

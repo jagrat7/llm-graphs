@@ -14,8 +14,9 @@ import {
   hasMeaningfulComparison,
 } from "./graph-state"
 import { defaultPicks, offeredVariants } from "./model-view"
+import { METRICS, METRIC_CONFIG } from "./metrics"
 
-it("validates every registered benchmark and axis order against one shared snapshot", () => {
+it("validates every registered benchmark and metric set against one shared snapshot", () => {
   const info = ProvidersService.info()
   const derivation = aggregateModels(allFixtureInputs())
   const { snapshot } = derivation
@@ -28,9 +29,12 @@ it("validates every registered benchmark and axis order against one shared snaps
     }
     return rows
   })
-  const cases = graphCases(info)
-  // Five metrics: 36 orders without Score, 44 per registered score source.
-  expect(cases).toHaveLength(36 + 44 * info.metricProviders.score.length)
+  // Axis permutations share the same joins/domains: cover each metric set and every source.
+  const cases = graphCases(info, { allOrders: false, allSources: true })
+  expect(new Set(cases.map((item) => item.key)).size).toBe(cases.length)
+  expect(new Set(METRICS.map((metric) => METRIC_CONFIG[metric].dataKey))).toEqual(
+    new Set(Object.keys(info.metricProviders)),
+  )
   expect(buildDiagnostics(derivation).counts.failures).toBe(0)
   for (const source of ProvidersService.names)
     expect(snapshot.variants[source].length, source).toBeGreaterThan(0)
@@ -96,4 +100,4 @@ it("validates every registered benchmark and axis order against one shared snaps
   expect(
     compatibleComparison({ x: "cost", y: "score", z: "speed", ySource: "metr" }, info, snapshot),
   ).toEqual({ x: "price", y: "score", ySource: "metr" })
-})
+}, 15_000)

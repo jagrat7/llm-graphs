@@ -23,6 +23,14 @@ const rowSchema: z.ZodType<METRRow> = z
         ci_low: z.number().nonnegative(),
         ci_high: z.number().nonnegative(),
       }),
+      p80_horizon_length: z
+        .object({
+          estimate: z.number().nonnegative(),
+          ci_low: z.number().nonnegative(),
+          ci_high: z.number().nonnegative(),
+        })
+        .nullish(),
+      average_score: z.object({ estimate: z.number().min(0).max(1) }).nullish(),
     }),
   })
   .transform((row) => ({
@@ -30,6 +38,8 @@ const rowSchema: z.ZodType<METRRow> = z
     release_date: row.release_date,
     scaffolds: row.scaffolds,
     p50: row.metrics.p50_horizon_length,
+    p80: row.metrics.p80_horizon_length ?? null,
+    average_score: row.metrics.average_score?.estimate ?? null,
   }))
 
 /** METR IDs describe its eval harness, not effort. No reasoning settings are invented. */
@@ -40,6 +50,9 @@ export function metrModelId(id: string) {
     .replace(/^claude-(\d(?:-\d)?)-(sonnet|opus|haiku)/, "claude-$2-$1")
     .replace(/^gpt-4-1106$/, "gpt-4-1106-preview")
 }
+
+const scaffoldDetail = (row: METRRow) =>
+  `Model + scaffold: ${row.scaffolds.join("; ")}. Reasoning effort not reported. Estimates above 16 h are unavailable.`
 
 const metrics: MetricReaders<METRRow> = {
   score: {
@@ -54,9 +67,30 @@ const metrics: MetricReaders<METRRow> = {
     note: "METR TH1.1; human-expert task difficulty at 50% success, not AI runtime",
     describe: (row) => ({
       label: "METR Time Horizon 1.1 · 50% success",
-      detail: `Model + scaffold: ${row.scaffolds.join("; ")}. Reasoning effort not specified in the published data. Estimates above 16 h are unavailable.`,
+      detail: scaffoldDetail(row),
       interval: { low: row.p50.ci_low / 60, high: row.p50.ci_high / 60 },
     }),
+  },
+  horizon80Hours: {
+    read: (row) =>
+      row.p80 != null &&
+      row.p80.estimate <= 16 * 60 &&
+      row.p80.ci_low <= row.p80.estimate &&
+      row.p80.ci_high >= row.p80.estimate
+        ? row.p80.estimate / 60
+        : null,
+    presentation: { label: "Task horizon (80%)", unit: "h", format: "hours" },
+    note: "METR TH1.1; human-expert task difficulty at 80% success, not AI runtime",
+    describe: (row) => ({
+      label: "METR Time Horizon 1.1 · 80% success",
+      detail: scaffoldDetail(row),
+      ...(row.p80 ? { interval: { low: row.p80.ci_low / 60, high: row.p80.ci_high / 60 } } : {}),
+    }),
+  },
+  averageTaskScore: {
+    read: (row) => (row.average_score == null ? null : row.average_score * 100),
+    presentation: { label: "Average task score", unit: "%", format: "percent" },
+    note: "METR TH1.1 published average task score; distinct from the time-horizon reliability threshold",
   },
 }
 
@@ -68,7 +102,7 @@ export class METRProvider
   readonly displayName = "METR"
   readonly href = "https://metr.org/time-horizons/"
   readonly abbreviation = "METR"
-  readonly cacheKey = "llm-scores:source:metr:th1.1:v2"
+  readonly cacheKey = "llm-scores:source:metr:th1.1:v3"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = metrics
   toMetricRows(payload: METRPayload): Array<MetricRow> {
@@ -81,7 +115,12 @@ export class METRProvider
       configurationKnown: false,
       metrics: this.readMetrics(row),
       measurements: describeMetrics(this.metrics, row),
-      metadata: { name: null, creator: null, releaseDate: row.release_date },
+      metadata: {
+        name: row.id === "gpt2" ? "GPT-2" : null,
+        // These historical OpenAI IDs lack a catalog match; they are not separate vendors.
+        creator: row.id === "gpt2" || row.id.startsWith("davinci_") ? "OpenAI" : null,
+        releaseDate: row.release_date,
+      },
     }))
   }
   async fetchPayload(): Promise<METRPayload> {

@@ -484,7 +484,9 @@ export function ComparisonChart({
                     fill={point.color}
                     stroke="var(--background)"
                     strokeWidth={2}
-                    initial={reduceMotion ? false : { r: 0, opacity: 0 }}
+                    initial={
+                      reduceMotion ? false : { cx: position.x, cy: position.y, r: 0, opacity: 0 }
+                    }
                     animate={{
                       cx: position.x,
                       cy: position.y,

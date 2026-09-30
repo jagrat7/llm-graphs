@@ -15,6 +15,11 @@ const leaderboardSchema = z.object({
   voteCutoffISOString: z.iso.datetime(),
   entries: z.array(z.unknown()).min(1),
 })
+const selectionSchema = leaderboardSchema.pick({
+  arenaSlug: true,
+  leaderboardSlug: true,
+  params: true,
+})
 const rowSchema: z.ZodType<ArenaRow> = z.object({
   modelKey: z.string().min(1),
   modelDisplayName: z.string().min(1),
@@ -31,12 +36,48 @@ const rowSchema: z.ZodType<ArenaRow> = z.object({
     .nullish()
     .transform((v) => v ?? null),
   updatedAt: z.iso.datetime(),
+  inputPricePerMillion: z
+    .number()
+    .nonnegative()
+    .nullish()
+    .transform((v) => v ?? null),
+  outputPricePerMillion: z
+    .number()
+    .nonnegative()
+    .nullish()
+    .transform((v) => v ?? null),
+  contextLength: z
+    .number()
+    .int()
+    .positive()
+    .nullish()
+    .transform((v) => v ?? null),
+  rank: z
+    .number()
+    .int()
+    .positive()
+    .nullish()
+    .transform((v) => v ?? null),
+  rankLower: z
+    .number()
+    .int()
+    .positive()
+    .nullish()
+    .transform((v) => v ?? null),
+  rankUpper: z
+    .number()
+    .int()
+    .positive()
+    .nullish()
+    .transform((v) => v ?? null),
 })
 
 function findLeaderboard(value: unknown): unknown {
   if (value == null || typeof value !== "object") return null
-  if (!Array.isArray(value) && Object.hasOwn(value, "leaderboard"))
-    return Reflect.get(value, "leaderboard")
+  if (!Array.isArray(value) && Object.hasOwn(value, "leaderboard")) {
+    const candidate: unknown = Reflect.get(value, "leaderboard")
+    if (selectionSchema.safeParse(candidate).success) return candidate
+  }
   for (const child of Object.values(value)) {
     const found = findLeaderboard(child)
     if (found) return found
@@ -63,7 +104,7 @@ export function parseArenaPage(html: string): ArenaPayload {
     }
     const raw = findLeaderboard(value)
     if (raw == null) continue
-    // Any category, adjustment, or schema change fails refresh; the cache keeps its good copy.
+    // Only the requested category/adjustment qualifies; malformed selected data fails refresh.
     const board = leaderboardSchema.parse(raw)
     return parseRows(
       "Arena",
@@ -128,13 +169,58 @@ const metrics: MetricReaders<ArenaRow> = {
       row.ratingLower <= row.rating && row.ratingUpper >= row.rating ? row.rating : null,
     presentation: { label: "Preference rating", unit: "points", format: "number" },
     note: "Arena Text overall, style control; blind human preference, not pass rate",
-    describe: (row) => ({
-      label: "Arena Text · overall · style control",
-      updatedAt: row.updatedAt,
-      detail: `${row.votes.toLocaleString("en-US")} votes`,
-      interval: { low: row.ratingLower, high: row.ratingUpper },
-      preliminary: row.releaseType === "pre_release",
-    }),
+    describe: (row) => {
+      // Arena's upper rank is the better (numerically smaller) position.
+      const low =
+        row.rankLower != null && row.rankUpper != null
+          ? Math.min(row.rankLower, row.rankUpper)
+          : null
+      const high =
+        row.rankLower != null && row.rankUpper != null
+          ? Math.max(row.rankLower, row.rankUpper)
+          : null
+      const rank =
+        row.rank == null
+          ? ""
+          : ` · rank ${row.rank}${low != null && high != null && low <= row.rank && high >= row.rank ? ` (${low}–${high})` : ""}`
+      return {
+        label: "Arena Text · overall · style control",
+        updatedAt: row.updatedAt,
+        detail: `${row.votes.toLocaleString("en-US")} votes${rank}`,
+        interval: { low: row.ratingLower, high: row.ratingUpper },
+        preliminary: row.releaseType === "pre_release",
+      }
+    },
+  },
+  costPerMTokens: {
+    read: (row) =>
+      row.inputPricePerMillion != null && row.outputPricePerMillion != null
+        ? (3 * row.inputPricePerMillion + row.outputPricePerMillion) / 4
+        : null,
+    scope: "model",
+    presentation: { label: "Token price", unit: "$/M tokens", format: "currency" },
+    note: "Arena listed prices, 3:1 input/output blend; not benchmark task cost",
+  },
+  inputPricePerMTokens: {
+    read: (row) => row.inputPricePerMillion,
+    scope: "model",
+    presentation: { label: "Input token price", unit: "$/M tokens", format: "currency" },
+  },
+  outputPricePerMTokens: {
+    read: (row) => row.outputPricePerMillion,
+    scope: "model",
+    presentation: { label: "Output token price", unit: "$/M tokens", format: "currency" },
+  },
+  contextTokens: {
+    read: (row) => row.contextLength,
+    scope: "model",
+    presentation: { label: "Context length", unit: "tokens", format: "tokens" },
+    note: "Arena listed context window; not an evaluated long-context capability score",
+  },
+  votes: {
+    read: (row) => row.votes,
+    presentation: { label: "Vote count", unit: "votes", format: "integer" },
+    note: "Votes for this Arena configuration; evidence volume, not model quality",
   },
 }
 export class ArenaProvider
@@ -145,7 +231,7 @@ export class ArenaProvider
   readonly displayName = "Arena Text"
   readonly href = "https://arena.ai/leaderboard/text"
   readonly abbreviation = "Arena"
-  readonly cacheKey = "llm-scores:source:arena:text-overall-style-control:v3"
+  readonly cacheKey = "llm-scores:source:arena:text-overall-style-control:v4"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = metrics
   toMetricRows(payload: ArenaPayload): Array<MetricRow> {

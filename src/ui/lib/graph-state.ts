@@ -3,7 +3,7 @@ import type { ProvidersInfo, ProviderName, ModelSnapshot } from "./orpc-client"
 import type { MetricBinding } from "./model-view"
 import { defaultPicks, offeredVariants } from "./model-view"
 import { buildPlotData, plotQuality } from "./comparison-plot-data"
-import { METRICS, METRIC_CONFIG, resolveSource, type Metric } from "./metrics"
+import { METRICS, METRIC_CONFIG, resolveSource, metricProviders, type Metric } from "./metrics"
 
 export type GraphSearch = {
   x: Metric
@@ -109,22 +109,48 @@ export function compatibleComparison(
 }
 
 /** Linear in provider count: all axis orders, with each selectable score benchmark. */
-export function graphCases(info: ProvidersInfo) {
+export function graphCases(info: ProvidersInfo, { allOrders = true, allSources = false } = {}) {
   const metrics = METRICS
   return metrics.flatMap((x) =>
     metrics
-      .filter((y) => y !== x)
+      .filter((y) => y !== x && (allOrders || metrics.indexOf(y) > metrics.indexOf(x)))
       .flatMap((y) =>
-        [undefined, ...metrics.filter((z) => z !== x && z !== y)].flatMap((z) => {
+        [
+          undefined,
+          ...metrics.filter(
+            (z) => z !== x && z !== y && (allOrders || metrics.indexOf(z) > metrics.indexOf(y)),
+          ),
+        ].flatMap((z) => {
           const scoreAxis = x === "score" ? "x" : y === "score" ? "y" : z === "score" ? "z" : null
-          return (scoreAxis == null ? [null] : info.metricProviders.score).map((source) => {
+          return (scoreAxis == null ? [null] : info.metricProviders.score).flatMap((source) => {
             const search: GraphSearch = {
               x,
               y,
               ...(z ? { z } : {}),
               ...(scoreAxis && source ? { [AXIS_SOURCE_KEY[scoreAxis]]: source } : {}),
             }
-            return { key: `${x}/${y}/${z ?? "2d"}/${source ?? "default"}`, search, source }
+            let searches = [search]
+            if (allSources)
+              for (const axis of ["x", "y", "z"] as const) {
+                const metric = search[axis]
+                if (
+                  metric == null ||
+                  metric === "score" ||
+                  metric === "cost" ||
+                  metric === "duration"
+                )
+                  continue
+                const sources = metricProviders(metric, info)
+                if (sources.length > 1)
+                  searches = searches.flatMap((item) =>
+                    sources.map((choice) => ({ ...item, [AXIS_SOURCE_KEY[axis]]: choice })),
+                  )
+              }
+            return searches.map((item) => ({
+              key: `${x}/${y}/${z ?? "2d"}/${source ?? "default"}${allSources ? `/${item.xSource ?? ""}/${item.ySource ?? ""}/${item.zSource ?? ""}` : ""}`,
+              search: item,
+              source,
+            }))
           })
         }),
       ),

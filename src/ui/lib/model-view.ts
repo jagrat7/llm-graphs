@@ -6,13 +6,13 @@ import type {
   ProvidersInfo,
 } from "#/ui/lib/orpc-client"
 
-import { metricProviders } from "#/ui/lib/metrics"
+import { metricProviders, metricRecord } from "#/ui/lib/metrics"
 
 type ModelEntry = ModelSnapshot["entries"][number]
 type ModelVariant = ModelSnapshot["variants"][ProviderName][number]
 
 /** One model at one reasoning mode and effort level, with the metrics the view asked for. */
-export type Model = {
+export type Model = Record<MetricKey, number | null> & {
   /** The model entry id, which `?models=` stores. */
   model: string
   displayName: string
@@ -27,11 +27,6 @@ export type Model = {
   /** Published effort label; unreported reasoning settings are stated explicitly. */
   effort: string
   effortOrder: number
-  score: number | null
-  costPerTask: number | null
-  costPerMTokens: number | null
-  tokensPerSecond: number | null
-  durationSeconds: number | null
   /** Which source each metric value came from. */
   sources: Record<MetricKey, ProviderName | null>
   measurements?: ModelVariant["measurements"]
@@ -125,6 +120,9 @@ export function offeredVariants(
     }
   }
   const entries = new Map(snapshot.entries.map((entry) => [entry.id, entry]))
+  const logos = Object.fromEntries(
+    Object.entries(snapshot.logos).map(([vendor, svg]) => [vendor, logoDataUrl(svg)]),
+  )
   const models: Array<Model> = []
 
   for (const variant of snapshot.variants[base]) {
@@ -136,7 +134,7 @@ export function offeredVariants(
     const entry = entries.get(variant.entryId)
     if (!entry) continue
 
-    const model = toModel(entry, variant, base, bindings, indexes, snapshot.logos, modelValues)
+    const model = toModel(entry, variant, base, bindings, indexes, logos, modelValues)
     if (
       bindings.some(
         (binding) =>
@@ -151,29 +149,19 @@ export function offeredVariants(
   return models
 }
 
+const emptyMetrics = metricRecord(() => null)
+
 function toModel(
   entry: ModelEntry,
   variant: ModelVariant,
   base: ProviderName,
   bindings: ReadonlyArray<MetricBinding>,
   indexes: Map<ProviderName, Map<string, ModelVariant>>,
-  logos: Record<string, string>,
+  logos: Record<string, string | null>,
   modelValues: Map<string, number | null>,
 ): Model {
-  const values: Record<MetricKey, number | null> = {
-    score: null,
-    costPerTask: null,
-    costPerMTokens: null,
-    tokensPerSecond: null,
-    durationSeconds: null,
-  }
-  const sources: Record<MetricKey, ProviderName | null> = {
-    score: null,
-    costPerTask: null,
-    costPerMTokens: null,
-    tokensPerSecond: null,
-    durationSeconds: null,
-  }
+  const values: Record<MetricKey, number | null> = { ...emptyMetrics }
+  const sources: Record<MetricKey, ProviderName | null> = { ...emptyMetrics }
   const key = variantKey(variant.entryId, variant.mode, variant.level)
   const measurements: NonNullable<ModelVariant["measurements"]> = {}
 
@@ -201,7 +189,7 @@ function toModel(
     vendor: entry.vendor,
     releaseDate: entry.releaseDate,
     chartColor: vendorColor(entry.hue),
-    logoUrl: logoDataUrl(entry.vendor == null ? undefined : logos[entry.vendor]),
+    logoUrl: entry.vendor == null ? null : (logos[entry.vendor] ?? null),
     mode: variant.mode,
     level: variant.level,
     effort: effortLabel(variant.mode, variant.level),
@@ -229,21 +217,37 @@ function bestScores(snapshot: ModelSnapshot, source: ProviderName) {
 function percentiles(scores: Map<string, number>) {
   const sorted = [...scores.values()].toSorted((left, right) => left - right)
   const result = new Map<string, number>()
+  const firstRank = new Map<number, number>()
+  sorted.forEach((score, index) => {
+    if (!firstRank.has(score)) firstRank.set(score, index)
+  })
 
   for (const [entryId, score] of scores) {
-    const below = sorted.findIndex((value) => value >= score)
+    const below = firstRank.get(score)!
     result.set(entryId, sorted.length > 1 ? below / (sorted.length - 1) : 1)
   }
 
   return result
 }
 
+const strengthCache = new WeakMap<ModelSnapshot, Map<string, Map<string, number>>>()
+
 /**
  * How strong each entry is: its best score on the Score axis's source, or, with Score off the
  * chart, its average percentile across every score source that lists it.
  */
 function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null, info: ProvidersInfo) {
-  if (scoreSource != null) return bestScores(snapshot, scoreSource)
+  // Snapshots are immutable; changing axes should reuse the same source rankings.
+  const cached = strengthCache.get(snapshot) ?? new Map<string, Map<string, number>>()
+  strengthCache.set(snapshot, cached)
+  const key = scoreSource ?? `average:${metricProviders("score", info).join("|")}`
+  const existing = cached.get(key)
+  if (existing) return existing
+  if (scoreSource != null) {
+    const result = bestScores(snapshot, scoreSource)
+    cached.set(key, result)
+    return result
+  }
 
   const totals = new Map<string, { sum: number; count: number }>()
 
@@ -254,7 +258,9 @@ function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null, in
     }
   }
 
-  return new Map([...totals].map(([entryId, { sum, count }]) => [entryId, sum / count]))
+  const result = new Map([...totals].map(([entryId, { sum, count }]) => [entryId, sum / count]))
+  cached.set(key, result)
+  return result
 }
 
 type Candidate = { id: string; strength: number; releaseDate: string | null }
