@@ -33,23 +33,27 @@ export function deepsweMetricRows(payload: DeepSWEPayload): Array<MetricRow> {
 }
 
 /**
- * A nameless row has no label to confirm a trailing level word. It counts as effort only when a
- * named row already states effort levels for the id left without it: `gpt-6-astra-low` next to
- * `GPT-6 Astra (high)` is a level, but a lone `mistral-medium` is a model. `max` never counts.
+ * A nameless row has no label to confirm a level word in its slug. Each one is tried as if the
+ * name stated it, and counts only when a named row already states effort levels for the id that
+ * leaves: `gpt-6-astra-low` next to `GPT-6 Astra (high)` is a level, but a lone `mistral-medium`
+ * is a model. `max` never counts.
  */
 function namelessEffort(
   slug: string,
   parsed: ReturnType<typeof parseArtificialAnalysisEffort>,
   leveledIds: ReadonlySet<string>,
 ) {
-  const words = slug.toLowerCase().split("-")
-  const level = words.at(-1) ?? ""
-  const base = words.slice(0, -1).join("-")
-  if (words.length < 2 || !isKnownLevel(level) || level === "max" || !leveledIds.has(base)) {
-    return parsed
+  const levelWords = slug
+    .toLowerCase()
+    .split("-")
+    .filter((word) => isKnownLevel(word) && word !== "max")
+
+  for (const level of levelWords.toReversed()) {
+    const stated = parseArtificialAnalysisEffort(slug, `(${level})`, trailingDateLength)
+    if (leveledIds.has(stated.sourceModelId)) return stated
   }
 
-  return { ...parsed, sourceModelId: base, mode: "on" as const, level }
+  return parsed
 }
 
 /** AA states effort in the name's labels; slug markers corroborate them. */
