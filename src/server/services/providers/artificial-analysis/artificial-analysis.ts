@@ -5,13 +5,8 @@ import { env } from "#/env"
 import { fetchOk, parseRows, readMetrics } from "../utils"
 import { namelessEffort, parseArtificialAnalysisEffort } from "./effort"
 import { artificialAnalysisMetrics } from "./metrics"
-import {
-  REFRESH_WINDOW_MS,
-  type ArtificialAnalysisPayload,
-  type ArtificialAnalysisRow,
-  type MetricRow,
-  type MetricSource,
-} from "../provider.types"
+import type { MetricRow, MetricSource } from "../provider.types"
+import type { ArtificialAnalysisPayload, ArtificialAnalysisRow } from "./artificial-analysis.types"
 
 const API_URL = "https://artificialanalysis.ai/api/v2/language/models/free"
 const CACHE_KEY = "llm-scores:source:artificial-analysis:v2"
@@ -59,7 +54,8 @@ export class ArtificialAnalysisProvider implements MetricSource<
   readonly name = "artificialAnalysis"
   readonly displayName = "Artificial Analysis"
   readonly cacheKey = CACHE_KEY
-  readonly refreshWindowMs = REFRESH_WINDOW_MS.artificialAnalysis
+  /** Refetched once its cached copy is six hours old. */
+  readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = artificialAnalysisMetrics
 
   readMetrics(row: ArtificialAnalysisRow) {

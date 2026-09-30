@@ -1,13 +1,8 @@
 import { z } from "zod"
 
 import { fetchOk, parseRows } from "../utils"
-import {
-  REFRESH_WINDOW_MS,
-  type ModelsDevModel,
-  type ModelsDevPayload,
-  type ModelsDevHost,
-  type SourceDefinition,
-} from "../provider.types"
+import type { SourceDefinition } from "../provider.types"
+import type { ModelsDevHost, ModelsDevModel, ModelsDevPayload } from "./models-dev.types"
 
 const BASE_URL = "https://models.dev"
 const CACHE_KEY = "llm-scores:source:models-dev:v1"
@@ -46,7 +41,8 @@ async function fetchLogo(slug: string) {
 export class ModelsDevProvider implements SourceDefinition<ModelsDevPayload> {
   readonly name = "modelsDev"
   readonly cacheKey = CACHE_KEY
-  readonly refreshWindowMs = REFRESH_WINDOW_MS.modelsDev
+  /** Refetched once its cached copy is a day old. */
+  readonly refreshWindowMs = 24 * 60 * 60 * 1000
 
   async fetchPayload(): Promise<ModelsDevPayload> {
     const [modelsResponse, providersResponse] = await Promise.all([

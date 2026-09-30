@@ -1,4 +1,5 @@
-import type { ArtificialAnalysisRow, MetricReaders } from "../provider.types"
+import type { MetricReaders } from "../provider.types"
+import type { ArtificialAnalysisRow } from "./artificial-analysis.types"
 
 /** AA's usual blend: three input tokens for every output token. */
 function blendedPrice(input: number | null, output: number | null) {

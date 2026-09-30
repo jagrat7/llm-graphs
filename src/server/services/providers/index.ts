@@ -22,3 +22,6 @@ export const ProvidersService = {
 }
 
 export type * from "./provider.types"
+export type * from "./artificial-analysis/artificial-analysis.types"
+export type * from "./deep-swe/deep-swe.types"
+export type * from "./models-dev/models-dev.types"

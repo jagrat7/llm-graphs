@@ -1,4 +1,5 @@
-import type { DeepSWERow, MetricReaders } from "../provider.types"
+import type { MetricReaders } from "../provider.types"
+import type { DeepSWERow } from "./deep-swe.types"
 
 export const deepsweMetrics: MetricReaders<DeepSWERow> = {
   score: { read: (row) => row.pass_rate * 100 },
