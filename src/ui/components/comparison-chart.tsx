@@ -4,7 +4,7 @@ import { Group } from "@visx/group"
 import { useParentSize } from "@visx/responsive"
 import { scaleLinear } from "@visx/scale"
 import { motion } from "motion/react"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
@@ -54,6 +54,9 @@ const MARGIN = { top: 26, right: 30, bottom: 54, left: 74 }
 const DOMAIN_PAD = 0.08
 const POINT_RADIUS = 5
 const ACTIVE_POINT_RADIUS = POINT_RADIUS * CHART_ACTIVE_SCALE
+/** Logo markers are square boxes, sized so a vendor's mark stays legible. */
+const LOGO_SIZE = 16
+const ACTIVE_LOGO_SIZE = 22
 /** Pointer distance at which the nearest point stops being considered hovered. */
 const HOVER_RADIUS = 110
 const LABEL_MIN_WIDTH = 720
@@ -73,6 +76,13 @@ const ENTRANCE_WINDOW = 900
 /** Minimum pixels between ticks — larger spacing means fewer, calmer axis markers. */
 const TICK_SPACING_X = 220
 const TICK_SPACING_Y = 120
+
+/** Half the marker's box: a logo's square, or a fallback circle's radius. */
+function markerHalf(point: PlotPoint, active = false) {
+  if (point.logoUrl == null) return active ? ACTIVE_POINT_RADIUS : POINT_RADIUS
+
+  return (active ? ACTIVE_LOGO_SIZE : LOGO_SIZE) / 2
+}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
@@ -143,25 +153,38 @@ function placeLabels(
 
   if (innerWidth < LABEL_MIN_WIDTH) return placed
 
-  // Dots are seeded as occupied so a name never lands on another model's marker.
-  const taken: Array<LabelBox> = Array.from(positions.values(), (position) => ({
-    left: position.x - POINT_RADIUS,
-    right: position.x + POINT_RADIUS,
-    top: position.y - POINT_RADIUS,
-    bottom: position.y + POINT_RADIUS,
-  }))
+  // Markers are seeded as occupied so a name never lands on another model's logo or dot.
+  const taken: Array<LabelBox> = data.points.flatMap((point) => {
+    const position = positions.get(point.id)
+    if (!position) return []
+
+    const half = markerHalf(point)
+
+    return [
+      {
+        left: position.x - half,
+        right: position.x + half,
+        top: position.y - half,
+        bottom: position.y + half,
+      },
+    ]
+  })
 
   for (const series of data.series) {
     const sides = series.labelPlacement === "top" ? LABEL_SIDES_TOP : LABEL_SIDES_BOTTOM
     const anchors = seriesLabelCandidates(series).flatMap((label) => {
       const anchor = positions.get(label.pointId)
+      const point = data.pointById.get(label.pointId)
 
-      return anchor ? [{ label, anchor, size: labelBlockSize(label) }] : []
+      // The pin gap is measured from a dot's edge, so a wider logo pushes its label out too.
+      return anchor && point
+        ? [{ label, anchor, size: labelBlockSize(label), inset: markerHalf(point) - POINT_RADIUS }]
+        : []
     })
     // Gap is the outer loop, so a label hops every effort level before it drifts outward.
     const candidates = LABEL_GAP_STEPS.flatMap((gap) =>
-      anchors.flatMap(({ label, anchor, size }) =>
-        sides.map((side) => ({ label, side, box: labelBox(side, anchor, size, gap) })),
+      anchors.flatMap(({ label, anchor, size, inset }) =>
+        sides.map((side) => ({ label, side, box: labelBox(side, anchor, size, gap + inset) })),
       ),
     )
     const fits = ({ box }: { box: LabelBox }) =>
@@ -209,6 +232,7 @@ export function ComparisonChart({
     initialSize: { width: 1200, height: 640 },
   })
   const reduceMotion = useReducedMotion()
+  const maskPrefix = `logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
   const [activeId, setActiveId] = useState<string | null>(null)
   const [entered, setEntered] = useState(false)
   const data = useMemo(
@@ -262,6 +286,12 @@ export function ComparisonChart({
     }
   }, [data, height, width])
 
+  // One mask per vendor logo, shared by every point of that vendor.
+  const logoMasks = useMemo(() => {
+    const urls = new Set(data.points.flatMap((point) => (point.logoUrl ? [point.logoUrl] : [])))
+
+    return new Map(Array.from(urls, (url, index) => [url, `${maskPrefix}-${index}`]))
+  }, [data, maskPrefix])
   const activePoint = activeId == null ? null : (data.pointById.get(activeId) ?? null)
   const activePosition = activeId == null ? null : (layout.positions.get(activeId) ?? null)
   const ready = layout.innerWidth > 0 && layout.innerHeight > 0
@@ -280,7 +310,14 @@ export function ComparisonChart({
 
       if (!position) continue
 
-      const distance = (position.x - pointerX) ** 2 + (position.y - pointerY) ** 2
+      const half = markerHalf(point, point.id === activeId)
+      const inside =
+        Math.abs(position.x - pointerX) <= half && Math.abs(position.y - pointerY) <= half
+      // A pointer inside a marker's box always picks that marker over a closer centre outside.
+      const distance =
+        (position.x - pointerX) ** 2 +
+        (position.y - pointerY) ** 2 -
+        (inside ? HOVER_RADIUS ** 2 : 0)
 
       if (distance < closestDistance) {
         closestDistance = distance
@@ -326,6 +363,19 @@ export function ComparisonChart({
 
       {ready ? (
         <svg width={width} height={height} className="block overflow-visible">
+          <defs>
+            {Array.from(logoMasks, ([url, id]) => (
+              // Alpha, not luminance: the logo is a dark shape on a transparent field.
+              <mask
+                key={id}
+                id={id}
+                maskContentUnits="objectBoundingBox"
+                style={{ maskType: "alpha" }}
+              >
+                <image href={url} width={1} height={1} preserveAspectRatio="xMidYMid meet" />
+              </mask>
+            ))}
+          </defs>
           <Group left={MARGIN.left} top={MARGIN.top}>
             <GridRows
               scale={layout.yScale}
@@ -390,6 +440,34 @@ export function ComparisonChart({
 
                 const active = point.id === activeId
                 const dimmed = activeId != null && !active
+                const delay =
+                  entered || reduceMotion ? 0 : Math.min(point.index * STAGGER_STEP, STAGGER_MAX)
+                const mask = point.logoUrl == null ? undefined : logoMasks.get(point.logoUrl)
+
+                if (mask) {
+                  const size = active ? ACTIVE_LOGO_SIZE : LOGO_SIZE
+
+                  return (
+                    <motion.rect
+                      key={point.id}
+                      mask={`url(#${mask})`}
+                      fill={point.color}
+                      initial={
+                        reduceMotion
+                          ? false
+                          : { x: position.x, y: position.y, width: 0, height: 0, opacity: 0 }
+                      }
+                      animate={{
+                        x: position.x - size / 2,
+                        y: position.y - size / 2,
+                        width: size,
+                        height: size,
+                        opacity: dimmed ? 0.42 : 1,
+                      }}
+                      transition={{ ...transition, delay }}
+                    />
+                  )
+                }
 
                 return (
                   <motion.circle
@@ -406,13 +484,7 @@ export function ComparisonChart({
                       r: active ? ACTIVE_POINT_RADIUS : POINT_RADIUS,
                       opacity: dimmed ? 0.42 : 1,
                     }}
-                    transition={{
-                      ...transition,
-                      delay:
-                        entered || reduceMotion
-                          ? 0
-                          : Math.min(point.index * STAGGER_STEP, STAGGER_MAX),
-                    }}
+                    transition={{ ...transition, delay }}
                   />
                 )
               })}
@@ -424,7 +496,7 @@ export function ComparisonChart({
                 className="pointer-events-none"
                 cx={activePosition.x}
                 cy={activePosition.y}
-                r={ACTIVE_POINT_RADIUS + 6}
+                r={(activePoint ? markerHalf(activePoint, true) : ACTIVE_POINT_RADIUS) + 6}
                 fill="none"
                 stroke="var(--ring)"
                 strokeOpacity={0.5}

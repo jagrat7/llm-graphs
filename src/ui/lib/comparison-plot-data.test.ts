@@ -49,6 +49,16 @@ const XY = { x: "cost", y: "score" } as const
 const XYZ = { x: "cost", y: "score", z: "speed" } as const
 
 describe("buildPlotData", () => {
+  it("gives each point its vendor logo, or none for a circle marker", () => {
+    const logoUrl = "data:image/svg+xml,%3Csvg%2F%3E"
+    const data = buildPlotData(
+      [makeModel({ model: "a", logoUrl }), makeModel({ model: "b", vendor: null })],
+      XY,
+    )
+
+    expect(data.points.map((point) => point.logoUrl)).toEqual([logoUrl, null])
+  })
+
   it("drops models missing a selected metric and counts them", () => {
     const data = buildPlotData(
       [

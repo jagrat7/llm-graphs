@@ -19,6 +19,8 @@ export type PlotPoint = {
   index: number
   label: string
   color: string
+  /** The vendor logo drawn as the marker; null draws a circle. */
+  logoUrl: string | null
   model: Model
   /** Raw metric values. `z` is 0 while the plot is two-dimensional. */
   values: Record<PlotAxis, number>
@@ -169,6 +171,7 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
       index: points.length,
       label: pointLabel(model),
       color: model.chartColor,
+      logoUrl: model.logoUrl,
       model,
       values,
       unit: { x: 0, y: 0, z: 0 },
