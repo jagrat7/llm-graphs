@@ -1,0 +1,408 @@
+{
+  "fetchedAt": "2026-09-30T21:02:09.857Z",
+  "payload": {
+    "rows": [
+      {
+        "id": "claude_3_5_sonnet_20240620_inspect",
+        "release_date": "2024-06-20",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 11.395377,
+          "ci_low": 5.489734,
+          "ci_high": 22.384214
+        }
+      },
+      {
+        "id": "claude_3_5_sonnet_20241022_inspect",
+        "release_date": "2024-10-22",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 20.522872,
+          "ci_low": 10.144026,
+          "ci_high": 40.82028
+        }
+      },
+      {
+        "id": "claude_3_7_sonnet_inspect",
+        "release_date": "2025-02-24",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 60.388937,
+          "ci_low": 33.006168,
+          "ci_high": 104.226017
+        }
+      },
+      {
+        "id": "claude_3_opus_inspect",
+        "release_date": "2024-03-04",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 3.952262,
+          "ci_low": 1.706313,
+          "ci_high": 8.76484
+        }
+      },
+      {
+        "id": "claude_4_1_opus_inspect",
+        "release_date": "2025-08-05",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 100.472004,
+          "ci_low": 59.272391,
+          "ci_high": 159.451918
+        }
+      },
+      {
+        "id": "claude_4_opus_inspect",
+        "release_date": "2025-05-22",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 100.366123,
+          "ci_low": 59.994073,
+          "ci_high": 163.454074
+        }
+      },
+      {
+        "id": "claude_opus_4_5_inspect",
+        "release_date": "2025-11-24",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 292.994594,
+          "ci_low": 161.717714,
+          "ci_high": 623.704698
+        }
+      },
+      {
+        "id": "claude_opus_4_6_inspect",
+        "release_date": "2026-02-05",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 718.80683,
+          "ci_low": 316.685725,
+          "ci_high": 3633.786163
+        }
+      },
+      {
+        "id": "davinci_002",
+        "release_date": "2020-05-28",
+        "scaffolds": [
+          "modular-public",
+          "unspecified scaffold"
+        ],
+        "p50": {
+          "estimate": 0.144057,
+          "ci_low": 0.093319,
+          "ci_high": 0.221209
+        }
+      },
+      {
+        "id": "gpt_5_3_codex",
+        "release_date": "2026-02-05",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 349.530732,
+          "ci_low": 194.913134,
+          "ci_high": 816.351994
+        }
+      },
+      {
+        "id": "gemini_3_pro",
+        "release_date": "2025-11-18",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 224.325884,
+          "ci_low": 139.565157,
+          "ci_high": 379.235434
+        }
+      },
+      {
+        "id": "gemini_3_1_pro",
+        "release_date": "2026-02-19",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 384.147435,
+          "ci_low": 233.50073,
+          "ci_high": 694.750898
+        }
+      },
+      {
+        "id": "gpt2",
+        "release_date": "2019-02-14",
+        "scaffolds": [
+          "unspecified scaffold"
+        ],
+        "p50": {
+          "estimate": 0.053778,
+          "ci_low": 0.009994,
+          "ci_high": 0.141825
+        }
+      },
+      {
+        "id": "gpt_3_5_turbo_instruct",
+        "release_date": "2022-03-15",
+        "scaffolds": [
+          "modular-public",
+          "unspecified scaffold"
+        ],
+        "p50": {
+          "estimate": 0.599247,
+          "ci_low": 0.255148,
+          "ci_high": 1.115905
+        }
+      },
+      {
+        "id": "gpt_4",
+        "release_date": "2023-03-14",
+        "scaffolds": [
+          "modular-public",
+          "unspecified scaffold"
+        ],
+        "p50": {
+          "estimate": 3.987428,
+          "ci_low": 1.93292,
+          "ci_high": 7.995283
+        }
+      },
+      {
+        "id": "gpt_4_1106_inspect",
+        "release_date": "2023-11-06",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 4.044959,
+          "ci_low": 1.866859,
+          "ci_high": 8.443226
+        }
+      },
+      {
+        "id": "gpt_4_turbo_inspect",
+        "release_date": "2024-04-09",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 3.732787,
+          "ci_low": 1.980046,
+          "ci_high": 6.736613
+        }
+      },
+      {
+        "id": "gpt_4o_inspect",
+        "release_date": "2024-05-13",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 6.991195,
+          "ci_low": 4.001482,
+          "ci_high": 12.905741
+        }
+      },
+      {
+        "id": "gpt_5_1_codex_max_inspect",
+        "release_date": "2025-11-19",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 223.714694,
+          "ci_low": 134.31077,
+          "ci_high": 396.206723
+        }
+      },
+      {
+        "id": "gpt_5_2",
+        "release_date": "2025-12-11",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 352.249302,
+          "ci_low": 198.067494,
+          "ci_high": 815.177445
+        }
+      },
+      {
+        "id": "gpt_5_2025_08_07_inspect",
+        "release_date": "2025-08-07",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 203.012577,
+          "ci_low": 112.641357,
+          "ci_high": 405.551565
+        }
+      },
+      {
+        "id": "gpt_5_4",
+        "release_date": "2026-03-05",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 341.735276,
+          "ci_low": 186.581591,
+          "ci_high": 768.779526
+        }
+      },
+      {
+        "id": "o1_inspect",
+        "release_date": "2024-12-05",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 38.831588,
+          "ci_low": 21.164512,
+          "ci_high": 64.95249
+        }
+      },
+      {
+        "id": "o1_preview",
+        "release_date": "2024-09-12",
+        "scaffolds": [
+          "duet",
+          "unspecified scaffold"
+        ],
+        "p50": {
+          "estimate": 20.326586,
+          "ci_low": 11.716193,
+          "ci_high": 33.379877
+        }
+      },
+      {
+        "id": "o3_inspect",
+        "release_date": "2025-04-16",
+        "scaffolds": [
+          "mtb/start_metr_task,triframe_inspect/triframe_agent",
+          "ai_rd_fix_embedding/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "re_bench_common/init_solver,use_tools,triframe_inspect/triframe_agent",
+          "metr_tasks_swaa/init_solver,generate",
+          "triframe_inspect/triframe_agent"
+        ],
+        "p50": {
+          "estimate": 119.732634,
+          "ci_low": 74.615398,
+          "ci_high": 190.943818
+        }
+      },
+      {
+        "id": "claude_mythos_preview_early_inspect",
+        "release_date": "2026-04-07",
+        "scaffolds": [
+          "mtb/start_metr_task,metr_agents/react",
+          "ai_rd_fix_embedding/init_solver,use_tools,metr_agents/react",
+          "re_bench_common/init_solver,use_tools,metr_agents/react",
+          "metr_tasks_swaa/init_solver,generate",
+          "metr_agents/react"
+        ],
+        "p50": {
+          "estimate": 1044.780145,
+          "ci_low": 508.876789,
+          "ci_high": 3304.261235
+        }
+      }
+    ],
+    "dropped": []
+  }
+}

@@ -29,7 +29,7 @@ import {
   slugify,
   vendorHue,
 } from "./metadata"
-import { METADATA_ORDER } from "./model-aggregator.types"
+import { ProvidersService } from "../providers"
 
 /** One model as one source lists it, before it joins other sources. */
 type SourceModel = {
@@ -324,7 +324,7 @@ function resolveMetadata(
     }
   }
 
-  for (const source of METADATA_ORDER) {
+  for (const source of ProvidersService.names) {
     const metadata = cluster.members
       .filter((member) => member.source === source)
       .flatMap((member) => member.rows.map((row) => row.metadata))
@@ -360,7 +360,7 @@ function resolveMetadata(
 }
 
 function emptyVariants(): Record<ProviderName, Array<ModelVariant>> {
-  return { deepswe: [], artificialAnalysis: [] }
+  return ProvidersService.record(() => [])
 }
 
 function compareVariants(left: ModelVariant, right: ModelVariant) {
@@ -449,6 +449,8 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
           level: row.level,
           effortOrder: effortOrder(row.mode, row.level),
           metrics: row.metrics,
+          ...(row.configurationKnown === false ? { configurationKnown: false as const } : {}),
+          ...(row.measurements ? { measurements: row.measurements } : {}),
           ...(row.effortConflict ? { refused: true as const } : {}),
         })
       }
@@ -464,8 +466,7 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
   const fetchedAtOf = (name: ProviderName) =>
     inputs.metricSources.find((input) => input.name === name)?.fetchedAt ?? null
   const fetchedAt: Record<SourceName, string | null> = {
-    deepswe: fetchedAtOf("deepswe"),
-    artificialAnalysis: fetchedAtOf("artificialAnalysis"),
+    ...ProvidersService.record(fetchedAtOf),
     modelsDev: inputs.catalog.fetchedAt,
   }
 
@@ -473,10 +474,7 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
     snapshot: {
       entries,
       logos,
-      variants: {
-        deepswe: variants.deepswe.toSorted(compareVariants),
-        artificialAnalysis: variants.artificialAnalysis.toSorted(compareVariants),
-      },
+      variants: ProvidersService.record((name) => variants[name].toSorted(compareVariants)),
       fetchedAt,
     },
     provenance,

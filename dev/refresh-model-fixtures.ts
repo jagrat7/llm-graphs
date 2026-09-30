@@ -8,8 +8,12 @@ import { ProvidersService } from "../src/server/services/providers"
 
 const FIXTURE_DIR = new URL("../src/server/services/model-aggregator/fixtures/", import.meta.url)
 const sources = {
-  deepswe: ProvidersService.metricSources.deepswe,
-  "artificial-analysis": ProvidersService.metricSources.artificialAnalysis,
+  ...Object.fromEntries(
+    Object.values(ProvidersService.metricSources).map((source) => [
+      source.name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`),
+      source,
+    ]),
+  ),
   "models-dev": ProvidersService.catalog,
 }
 

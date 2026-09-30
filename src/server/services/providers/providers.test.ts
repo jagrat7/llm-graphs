@@ -34,8 +34,8 @@ describe("ProvidersService", () => {
       tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
       durationSeconds: ProvidersService.providersFor("durationSeconds"),
     }).toEqual({
-      score: ["deepswe"],
-      costPerTask: ["deepswe"],
+      score: ["deepswe", "artificialAnalysis", "metr", "arena"],
+      costPerTask: ["deepswe", "artificialAnalysis"],
       costPerMTokens: ["artificialAnalysis"],
       tokensPerSecond: ["artificialAnalysis"],
       durationSeconds: ["deepswe"],

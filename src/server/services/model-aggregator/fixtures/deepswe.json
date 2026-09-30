@@ -1,10 +1,9 @@
 {
-  "fetchedAt": "2026-09-28T01:55:05.920Z",
+  "fetchedAt": "2026-09-30T21:00:15.533Z",
   "payload": {
     "rows": [
       {
         "model": "gpt-6-astra",
-        "provider": "openai",
         "reasoning_effort": "xhigh",
         "pass_rate": 0.7411504424778761,
         "mean_duration_seconds": 1132.4004424778761,
@@ -14,7 +13,6 @@
       },
       {
         "model": "gemini-3-8-flash",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.738255033557047,
         "mean_duration_seconds": 686.7691519843399,
@@ -24,7 +22,6 @@
       },
       {
         "model": "claude-opus-5",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.7364864864864865,
         "mean_duration_seconds": 1911.819866231982,
@@ -34,7 +31,6 @@
       },
       {
         "model": "gpt-6-astra",
-        "provider": "openai",
         "reasoning_effort": "high",
         "pass_rate": 0.7323008849557522,
         "mean_duration_seconds": 1038.6858407079646,
@@ -44,7 +40,6 @@
       },
       {
         "model": "gpt-6-astra",
-        "provider": "openai",
         "reasoning_effort": "max",
         "pass_rate": 0.7323008849557522,
         "mean_duration_seconds": 1982.966814159292,
@@ -54,7 +49,6 @@
       },
       {
         "model": "claude-opus-5",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.7315436241610739,
         "mean_duration_seconds": 1559.5597273221476,
@@ -64,7 +58,6 @@
       },
       {
         "model": "claude-opus-5",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.7282850779510023,
         "mean_duration_seconds": 1163.8627881514476,
@@ -74,7 +67,6 @@
       },
       {
         "model": "gpt-6-astra",
-        "provider": "openai",
         "reasoning_effort": "medium",
         "pass_rate": 0.7278761061946902,
         "mean_duration_seconds": 883.9358407079646,
@@ -84,7 +76,6 @@
       },
       {
         "model": "gpt-5-6-sol",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.7266666666666667,
         "mean_duration_seconds": 1128.624910331111,
@@ -94,7 +85,6 @@
       },
       {
         "model": "gemini-3-8-flash",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.7101769911504425,
         "mean_duration_seconds": 826.5496385464602,
@@ -104,7 +94,6 @@
       },
       {
         "model": "gpt-5-6-sol",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.7073170731707317,
         "mean_duration_seconds": 800.5459875388026,
@@ -114,7 +103,6 @@
       },
       {
         "model": "claude-fable-5",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.6991150442477876,
         "mean_duration_seconds": 1411.5830643938054,
@@ -124,7 +112,6 @@
       },
       {
         "model": "claude-fable-5",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6972477064220184,
         "mean_duration_seconds": 2092.0106240022938,
@@ -134,7 +121,6 @@
       },
       {
         "model": "gpt-5-6-terra",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6962305986696231,
         "mean_duration_seconds": 1016.6698429312638,
@@ -144,7 +130,6 @@
       },
       {
         "model": "gpt-5-6-sol",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.6940133037694013,
         "mean_duration_seconds": 594.230510789357,
@@ -154,7 +139,6 @@
       },
       {
         "model": "glm-5-3",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6895787139689579,
         "mean_duration_seconds": 2116.1784804168515,
@@ -164,7 +148,6 @@
       },
       {
         "model": "claude-opus-5",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.6890380313199105,
         "mean_duration_seconds": 759.2254874630873,
@@ -174,7 +157,6 @@
       },
       {
         "model": "claude-fable-5",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.686046511627907,
         "mean_duration_seconds": 1062.3037221116278,
@@ -184,7 +166,6 @@
       },
       {
         "model": "kimi-k3",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6851441241685144,
         "mean_duration_seconds": 4541.447376412417,
@@ -194,7 +175,6 @@
       },
       {
         "model": "grok-4-6",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.6747787610619469,
         "mean_duration_seconds": 895.5380579646018,
@@ -204,7 +184,6 @@
       },
       {
         "model": "gpt-5-6-luna",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.671875,
         "mean_duration_seconds": 1122.9470243995536,
@@ -214,7 +193,6 @@
       },
       {
         "model": "gpt-5-5",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.6703539823008849,
         "mean_duration_seconds": 1806.3251869889382,
@@ -224,7 +202,6 @@
       },
       {
         "model": "gpt-6-astra",
-        "provider": "openai",
         "reasoning_effort": "low",
         "pass_rate": 0.6703539823008849,
         "mean_duration_seconds": 613.4247787610619,
@@ -234,7 +211,6 @@
       },
       {
         "model": "grok-4-6",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.6674057649667405,
         "mean_duration_seconds": 1272.3478393858093,
@@ -244,7 +220,6 @@
       },
       {
         "model": "gemini-3-7-flash",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.6548672566371682,
         "mean_duration_seconds": 1240.376194079646,
@@ -254,7 +229,6 @@
       },
       {
         "model": "claude-fable-5",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.6536697247706422,
         "mean_duration_seconds": 810.8967150733945,
@@ -264,7 +238,6 @@
       },
       {
         "model": "gemini-3-7-flash",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.6526548672566371,
         "mean_duration_seconds": 1244.9565387986725,
@@ -274,7 +247,6 @@
       },
       {
         "model": "grok-4-6",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.6518847006651884,
         "mean_duration_seconds": 1083.6365204833703,
@@ -284,7 +256,6 @@
       },
       {
         "model": "gpt-5-5",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.6438053097345132,
         "mean_duration_seconds": 2048.0589126172567,
@@ -294,7 +265,6 @@
       },
       {
         "model": "glm-5-3-flash",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6339285714285714,
         "mean_duration_seconds": 1537.7995419129463,
@@ -304,7 +274,6 @@
       },
       {
         "model": "deepseek-v4-pro",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.6283185840707964,
         "mean_duration_seconds": 2212.510104011062,
@@ -314,7 +283,6 @@
       },
       {
         "model": "gpt-5-6-sol",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.6106194690265486,
         "mean_duration_seconds": 423.3752944181416,
@@ -324,7 +292,6 @@
       },
       {
         "model": "gpt-5-6-terra",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.6017699115044248,
         "mean_duration_seconds": 584.0832282876107,
@@ -334,7 +301,6 @@
       },
       {
         "model": "claude-fable-5",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.5958429561200924,
         "mean_duration_seconds": 634.7057336951501,
@@ -344,7 +310,6 @@
       },
       {
         "model": "claude-opus-4-8",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.5897435897435898,
         "mean_duration_seconds": 3492.740812641026,
@@ -354,7 +319,6 @@
       },
       {
         "model": "claude-opus-5",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.5812917594654788,
         "mean_duration_seconds": 468.87542417149217,
@@ -364,7 +328,6 @@
       },
       {
         "model": "qwen3-8-max",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5746102449888641,
         "mean_duration_seconds": 2567.2746634654786,
@@ -374,7 +337,6 @@
       },
       {
         "model": "gpt-5-6-luna",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5685840707964602,
         "mean_duration_seconds": 731.6846703871681,
@@ -384,7 +346,6 @@
       },
       {
         "model": "muse-spark-1-2",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5486725663716814,
         "mean_duration_seconds": 927.8692516349557,
@@ -394,7 +355,6 @@
       },
       {
         "model": "claude-opus-4-8",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5436241610738255,
         "mean_duration_seconds": 2198.774075261745,
@@ -404,7 +364,6 @@
       },
       {
         "model": "gpt-5-5",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.5398230088495575,
         "mean_duration_seconds": 1288.995063800885,
@@ -414,7 +373,6 @@
       },
       {
         "model": "claude-sonnet-5",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.5384615384615384,
         "mean_duration_seconds": 4803.543157789592,
@@ -424,7 +382,6 @@
       },
       {
         "model": "gemini-3-7-flash",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.5376106194690266,
         "mean_duration_seconds": 1252.0731730707964,
@@ -434,7 +391,6 @@
       },
       {
         "model": "gpt-5-6-terra",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.5376106194690266,
         "mean_duration_seconds": 364.2859819269911,
@@ -444,7 +400,6 @@
       },
       {
         "model": "grok-4-5",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.5376106194690266,
         "mean_duration_seconds": 484.7029359800885,
@@ -454,7 +409,6 @@
       },
       {
         "model": "deepseek-v4-flash",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.5331858407079646,
         "mean_duration_seconds": 1438.9961937522125,
@@ -464,7 +418,6 @@
       },
       {
         "model": "muse-spark-1-1",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5331858407079646,
         "mean_duration_seconds": 897.5133296747788,
@@ -474,7 +427,6 @@
       },
       {
         "model": "claude-opus-4-8",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.5176991150442478,
         "mean_duration_seconds": 1066.903783732301,
@@ -484,7 +436,6 @@
       },
       {
         "model": "gpt-5-4",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.5176991150442478,
         "mean_duration_seconds": 1368.707164818584,
@@ -494,7 +445,6 @@
       },
       {
         "model": "claude-sonnet-5",
-        "provider": null,
         "reasoning_effort": "xhigh",
         "pass_rate": 0.49667405764966743,
         "mean_duration_seconds": 2414.4529098159646,
@@ -504,7 +454,6 @@
       },
       {
         "model": "claude-opus-4-8",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.48672566371681414,
         "mean_duration_seconds": 880.0083837986726,
@@ -514,7 +463,6 @@
       },
       {
         "model": "claude-sonnet-5",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.4823008849557522,
         "mean_duration_seconds": 1728.2193087920355,
@@ -524,7 +472,6 @@
       },
       {
         "model": "gemini-3-6-flash",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.4668141592920354,
         "mean_duration_seconds": 1477.8607510707964,
@@ -534,7 +481,6 @@
       },
       {
         "model": "gpt-5-6-sol",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.45353982300884954,
         "mean_duration_seconds": 262.2510164579646,
@@ -544,7 +490,6 @@
       },
       {
         "model": "gpt-5-6-luna",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.4424778761061947,
         "mean_duration_seconds": 473.83880740929203,
@@ -554,7 +499,6 @@
       },
       {
         "model": "glm-5-2",
-        "provider": null,
         "reasoning_effort": "max",
         "pass_rate": 0.43777777777777777,
         "mean_duration_seconds": 2629.2083211311115,
@@ -564,7 +508,6 @@
       },
       {
         "model": "grok-4-6",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.41648106904231624,
         "mean_duration_seconds": 325.05958362360803,
@@ -574,7 +517,6 @@
       },
       {
         "model": "claude-opus-4-8",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.4079822616407982,
         "mean_duration_seconds": 651.8271712993347,
@@ -584,7 +526,6 @@
       },
       {
         "model": "claude-sonnet-5",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.3977777777777778,
         "mean_duration_seconds": 1121.270593551111,
@@ -594,7 +535,6 @@
       },
       {
         "model": "glm-5-2",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.36283185840707965,
         "mean_duration_seconds": 1794.4733617809734,
@@ -604,7 +544,6 @@
       },
       {
         "model": "gemini-3-5-flash",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.3606194690265487,
         "mean_duration_seconds": 1125.1601607057523,
@@ -614,7 +553,6 @@
       },
       {
         "model": "gpt-5-6-terra",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.3511111111111111,
         "mean_duration_seconds": 229.60274282444442,
@@ -624,7 +562,6 @@
       },
       {
         "model": "kimi-k2-7-code",
-        "provider": null,
         "reasoning_effort": null,
         "pass_rate": 0.3053097345132743,
         "mean_duration_seconds": 2163.7950712809734,
@@ -634,7 +571,6 @@
       },
       {
         "model": "claude-sonnet-5",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.3051224944320713,
         "mean_duration_seconds": 734.9105084298441,
@@ -644,7 +580,6 @@
       },
       {
         "model": "claude-sonnet-4-6",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.29933481152993346,
         "mean_duration_seconds": 2815.01307943459,
@@ -654,7 +589,6 @@
       },
       {
         "model": "gpt-5-5",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.26991150442477874,
         "mean_duration_seconds": 569.9958436615044,
@@ -664,7 +598,6 @@
       },
       {
         "model": "gpt-5-6-terra",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.24053452115812918,
         "mean_duration_seconds": 176.52513473942093,
@@ -674,7 +607,6 @@
       },
       {
         "model": "gemini-3-1-pro-preview",
-        "provider": null,
         "reasoning_effort": "high",
         "pass_rate": 0.1172566371681416,
         "mean_duration_seconds": 867.7979107013274,
@@ -684,7 +616,6 @@
       },
       {
         "model": "gpt-5-6-luna",
-        "provider": null,
         "reasoning_effort": "medium",
         "pass_rate": 0.11283185840707964,
         "mean_duration_seconds": 181.5252541438053,
@@ -694,7 +625,6 @@
       },
       {
         "model": "gpt-5-6-luna",
-        "provider": null,
         "reasoning_effort": "low",
         "pass_rate": 0.015486725663716814,
         "mean_duration_seconds": 77.14656007522123,

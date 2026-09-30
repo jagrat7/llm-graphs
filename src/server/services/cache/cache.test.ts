@@ -203,3 +203,23 @@ describe("SourceCache", () => {
     expect(fetchPayload).toHaveBeenCalledTimes(1)
   })
 })
+
+describe("semantic source validation", () => {
+  it("keeps the last good copy when a successful HTTP refresh contains unusable measurements", async () => {
+    const store = new MemoryStore()
+    await store.set("test:source", { payload: "good", fetchedAt: new Date(0).toISOString() })
+    const cache = new SourceCache(store, () => HOUR + 1)
+    const invalid = {
+      ...source(async () => "empty measurements"),
+      validatePayload: () => {
+        throw new Error("No valid score")
+      },
+    }
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    await expect(cache.read(invalid)).resolves.toMatchObject({ payload: "good" })
+    await flush()
+    await expect(store.get("test:source")).resolves.toMatchObject({ payload: "good" })
+    expect(warn).toHaveBeenCalled()
+    warn.mockRestore()
+  })
+})

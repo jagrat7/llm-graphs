@@ -29,13 +29,13 @@ export class ModelAggregatorService {
   }
 
   private async aggregate() {
-    const { artificialAnalysis, deepswe } = ProvidersService.metricSources
     // Listed in metadata order: the first source listing a model names it.
     const inputs: AggregatorInputs = {
-      metricSources: await Promise.all([
-        this.readMetricSource(artificialAnalysis),
-        this.readMetricSource(deepswe),
-      ]),
+      metricSources: await Promise.all(
+        Object.values(ProvidersService.metricSources).map((source) =>
+          this.readMetricSource(source),
+        ),
+      ),
       catalog: catalogInput(await this.cache.read(ProvidersService.catalog)),
     }
     const version = inputsVersion(inputs)
@@ -50,9 +50,7 @@ export class ModelAggregatorService {
     return this.latest
   }
 
-  private async readMetricSource<TPayload extends SourcePayload<unknown>>(
-    source: MetricSource<TPayload, unknown>,
-  ) {
+  private async readMetricSource(source: MetricSource<SourcePayload<unknown>, unknown>) {
     return metricSourceInput(source, await this.cache.read(source))
   }
 

@@ -103,8 +103,10 @@ describe("model aggregation", () => {
 
   it("reports declined matches per source and per model, never per pair of sources", () => {
     expect(Object.keys(report.sources).toSorted()).toEqual([
+      "arena",
       "artificialAnalysis",
       "deepswe",
+      "metr",
       "modelsDev",
     ])
     expect(report.unresolvedDateGroups).toContainEqual(
