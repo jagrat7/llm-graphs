@@ -41,6 +41,7 @@ export type SourcePayload<TRow> = {
 
 export const METRIC_KEYS = [
   "score",
+  "costPerTask",
   "costPerMTokens",
   "tokensPerSecond",
   "durationSeconds",

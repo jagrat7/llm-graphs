@@ -22,6 +22,40 @@ function row(model: string, effort: string | null) {
 }
 
 describe("DeepSWEProvider", () => {
+  it("uses the published task cost without dividing it by token usage", () => {
+    const provider = new DeepSWEProvider()
+    const measured = row("gpt-6-astra", "high")
+    expect(provider.readMetrics(measured)).toMatchObject({
+      score: 50,
+      costPerTask: 3,
+      durationSeconds: 900,
+    })
+    expect(
+      provider.readMetrics({ ...measured, mean_input_tokens: null, mean_output_tokens: null })
+        .costPerTask,
+    ).toBe(3)
+    expect(provider.readMetrics(measured)).not.toHaveProperty("costPerMTokens")
+    expect(provider.readMetrics({ ...measured, mean_cost_usd: 0 }).costPerTask).toBe(0)
+  })
+
+  it("keeps missing and invalid measurements unavailable without losing valid metrics", () => {
+    const provider = new DeepSWEProvider()
+    const measured = row("gpt-6-astra", "high")
+    for (const value of [null, -1, Infinity, NaN]) {
+      expect(provider.readMetrics({ ...measured, mean_cost_usd: value }).costPerTask).toBeNull()
+      expect(
+        provider.readMetrics({ ...measured, mean_duration_seconds: value }).durationSeconds,
+      ).toBeNull()
+    }
+    expect(
+      provider.readMetrics({ ...measured, mean_duration_seconds: 0 }).durationSeconds,
+    ).toBeNull()
+    for (const value of [-0.1, 1.1, Infinity, NaN]) {
+      expect(provider.readMetrics({ ...measured, pass_rate: value }).score).toBeNull()
+    }
+    expect(provider.readMetrics({ ...measured, pass_rate: 0 }).score).toBe(0)
+  })
+
   it("keeps only the fields the aggregator reads", async () => {
     globalThis.fetch = vi.fn(async () => Response.json({ rows: [row("kimi-k2-7-code", null)] }))
 

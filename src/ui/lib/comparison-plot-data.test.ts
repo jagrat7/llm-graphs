@@ -14,7 +14,7 @@ function makeModel({
   effort = "default",
   effortOrder = 0,
   score = 50,
-  costPerMTokens = 10,
+  costPerTask = 10,
   tokensPerSecond = 100,
   durationSeconds = 30,
   sources,
@@ -32,12 +32,14 @@ function makeModel({
     effort,
     effortOrder,
     score,
-    costPerMTokens,
+    costPerTask,
+    costPerMTokens: null,
     tokensPerSecond,
     durationSeconds,
     sources: sources ?? {
       score: "deepswe",
-      costPerMTokens: "deepswe",
+      costPerTask: "deepswe",
+      costPerMTokens: null,
       tokensPerSecond: "artificialAnalysis",
       durationSeconds: "deepswe",
     },
@@ -62,9 +64,9 @@ describe("buildPlotData", () => {
   it("drops models missing a selected metric and counts them", () => {
     const data = buildPlotData(
       [
-        makeModel({ model: "a", score: 80, costPerMTokens: 4 }),
+        makeModel({ model: "a", score: 80, costPerTask: 4 }),
         makeModel({ model: "b", score: null }),
-        makeModel({ model: "c", costPerMTokens: null }),
+        makeModel({ model: "c", costPerTask: null }),
       ],
       XY,
     )
@@ -84,9 +86,9 @@ describe("buildPlotData", () => {
   it("normalizes each axis into 0–1 over its own domain", () => {
     const data = buildPlotData(
       [
-        makeModel({ model: "a", costPerMTokens: 2, score: 10 }),
-        makeModel({ model: "b", costPerMTokens: 6, score: 50 }),
-        makeModel({ model: "c", costPerMTokens: 10, score: 90 }),
+        makeModel({ model: "a", costPerTask: 2, score: 10 }),
+        makeModel({ model: "b", costPerTask: 6, score: 50 }),
+        makeModel({ model: "c", costPerTask: 10, score: 90 }),
       ],
       XY,
     )
@@ -100,8 +102,8 @@ describe("buildPlotData", () => {
   it("centres an axis whose values are all equal instead of dividing by zero", () => {
     const data = buildPlotData(
       [
-        makeModel({ model: "a", costPerMTokens: 7, score: 10 }),
-        makeModel({ model: "b", costPerMTokens: 7, score: 20 }),
+        makeModel({ model: "a", costPerTask: 7, score: 10 }),
+        makeModel({ model: "b", costPerTask: 7, score: 20 }),
       ],
       XY,
     )
@@ -223,9 +225,9 @@ describe("describePlot", () => {
     const models = [makeModel({ model: "a", effort: "high", effortOrder: 2 })]
 
     expect(describePlot(buildPlotData(models, XY))).toBe(
-      "2D scatter plot of 1 model (1 effort variant) by X Cost, Y Score. Use arrow keys to move between points.",
+      "2D scatter plot of 1 model (1 effort variant) by X Task cost, Y Score. Use arrow keys to move between points.",
     )
     expect(describePlot(buildPlotData(models, XYZ))).toContain("3D scatter plot")
-    expect(describePlot(buildPlotData(models, XYZ))).toContain("Z Speed")
+    expect(describePlot(buildPlotData(models, XYZ))).toContain("Z Output speed")
   })
 })

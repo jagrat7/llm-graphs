@@ -28,6 +28,7 @@ export type Model = {
   effort: string
   effortOrder: number
   score: number | null
+  costPerTask: number | null
   costPerMTokens: number | null
   tokensPerSecond: number | null
   durationSeconds: number | null
@@ -127,12 +128,14 @@ function toModel(
 ): Model {
   const values: Record<MetricKey, number | null> = {
     score: null,
+    costPerTask: null,
     costPerMTokens: null,
     tokensPerSecond: null,
     durationSeconds: null,
   }
   const sources: Record<MetricKey, ProviderName | null> = {
     score: null,
+    costPerTask: null,
     costPerMTokens: null,
     tokensPerSecond: null,
     durationSeconds: null,

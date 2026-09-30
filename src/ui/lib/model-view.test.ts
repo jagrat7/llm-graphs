@@ -11,7 +11,7 @@ const info = ProvidersService.info()
 const { snapshot } = aggregateModels(fixtureInputs())
 
 const COST_BY_SCORE: Array<MetricBinding> = [
-  { metric: "costPerMTokens", source: "deepswe" },
+  { metric: "costPerTask", source: "deepswe" },
   { metric: "score", source: "deepswe" },
 ]
 const SPEED_BY_SCORE: Array<MetricBinding> = [
@@ -63,6 +63,7 @@ describe("offeredVariants", () => {
 
     expect(fable?.sources).toEqual({
       score: "deepswe",
+      costPerTask: null,
       costPerMTokens: null,
       tokensPerSecond: "artificialAnalysis",
       durationSeconds: null,
