@@ -19,6 +19,15 @@ export type MetricSource<TPayload, TRow> = SourceDefinition<TPayload> & {
   toMetricRows(payload: TPayload): Array<MetricRow>
 }
 
+/** What the UI needs to know about the metric sources, as plain data it gets over orpc. */
+export type ProvidersInfo = {
+  displayNames: Record<ProviderName, string>
+  /** The sources offering each metric. The first one is the default. */
+  metricProviders: Record<MetricKey, Array<ProviderName>>
+  /** The note each source shows beside a metric's axis title, e.g. "3:1 input/output blend". */
+  notes: Record<ProviderName, Partial<Record<MetricKey, string>>>
+}
+
 /** A row that failed to parse. It is dropped, and kept here so the aggregator can report it. */
 export type DroppedRow = {
   id: string | null

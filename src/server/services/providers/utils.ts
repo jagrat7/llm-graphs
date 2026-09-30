@@ -2,8 +2,10 @@ import type { z } from "zod"
 
 import {
   METRIC_KEYS,
+  type MetricKey,
   type MetricReaders,
   type MetricValues,
+  type ReasoningMode,
   type SourcePayload,
 } from "./provider.types"
 
@@ -80,6 +82,30 @@ export function normalizeLevel(word: string) {
 
 export function isKnownLevel(level: string) {
   return KNOWN_LEVEL_SET.has(level)
+}
+
+const LEVEL_ORDER: ReadonlyArray<string> = KNOWN_LEVELS
+const MODE_ORDER: Record<ReasoningMode, number> = { off: 0, on: 1, unknown: 2 }
+
+/** Sort rank: known levels low to high, then new level words, then `unknown`; non-reasoning first. */
+export function effortOrder(mode: ReasoningMode, level: string) {
+  const known = LEVEL_ORDER.indexOf(level)
+  const levelRank =
+    known >= 0 ? known : level === "unknown" ? LEVEL_ORDER.length + 1 : LEVEL_ORDER.length
+
+  return levelRank * 3 + MODE_ORDER[mode]
+}
+
+/** The notes a source shows beside axis titles, by metric. */
+export function metricNotes<TRow>(readers: MetricReaders<TRow>) {
+  const notes: Partial<Record<MetricKey, string>> = {}
+
+  for (const metric of METRIC_KEYS) {
+    const note = readers[metric]?.note
+    if (note != null) notes[metric] = note
+  }
+
+  return notes
 }
 
 /** Words the model-id matcher drops. Their presence marks AA's non-reasoning Instruct rows. */

@@ -1,7 +1,9 @@
 import { ArtificialAnalysisProvider } from "./artificial-analysis/artificial-analysis"
 import { DeepSWEProvider } from "./deep-swe/deep-swe"
 import { ModelsDevProvider } from "./models-dev/models-dev"
-import type { MetricKey, ProviderName } from "./provider.types"
+import type { MetricKey, ProviderName, ProvidersInfo } from "./provider.types"
+
+import { metricNotes } from "./utils"
 
 export const ProvidersService = {
   /** The sources that publish metrics. When two publish the same metric, the first is the default. */
@@ -18,6 +20,28 @@ export const ProvidersService = {
     return Object.values(ProvidersService.metricSources)
       .filter((source) => source.metrics[metric] != null)
       .map((source) => source.name)
+  },
+
+  /** Everything the UI needs about the metric sources, as plain data. */
+  info(): ProvidersInfo {
+    const { deepswe, artificialAnalysis } = ProvidersService.metricSources
+
+    return {
+      displayNames: {
+        deepswe: deepswe.displayName,
+        artificialAnalysis: artificialAnalysis.displayName,
+      },
+      metricProviders: {
+        score: ProvidersService.providersFor("score"),
+        costPerMTokens: ProvidersService.providersFor("costPerMTokens"),
+        tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
+        durationSeconds: ProvidersService.providersFor("durationSeconds"),
+      },
+      notes: {
+        deepswe: metricNotes(deepswe.metrics),
+        artificialAnalysis: metricNotes(artificialAnalysis.metrics),
+      },
+    }
   },
 }
 

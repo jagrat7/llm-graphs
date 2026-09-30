@@ -56,11 +56,7 @@
       }
     },
     {
-      "files": [
-        "src/ui/routes/**/*.{ts,tsx}",
-        "src/ui/lib/orpc-client.ts",
-        "src/ui/lib/metrics.ts"
-      ],
+      "files": ["src/ui/routes/**/*.{ts,tsx}", "src/ui/lib/orpc-client.ts"],
       "rules": {
         "local/no-server-deep-imports": "off"
       }

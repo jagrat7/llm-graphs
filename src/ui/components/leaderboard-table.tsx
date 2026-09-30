@@ -29,6 +29,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tool
 import { BELOW_HEADER_OFFSET_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
 import { formatMetric, METRIC_CONFIG } from "#/ui/lib/metrics"
 import { sourceLabel as providerLabel } from "#/ui/lib/sources"
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { cn } from "#/ui/lib/utils"
 
 const columnHelper = createColumnHelper<Model>()
@@ -91,7 +92,8 @@ function renderScoreCell({
   )
 }
 
-function renderSourceCell({ row }: { row: { original: Model } }) {
+function RenderSourceCell({ row }: { row: { original: Model } }) {
+  const info = useProvidersInfo()
   const sources = modelSources(row.original)
 
   if (sources.length === 0) {
@@ -102,7 +104,7 @@ function renderSourceCell({ row }: { row: { original: Model } }) {
     )
   }
 
-  const label = sources.map((source) => providerLabel(source)).join(" · ")
+  const label = sources.map((source) => providerLabel(source, info)).join(" · ")
 
   return (
     <Tooltip>
@@ -151,7 +153,7 @@ const columns = [
   columnHelper.display({
     id: "source",
     header: "Source",
-    cell: renderSourceCell,
+    cell: RenderSourceCell,
   }),
 ]
 

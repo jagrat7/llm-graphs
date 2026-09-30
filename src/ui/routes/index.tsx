@@ -5,7 +5,7 @@ import { z } from "zod"
 import type { AxisKey, AxisSetting, AxisState } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 import type { MetricBinding } from "#/ui/lib/model-view"
 
 import { AxisControls } from "#/ui/components/axis-controls"
@@ -16,7 +16,7 @@ import { PageShell } from "#/ui/components/page-shell"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { METRICS, METRIC_CONFIG, resolveSource } from "#/ui/lib/metrics"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
-import { isSource } from "#/ui/lib/sources"
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
@@ -32,11 +32,7 @@ const ComparisonChart3D = lazy(() =>
 )
 
 const metricSchema = z.enum(METRICS)
-const sourceSchema = z
-  .string()
-  .refine((value): value is ProviderName => isSource(value))
-  .optional()
-  .catch(undefined)
+const sourceSchema = z.string().optional().catch(undefined)
 const compareSearchSchema = z.object({
   x: metricSchema.catch("cost").default("cost"),
   xSource: sourceSchema,
@@ -61,8 +57,12 @@ export const Route = createFileRoute("/")({
 /** Each axis parks its source override under its own search param. */
 const AXIS_SOURCE_KEY = { x: "xSource", y: "ySource", z: "zSource" } as const
 
-function axisSetting(metric: Metric | null, source: ProviderName | undefined): AxisSetting {
-  return { metric, source: metric == null ? null : resolveSource(metric, source) }
+function axisSetting(
+  metric: Metric | null,
+  source: string | undefined,
+  info: ProvidersInfo,
+): AxisSetting {
+  return { metric, source: metric == null ? null : resolveSource(metric, source, info) }
 }
 
 /** Each filled axis reads its metric from its own source. */
@@ -73,13 +73,14 @@ function axisBindings(axes: AxisState): Array<MetricBinding> {
 }
 
 function ComparePage() {
+  const info = useProvidersInfo()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
   const reduceMotion = useReducedMotion()
   const axes: AxisState = {
-    x: axisSetting(search.x, search.xSource),
-    y: axisSetting(search.y, search.ySource),
-    z: axisSetting(search.z ?? null, search.zSource),
+    x: axisSetting(search.x, search.xSource, info),
+    y: axisSetting(search.y, search.ySource, info),
+    z: axisSetting(search.z ?? null, search.zSource, info),
   }
   const { data: snapshot, isPending, isError } = useModelSnapshot()
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
@@ -87,16 +88,16 @@ function ComparePage() {
     if (!snapshot) return undefined
 
     const viewAxes: AxisState = {
-      x: axisSetting(search.x, search.xSource),
-      y: axisSetting(search.y, search.ySource),
-      z: axisSetting(search.z ?? null, search.zSource),
+      x: axisSetting(search.x, search.xSource, info),
+      y: axisSetting(search.y, search.ySource, info),
+      z: axisSetting(search.z ?? null, search.zSource, info),
     }
     const models = offeredVariants(snapshot, axisBindings(viewAxes))
     const scoreSource =
       Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
 
-    return { models, defaultModels: defaultPicks(snapshot, models, scoreSource) }
-  }, [snapshot, search.x, search.xSource, search.y, search.ySource, search.z, search.zSource])
+    return { models, defaultModels: defaultPicks(snapshot, models, scoreSource, info) }
+  }, [snapshot, info, search.x, search.xSource, search.y, search.ySource, search.z, search.zSource])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
 

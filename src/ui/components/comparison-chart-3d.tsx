@@ -1,3 +1,4 @@
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { RiDragMove2Line } from "@remixicon/react"
 import { OrbitControls } from "@react-three/drei"
 import { Canvas, invalidate, useFrame, useThree } from "@react-three/fiber"
@@ -976,6 +977,7 @@ export function ComparisonChart3D({
   phase?: MorphPhase
   onExitComplete?: () => void
 }) {
+  const info = useProvidersInfo()
   const reduceMotion = useReducedMotion()
   const { colors, resolve } = useThemeColors()
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -1026,7 +1028,7 @@ export function ComparisonChart3D({
 
       items.push({
         key: `axis-${axis}`,
-        text: metricAxisTitle(metric, sources[axis]),
+        text: metricAxisTitle(metric, sources[axis], info),
         kind: "axis",
         axis,
         fraction: 0.5,
@@ -1068,7 +1070,7 @@ export function ComparisonChart3D({
     }
 
     return items
-  }, [data, metrics, positions, showPointLabels, sources])
+  }, [data, info, metrics, positions, showPointLabels, sources])
 
   const activePoint = activeId == null ? null : (data.pointById.get(activeId) ?? null)
 

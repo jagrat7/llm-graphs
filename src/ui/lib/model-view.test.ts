@@ -4,8 +4,10 @@ import type { MetricBinding } from "#/ui/lib/model-view"
 
 import { aggregateModels } from "#/server/services/model-aggregator/derive"
 import { fixtureInputs, fixtures } from "#/server/services/model-aggregator/fixture-inputs"
+import { ProvidersService } from "#/server/services/providers"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 
+const info = ProvidersService.info()
 const { snapshot } = aggregateModels(fixtureInputs())
 
 const COST_BY_SCORE: Array<MetricBinding> = [
@@ -25,6 +27,19 @@ function variantsOf(bindings: Array<MetricBinding>, model: string) {
 }
 
 describe("offeredVariants", () => {
+  it("preserves the server's effort rank instead of recomputing it in the UI", () => {
+    const variant = snapshot.variants.deepswe[0]
+    const ranked = {
+      ...snapshot,
+      variants: {
+        ...snapshot.variants,
+        deepswe: [{ ...variant, effortOrder: 123 }],
+      },
+    }
+
+    expect(offeredVariants(ranked, COST_BY_SCORE)[0]?.effortOrder).toBe(123)
+  })
+
   it("offers every variant of a single-source view", () => {
     expect(variantsOf(COST_BY_SCORE, "claude-fable-5")).toEqual([
       "on/high",
@@ -73,7 +88,7 @@ describe("defaultPicks", () => {
   it("opens Cost × Score on each of the six strongest vendors' strongest model", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
 
-    expect(defaultPicks(snapshot, offered, "deepswe")).toEqual([
+    expect(defaultPicks(snapshot, offered, "deepswe", info)).toEqual([
       "gpt-6-astra",
       "gemini-3-8-flash",
       "claude-opus-5",
@@ -88,7 +103,7 @@ describe("defaultPicks", () => {
       { metric: "tokensPerSecond", source: "artificialAnalysis" },
       { metric: "durationSeconds", source: "deepswe" },
     ])
-    const picks = defaultPicks(snapshot, offered, null)
+    const picks = defaultPicks(snapshot, offered, null, info)
 
     expect(picks.length).toBeGreaterThan(0)
     expect(picks.length).toBeLessThanOrEqual(6)
@@ -104,6 +119,6 @@ describe("defaultPicks", () => {
       (model) => !snapshot.variants.deepswe.some((variant) => variant.entryId === model.model),
     )
 
-    expect(defaultPicks(snapshot, offered, null)).toEqual([])
+    expect(defaultPicks(snapshot, offered, null, info)).toEqual([])
   })
 })

@@ -41,6 +41,8 @@ export type ModelVariant = {
   entryId: string
   mode: ReasoningMode
   level: string
+  /** Sorts a model's variants low effort to high. */
+  effortOrder: number
   metrics: MetricValues
   /** The row's own labels contradict each other, so it never joins another source's row. */
   refused?: true

@@ -1,3 +1,4 @@
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
 
@@ -5,6 +6,7 @@ import { SourceLogo } from "#/ui/components/source-logo"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -39,15 +41,16 @@ export function SourceSelect({
   className?: string
   disabled?: boolean
 }) {
-  const sources = metricProviders(metric)
+  const info = useProvidersInfo()
+  const sources = metricProviders(metric, info)
 
   if (sources.length < 2) {
     return (
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
-        <span className="min-h-11 sm:min-h-8 flex items-center gap-1.5 truncate px-2">
+        <span className="flex min-h-11 items-center gap-1.5 truncate px-2 sm:min-h-8">
           <SourceLogo source={value} className="size-3" accent />
-          <span className="truncate">{sourceLabel(value)}</span>
+          <span className="truncate">{sourceLabel(value, info)}</span>
         </span>
       </p>
     )
@@ -59,7 +62,7 @@ export function SourceSelect({
       <Select
         value={value}
         onValueChange={(source) => {
-          if (source != null && isSource(source)) onChange(source)
+          if (source != null && isSource(source, info)) onChange(source)
         }}
         disabled={disabled}
       >
@@ -75,7 +78,7 @@ export function SourceSelect({
             {(selected: ProviderName) => (
               <>
                 <SourceLogo source={selected} className="size-3" />
-                <span className="truncate">{sourceLabel(selected)}</span>
+                <span className="truncate">{sourceLabel(selected, info)}</span>
               </>
             )}
           </SelectValue>
@@ -87,16 +90,18 @@ export function SourceSelect({
         >
           {/* A menu that reads louder than the trigger that opened it inverts the
               hierarchy, so the items ride the same annotation step. */}
-          {sources.map((source) => (
-            <SelectItem
-              key={source}
-              value={source}
-              className="min-h-11 text-sm sm:min-h-8 sm:text-xs"
-            >
-              <SourceLogo source={source} className="size-3" />
-              {sourceLabel(source)}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {sources.map((source) => (
+              <SelectItem
+                key={source}
+                value={source}
+                className="min-h-11 text-sm sm:min-h-8 sm:text-xs"
+              >
+                <SourceLogo source={source} className="size-3" />
+                {sourceLabel(source, info)}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
     </p>

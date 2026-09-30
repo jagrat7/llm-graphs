@@ -1,4 +1,10 @@
-import type { MetricKey, ProviderName, ReasoningMode, ModelSnapshot } from "#/ui/lib/orpc-client"
+import type {
+  MetricKey,
+  ProviderName,
+  ReasoningMode,
+  ModelSnapshot,
+  ProvidersInfo,
+} from "#/ui/lib/orpc-client"
 
 import { metricProviders } from "#/ui/lib/metrics"
 
@@ -37,8 +43,6 @@ export type MetricBinding = {
   required?: boolean
 }
 
-const KNOWN_LEVELS = ["minimal", "low", "medium", "high", "xhigh", "max"]
-const MODE_ORDER: Record<ReasoningMode, number> = { off: 0, on: 1, unknown: 2 }
 /** How many vendors the chart opens on. */
 export const DEFAULT_VENDOR_COUNT = 6
 
@@ -56,15 +60,6 @@ export function effortLabel(mode: ReasoningMode, level: string) {
   }
 
   return mode === "off" ? `${level} non-reasoning` : level
-}
-
-/** Known levels low to high, then new level words, then `unknown`; non-reasoning first. */
-export function effortOrder(mode: ReasoningMode, level: string) {
-  const known = KNOWN_LEVELS.indexOf(level)
-  const levelRank =
-    known >= 0 ? known : level === "unknown" ? KNOWN_LEVELS.length + 1 : KNOWN_LEVELS.length
-
-  return levelRank * 3 + MODE_ORDER[mode]
 }
 
 function variantKey(entryId: string, mode: ReasoningMode, level: string) {
@@ -162,7 +157,7 @@ function toModel(
     mode: variant.mode,
     level: variant.level,
     effort: effortLabel(variant.mode, variant.level),
-    effortOrder: effortOrder(variant.mode, variant.level),
+    effortOrder: variant.effortOrder,
     ...values,
     sources,
   }
@@ -198,12 +193,12 @@ function percentiles(scores: Map<string, number>) {
  * How strong each entry is: its best score on the Score axis's source, or, with Score off the
  * chart, its average percentile across every score source that lists it.
  */
-function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null) {
+function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null, info: ProvidersInfo) {
   if (scoreSource != null) return bestScores(snapshot, scoreSource)
 
   const totals = new Map<string, { sum: number; count: number }>()
 
-  for (const source of metricProviders("score")) {
+  for (const source of metricProviders("score", info)) {
     for (const [entryId, percentile] of percentiles(bestScores(snapshot, source))) {
       const total = totals.get(entryId) ?? { sum: 0, count: 0 }
       totals.set(entryId, { sum: total.sum + percentile, count: total.count + 1 })
@@ -232,8 +227,9 @@ export function defaultPicks(
   snapshot: ModelSnapshot,
   offered: ReadonlyArray<Model>,
   scoreSource: ProviderName | null,
+  info: ProvidersInfo,
 ) {
-  const strength = strengths(snapshot, scoreSource)
+  const strength = strengths(snapshot, scoreSource, info)
   const bestByVendor = new Map<string, Candidate>()
 
   for (const model of offered) {

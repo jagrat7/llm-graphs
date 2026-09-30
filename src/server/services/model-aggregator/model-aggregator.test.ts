@@ -23,6 +23,18 @@ function variants(source: "deepswe" | "artificialAnalysis", id: string) {
 }
 
 describe("model aggregation", () => {
+  it("ranks known effort levels low to high consistently across sources", () => {
+    const fable = snapshot.variants.deepswe
+      .filter((variant) => variant.entryId === "claude-fable-5")
+      .toSorted((left, right) => left.effortOrder - right.effortOrder)
+
+    expect(fable.map((variant) => variant.level)).toEqual(["low", "medium", "high", "xhigh", "max"])
+    const aaMax = snapshot.variants.artificialAnalysis.find(
+      (variant) => variant.entryId === "claude-fable-5" && variant.level === "max",
+    )
+    expect(aaMax?.effortOrder).toBe(fable.at(-1)?.effortOrder)
+  })
+
   it("names a model the way models.dev does: gpt-6-astra is GPT-6 Astra", () => {
     expect(entry("gpt-6-astra")).toMatchObject({ name: "GPT-6 Astra", vendor: "openai" })
   })

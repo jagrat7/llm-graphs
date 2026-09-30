@@ -1,6 +1,4 @@
-import type { MetricKey, ProviderName } from "#/ui/lib/orpc-client"
-
-import { ProvidersService } from "#/server/services/providers"
+import type { MetricKey, ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 
 export const METRICS = ["score", "cost", "speed", "duration"] as const
 
@@ -45,24 +43,27 @@ export const METRIC_CONFIG: Record<
   },
 }
 
-export function metricAxisTitle(metric: Metric, source: ProviderName | null) {
+export function metricAxisTitle(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
   const config = METRIC_CONFIG[metric]
-  const sourceNote =
-    source == null ? null : ProvidersService.metricSources[source].metrics[config.dataKey]?.note
+  const sourceNote = source == null ? null : info.notes[source][config.dataKey]
 
   return `${config.label} · ${config.unit}${sourceNote == null ? "" : ` (${sourceNote})`}`
 }
 
-/** Falls back to the metric's default source, so a stale URL source never sticks. */
 /** The providers the chart offers for a metric. The first one is the default. */
-export function metricProviders(metric: Metric) {
-  return ProvidersService.providersFor(METRIC_CONFIG[metric].dataKey)
+export function metricProviders(metric: Metric, info: ProvidersInfo) {
+  return info.metricProviders[METRIC_CONFIG[metric].dataKey]
 }
 
-export function resolveSource(metric: Metric, source: ProviderName | undefined): ProviderName {
-  const sources = metricProviders(metric)
+/** Falls back to the metric's default source, so a stale URL source never sticks. */
+export function resolveSource(
+  metric: Metric,
+  source: string | undefined,
+  info: ProvidersInfo,
+): ProviderName {
+  const sources = metricProviders(metric, info)
 
-  return source != null && sources.includes(source) ? source : sources[0]
+  return sources.find((candidate) => candidate === source) ?? sources[0]
 }
 
 export function formatMetric(value: number | null, metric: Metric) {

@@ -1,6 +1,6 @@
 import type { MetricRow, ModelsDevModel, ProviderName, SourceName } from "../providers"
 
-import { trailingDateLength } from "../providers/utils"
+import { effortOrder, trailingDateLength } from "../providers/utils"
 import type {
   EntryProvenance,
   MetadataSource,
@@ -447,6 +447,7 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
           entryId: id,
           mode: row.mode,
           level: row.level,
+          effortOrder: effortOrder(row.mode, row.level),
           metrics: row.metrics,
           ...(row.effortConflict ? { refused: true as const } : {}),
         })

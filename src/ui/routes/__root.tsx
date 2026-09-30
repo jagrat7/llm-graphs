@@ -7,6 +7,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import AppHeader from "#/ui/components/app-header"
 import { TooltipProvider } from "#/ui/components/ui/tooltip"
 import { APP_DESCRIPTION, APP_NAME } from "#/ui/lib/app-meta"
+import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
 import ClerkProvider from "../components/integrations/clerk/provider"
 import TanStackQueryDevtools from "../components/integrations/tanstack-query/devtools"
@@ -21,6 +22,9 @@ interface MyRouterContext {
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var resolved=stored==='light'||stored==='dark'?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved}catch(e){}})()`
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async ({ context }) => {
+    await context.queryClient.ensureQueryData(providersInfoQueryOptions)
+  },
   head: () => ({
     meta: [
       {

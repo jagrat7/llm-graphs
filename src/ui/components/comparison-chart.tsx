@@ -1,3 +1,4 @@
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { AxisBottom, AxisLeft } from "@visx/axis"
 import { GridColumns, GridRows } from "@visx/grid"
 import { Group } from "@visx/group"
@@ -227,6 +228,7 @@ export function ComparisonChart({
   xMetric: Metric
   yMetric: Metric
 }) {
+  const info = useProvidersInfo()
   const { parentRef, width, height } = useParentSize({
     debounceTime: 24,
     initialSize: { width: 1200, height: 640 },
@@ -580,7 +582,7 @@ export function ComparisonChart({
             fontSize={CHART_AXIS_TITLE_SIZE}
             fontWeight={500}
           >
-            {metricAxisTitle(xMetric, sources.x)}
+            {metricAxisTitle(xMetric, sources.x, info)}
           </text>
           <text
             transform={`translate(16 ${MARGIN.top + layout.innerHeight / 2}) rotate(-90)`}
@@ -589,7 +591,7 @@ export function ComparisonChart({
             fontSize={CHART_AXIS_TITLE_SIZE}
             fontWeight={500}
           >
-            {metricAxisTitle(yMetric, sources.y)}
+            {metricAxisTitle(yMetric, sources.y, info)}
           </text>
         </svg>
       ) : null}
