@@ -1,46 +1,109 @@
-import { ProviderCache, type CachedSource } from "../cache"
+import { SourceCache } from "../cache"
 import { ArtificialAnalysisProvider } from "./artificial-analysis"
 import { DeepSWEProvider } from "./deep-swe"
+import { EFFORT_ORDER, getModelConfig } from "./model-config"
 import type { ProviderService } from "./provider-service.interface"
-import type { ProviderModel, ProviderModelDataByProvider, ProviderName } from "./provider.types"
+import type {
+  ArtificialAnalysisPayload,
+  ArtificialAnalysisProviderModel,
+  DeepSWEPayload,
+  DeepSWEProviderModel,
+  ProviderModel,
+  ProviderModelDataByProvider,
+  ProviderName,
+  SourceDefinition,
+} from "./provider.types"
 
-type ProviderIntegration<TProvider extends ProviderName> = {
-  readonly cacheKey: string
-  fetchModels(): Promise<Array<ProviderModelDataByProvider[TProvider]>>
+const EFFORT_SUFFIX_PATTERN = /-(low|medium|high|xhigh|max)$/
+
+type ProviderSources = {
+  deepswe: SourceDefinition<DeepSWEPayload>
+  artificialAnalysis: SourceDefinition<ArtificialAnalysisPayload>
 }
 
-type ProviderRegistry = {
-  [TProvider in ProviderName]: ProviderIntegration<TProvider>
+function configured(model: string, effort: string) {
+  const config = getModelConfig(model)
+
+  return {
+    model,
+    displayName: config.displayName,
+    family: config.family,
+    chartColor: config.chartColor,
+    isDefault: config.isDefault,
+    effort,
+    effortOrder: EFFORT_ORDER[effort] ?? 0,
+  }
+}
+
+function deepsweModels(payload: DeepSWEPayload): Array<DeepSWEProviderModel> {
+  return payload.rows.map((row) => {
+    const tokens = (row.mean_input_tokens ?? 0) + (row.mean_output_tokens ?? 0)
+
+    return {
+      ...configured(row.model, row.reasoning_effort ?? "default"),
+      score: row.pass_rate * 100,
+      costPerMTokens:
+        row.mean_cost_usd != null && tokens > 0 ? (row.mean_cost_usd / tokens) * 1_000_000 : null,
+      durationSeconds: row.mean_duration_seconds,
+    }
+  })
+}
+
+function artificialAnalysisModels(
+  payload: ArtificialAnalysisPayload,
+): Array<ArtificialAnalysisProviderModel> {
+  return payload.rows.map((row) => {
+    const effortMatch = row.slug.match(EFFORT_SUFFIX_PATTERN)
+    const model = effortMatch ? row.slug.slice(0, -effortMatch[0].length) : row.slug
+    const base = configured(model, effortMatch?.[1] ?? "default")
+
+    return {
+      ...base,
+      displayName: row.name ?? base.displayName,
+      tokensPerSecond: row.median_output_tokens_per_second,
+    }
+  })
 }
 
 export class ProviderDataService implements ProviderService {
   constructor(
-    private readonly cache = new ProviderCache(),
-    private readonly providers: ProviderRegistry = {
+    private readonly cache = new SourceCache(),
+    private readonly sources: ProviderSources = {
       deepswe: new DeepSWEProvider(),
       artificialAnalysis: new ArtificialAnalysisProvider(),
     },
   ) {}
 
-  async fetchModels<TProvider extends ProviderName>(
-    provider: TProvider,
-  ): Promise<CachedSource<Array<ProviderModelDataByProvider[TProvider]>>> {
-    const integration = this.providers[provider]
+  private readonly loaders: {
+    [TProvider in ProviderName]: () => Promise<Array<ProviderModelDataByProvider[TProvider]>>
+  } = {
+    deepswe: async () => {
+      const cached = await this.cache.read(this.sources.deepswe)
 
-    return this.cache.fetch(integration.cacheKey, () => integration.fetchModels())
+      return cached ? deepsweModels(cached.payload) : []
+    },
+    artificialAnalysis: async () => {
+      const cached = await this.cache.read(this.sources.artificialAnalysis)
+
+      return cached ? artificialAnalysisModels(cached.payload) : []
+    },
+  }
+
+  fetchModels<TProvider extends ProviderName>(
+    provider: TProvider,
+  ): Promise<Array<ProviderModelDataByProvider[TProvider]>> {
+    return this.loaders[provider]()
   }
 
   async listModels(provider: ProviderName): Promise<Array<ProviderModel>> {
-    const source = await this.fetchModels(provider)
+    const models = await this.fetchModels(provider)
 
     return Array.from(
       new Map(
-        (source.data ?? []).map(
-          ({ model, displayName, family, chartColor, isDefault, effort, effortOrder }) => [
-            `${model}:${effort}`,
-            { model, displayName, family, chartColor, isDefault, effort, effortOrder },
-          ],
-        ),
+        models.map(({ model, displayName, family, chartColor, isDefault, effort, effortOrder }) => [
+          `${model}:${effort}`,
+          { model, displayName, family, chartColor, isDefault, effort, effortOrder },
+        ]),
       ).values(),
     )
   }
@@ -50,10 +113,10 @@ export class ProviderDataService implements ProviderService {
     model: string,
     effort = "default",
   ): Promise<ProviderModelDataByProvider[TProvider] | null> {
-    const source = await this.fetchModels(provider)
+    const models = await this.fetchModels(provider)
 
     return (
-      source.data?.find(
+      models.find(
         (providerModel) => providerModel.model === model && providerModel.effort === effort,
       ) ?? null
     )

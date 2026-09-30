@@ -1,10 +1,9 @@
-import type { CachedSource } from "../cache"
 import type { ProviderModel, ProviderModelDataByProvider, ProviderName } from "./provider.types"
 
 export interface ProviderService {
   fetchModels<TProvider extends ProviderName>(
     provider: TProvider,
-  ): Promise<CachedSource<Array<ProviderModelDataByProvider[TProvider]>>>
+  ): Promise<Array<ProviderModelDataByProvider[TProvider]>>
   listModels(provider: ProviderName): Promise<Array<ProviderModel>>
   getModel<TProvider extends ProviderName>(
     provider: TProvider,

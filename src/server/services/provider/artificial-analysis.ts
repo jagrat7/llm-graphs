@@ -2,41 +2,54 @@ import { z } from "zod"
 
 import { env } from "#/env"
 
-import { EFFORT_ORDER, getModelConfig } from "./model-config"
-import type { ArtificialAnalysisProviderModel } from "./provider.types"
+import { parseRows } from "./parse-rows"
+import {
+  REFRESH_WINDOW_MS,
+  type ArtificialAnalysisPayload,
+  type ArtificialAnalysisRow,
+  type SourceDefinition,
+} from "./provider.types"
 
 const API_URL = "https://artificialanalysis.ai/api/v2/language/models/free"
-const CACHE_KEY = "llm-scores:artificial-analysis:v2:models:v4"
+const CACHE_KEY = "llm-scores:source:artificial-analysis:v1"
 const MAX_PAGES = 100
 const REQUEST_TIMEOUT_MS = 20_000
-const EFFORT_SUFFIX_PATTERN = /-(low|medium|high|xhigh|max)$/
 
-const nullableNumber = z.number().nullable().optional()
+const rowSchema: z.ZodType<ArtificialAnalysisRow> = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().nullish(),
+    slug: z.string().min(1),
+    release_date: z.string().nullish(),
+    model_creator: z.object({ name: z.string().min(1) }).nullish(),
+    performance: z.object({ median_output_tokens_per_second: z.number().nullish() }).nullish(),
+  })
+  .transform((row) => ({
+    id: row.id,
+    // A nameless row still has metrics; the registry names it from its id instead.
+    name: row.name || null,
+    slug: row.slug,
+    release_date: row.release_date ?? null,
+    model_creator: row.model_creator ? { name: row.model_creator.name } : null,
+    median_output_tokens_per_second: row.performance?.median_output_tokens_per_second ?? null,
+  }))
 
-const modelSchema = z.object({
-  name: z.string().optional(),
-  slug: z.string(),
-  performance: z
-    .object({
-      median_output_tokens_per_second: nullableNumber,
-    })
-    .optional(),
-})
-
-const payloadSchema = z.object({
-  data: z.array(modelSchema),
+const pageSchema = z.object({
+  data: z.array(z.unknown()),
   pagination: z.object({
     has_more: z.boolean(),
   }),
 })
 
-export class ArtificialAnalysisProvider {
+export class ArtificialAnalysisProvider implements SourceDefinition<ArtificialAnalysisPayload> {
+  readonly name = "artificialAnalysis"
   readonly cacheKey = CACHE_KEY
+  readonly refreshWindowMs = REFRESH_WINDOW_MS.artificialAnalysis
 
-  async fetchModels(): Promise<Array<ArtificialAnalysisProviderModel>> {
+  async fetchPayload(): Promise<ArtificialAnalysisPayload> {
     if (!env.AA_API_KEY) throw new Error("AA_API_KEY is not configured")
 
-    const models: Array<ArtificialAnalysisProviderModel> = []
+    const rawRows: Array<unknown> = []
 
     for (let page = 1; page <= MAX_PAGES; page += 1) {
       const response = await fetch(`${API_URL}?page=${page}`, {
@@ -48,33 +61,14 @@ export class ArtificialAnalysisProvider {
         throw new Error(`Artificial Analysis returned ${response.status}`)
       }
 
-      const payload = payloadSchema.parse(await response.json())
+      const payload = pageSchema.parse(await response.json())
+      rawRows.push(...payload.data)
 
-      models.push(
-        ...payload.data.map((model) => {
-          const effortMatch = model.slug.match(EFFORT_SUFFIX_PATTERN)
-          const normalizedModel = effortMatch
-            ? model.slug.slice(0, -effortMatch[0].length)
-            : model.slug
-          const effort = effortMatch?.[1] ?? "default"
-          const config = getModelConfig(normalizedModel)
-
-          return {
-            model: normalizedModel,
-            displayName: model.name ?? config.displayName,
-            family: config.family,
-            chartColor: config.chartColor,
-            isDefault: config.isDefault,
-            effort,
-            effortOrder: EFFORT_ORDER[effort] ?? 0,
-            tokensPerSecond: model.performance?.median_output_tokens_per_second ?? null,
-          }
-        }),
-      )
-
-      if (!payload.pagination.has_more) return models
+      if (!payload.pagination.has_more) {
+        return parseRows("Artificial Analysis", rawRows, rowSchema, "slug")
+      }
     }
 
-    return models
+    throw new Error(`Artificial Analysis still had more pages after ${MAX_PAGES}`)
   }
 }
