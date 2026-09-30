@@ -28,3 +28,12 @@ _Avoid_: Pass rate, accuracy percentage
 
 **Meaningful graph**:
 A comparison of at least two models with compatible measurements and variation on every selected axis. Constant values on an axis do not support a comparison along that axis.
+
+**Context length**:
+The provider's listed maximum token window. This is model metadata, not an evaluated long-context capability score.
+
+**Vote count**:
+The number of human comparisons supporting an Arena configuration's preference rating. It describes evidence volume, not model quality.
+
+**Average task score**:
+METR's published average score across its benchmark tasks. It is separate from the 50% or 80% success threshold used to estimate task horizon.

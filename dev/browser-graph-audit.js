@@ -25,7 +25,7 @@ export async function prepareBrowserAudit() {
   audit = {
     startedAt: new Date().toISOString(),
     fetchedAt: snapshot.fetchedAt,
-    cases: graphCases(info),
+    cases: graphCases(info, { allOrders: false, allSources: true }),
     results: [],
     router,
     info,
@@ -205,6 +205,15 @@ export async function auditGraphBatch(start, count = 12) {
           /NaN|Infinity|undefined/.test(path.getAttribute("d") ?? ""),
         )
         if (bad) failures.push("Invalid SVG path")
+        if (
+          [...frame.querySelectorAll("svg circle")].some((circle) =>
+            ["cx", "cy", "r"].some((attribute) => {
+              const value = circle.getAttribute(attribute)
+              return value == null || !Number.isFinite(Number(value))
+            }),
+          )
+        )
+          failures.push("Invalid SVG circle")
       }
     } else if (document.querySelector('[data-chart-frame="loaded"]'))
       failures.push("Unsupported graph rendered")

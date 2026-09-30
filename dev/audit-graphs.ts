@@ -15,7 +15,7 @@ import { defaultPicks, offeredVariants } from "../src/ui/lib/model-view"
 
 const info = ProvidersService.info()
 const { snapshot } = aggregateModels(allFixtureInputs())
-const results = graphCases(info).map(({ key, search }) => {
+const results = graphCases(info, { allOrders: false, allSources: true }).map(({ key, search }) => {
   const axes = axisSettings(search, info)
   const bindings = axisBindings(axes, info)
   const offered = offeredVariants(snapshot, bindings)
@@ -56,7 +56,7 @@ const summary = Object.fromEntries(
   ]),
 )
 await writeFile(
-  "docs/provider-graph-data-results.jsonl",
+  "docs/additional-provider-metrics-data-results.jsonl",
   [
     {
       kind: "summary",
