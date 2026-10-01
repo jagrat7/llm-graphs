@@ -21,4 +21,4 @@ For rendering verification, open the shared browser preview with animation frame
 
 When exposing a new kind of measurement, add its key to `provider.types.ts` and its URL/label definition to `ui/lib/metrics.ts`. `Model` and `metricRecord` then include it automatically; provider capability declarations control selectors and audit cases. Existing kinds of measurements need only an adapter reader.
 
-The current sources and limitations are documented in [the release-benchmark research](release-benchmark-provider-research.md), [the release audit](release-benchmark-audit.md), and [the earlier provider audit](provider-graph-audit.md).
+The current sources and limitations are documented in [the CursorBench audit](cursor-bench-audit.md), [the ARC Prize audit](arc-prize-audit.md), [the release-benchmark research](release-benchmark-provider-research.md), and [the earlier provider audit](provider-graph-audit.md).

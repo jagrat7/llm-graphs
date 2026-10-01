@@ -1,6 +1,6 @@
 # Additional score provider audit
 
-**Latest results:** [ARC Prize audit](arc-prize-audit.md) covers eight score sources and 730 distinct metric/source combinations. The [release-benchmark audit](release-benchmark-audit.md) and rollout checks below remain historical evidence.
+**Latest results:** [CursorBench audit](cursor-bench-audit.md) covers nine score sources and 795 distinct metric/source combinations. The [ARC Prize audit](arc-prize-audit.md), [release-benchmark audit](release-benchmark-audit.md) and rollout checks below remain historical evidence.
 
 September 30, 2026 · branch `feat/add-score-providers` · builds on [the original combination audit](graph-combination-audit.md).
 
