@@ -1,5 +1,7 @@
 # Release benchmark audit
 
+**Latest results:** [ARC Prize audit](arc-prize-audit.md) adds abstract reasoning and covers eight score sources and 730 combinations. The checks below document the preceding seven-source rollout.
+
 September 30, 2026 · `feat/add-score-providers` · [PR #30](https://github.com/jagrat7/llm-graphs/pull/30), based on [#29](https://github.com/jagrat7/llm-graphs/pull/29).
 
 Added three benchmark sources selected for release relevance, useful model coverage, published efforts and real cost/performance comparisons. [Selection research](release-benchmark-provider-research.md) links the release announcements, benchmark owners and exact data endpoints.
