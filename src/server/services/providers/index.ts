@@ -4,6 +4,7 @@ import { METRProvider } from "./metr/metr"
 import { ArenaProvider } from "./arena/arena"
 import { AutomationBenchProvider } from "./automation-bench/automation-bench"
 import { ARCPrizeProvider } from "./arc-prize/arc-prize"
+import { CursorBenchProvider } from "./cursor-bench/cursor-bench"
 import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
 import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
@@ -25,6 +26,7 @@ const metricSources = {
   terminalBench: new TerminalBenchProvider(),
   terminalBenchScience: new TerminalBenchScienceProvider(),
   arcPrize: new ARCPrizeProvider(),
+  cursorBench: new CursorBenchProvider(),
 }
 
 export type RegisteredProviderName = keyof typeof metricSources

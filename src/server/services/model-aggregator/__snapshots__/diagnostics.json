@@ -8,6 +8,7 @@
     "terminalBench": null,
     "terminalBenchScience": null,
     "arcPrize": null,
+    "cursorBench": null,
     "modelsDev": "2026-09-30T21:00:17.221Z"
   },
   "counts": {
@@ -41,6 +42,9 @@
     "arcPrize.keyClashes": 0,
     "arcPrize.unmatched": 0,
     "arcPrize.nearMisses": 0,
+    "cursorBench.keyClashes": 0,
+    "cursorBench.unmatched": 0,
+    "cursorBench.nearMisses": 0,
     "modelsDev.keyClashes": 0,
     "unresolvedDateGroups": 26,
     "effortConflicts": 0,
@@ -3249,6 +3253,10 @@
       "unmatched": []
     },
     "arcPrize": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "cursorBench": {
       "keyClashes": [],
       "unmatched": []
     },
