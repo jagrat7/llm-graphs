@@ -5,7 +5,7 @@ import { Group } from "@visx/group"
 import { useParentSize } from "@visx/responsive"
 import { scaleLinear } from "@visx/scale"
 import { motion } from "motion/react"
-import { useEffect, useId, useMemo, useState } from "react"
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
@@ -241,6 +241,8 @@ export function ComparisonChart({
   const reduceMotion = useReducedMotion()
   const maskPrefix = `logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
   const [activeId, setActiveId] = useState<string | null>(null)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const [tooltipHeight, setTooltipHeight] = useState(0)
   const [entered, setEntered] = useState(false)
   const data = useMemo(
     () => buildPlotData(models, { x: xMetric, y: yMetric }),
@@ -300,6 +302,16 @@ export function ComparisonChart({
     return new Map(Array.from(urls, (url, index) => [url, `${maskPrefix}-${index}`]))
   }, [data, maskPrefix])
   const activePoint = activeId == null ? null : (data.pointById.get(activeId) ?? null)
+  useLayoutEffect(() => {
+    const card = tooltipRef.current
+    if (!card || !activePoint) return undefined
+    const measure = () => setTooltipHeight(card.offsetHeight)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(card)
+    return () => observer.disconnect()
+  }, [activePoint])
+
   const activePosition = activeId == null ? null : (layout.positions.get(activeId) ?? null)
   const ready = layout.innerWidth > 0 && layout.innerHeight > 0
   const pinTooltip = width < 640
@@ -606,6 +618,7 @@ export function ComparisonChart({
       ) : null}
 
       <div
+        ref={tooltipRef}
         aria-hidden={activePoint == null}
         className={`absolute ${CHART_TOOLTIP_CLASS} ${
           activePoint == null ? "opacity-0" : "opacity-100"
@@ -625,7 +638,11 @@ export function ComparisonChart({
                   8,
                   Math.max(8, width - CHART_TOOLTIP_WIDTH - 8),
                 ),
-                top: clamp(MARGIN.top + activePosition.y - 40, 8, Math.max(8, height - 120)),
+                top: clamp(
+                  MARGIN.top + activePosition.y - 40,
+                  8,
+                  Math.max(8, height - tooltipHeight - 8),
+                ),
               }
         }
       >
