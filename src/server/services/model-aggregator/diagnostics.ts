@@ -222,7 +222,10 @@ export function buildDiagnostics(derivation: Derivation): DiagnosticsReport {
   const variantKeys = (source: ProviderName, id: string) =>
     snapshot.variants[source]
       .filter((variant) => variant.entryId === id && !variant.refused)
-      .map((variant) => `${variant.mode}/${variant.level}`)
+      .map(
+        (variant) =>
+          `${variant.mode}/${variant.level}${variant.configuration ? `/${variant.configuration}` : ""}`,
+      )
   const noSharedVariant = provenance.flatMap((from) => {
     const listed = METRIC_SOURCE_NAMES.filter((source) =>
       from.members.some((member) => member.source === source),

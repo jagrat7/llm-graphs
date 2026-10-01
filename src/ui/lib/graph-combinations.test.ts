@@ -69,7 +69,10 @@ it("validates every registered benchmark and metric set against one shared snaps
       bindings.every((binding) => {
         const measured = measuredByEntry[binding.source].get(point.model.model) ?? []
         const exact = measured.find(
-          (row) => row.mode === point.model.mode && row.level === point.model.level,
+          (row) =>
+            row.mode === point.model.mode &&
+            row.level === point.model.level &&
+            row.configuration === point.model.configuration,
         )
         const valueMatches =
           binding.scope === "model"

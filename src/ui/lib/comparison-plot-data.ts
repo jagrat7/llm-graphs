@@ -83,7 +83,9 @@ function anchorPoint(points: Array<PlotPoint>) {
 }
 
 function pointLabel(model: Model) {
-  return model.effort === "default" ? model.displayName : `${model.displayName} [${model.effort}]`
+  const label =
+    model.effort === "default" ? model.displayName : `${model.displayName} [${model.effort}]`
+  return model.configuration ? `${label} (${model.configuration})` : label
 }
 
 /** 0.5 for a flat domain keeps single-valued axes centred instead of dividing by zero. */
@@ -167,7 +169,7 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
 
     const values: Record<PlotAxis, number> = { x, y, z }
     const point: PlotPoint = {
-      id: `${model.model}-${model.mode}-${model.level}`,
+      id: `${model.model}-${model.mode}-${model.level}${model.configuration ? `-${model.configuration}` : ""}`,
       index: points.length,
       label: pointLabel(model),
       color: model.chartColor,
@@ -186,12 +188,13 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     pointById.set(point.id, point)
     modelKeys.add(model.model)
 
-    const series = seriesByModel.get(model.model)
+    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
+    const series = seriesByModel.get(seriesKey)
 
     if (series) series.points.push(point)
     else {
-      seriesByModel.set(model.model, {
-        key: model.model,
+      seriesByModel.set(seriesKey, {
+        key: seriesKey,
         label: model.displayName,
         color: model.chartColor,
         labelPlacement: "top",

@@ -15,6 +15,9 @@ _Avoid_: Token price, cost per million tokens
 The price in dollars per million tokens. A blended token price assumes a stated mix of cached input, fresh input, and output tokens.
 _Avoid_: Task cost
 
+**Evaluation configuration**:
+The model, reasoning settings, agent harness and fallback policy used for a benchmark run. Results with different configurations remain separate even when their model and reasoning level match.
+
 **Reasoning level**:
 A model configuration's stated reasoning effort, such as low, high, or max.
 

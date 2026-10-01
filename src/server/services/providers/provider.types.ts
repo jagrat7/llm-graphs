@@ -81,6 +81,8 @@ export type MetricRow = {
   level: string
   metrics: MetricValues
   measurements?: Partial<Record<MetricKey, MeasurementInfo>>
+  /** Agent harness or fallback policy; different configurations never share an effort curve. */
+  configuration?: string
   configurationKnown?: false
   metadata: { name: string | null; creator: string | null; releaseDate: string | null } | null
   /** Set when the row's own labels contradict each other, which refuses its effort match. */

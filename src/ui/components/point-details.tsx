@@ -22,7 +22,9 @@ export function PointDetails({
 }) {
   const info = useProvidersInfo()
   const effort = point.model.effort === "default" ? null : point.model.effort
-  const displayedDetails = new Set<string>()
+  const displayedDetails = new Set<string>(
+    point.model.configuration ? [point.model.configuration] : [],
+  )
 
   return (
     <div className={className}>
@@ -38,6 +40,11 @@ export function PointDetails({
           </span>
         ) : null}
       </div>
+      {point.model.configuration ? (
+        <p className="text-muted-foreground mt-1 text-xs wrap-anywhere">
+          {point.model.configuration}
+        </p>
+      ) : null}
       <dl className="mt-2 flex flex-col gap-1">
         {axes.map((axis) => {
           const metric = metrics[axis]

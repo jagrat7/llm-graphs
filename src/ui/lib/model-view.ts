@@ -24,6 +24,7 @@ export type Model = Record<MetricKey, number | null> & {
   logoUrl: string | null
   mode: ReasoningMode
   level: string
+  configuration?: string
   /** Published effort label; unreported reasoning settings are stated explicitly. */
   effort: string
   effortOrder: number
@@ -64,8 +65,8 @@ export function effortLabel(mode: ReasoningMode, level: string) {
   return mode === "off" ? `${level} non-reasoning` : level
 }
 
-function variantKey(entryId: string, mode: ReasoningMode, level: string) {
-  return `${entryId}\u0000${mode}/${level}`
+function variantKey(entryId: string, mode: ReasoningMode, level: string, configuration?: string) {
+  return `${entryId}\u0000${mode}/${level}/${configuration ?? ""}`
 }
 
 function indexVariants(variants: ReadonlyArray<ModelVariant>, excludeRefused: boolean) {
@@ -73,7 +74,10 @@ function indexVariants(variants: ReadonlyArray<ModelVariant>, excludeRefused: bo
 
   for (const variant of variants) {
     if (excludeRefused && (variant.refused || variant.configurationKnown === false)) continue
-    index.set(variantKey(variant.entryId, variant.mode, variant.level), variant)
+    index.set(
+      variantKey(variant.entryId, variant.mode, variant.level, variant.configuration),
+      variant,
+    )
   }
 
   return index
@@ -128,7 +132,7 @@ export function offeredVariants(
   for (const variant of snapshot.variants[base]) {
     if (joined && (variant.refused || variant.configurationKnown === false)) continue
 
-    const key = variantKey(variant.entryId, variant.mode, variant.level)
+    const key = variantKey(variant.entryId, variant.mode, variant.level, variant.configuration)
     if (others.some((source) => !indexes.get(source)?.has(key))) continue
 
     const entry = entries.get(variant.entryId)
@@ -162,7 +166,7 @@ function toModel(
 ): Model {
   const values: Record<MetricKey, number | null> = { ...emptyMetrics }
   const sources: Record<MetricKey, ProviderName | null> = { ...emptyMetrics }
-  const key = variantKey(variant.entryId, variant.mode, variant.level)
+  const key = variantKey(variant.entryId, variant.mode, variant.level, variant.configuration)
   const measurements: NonNullable<ModelVariant["measurements"]> = {}
 
   for (const binding of bindings) {
@@ -192,6 +196,7 @@ function toModel(
     logoUrl: entry.vendor == null ? null : (logos[entry.vendor] ?? null),
     mode: variant.mode,
     level: variant.level,
+    ...(variant.configuration ? { configuration: variant.configuration } : {}),
     effort: effortLabel(variant.mode, variant.level),
     effortOrder: variant.effortOrder,
     ...values,

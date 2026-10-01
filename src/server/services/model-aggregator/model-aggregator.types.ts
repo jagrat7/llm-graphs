@@ -42,6 +42,7 @@ export type ModelVariant = {
   effortOrder: number
   metrics: MetricValues
   measurements?: import("../providers").MetricRow["measurements"]
+  configuration?: string
   configurationKnown?: false
   /** The row's own labels contradict each other, so it never joins another source's row. */
   refused?: true

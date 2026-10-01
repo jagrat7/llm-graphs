@@ -6,6 +6,7 @@ import { aggregateModels } from "#/server/services/model-aggregator/derive"
 import { fixtureInputs, fixtures } from "#/server/services/model-aggregator/fixture-inputs"
 import { ProvidersService } from "#/server/services/providers"
 import { defaultPicks, offeredVariants, effortLabel } from "#/ui/lib/model-view"
+import { buildPlotData } from "./comparison-plot-data"
 import { metricRecord } from "./metrics"
 
 const info = ProvidersService.info()
@@ -28,6 +29,29 @@ function variantsOf(bindings: Array<MetricBinding>, model: string) {
 }
 
 describe("offeredVariants", () => {
+  it("keeps each harness's measurements and effort curve separate", () => {
+    const variant = snapshot.variants.deepswe[0]
+    const input = {
+      ...snapshot,
+      variants: {
+        ...snapshot.variants,
+        deepswe: [
+          { ...variant, configuration: "agent A", metrics: { score: 20, costPerTask: 1 } },
+          { ...variant, configuration: "agent B", metrics: { score: 30, costPerTask: 2 } },
+        ],
+      },
+    }
+    const models = offeredVariants(input, COST_BY_SCORE)
+    expect(models.map((model) => [model.configuration, model.score, model.costPerTask])).toEqual([
+      ["agent A", 20, 1],
+      ["agent B", 30, 2],
+    ])
+    const plot = buildPlotData(models, { x: "cost", y: "score" })
+    expect(plot.pointById.size).toBe(2)
+    expect(plot.series).toHaveLength(2)
+    expect(offeredVariants(input, SPEED_BY_SCORE)).toEqual([])
+  })
+
   it("requires unanimous prices and rejects speed joins for unspecified configurations", () => {
     const variant = snapshot.variants.deepswe[0]
     for (const { prices, refused, expected } of [
