@@ -7,6 +7,7 @@
     "automationBench": null,
     "terminalBench": null,
     "terminalBenchScience": null,
+    "arcPrize": null,
     "modelsDev": "2026-09-30T21:00:17.221Z"
   },
   "counts": {
@@ -37,6 +38,9 @@
     "terminalBenchScience.keyClashes": 0,
     "terminalBenchScience.unmatched": 0,
     "terminalBenchScience.nearMisses": 0,
+    "arcPrize.keyClashes": 0,
+    "arcPrize.unmatched": 0,
+    "arcPrize.nearMisses": 0,
     "modelsDev.keyClashes": 0,
     "unresolvedDateGroups": 26,
     "effortConflicts": 0,
@@ -3241,6 +3245,10 @@
       "unmatched": []
     },
     "terminalBenchScience": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "arcPrize": {
       "keyClashes": [],
       "unmatched": []
     },

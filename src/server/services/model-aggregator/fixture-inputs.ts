@@ -11,9 +11,11 @@ import automationBenchFixture from "./fixtures/automation-bench.json"
 import terminalBenchFixture from "./fixtures/terminal-bench.json"
 import terminalBenchScienceFixture from "./fixtures/terminal-bench-science.json"
 import modelsDevFixture from "./fixtures/models-dev.json"
+import arcPrizeFixture from "./fixtures/arc-prize.json"
 import { catalogInput, metricSourceInput } from "./inputs"
 
 export const fixtures = {
+  arcPrize: arcPrizeFixture,
   automationBench: automationBenchFixture,
   terminalBench: terminalBenchFixture,
   terminalBenchScience: terminalBenchScienceFixture,
@@ -40,6 +42,7 @@ export function fixtureInputs(
 export function allFixtureInputs(): AggregatorInputs {
   const inputs = fixtureInputs()
   inputs.metricSources.push(
+    metricSourceInput(ProvidersService.metricSources.arcPrize, fixtures.arcPrize),
     metricSourceInput(ProvidersService.metricSources.metr, fixtures.metr),
     metricSourceInput(ProvidersService.metricSources.arena, fixtures.arena),
     metricSourceInput(ProvidersService.metricSources.automationBench, fixtures.automationBench),
