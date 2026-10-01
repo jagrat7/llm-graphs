@@ -62,7 +62,7 @@ function configuration(row: ARCRow) {
   const budget = parameters.find((word) => /^\d+k$/i.test(word))
   const effort =
     parameters.find((word) => /^(?:none|minimal|low|medium|high|xhigh|max)$/i.test(word)) ?? budget
-  const mode = effort?.toLowerCase() === "none" || (!effort && !row.reasoning) ? "off" : "on"
+  const mode = !row.reasoning || effort?.toLowerCase() === "none" ? "off" : "on"
   const level = effort && mode === "on" ? normalizeLevel(effort) : "unknown"
   // Keep snapshots and model qualifiers; modelGroup sometimes groups different models together.
   const sourceModelId = row.modelId

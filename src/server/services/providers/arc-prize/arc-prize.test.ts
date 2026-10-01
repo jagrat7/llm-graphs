@@ -64,6 +64,23 @@ it("pins ARC-AGI-2 and preserves effort, budget, missing cost and run identity",
   })
   expect(rows[3]?.metrics.costPerTask).toBeNull()
   expect(rows[3]?.metadata?.name).toBe("Gemini 3 Deep Think (Preview)")
+  const baseModel = parseARCPrizeFeed({
+    ...feed,
+    evaluations: [
+      {
+        ...model,
+        modelType: "Base LLM",
+        modelId: "openai-gpt-5-minimal",
+        modelDisplayName: "GPT-5 (Minimal)",
+      },
+    ],
+  })
+  expect(new ARCPrizeProvider().toMetricRows(baseModel)[0]).toMatchObject({
+    sourceModelId: "gpt-5",
+    mode: "off",
+    level: "unknown",
+    metrics: { score: 64.58, costPerTask: 2.2507 },
+  })
   expect(() => parseARCPrizeFeed({ ...feed, version: "v3" })).toThrow()
   expect(() =>
     parseARCPrizeFeed({ ...feed, evaluations: [model, { ...model, score: 0.9 }] }),

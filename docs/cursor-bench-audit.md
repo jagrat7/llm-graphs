@@ -16,7 +16,7 @@ Considered [FrontierCode 1.1](https://cognition.com/frontiercode), which tests m
 
 ## Measurement safeguards
 
-- Pin CursorBench 4.0 using the page's live benchmark heading. Validate table column order and per-task units before reading any numeric cells. A version change, changed cost denominator or duplicate run identity fails the refresh; the shared cache retains the last good payload.
+- Pin CursorBench 4.0 using the page's live benchmark heading. Validate table column order and per-task units before reading any numeric cells. Check duplicate names before dropping malformed measurements, so a conflicting run cannot disappear during validation. A version change, changed cost denominator or duplicate run identity fails the refresh; the shared cache retains the last good payload.
 - Parse the first-party server-rendered table, including nested spans and React comments. Normalize responsive duplicate header labels. Never execute upstream JavaScript or pin hashed website bundles. Ignore the duplicate rendered copy of the same table rather than duplicating observations.
 - Read native correctness percentages and published average cost/task directly from each model/effort row. Cursor computes those costs from actual task usage using published input, cache-read, cache-write and output prices. This is not a token-price surrogate or another benchmark's spending.
 - Preserve explicit effort settings, Cursor agent configuration, model versions and family identity. `Extra High` becomes `xhigh`; an absent effort stays unknown. Cost follows score when the selected benchmark changes. Other harnesses' scores/runtime/speed cannot join this configuration.

@@ -55,4 +55,9 @@ it("pins the coding revision, preserves effort/cost pairs and refuses changed ta
   expect(() =>
     parseCursorBenchPage(page(row("Opus 5.5 Max", "57.8%", "$13.43").repeat(2))),
   ).toThrow(/duplicate/)
+  expect(() =>
+    parseCursorBenchPage(
+      page(row("Opus 5.5 Max", "57.8%", "$13.43") + row("Opus 5.5 Max", "101%", "$13.43")),
+    ),
+  ).toThrow(/duplicate/)
 })

@@ -64,10 +64,10 @@ export function parseCursorBenchPage(html: string): CursorBenchPayload {
       steps: numberCell(cells[5] ?? "", /^\d+$/),
     }
   })
-  const payload = parseRows("CursorBench", rows, rowSchema, "name")
-  const names = payload.rows.map((row) => row.name)
+  // Validate identities before malformed measurements can hide a conflicting run.
+  const names = rows.map((row) => row.name).filter(Boolean)
   if (new Set(names).size !== names.length) throw new Error("CursorBench duplicate run identity")
-  return payload
+  return parseRows("CursorBench", rows, rowSchema, "name")
 }
 
 function configuration(label: string) {
