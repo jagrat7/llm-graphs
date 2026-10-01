@@ -25,6 +25,13 @@ it("uses actual trial counts and preserves CI versus standard-error semantics", 
   for (const bad of [
     { ...row, n_trials: row.n_trials - 1 },
     { ...row, metrics: { ...row.metrics, display_cost: "$3k (partial: 324/330 trials)" } },
+    { ...row, metrics: { ...row.metrics, display_cost: "$3k (324/330)" } },
+    // The known incomplete run stays refused even if all coverage wording disappears.
+    {
+      ...row,
+      id: "84b39f56-fe3c-46c3-919f-3b67b73f9b49",
+      metrics: { ...row.metrics, display_cost: "$3k", display_total_cost_usd: "$3,267.18" },
+    },
     { ...row, metrics: { ...row.metrics, total_cost_usd: null } },
   ]) {
     expect(terminal.readMetrics(bad)).toMatchObject({

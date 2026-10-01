@@ -76,6 +76,8 @@ type Leaderboard = {
   dataset: string
   trialField: "n_trials" | "tasks"
   duration?: true
+  /** Owner-confirmed incomplete runs; labels alone cannot establish repaired cost coverage. */
+  incompleteCostRuns?: ReadonlyArray<string>
   url?: string
 }
 const readerUrl = "https://ofhuhcpkvzjlejydnvyd.supabase.co/functions/v1/leaderboard-read"
@@ -99,7 +101,7 @@ export class HarborProvider
     this.displayName = leaderboard.displayName
     this.href = leaderboard.href
     this.abbreviation = leaderboard.abbreviation
-    this.cacheKey = `llm-scores:source:${this.name}:${leaderboard.release}:v1`
+    this.cacheKey = `llm-scores:source:${this.name}:${leaderboard.release}:v2`
     this.metrics = {
       score: {
         read: (row) => row.metrics.accuracy,
@@ -156,8 +158,13 @@ export class HarborProvider
   }
 
   private partialCost(row: HarborRow) {
-    return /partial|incomplete|missing/i.test(
-      `${row.metrics.display_cost} ${row.metrics.display_total_cost_usd}`,
+    const labels = `${row.metrics.display_cost} ${row.metrics.display_total_cost_usd}`
+    return (
+      this.leaderboard.incompleteCostRuns?.includes(row.id) === true ||
+      /partial|incomplete|missing/i.test(labels) ||
+      [...labels.matchAll(/(\d+)\s*\/\s*(\d+)/g)].some(
+        (match) => Number(match[1]) !== Number(match[2]) || Number(match[2]) !== row.n_trials,
+      )
     )
   }
 
