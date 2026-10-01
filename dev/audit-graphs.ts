@@ -56,7 +56,7 @@ const summary = Object.fromEntries(
   ]),
 )
 await writeFile(
-  "docs/additional-provider-metrics-data-results.jsonl",
+  process.argv[2] ?? "docs/additional-provider-metrics-data-results.jsonl",
   [
     {
       kind: "summary",

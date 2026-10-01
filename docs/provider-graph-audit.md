@@ -1,5 +1,7 @@
 # Additional score provider audit
 
+**Latest results:** [release-benchmark audit](release-benchmark-audit.md) covers seven score sources and 665 distinct metric/source combinations. The rollout checks below remain historical evidence.
+
 September 30, 2026 · branch `feat/add-score-providers` · builds on [the original combination audit](graph-combination-audit.md).
 
 Added AA Intelligence Index, METR Time Horizon 1.1 and Arena Text overall with style control. AA reuses its existing provider; METR and Arena have separate provider folders. [Selection research and primary sources](score-provider-research.md) explain the quality, freshness and recognition tradeoffs.
@@ -67,7 +69,7 @@ Arena pricing is the default alongside Arena ratings, with Artificial Analysis s
 
 To control the enlarged matrix, data and browser audits check **470 distinct metric/source combinations**, covering each unordered 2D/3D metric set and every selectable source. This represents 2,428 axis/source permutations without repeating equivalent joins six times or enumerating model subsets. Defaults reuse immutable-snapshot rankings and encode vendor logos once per comparison instead of once per point.
 
-| Current result                               | Cases |
+| Eleven-metric rollout result                 | Cases |
 | -------------------------------------------- | ----: |
 | Meaningful default graphs, every axis varies |   279 |
 | Benchmark lacks a selected measurement       |    53 |
