@@ -17,9 +17,24 @@ import {
 export async function fetchOk(
   label: string,
   url: string,
-  { timeoutMs, headers }: { timeoutMs: number; headers?: Record<string, string> },
+  {
+    timeoutMs,
+    headers,
+    method,
+    body,
+  }: {
+    timeoutMs: number
+    headers?: Record<string, string>
+    method?: "GET" | "POST"
+    body?: string
+  },
 ) {
-  const response = await fetch(url, { headers, signal: AbortSignal.timeout(timeoutMs) })
+  const response = await fetch(url, {
+    headers,
+    method,
+    body,
+    signal: AbortSignal.timeout(timeoutMs),
+  })
 
   if (!response.ok) throw new Error(`${label} returned ${response.status}`)
 

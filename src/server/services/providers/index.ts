@@ -2,6 +2,9 @@ import { ArtificialAnalysisProvider } from "./artificial-analysis/artificial-ana
 import { DeepSWEProvider } from "./deep-swe/deep-swe"
 import { METRProvider } from "./metr/metr"
 import { ArenaProvider } from "./arena/arena"
+import { AutomationBenchProvider } from "./automation-bench/automation-bench"
+import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
+import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
 import {
   METRIC_KEYS,
@@ -17,6 +20,9 @@ const metricSources = {
   deepswe: new DeepSWEProvider(),
   metr: new METRProvider(),
   arena: new ArenaProvider(),
+  automationBench: new AutomationBenchProvider(),
+  terminalBench: new TerminalBenchProvider(),
+  terminalBenchScience: new TerminalBenchScienceProvider(),
 }
 
 export type RegisteredProviderName = keyof typeof metricSources

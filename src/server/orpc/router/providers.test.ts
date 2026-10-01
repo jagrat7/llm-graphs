@@ -8,7 +8,7 @@ describe("providers.info", () => {
     const info = await createRouterClient(router).providers.info()
     expect(info).toEqual(ProvidersService.info())
     expect(JSON.parse(JSON.stringify(info))).toEqual(info)
-    expect(info.metricProviders.score).toEqual(["deepswe", "artificialAnalysis", "metr", "arena"])
+    expect(info.metricProviders.score).toEqual(ProvidersService.providersFor("score"))
     expect(info.presentation.metr.score).toEqual({
       label: "Task horizon (50%)",
       unit: "h",

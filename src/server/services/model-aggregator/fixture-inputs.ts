@@ -7,10 +7,16 @@ import artificialAnalysisFixture from "./fixtures/artificial-analysis.json"
 import metrFixture from "./fixtures/metr.json"
 import arenaFixture from "./fixtures/arena.json"
 import deepsweFixture from "./fixtures/deepswe.json"
+import automationBenchFixture from "./fixtures/automation-bench.json"
+import terminalBenchFixture from "./fixtures/terminal-bench.json"
+import terminalBenchScienceFixture from "./fixtures/terminal-bench-science.json"
 import modelsDevFixture from "./fixtures/models-dev.json"
 import { catalogInput, metricSourceInput } from "./inputs"
 
 export const fixtures = {
+  automationBench: automationBenchFixture,
+  terminalBench: terminalBenchFixture,
+  terminalBenchScience: terminalBenchScienceFixture,
   metr: metrFixture,
   arena: arenaFixture,
   deepswe: deepsweFixture satisfies CachedPayload<DeepSWEPayload>,
@@ -36,6 +42,12 @@ export function allFixtureInputs(): AggregatorInputs {
   inputs.metricSources.push(
     metricSourceInput(ProvidersService.metricSources.metr, fixtures.metr),
     metricSourceInput(ProvidersService.metricSources.arena, fixtures.arena),
+    metricSourceInput(ProvidersService.metricSources.automationBench, fixtures.automationBench),
+    metricSourceInput(ProvidersService.metricSources.terminalBench, fixtures.terminalBench),
+    metricSourceInput(
+      ProvidersService.metricSources.terminalBenchScience,
+      fixtures.terminalBenchScience,
+    ),
   )
   return inputs
 }
