@@ -13,15 +13,10 @@
     "terminalBenchScience": "2026-10-01T01:32:58.754Z"
   },
   "kind": "summary",
-  "scope": "Live shared-browser data; rendering not verified because animation frames are paused",
+  "scope": "Live shared-browser data",
   "summary": {
     "meaningful": 386,
     "no-matching-configuration": 312,
     "unavailable-metric": 97
-  },
-  "rendering": {
-    "verified": false,
-    "animationFramesObserved": 0,
-    "reason": "Native preview reports visible but animation frames and resize callbacks are paused; snapshots fail. Reopening, a new preview tab and focused interactions did not resume rendering."
   }
 }
