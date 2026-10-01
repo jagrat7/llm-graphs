@@ -44,7 +44,7 @@ export function SourceSelect({
   const info = useProvidersInfo()
   const sources = metricProviders(metric, info)
 
-  if (metric === "cost" || sources.length < 2) {
+  if (metric === "cost" || metric === "duration" || sources.length < 2) {
     return (
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
@@ -86,7 +86,7 @@ export function SourceSelect({
         <SelectContent
           alignItemWithTrigger={false}
           align="start"
-          className="duration-200 ease-out motion-reduce:animate-none"
+          className="w-max max-w-(--available-width) min-w-(--anchor-width) duration-200 ease-out motion-reduce:animate-none"
         >
           {/* A menu that reads louder than the trigger that opened it inverts the
               hierarchy, so the items ride the same annotation step. */}
@@ -95,7 +95,7 @@ export function SourceSelect({
               <SelectItem
                 key={source}
                 value={source}
-                className="min-h-11 text-sm sm:min-h-8 sm:text-xs"
+                className="min-h-11 pr-7 text-sm sm:min-h-8 sm:text-xs"
               >
                 <SourceLogo source={source} className="size-3" />
                 {sourceLabel(source, info)}

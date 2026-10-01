@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest"
 
 import type { Model } from "#/ui/lib/model-view"
+import { metricRecord } from "./metrics"
 
-import { axisTicks, buildPlotData, describePlot, padDomain } from "#/ui/lib/comparison-plot-data"
+import {
+  axisTicks,
+  buildPlotData,
+  describePlot,
+  padDomain,
+  plotQuality,
+} from "#/ui/lib/comparison-plot-data"
 
 type ModelOverrides = Partial<Model> & { model: string }
 
@@ -21,6 +28,7 @@ function makeModel({
   ...rest
 }: ModelOverrides): Model {
   return {
+    ...metricRecord<number | null>(() => null),
     model,
     displayName,
     vendor,
@@ -37,6 +45,7 @@ function makeModel({
     tokensPerSecond,
     durationSeconds,
     sources: sources ?? {
+      ...metricRecord<Model["sources"]["score"]>(() => null),
       score: "deepswe",
       costPerTask: "deepswe",
       costPerMTokens: null,
@@ -51,6 +60,16 @@ const XY = { x: "cost", y: "score" } as const
 const XYZ = { x: "cost", y: "score", z: "speed" } as const
 
 describe("buildPlotData", () => {
+  it("reports a constant axis even when its display domain has padding", () => {
+    const plot = buildPlotData(
+      [
+        makeModel({ model: "a", costPerTask: 1, score: 50 }),
+        makeModel({ model: "b", costPerTask: 1, score: 80 }),
+      ],
+      XY,
+    )
+    expect(plotQuality(plot)).toMatchObject({ meaningful: false, flatAxes: ["x"] })
+  })
   it("gives each point its vendor logo, or none for a circle marker", () => {
     const logoUrl = "data:image/svg+xml,%3Csvg%2F%3E"
     const data = buildPlotData(

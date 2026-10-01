@@ -1,8 +1,15 @@
 {
   "fetchedAt": {
-    "deepswe": "2026-09-28T01:55:05.920Z",
-    "artificialAnalysis": "2026-09-28T01:55:06.112Z",
-    "modelsDev": "2026-09-28T01:55:07.861Z"
+    "artificialAnalysis": "2026-09-30T21:00:14.295Z",
+    "deepswe": "2026-09-30T21:00:15.533Z",
+    "metr": null,
+    "arena": null,
+    "automationBench": null,
+    "terminalBench": null,
+    "terminalBenchScience": null,
+    "arcPrize": null,
+    "cursorBench": null,
+    "modelsDev": "2026-09-30T21:00:17.221Z"
   },
   "counts": {
     "failures": 0,
@@ -12,11 +19,32 @@
     "futureReleaseDates": 0,
     "droppedRows": 0,
     "artificialAnalysis.keyClashes": 0,
-    "artificialAnalysis.unmatched": 460,
-    "artificialAnalysis.nearMisses": 89,
+    "artificialAnalysis.unmatched": 464,
+    "artificialAnalysis.nearMisses": 90,
     "deepswe.keyClashes": 0,
     "deepswe.unmatched": 0,
     "deepswe.nearMisses": 0,
+    "metr.keyClashes": 0,
+    "metr.unmatched": 0,
+    "metr.nearMisses": 0,
+    "arena.keyClashes": 0,
+    "arena.unmatched": 0,
+    "arena.nearMisses": 0,
+    "automationBench.keyClashes": 0,
+    "automationBench.unmatched": 0,
+    "automationBench.nearMisses": 0,
+    "terminalBench.keyClashes": 0,
+    "terminalBench.unmatched": 0,
+    "terminalBench.nearMisses": 0,
+    "terminalBenchScience.keyClashes": 0,
+    "terminalBenchScience.unmatched": 0,
+    "terminalBenchScience.nearMisses": 0,
+    "arcPrize.keyClashes": 0,
+    "arcPrize.unmatched": 0,
+    "arcPrize.nearMisses": 0,
+    "cursorBench.keyClashes": 0,
+    "cursorBench.unmatched": 0,
+    "cursorBench.nearMisses": 0,
     "modelsDev.keyClashes": 0,
     "unresolvedDateGroups": 26,
     "effortConflicts": 0,
@@ -56,6 +84,17 @@
             {
               "source": "deepswe",
               "id": "claude-opus-5",
+              "why": "prefix"
+            }
+          ]
+        },
+        {
+          "id": "claude-sonnet-5-5",
+          "entryId": "claude-sonnet-5-5",
+          "nearMisses": [
+            {
+              "source": "deepswe",
+              "id": "claude-sonnet-5",
               "why": "prefix"
             }
           ]
@@ -1683,6 +1722,11 @@
           "nearMisses": []
         },
         {
+          "id": "gemini-4-argon",
+          "entryId": "gemini-4-argon",
+          "nearMisses": []
+        },
+        {
           "id": "gemma-3-12b",
           "entryId": "gemma-3-12b-it",
           "nearMisses": []
@@ -1890,6 +1934,11 @@
         {
           "id": "gpt-5-nano",
           "entryId": "gpt-5-nano",
+          "nearMisses": []
+        },
+        {
+          "id": "gpt-6-1-sol",
+          "entryId": "gpt-6-1-sol",
           "nearMisses": []
         },
         {
@@ -2130,6 +2179,11 @@
         {
           "id": "jt-mini",
           "entryId": "jt-mini",
+          "nearMisses": []
+        },
+        {
+          "id": "jt236b",
+          "entryId": "jt236b",
           "nearMisses": []
         },
         {
@@ -3178,6 +3232,34 @@
       "keyClashes": [],
       "unmatched": []
     },
+    "metr": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "arena": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "automationBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "terminalBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "terminalBenchScience": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "arcPrize": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "cursorBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
     "modelsDev": {
       "keyClashes": [],
       "unmatched": []
@@ -3744,13 +3826,13 @@
   },
   "metadata": {
     "metadataFrom": {
-      "artificialAnalysis": 281,
-      "modelsDev": 199
+      "artificialAnalysis": 283,
+      "modelsDev": 201
     },
     "vendorRule": {
-      "creator slug": 68,
-      "models.dev": 199,
-      "creator vote": 190,
+      "creator slug": 69,
+      "models.dev": 201,
+      "creator vote": 191,
       "first-word vote": 23
     },
     "derivedNames": [],

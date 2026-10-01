@@ -1,47 +1,84 @@
 import { ArtificialAnalysisProvider } from "./artificial-analysis/artificial-analysis"
 import { DeepSWEProvider } from "./deep-swe/deep-swe"
+import { METRProvider } from "./metr/metr"
+import { ArenaProvider } from "./arena/arena"
+import { AutomationBenchProvider } from "./automation-bench/automation-bench"
+import { ARCPrizeProvider } from "./arc-prize/arc-prize"
+import { CursorBenchProvider } from "./cursor-bench/cursor-bench"
+import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
+import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
-import type { MetricKey, ProviderName, ProvidersInfo } from "./provider.types"
-
+import {
+  METRIC_KEYS,
+  type MetricKey,
+  type ProviderName,
+  type ProvidersInfo,
+} from "./provider.types"
 import { metricNotes } from "./utils"
 
+/** Register a provider once here; downloading, metadata, diagnostics and UI discovery follow. */
+const metricSources = {
+  artificialAnalysis: new ArtificialAnalysisProvider(),
+  deepswe: new DeepSWEProvider(),
+  metr: new METRProvider(),
+  arena: new ArenaProvider(),
+  automationBench: new AutomationBenchProvider(),
+  terminalBench: new TerminalBenchProvider(),
+  terminalBenchScience: new TerminalBenchScienceProvider(),
+  arcPrize: new ARCPrizeProvider(),
+  cursorBench: new CursorBenchProvider(),
+}
+
+export type RegisteredProviderName = keyof typeof metricSources
+
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion -- the registry defines this union
+const names = Object.keys(metricSources) as Array<ProviderName>
+
+function record<T>(make: (name: ProviderName) => T): Record<ProviderName, T> {
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- all registry keys are populated
+  return Object.fromEntries(names.map((name) => [name, make(name)])) as Record<ProviderName, T>
+}
+
 export const ProvidersService = {
-  /** The sources that publish metrics. When two publish the same metric, the first is the default. */
-  metricSources: {
-    deepswe: new DeepSWEProvider(),
-    artificialAnalysis: new ArtificialAnalysisProvider(),
-  },
-
-  /** models.dev: model names, vendors and logos. It publishes no metrics. */
+  metricSources,
   catalog: new ModelsDevProvider(),
-
-  /** The metric sources that publish a metric, default first. */
+  names,
+  record,
   providersFor(metric: MetricKey): Array<ProviderName> {
-    return Object.values(ProvidersService.metricSources)
-      .filter((source) => source.metrics[metric] != null)
-      .map((source) => source.name)
+    return (
+      ProvidersService.names
+        .filter((name) => metricSources[name].metrics[metric] != null)
+        // Preserve the existing benchmark defaults as new sources are registered.
+        .toSorted((a, b) => Number(b === "deepswe") - Number(a === "deepswe"))
+    )
   },
-
-  /** Everything the UI needs about the metric sources, as plain data. */
   info(): ProvidersInfo {
-    const { deepswe, artificialAnalysis } = ProvidersService.metricSources
-
     return {
-      displayNames: {
-        deepswe: deepswe.displayName,
-        artificialAnalysis: artificialAnalysis.displayName,
-      },
-      metricProviders: {
-        score: ProvidersService.providersFor("score"),
-        costPerTask: ProvidersService.providersFor("costPerTask"),
-        costPerMTokens: ProvidersService.providersFor("costPerMTokens"),
-        tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
-        durationSeconds: ProvidersService.providersFor("durationSeconds"),
-      },
-      notes: {
-        deepswe: metricNotes(deepswe.metrics),
-        artificialAnalysis: metricNotes(artificialAnalysis.metrics),
-      },
+      displayNames: record((name) => metricSources[name].displayName),
+      sources: record((name) => ({
+        href: metricSources[name].href,
+        abbreviation: metricSources[name].abbreviation,
+      })),
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- all metric keys are populated
+      metricProviders: Object.fromEntries(
+        METRIC_KEYS.map((key) => [key, ProvidersService.providersFor(key)]),
+      ) as ProvidersInfo["metricProviders"],
+      notes: record((name) => metricNotes(metricSources[name].metrics)),
+      scopes: record((name) =>
+        Object.fromEntries(
+          METRIC_KEYS.flatMap((key) =>
+            metricSources[name].metrics[key]?.scope === "model" ? [[key, "model"]] : [],
+          ),
+        ),
+      ),
+      presentation: record((name) =>
+        Object.fromEntries(
+          METRIC_KEYS.flatMap((key) => {
+            const presentation = metricSources[name].metrics[key]?.presentation
+            return presentation ? [[key, presentation]] : []
+          }),
+        ),
+      ),
     }
   },
 }
@@ -50,3 +87,5 @@ export type * from "./provider.types"
 export type * from "./artificial-analysis/artificial-analysis.types"
 export type * from "./deep-swe/deep-swe.types"
 export type * from "./models-dev/models-dev.types"
+export type * from "./metr/metr.types"
+export type * from "./arena/arena.types"

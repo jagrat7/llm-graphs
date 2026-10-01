@@ -240,6 +240,7 @@ export class SourceCache {
 
     try {
       payload = await source.fetchPayload()
+      source.validatePayload?.(payload)
     } catch (error) {
       console.warn(`[source-cache] ${source.name} refresh failed:`, error)
       return null

@@ -9,10 +9,7 @@ import type {
 } from "../providers"
 
 /** Metric sources in metadata order: the first one listing a model names it. */
-export const METADATA_ORDER = [
-  "artificialAnalysis",
-  "deepswe",
-] as const satisfies ReadonlyArray<ProviderName>
+// Metadata order comes from the provider registry.
 
 export type MetricSourceInput = {
   name: ProviderName
@@ -44,6 +41,9 @@ export type ModelVariant = {
   /** Sorts a model's variants low effort to high. */
   effortOrder: number
   metrics: MetricValues
+  measurements?: import("../providers").MetricRow["measurements"]
+  configuration?: string
+  configurationKnown?: false
   /** The row's own labels contradict each other, so it never joins another source's row. */
   refused?: true
 }
