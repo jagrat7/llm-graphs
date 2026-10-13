@@ -1,0 +1,176 @@
+{
+  "fetchedAt": "2026-10-13T02:26:45.037Z",
+  "payload": {
+    "rows": [
+      {
+        "model_name": "deepseek-chat",
+        "model_repr": "DeepSeek-V3",
+        "score": 27.2,
+        "questions": 454
+      },
+      {
+        "model_name": "gpt-4-turbo-2024-04-09",
+        "model_repr": "GPT-4-Turbo-2024-04-09",
+        "score": 28.7,
+        "questions": 454
+      },
+      {
+        "model_name": "gpt-4o-2024-08-06",
+        "model_repr": "GPT-4O-2024-08-06",
+        "score": 29.5,
+        "questions": 454
+      },
+      {
+        "model_name": "gpt-4o-mini-2024-07-18",
+        "model_repr": "GPT-4O-mini-2024-07-18",
+        "score": 27.5,
+        "questions": 454
+      },
+      {
+        "model_name": "o3-mini-2025-01-31__low",
+        "model_repr": "O3-Mini-2025-01-31 (Low)",
+        "score": 57,
+        "questions": 454
+      },
+      {
+        "model_name": "o3-mini-2025-01-31__medium",
+        "model_repr": "O3-Mini-2025-01-31 (Med)",
+        "score": 63,
+        "questions": 454
+      },
+      {
+        "model_name": "o3-mini-2025-01-31__high",
+        "model_repr": "O3-Mini-2025-01-31 (High)",
+        "score": 67.4,
+        "questions": 454
+      },
+      {
+        "model_name": "o4-mini__high",
+        "model_repr": "O4-Mini (High)",
+        "score": 80.2,
+        "questions": 454
+      },
+      {
+        "model_name": "o4-mini__medium",
+        "model_repr": "O4-Mini (Medium)",
+        "score": 74.2,
+        "questions": 454
+      },
+      {
+        "model_name": "o4-mini__low",
+        "model_repr": "O4-Mini (Low)",
+        "score": 65.9,
+        "questions": 454
+      },
+      {
+        "model_name": "o3__high",
+        "model_repr": "O3 (High)",
+        "score": 75.8,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-3-5-sonnet-20241022",
+        "model_repr": "Claude-3.5-Sonnet-20241022",
+        "score": 36.4,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-3-haiku-20240307",
+        "model_repr": "Claude-3-Haiku",
+        "score": 20.2,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-sonnet-4-20250514",
+        "model_repr": "Claude-Sonnet-4 (Thinking)",
+        "score": 55.9,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-opus-4-20250514",
+        "model_repr": "Claude-Opus-4 (Thinking)",
+        "score": 56.6,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-opus-4-20250514_nothink",
+        "model_repr": "Claude-Opus-4",
+        "score": 46.9,
+        "questions": 454
+      },
+      {
+        "model_name": "claude-sonnet-4-20250514_nothink",
+        "model_repr": "Claude-Sonnet-4",
+        "score": 47.1,
+        "questions": 454
+      },
+      {
+        "model_name": "gemini-2.5-pro-preview-06-05",
+        "model_repr": "Gemini-2.5-Pro-06-05",
+        "score": 73.6,
+        "questions": 454
+      },
+      {
+        "model_name": "gemini-2.5-pro-preview-05-06",
+        "model_repr": "Gemini-2.5-Pro-05-06",
+        "score": 71.8,
+        "questions": 454
+      },
+      {
+        "model_name": "gemini-2.5-flash-preview-04-17",
+        "model_repr": "Gemini-2.5-Flash-04-17",
+        "score": 60.6,
+        "questions": 454
+      },
+      {
+        "model_name": "gemini-2.5-flash-preview-05-20",
+        "model_repr": "Gemini-2.5-Flash-05-20",
+        "score": 61.9,
+        "questions": 454
+      },
+      {
+        "model_name": "Qwen/Qwen3-235B-A22B",
+        "model_repr": "Qwen3-235B-A22B",
+        "score": 65.9,
+        "questions": 454
+      },
+      {
+        "model_name": "deepseek-reasoner",
+        "model_repr": "DeepSeek-R1-0528",
+        "score": 73.1,
+        "questions": 454
+      },
+      {
+        "model_name": "grok-3-mini-beta_high",
+        "model_repr": "Grok-3-Mini (High)",
+        "score": 66.7,
+        "questions": 454
+      },
+      {
+        "model_name": "nvidia/OpenCodeReasoning-Nemotron-1.1-32B",
+        "model_repr": "OpenCodeReasoning-Nemotron-1.1-32B",
+        "score": 66.8,
+        "questions": 454
+      },
+      {
+        "model_name": "nvidia/OpenReasoning-Nemotron-32B",
+        "model_repr": "OpenReasoning-Nemotron-32B",
+        "score": 69.8,
+        "questions": 454
+      },
+      {
+        "model_name": "XBai o4-medium",
+        "model_repr": "XBai-o4-medium",
+        "score": 65,
+        "questions": 454
+      },
+      {
+        "model_name": "EXAONE-4.0-32B",
+        "model_repr": "EXAONE-4.0-32B",
+        "score": 70,
+        "questions": 454
+      }
+    ],
+    "dropped": []
+  }
+}

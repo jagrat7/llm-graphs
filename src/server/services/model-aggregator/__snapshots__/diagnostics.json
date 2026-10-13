@@ -9,6 +9,8 @@
     "terminalBenchScience": null,
     "arcPrize": null,
     "cursorBench": null,
+    "sweBench": null,
+    "liveCodeBench": null,
     "modelsDev": "2026-09-30T21:00:17.221Z"
   },
   "counts": {
@@ -45,6 +47,12 @@
     "cursorBench.keyClashes": 0,
     "cursorBench.unmatched": 0,
     "cursorBench.nearMisses": 0,
+    "sweBench.keyClashes": 0,
+    "sweBench.unmatched": 0,
+    "sweBench.nearMisses": 0,
+    "liveCodeBench.keyClashes": 0,
+    "liveCodeBench.unmatched": 0,
+    "liveCodeBench.nearMisses": 0,
     "modelsDev.keyClashes": 0,
     "unresolvedDateGroups": 26,
     "effortConflicts": 0,
@@ -3257,6 +3265,14 @@
       "unmatched": []
     },
     "cursorBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "sweBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "liveCodeBench": {
       "keyClashes": [],
       "unmatched": []
     },

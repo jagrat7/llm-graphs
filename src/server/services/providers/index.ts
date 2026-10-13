@@ -5,6 +5,8 @@ import { ArenaProvider } from "./arena/arena"
 import { AutomationBenchProvider } from "./automation-bench/automation-bench"
 import { ARCPrizeProvider } from "./arc-prize/arc-prize"
 import { CursorBenchProvider } from "./cursor-bench/cursor-bench"
+import { SWEBenchProvider } from "./swe-bench/swe-bench"
+import { LiveCodeBenchProvider } from "./live-code-bench/live-code-bench"
 import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
 import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
@@ -27,6 +29,8 @@ const metricSources = {
   terminalBenchScience: new TerminalBenchScienceProvider(),
   arcPrize: new ARCPrizeProvider(),
   cursorBench: new CursorBenchProvider(),
+  sweBench: new SWEBenchProvider(),
+  liveCodeBench: new LiveCodeBenchProvider(),
 }
 
 export type RegisteredProviderName = keyof typeof metricSources
