@@ -9,7 +9,6 @@ import { TooltipProvider } from "#/ui/components/ui/tooltip"
 import { APP_DESCRIPTION, APP_NAME } from "#/ui/lib/app-meta"
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
-import ClerkProvider from "../components/integrations/clerk/provider"
 import TanStackQueryDevtools from "../components/integrations/tanstack-query/devtools"
 import appCss from "../styles.css?url"
 
@@ -60,25 +59,23 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased">
-        <ClerkProvider>
-          <TooltipProvider>
-            <AppHeader />
-            {children}
-          </TooltipProvider>
-          <TanStackDevtools
-            config={{
-              hideUntilHover: true,
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              TanStackQueryDevtools,
-            ]}
-          />
-        </ClerkProvider>
+        <TooltipProvider>
+          <AppHeader />
+          {children}
+        </TooltipProvider>
+        <TanStackDevtools
+          config={{
+            hideUntilHover: true,
+            position: "bottom-right",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
         <Scripts />
       </body>
     </html>
