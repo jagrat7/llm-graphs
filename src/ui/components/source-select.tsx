@@ -49,7 +49,7 @@ export function SourceSelect({
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
         <span className="flex min-h-11 items-center gap-1.5 truncate px-2 sm:min-h-8">
-          <SourceLogo source={value} className="size-3" accent />
+          <SourceLogo source={value} className="size-3" />
           <span className="truncate">{sourceLabel(value, info)}</span>
         </span>
       </p>

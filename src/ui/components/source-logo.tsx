@@ -1,33 +1,15 @@
-import type { CSSProperties } from "react"
-
 import type { ProviderName } from "#/ui/lib/orpc-client"
 
 import { cn } from "#/ui/lib/utils"
-
-type LogoBrandStyle = CSSProperties & { "--logo-brand": string }
-
-function logoBrandStyle(brand: string | undefined): LogoBrandStyle | undefined {
-  return brand ? { "--logo-brand": brand } : undefined
-}
-
-/** Activates `--logo-brand` when a `group/mark` ancestor is hovered, focused, or selected. */
-const LOGO_BRAND_ACCENT_CLASS =
-  "transition-colors duration-150 ease-out group-hover/mark:text-(--logo-brand) group-focus-within/mark:text-(--logo-brand) group-data-[highlighted]/mark:text-(--logo-brand) group-data-[selected]/mark:text-(--logo-brand) group-has-[:checked]/mark:text-(--logo-brand) in-[[data-slot=select-trigger]]:text-(--logo-brand)"
-
-function logoAccentClass(brand: string | undefined, accent: boolean) {
-  if (!brand) return undefined
-  return accent ? "text-(--logo-brand)" : LOGO_BRAND_ACCENT_CLASS
-}
 
 type SourceMark =
   | { viewBox: string; paths: ReadonlyArray<string>; brand?: string; stroke?: boolean }
   | { src: string }
 
 /**
- * Data-source marks, flattened to `currentColor` so a source never
- * competes with the chart's own colour encoding at rest. Brand colour surfaces on hover/select;
- * native black/white marks use light-dark() with the site's exact off-black / off-white.
- * Official asset URLs and adaptations are recorded in docs/benchmark-icons.md.
+ * Official benchmark and publisher marks, shown in their native colours.
+ * Monochrome marks use the appropriate light/dark brand variant.
+ * Asset URLs and adaptations are recorded in docs/benchmark-icons.md.
  * Trademarks belong to their owners.
  */
 const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
@@ -89,16 +71,7 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   liveCodeBench: { src: "/benchmarks/live-code-bench.svg" },
 }
 
-export function SourceLogo({
-  source,
-  className,
-  accent = false,
-}: {
-  source: ProviderName
-  className?: string
-  /** Force brand colour when the mark has one (selected source, etc.). */
-  accent?: boolean
-}) {
+export function SourceLogo({ source, className }: { source: ProviderName; className?: string }) {
   const mark = SOURCE_MARKS[source]
 
   if ("src" in mark) {
@@ -109,12 +82,7 @@ export function SourceLogo({
         src={mark.src}
         width={14}
         height={14}
-        className={cn(
-          "size-3.5 shrink-0 object-contain",
-          !accent &&
-            "grayscale group-hover/mark:grayscale-0 group-focus-within/mark:grayscale-0 group-data-[highlighted]/mark:grayscale-0 group-data-[selected]/mark:grayscale-0 group-has-[:checked]/mark:grayscale-0 in-[[data-slot=select-trigger]]:grayscale-0",
-          className,
-        )}
+        className={cn("size-3.5 shrink-0 object-contain", className)}
       />
     )
   }
@@ -128,8 +96,8 @@ export function SourceLogo({
       strokeWidth={mark.stroke ? 2 : undefined}
       strokeLinecap={mark.stroke ? "round" : undefined}
       strokeLinejoin={mark.stroke ? "round" : undefined}
-      style={logoBrandStyle(mark.brand)}
-      className={cn("size-3.5 shrink-0", logoAccentClass(mark.brand, accent), className)}
+      style={mark.brand ? { color: mark.brand } : undefined}
+      className={cn("size-3.5 shrink-0", className)}
     >
       {mark.paths.map((path) => (
         <path key={path.slice(0, 24)} d={path} />
