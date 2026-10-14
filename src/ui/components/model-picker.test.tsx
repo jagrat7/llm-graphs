@@ -29,15 +29,42 @@ const models = [makeModel("alpha"), makeModel("beta"), makeModel("gamma")]
 afterEach(() => {
   cleanup()
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
-/** jsdom has no layout, so give the ghost row 300px and every chip 100px: two to a row. */
+/**
+ * jsdom has no layout or stylesheet, so give every chip 100px, no gap, and the ghost
+ * row 300px by default: three to a row. Resizing the row replays the observer the picker re-measures on.
+ */
 function stubChipLayout() {
+  let rowWidth = 300
+  const observers: Array<() => void> = []
+
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
     function (this: HTMLElement) {
-      return DOMRect.fromRect({ width: this.dataset.slot === "model-picker-ghost" ? 300 : 100 })
+      return DOMRect.fromRect({
+        width: this.dataset.slot === "model-picker-ghost" ? rowWidth : 100,
+      })
     },
   )
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      constructor(callback: () => void) {
+        observers.push(callback)
+      }
+      observe() {}
+      disconnect() {}
+    },
+  )
+
+  return {
+    resizeRow: (width: number) =>
+      act(() => {
+        rowWidth = width
+        for (const notify of observers) notify()
+      }),
+  }
 }
 
 function renderPicker(selected: Array<string> = ["alpha", "beta"]) {
@@ -163,6 +190,34 @@ describe("model picker highlight", () => {
     expect(latest()).toBeNull()
   })
 
+  it("clears a pill's highlight when a narrower row squeezes it into the overflow list", () => {
+    const { resizeRow } = stubChipLayout()
+    const many = Array.from({ length: 7 }, (_, index) => `model${index}`)
+    const onHighlightChange = vi.fn()
+    const latest = () => onHighlightChange.mock.lastCall?.[0] ?? null
+
+    render(
+      <ModelPicker
+        models={many.map(makeModel)}
+        selected={many}
+        onChange={() => {}}
+        onHighlightChange={onHighlightChange}
+      />,
+    )
+    // Wide enough for all seven on one row.
+    resizeRow(1000)
+    const lastPill = pill("Model6")
+
+    fireEvent.pointerEnter(lastPill)
+    expect(latest()).toBe("model6")
+
+    // Two to a row now: five chips and the trigger fill the three rows.
+    resizeRow(200)
+
+    expect(lastPill.isConnected).toBe(false)
+    expect(latest()).toBeNull()
+  })
+
   it("forgets a removed pill, so selecting it again does not bring the highlight back", () => {
     const { highlighted, rerender } = renderPicker()
 
@@ -175,8 +230,11 @@ describe("model picker highlight", () => {
   })
 })
 
+/** A trigger that grows a digit at ten. */
+const widerAtTen = (hiddenCount: number) => (hiddenCount >= 10 ? 60 : 40)
+
 describe("countFittingChips", () => {
-  const fit = { available: 100, gap: 4, rows: 3, moreWidth: 30 }
+  const fit = { available: 100, gap: 4, rows: 3, moreWidth: () => 30 }
 
   it("keeps every chip when they all fit the rows", () => {
     expect(countFittingChips([48, 48, 48, 48, 48, 48], fit)).toBe(6)
@@ -194,5 +252,15 @@ describe("countFittingChips", () => {
 
   it("shows only the trigger when not even one chip fits beside it", () => {
     expect(countFittingChips([90, 90], { ...fit, rows: 1 })).toBe(0)
+  })
+
+  it("sizes the trigger for the count it will actually show", () => {
+    // Ten selected, but only five hidden: the single-digit trigger fits beside the fifth chip.
+    expect(
+      countFittingChips(
+        Array.from({ length: 10 }, () => 48),
+        { ...fit, moreWidth: widerAtTen },
+      ),
+    ).toBe(5)
   })
 })

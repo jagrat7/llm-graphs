@@ -74,8 +74,8 @@ type ChipFit = {
   available: number
   gap: number
   rows: number
-  /** Width of the trigger that stands in for whatever doesn't fit. */
-  moreWidth: number
+  /** Width of the trigger that stands in for however many chips don't fit. */
+  moreWidth: (hiddenCount: number) => number
 }
 
 /**
@@ -112,29 +112,33 @@ export function countFittingChips(
 
   let count = widths.length - 1
 
-  while (count > 0 && !fits([...widths.slice(0, count), moreWidth])) count -= 1
+  while (count > 0 && !fits([...widths.slice(0, count), moreWidth(widths.length - count)]))
+    count -= 1
 
   return count
 }
 
+const roundedWidth = (element: Element) => Math.ceil(element.getBoundingClientRect().width)
+
 /**
- * Reads the ghost row: every selected chip at its natural width, then the count
- * trigger. Widths round up so a sub-pixel miss can only drop a chip, never wrap
- * one onto a fourth row.
+ * Reads the ghost row: every selected chip at its natural width, then one count
+ * trigger per digit length. Widths round up so a sub-pixel miss can only drop a
+ * chip, never wrap one onto a fourth row.
  */
 function measureFittingChips(ghost: HTMLElement) {
   const row = ghost.firstElementChild
 
   if (!(row instanceof HTMLElement)) return 0
 
-  const widths = Array.from(row.children, (child) => Math.ceil(child.getBoundingClientRect().width))
-  const moreWidth = widths.pop() ?? 0
+  const children = Array.from(row.children)
+  const widths = children.filter((child) => !child.hasAttribute("data-more")).map(roundedWidth)
+  const moreWidths = children.filter((child) => child.hasAttribute("data-more")).map(roundedWidth)
 
   return countFittingChips(widths, {
     available: ghost.getBoundingClientRect().width,
     gap: Number.parseFloat(getComputedStyle(row).columnGap) || 0,
     rows: CHIP_ROWS,
-    moreWidth,
+    moreWidth: (hiddenCount) => moreWidths[String(hiddenCount).length - 1] ?? 0,
   })
 }
 
@@ -206,15 +210,21 @@ export function ModelPicker({
     },
   })
 
-  // A removed pill never reports leaving or blurring, so forget it once it is deselected —
-  // otherwise selecting it again would bring back a highlight nobody is holding.
+  // An unmounted pill never reports leaving or blurring — whether it was deselected,
+  // squeezed into the overflow list, or shut away with it — so forget it once it goes;
+  // otherwise its highlight would linger, or come back with it, with nobody holding it.
+  const mountedKey = (moreOpen ? value : value.slice(0, visibleCount))
+    .map((model) => model.model)
+    .join("\n")
+
   useEffect(() => {
+    const mounted = new Set(mountedKey.split("\n"))
     const keep = (current: string | null) =>
-      current != null && selected.includes(current) ? current : null
+      current != null && mounted.has(current) ? current : null
 
     setHoveredModel(keep)
     setFocusedModel(keep)
-  }, [selected])
+  }, [mountedKey])
 
   useEffect(() => {
     onHighlightChange?.(highlightedModel)
@@ -239,20 +249,6 @@ export function ModelPicker({
 
     return () => observer.disconnect()
   }, [hasChips])
-
-  // Closing the overflow list unmounts its pills before they can report leaving.
-  function handleMoreOpenChange(open: boolean) {
-    setMoreOpen(open)
-
-    if (open) return
-
-    const overflow = new Set(hidden.map((model) => model.model))
-    const keep = (current: string | null) =>
-      current != null && overflow.has(current) ? null : current
-
-    setHoveredModel(keep)
-    setFocusedModel(keep)
-  }
 
   // Emptying the list from inside the popover unmounts its own trigger, so hand
   // focus back to the search bar rather than dropping it on the document.
@@ -337,16 +333,22 @@ export function ModelPicker({
                     <span className="-ml-1 size-5" />
                   </span>
                 ))}
-                <span
-                  className={buttonVariants({
-                    variant: "secondary",
-                    size: "sm",
-                    className: CHIP_SIZE_CLASS,
-                  })}
-                >
-                  {value.length} more
-                  <RiArrowDownSLine />
-                </span>
+                {/* Digits are tabular, so the trigger's width only turns on how many the
+                  hidden count has — one stand-in per length covers every count. */}
+                {Array.from({ length: String(value.length).length }, (_, index) => (
+                  <span
+                    key={index}
+                    data-more=""
+                    className={buttonVariants({
+                      variant: "secondary",
+                      size: "sm",
+                      className: CHIP_SIZE_CLASS,
+                    })}
+                  >
+                    {"0".repeat(index + 1)} more
+                    <RiArrowDownSLine />
+                  </span>
+                ))}
               </div>
             </div>
             <ComboboxChips className={CHIPS_RESET_CLASS}>
@@ -369,7 +371,7 @@ export function ModelPicker({
                 )}
               </ComboboxValue>
               {hidden.length > 0 ? (
-                <Popover open={moreOpen} onOpenChange={handleMoreOpenChange}>
+                <Popover open={moreOpen} onOpenChange={setMoreOpen}>
                   {/* Carries the chips' fill so it reads as a control among them
                     rather than as a caption sitting at the end of the row. */}
                   {/* Opens on hover so the rest can be skimmed in passing; a click still
