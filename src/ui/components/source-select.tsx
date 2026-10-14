@@ -69,7 +69,7 @@ export function SourceSelect({
         <SelectTrigger
           size="sm"
           aria-label={`${axis}-axis data source`}
-          className="text-muted-foreground min-h-11 min-w-0 gap-1.5 border-transparent bg-transparent px-2 text-sm shadow-none sm:min-h-8 sm:text-xs dark:bg-transparent dark:hover:bg-transparent"
+          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground min-h-11 min-w-0 gap-1.5 border-transparent bg-transparent px-2 text-sm shadow-none sm:min-h-8 sm:text-xs"
         >
           {/* Base UI resolves the label from the raw value, so the mark is rendered here. */}
           {/* The trigger lays the value out as a flex row, which kills the registry's
