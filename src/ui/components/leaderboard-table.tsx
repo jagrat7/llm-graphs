@@ -14,7 +14,7 @@ import { useState } from "react"
 import type { Model } from "#/ui/lib/model-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
-import { SourceLogos } from "#/ui/components/source-logos"
+import { SourceLogo } from "#/ui/components/source-logo"
 import { Button } from "#/ui/components/ui/button"
 import { Progress } from "#/ui/components/ui/progress"
 import {
@@ -28,6 +28,8 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"
 import { BELOW_HEADER_OFFSET_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
 import { formatMetric, METRIC_CONFIG } from "#/ui/lib/metrics"
+import { sourceLabel as providerLabel } from "#/ui/lib/sources"
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { cn } from "#/ui/lib/utils"
 
 const columnHelper = createColumnHelper<Model>()
@@ -91,6 +93,7 @@ function renderScoreCell({
 }
 
 function RenderSourceCell({ row }: { row: { original: Model } }) {
+  const info = useProvidersInfo()
   const sources = modelSources(row.original)
 
   if (sources.length === 0) {
@@ -101,7 +104,25 @@ function RenderSourceCell({ row }: { row: { original: Model } }) {
     )
   }
 
-  return <SourceLogos sources={sources} className="justify-end" />
+  const label = sources.map((source) => providerLabel(source, info)).join(" · ")
+
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <span
+            aria-label={label}
+            className="text-muted-foreground inline-flex items-center justify-end gap-1.5"
+          />
+        }
+      >
+        {sources.map((source) => (
+          <SourceLogo key={source} source={source} className="size-3" />
+        ))}
+      </TooltipTrigger>
+      <TooltipContent>{label}</TooltipContent>
+    </Tooltip>
+  )
 }
 
 const columns = [
