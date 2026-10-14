@@ -260,6 +260,34 @@ describe("defaultPicks", () => {
     expect(defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask"])).toEqual(original)
   })
 
+  it("never flattens one axis while widening another", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const original = defaultPicks(snapshot, offered, "deepswe", info)
+    const [varied, traded] = [original.at(-1)!, original.at(-2)!]
+    const kept = original.filter((id) => id !== traded)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const extra = offered.find(
+      (model) =>
+        !original.includes(model.model) &&
+        kept.filter((id) => vendorOf.get(id) === model.vendor).length < DEFAULT_PICKS_PER_VENDOR,
+    )!
+    // Only the weakest pick varies on cost; only an unpicked model varies on score.
+    const flat = offered.map((model) => ({
+      ...model,
+      costPerTask: model.model === varied ? 2 : 1,
+      score: model.model === extra.model ? 2 : 1,
+    }))
+    const picks = defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask", "score"])
+
+    expect(picks).toEqual([...kept, extra.model])
+    for (const metric of ["costPerTask", "score"] as const) {
+      expect(
+        new Set(flat.filter((model) => picks.includes(model.model)).map((model) => model[metric]))
+          .size,
+      ).toBe(2)
+    }
+  })
+
   it("opens Cost × Score on the strongest models, with a per-vendor cap", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
     const picks = defaultPicks(snapshot, offered, "deepswe", info)

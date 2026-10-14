@@ -316,14 +316,31 @@ export function defaultPicks(
   // Widen only a degenerate default selection, within both limits; never jitter or alter
   // published measurements.
   const widened: string[] = []
+  const spread = (ids: ReadonlyArray<string>, metric: MetricKey) =>
+    new Set(offered.filter((model) => ids.includes(model.model)).map((model) => model[metric])).size
   for (const metric of metrics) {
     const values = new Set(
       offered.filter((model) => picks.includes(model.model)).map((model) => model[metric]),
     )
     if (values.size !== 1) continue
-    // A full selection trades its weakest original pick for the different model.
+    // A full selection trades its weakest original pick whose loss flattens no other axis.
     const dropped =
-      picks.length === DEFAULT_PICK_COUNT ? picks.findLast((id) => !widened.includes(id)) : null
+      picks.length === DEFAULT_PICK_COUNT
+        ? picks.findLast(
+            (id) =>
+              !widened.includes(id) &&
+              metrics.every(
+                (other) =>
+                  other === metric ||
+                  spread(picks, other) === 1 ||
+                  spread(
+                    picks.filter((each) => each !== id),
+                    other,
+                  ) > 1,
+              ),
+          )
+        : null
+    if (dropped === undefined) continue
     const droppedVendor = dropped ? candidates.get(dropped)!.vendor : null
     const room = (vendor: string) =>
       (perVendor.get(vendor) ?? 0) - (vendor === droppedVendor ? 1 : 0) < DEFAULT_PICKS_PER_VENDOR
