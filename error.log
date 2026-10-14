@@ -1,0 +1,219 @@
+[2026-10-13T02:01:27.326207686+00:00] startup: base_url=https://chatgpt.com/backend-api path_style=wham
+[2026-10-13T02:01:27.326395053+00:00] auth: mode=ChatGPT account_id=54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:01:27.326451549+00:00] auth: set ChatGPT-Account-Id header: 54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:01:29.794957299+00:00] http.list_tasks: env=<all> limit=5 cursor_in=<none> cursor_out=<none> items=4
+[2026-10-13T02:01:33.750014517+00:00] startup: base_url=https://chatgpt.com/backend-api path_style=wham
+[2026-10-13T02:01:33.750084226+00:00] auth: mode=ChatGPT account_id=54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:01:33.750136654+00:00] auth: set ChatGPT-Account-Id header: 54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:01:33.751596605+00:00] startup: wham_force_internal=false ua=codex_cli_rs/0.159.1 (Linux Unknown; x86_64) dumb (codex_cloud_tasks_tui)
+[2026-10-13T02:01:33.778181651+00:00] env: git origins: [SanitizedGitUrl("https://github.com/jagrat7/llm-graphs")]
+[2026-10-13T02:01:33.778238120+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:01:33.778260245+00:00] env: GET https://chatgpt.com/backend-api/wham/environments/by-repo/github/jagrat7/llm-graphs
+[2026-10-13T02:01:33.843546188+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:01:36.735562199+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:01:37.492360990+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:01:37.492492458+00:00] env: by-repo returned 0 env(s) for jagrat7/llm-graphs
+[2026-10-13T02:01:37.492538464+00:00] env: GET https://chatgpt.com/backend-api/wham/environments
+[2026-10-13T02:01:38.044830198+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:01:38.752806937+00:00] refresh load_tasks failed: deadline has elapsed
+[2026-10-13T02:01:40.751563137+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:01:40.751896830+00:00] env: /environments JSON (pretty):
+[
+  {
+    "id": "6a94c6c6603c8191a630e2d856c4035b",
+    "devcontainer": null,
+    "machine_id": "wham-public/wham-universal",
+    "label": "portfolioV2",
+    "is_pinned": false,
+    "description": "",
+    "workspace_dir": "/workspace",
+    "agent_network_access": {
+      "mode": "off",
+      "preset_allowlist": null,
+      "allowlist_domains": null,
+      "allowlist_rules": null,
+      "denylist_domains": null,
+      "safe_methods_only": null
+    },
+    "codex_github_direct": null,
+    "github_connector_id": "connector_76869538009648d5b282a4bb21c3d157",
+    "enable_gitlab_webhooks": false,
+    "repos": [
+      "github-1120912286"
+    ],
+    "setup": "",
+    "maintenance_setup": "",
+    "repo_map": {
+      "github-1120912286": {
+        "id": "1120912286",
+        "name": "portfolioV2",
+        "owner": {
+          "login": "jagrat7",
+          "id": 46803744,
+          "type": "User",
+          "avatar_url": "https://avatars.githubusercontent.com/u/46803744?v=4",
+          "url": "https://api.github.com/users/jagrat7"
+        },
+        "repository_full_name": "jagrat7/portfolioV2",
+        "clone_url": "https://github.com/jagrat7/portfolioV2.git",
+        "default_branch": "main",
+        "git_commits_url": "https://api.github.com/repos/jagrat7/portfolioV2/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/jagrat7/portfolioV2/git/refs{/sha}",
+        "git_url": "git://github.com/jagrat7/portfolioV2.git",
+        "visibility": "private",
+        "archived": false,
+        "allow_auto_merge": false,
+        "allow_merge_commit": true,
+        "allow_rebase_merge": true,
+        "allow_squash_merge": true,
+        "allow_update_branch": false,
+        "language": null,
+        "size": 98140,
+        "master_branch": null,
+        "permissions": {
+          "admin": true,
+          "maintain": true,
+          "push": true,
+          "pull": true
+        }
+      }
+    },
+    "env_vars": {},
+    "secrets": {},
+    "secrets_with_domains": null,
+    "task_count": 3,
+    "creator_id": "user-dAaPIsmz4LShZXZEIYU8cSsG",
+    "share_settings": "workspace",
+    "share_targets": [],
+    "permissions": {
+      "can_write": true,
+      "can_delete": true
+    },
+    "created_at": 1788135110.691242,
+    "auto_setup_settings": {
+      "use_auto_setup": true
+    },
+    "cache_settings": {
+      "post_setup_cache_enabled": true,
+      "cache_invalidation_key": ""
+    },
+    "etag": "\"18035f1c-0000-0200-0000-6a94c96e0000\"",
+    "enable_authtranslator": false,
+    "enable_docker_in_docker": false
+  }
+]
+[2026-10-13T02:01:40.775169434+00:00] env: single environment available; selecting it
+[2026-10-13T02:01:40.775470538+00:00] env.select: autodetected id=6a94c6c6603c8191a630e2d856c4035b label=portfolioV2
+[2026-10-13T02:01:40.810278963+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:01:41.762806182+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:01:44.046845869+00:00] http.list_tasks: env=6a94c6c6603c8191a630e2d856c4035b limit=20 cursor_in=<none> cursor_out=<none> items=4
+[2026-10-13T02:01:44.047072156+00:00] refresh.apply: env=6a94c6c6603c8191a630e2d856c4035b count=4
+[2026-10-13T02:01:49.462423262+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:11:59.122505026+00:00] startup: base_url=https://chatgpt.com/backend-api path_style=wham
+[2026-10-13T02:11:59.122579463+00:00] auth: mode=ChatGPT account_id=54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:11:59.122633405+00:00] auth: set ChatGPT-Account-Id header: 54630b84-63aa-4f95-9552-6fbfda7a12c7
+[2026-10-13T02:11:59.124077037+00:00] startup: wham_force_internal=false ua=codex_cli_rs/0.159.1 (Linux Unknown; x86_64) dumb (codex_cloud_tasks_tui)
+[2026-10-13T02:11:59.160706909+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:11:59.163463177+00:00] env: git origins: [SanitizedGitUrl("https://github.com/jagrat7/llm-graphs")]
+[2026-10-13T02:11:59.163507610+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:11:59.163528645+00:00] env: GET https://chatgpt.com/backend-api/wham/environments/by-repo/github/jagrat7/llm-graphs
+[2026-10-13T02:12:00.294225985+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:12:00.339737477+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:12:00.339868521+00:00] env: by-repo returned 0 env(s) for jagrat7/llm-graphs
+[2026-10-13T02:12:00.339914533+00:00] env: GET https://chatgpt.com/backend-api/wham/environments
+[2026-10-13T02:12:02.660310274+00:00] http.list_tasks: env=<all> limit=20 cursor_in=<none> cursor_out=<none> items=4
+[2026-10-13T02:12:02.660474678+00:00] refresh.apply: env=<all> count=4
+[2026-10-13T02:12:02.751490181+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:12:02.751812994+00:00] env: /environments JSON (pretty):
+[
+  {
+    "id": "6a94c6c6603c8191a630e2d856c4035b",
+    "devcontainer": null,
+    "machine_id": "wham-public/wham-universal",
+    "label": "portfolioV2",
+    "is_pinned": false,
+    "description": "",
+    "workspace_dir": "/workspace",
+    "agent_network_access": {
+      "mode": "off",
+      "preset_allowlist": null,
+      "allowlist_domains": null,
+      "allowlist_rules": null,
+      "denylist_domains": null,
+      "safe_methods_only": null
+    },
+    "codex_github_direct": null,
+    "github_connector_id": "connector_76869538009648d5b282a4bb21c3d157",
+    "enable_gitlab_webhooks": false,
+    "repos": [
+      "github-1120912286"
+    ],
+    "setup": "",
+    "maintenance_setup": "",
+    "repo_map": {
+      "github-1120912286": {
+        "id": "1120912286",
+        "name": "portfolioV2",
+        "owner": {
+          "login": "jagrat7",
+          "id": 46803744,
+          "type": "User",
+          "avatar_url": "https://avatars.githubusercontent.com/u/46803744?v=4",
+          "url": "https://api.github.com/users/jagrat7"
+        },
+        "repository_full_name": "jagrat7/portfolioV2",
+        "clone_url": "https://github.com/jagrat7/portfolioV2.git",
+        "default_branch": "main",
+        "git_commits_url": "https://api.github.com/repos/jagrat7/portfolioV2/git/commits{/sha}",
+        "git_refs_url": "https://api.github.com/repos/jagrat7/portfolioV2/git/refs{/sha}",
+        "git_url": "git://github.com/jagrat7/portfolioV2.git",
+        "visibility": "private",
+        "archived": false,
+        "allow_auto_merge": false,
+        "allow_merge_commit": true,
+        "allow_rebase_merge": true,
+        "allow_squash_merge": true,
+        "allow_update_branch": false,
+        "language": null,
+        "size": 98140,
+        "master_branch": null,
+        "permissions": {
+          "admin": true,
+          "maintain": true,
+          "push": true,
+          "pull": true
+        }
+      }
+    },
+    "env_vars": {},
+    "secrets": {},
+    "secrets_with_domains": null,
+    "task_count": 3,
+    "creator_id": "user-dAaPIsmz4LShZXZEIYU8cSsG",
+    "share_settings": "workspace",
+    "share_targets": [],
+    "permissions": {
+      "can_write": true,
+      "can_delete": true
+    },
+    "created_at": 1788135110.691242,
+    "auto_setup_settings": {
+      "use_auto_setup": true
+    },
+    "cache_settings": {
+      "post_setup_cache_enabled": true,
+      "cache_invalidation_key": ""
+    },
+    "etag": "\"18035f1c-0000-0200-0000-6a94c96e0000\"",
+    "enable_authtranslator": false,
+    "enable_docker_in_docker": false
+  }
+]
+[2026-10-13T02:12:02.751964893+00:00] env: single environment available; selecting it
+[2026-10-13T02:12:02.752132517+00:00] env.select: autodetected id=6a94c6c6603c8191a630e2d856c4035b label=portfolioV2
+[2026-10-13T02:12:02.798997733+00:00] env: parsed HTTP GitHub origin => jagrat7/llm-graphs
+[2026-10-13T02:12:02.938586466+00:00] http.list_tasks: env=6a94c6c6603c8191a630e2d856c4035b limit=20 cursor_in=<none> cursor_out=<none> items=4
+[2026-10-13T02:12:02.938665982+00:00] refresh.apply: env=6a94c6c6603c8191a630e2d856c4035b count=4
+[2026-10-13T02:12:06.433947515+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:12:07.036157892+00:00] env: status=200 OK content-type=application/json
+[2026-10-13T02:12:08.389268120+00:00] env: status=200 OK content-type=application/json
