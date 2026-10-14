@@ -42,8 +42,10 @@ export type MetricBinding = {
   scope?: "model"
 }
 
-/** How many vendors the chart opens on. */
-export const DEFAULT_VENDOR_COUNT = 6
+/** How many models the chart opens on. */
+export const DEFAULT_PICK_COUNT = 10
+/** The most models one vendor contributes to the opening selection. */
+export const DEFAULT_PICKS_PER_VENDOR = 3
 
 export function vendorColor(hue: number | null) {
   return hue == null ? "var(--vendor-unknown)" : `oklch(var(--vendor-l) var(--vendor-c) ${hue})`
@@ -276,8 +278,8 @@ function compareCandidates(left: Candidate, right: Candidate) {
 }
 
 /**
- * The models the chart opens on: each vendor's strongest model among those offered, for the six
- * strongest vendors. A model no score source lists is never pre-selected.
+ * The models the chart opens on: the ten strongest models offered, with no vendor taking more
+ * than three of them. A model no score source lists is never pre-selected.
  */
 export function defaultPicks(
   snapshot: ModelSnapshot,
@@ -287,23 +289,30 @@ export function defaultPicks(
   metrics: ReadonlyArray<MetricKey> = [],
 ) {
   const strength = strengths(snapshot, scoreSource, info)
-  const bestByVendor = new Map<string, Candidate>()
+  const candidates = new Map<string, Candidate & { vendor: string }>()
 
   for (const model of offered) {
     const value = strength.get(model.model)
-    if (value == null) continue
-
-    const candidate = { id: model.model, strength: value, releaseDate: model.releaseDate }
+    if (value == null || candidates.has(model.model)) continue
     // An unknown vendor counts as its own vendor.
     const vendor = model.vendor ?? `unknown:${model.model}`
-    const best = bestByVendor.get(vendor)
-    if (!best || compareCandidates(candidate, best) < 0) bestByVendor.set(vendor, candidate)
+    candidates.set(model.model, {
+      id: model.model,
+      strength: value,
+      releaseDate: model.releaseDate,
+      vendor,
+    })
   }
 
-  const picks = [...bestByVendor.values()]
-    .toSorted(compareCandidates)
-    .slice(0, DEFAULT_VENDOR_COUNT)
-    .map((candidate) => candidate.id)
+  const perVendor = new Map<string, number>()
+  const picks: string[] = []
+  for (const candidate of [...candidates.values()].toSorted(compareCandidates)) {
+    if (picks.length === DEFAULT_PICK_COUNT) break
+    const taken = perVendor.get(candidate.vendor) ?? 0
+    if (taken === DEFAULT_PICKS_PER_VENDOR) continue
+    perVendor.set(candidate.vendor, taken + 1)
+    picks.push(candidate.id)
+  }
   // Extend only a degenerate default selection; never jitter or alter published measurements.
   for (const metric of metrics) {
     const values = new Set(

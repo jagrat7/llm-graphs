@@ -230,16 +230,20 @@ describe("defaultPicks", () => {
     ).toBe(2)
   })
 
-  it("opens Cost × Score on each of the six strongest vendors' strongest model", () => {
+  it("opens Cost × Score on the ten strongest models, at most three per vendor", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
 
     expect(defaultPicks(snapshot, offered, "deepswe", info)).toEqual([
       "gpt-6-astra",
       "gemini-3-8-flash",
       "claude-opus-5",
+      "gpt-5-6-sol",
+      "claude-fable-5",
+      "gpt-5-6-terra",
       "glm-5-3",
       "kimi-k3",
       "grok-4-6",
+      "gemini-3-7-flash",
     ])
   })
 
@@ -251,10 +255,11 @@ describe("defaultPicks", () => {
     const picks = defaultPicks(snapshot, offered, null, info)
 
     expect(picks.length).toBeGreaterThan(0)
-    expect(picks.length).toBeLessThanOrEqual(6)
-    expect(
-      new Set(picks.map((id) => offered.find((model) => model.model === id)?.vendor)).size,
-    ).toBe(picks.length)
+    expect(picks.length).toBeLessThanOrEqual(10)
+    const vendors = picks.map((id) => offered.find((model) => model.model === id)?.vendor)
+    for (const vendor of new Set(vendors)) {
+      expect(vendors.filter((each) => each === vendor).length).toBeLessThanOrEqual(3)
+    }
   })
 
   it("picks nothing when no offered model has a score", () => {
