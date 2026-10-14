@@ -44,7 +44,7 @@ export function SourceLogos({
             <TooltipContent side="right" className="flex-col items-start gap-1">
               {(index === 0 ? sources : hidden).map((source) => (
                 <span key={source} className="flex items-center gap-1.5">
-                  <SourceLogo source={source} className="size-3" />
+                  <SourceLogo source={source} monochromeColor="inherit" className="size-3" />
                   {sourceLabel(source, info)}
                 </span>
               ))}

@@ -3,7 +3,13 @@ import type { ProviderName } from "#/ui/lib/orpc-client"
 import { cn } from "#/ui/lib/utils"
 
 type SourceMark =
-  | { viewBox: string; paths: ReadonlyArray<string>; brand?: string; stroke?: boolean }
+  | {
+      viewBox: string
+      paths: ReadonlyArray<string>
+      /** Use theme variants for monochrome marks so they can inherit a surface's text color. */
+      brand?: string | { light: string; dark: string }
+      stroke?: boolean
+    }
   | { src: string }
 
 /**
@@ -26,7 +32,7 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   deepswe: {
     viewBox: "0 0 51 51",
     // datacurve.ai: #0A0A0A (light) / off-white (dark)
-    brand: "light-dark(#0A0A0A, #FAFAFA)",
+    brand: { light: "#0A0A0A", dark: "#FAFAFA" },
     paths: [
       "M44.359 50.3612H15.1535C14.6037 50.3612 14.063 50.222 13.5815 49.9566C10.9198 48.4894 11.5362 44.4142 14.4133 43.4346C22.7273 40.604 26.0971 36.4192 28.0568 28.1627C31.274 17.99 35.5491 13.1346 43.5398 10.6088C47.0462 9.50039 50.3618 12.4055 50.3618 16.0829V44.3584C50.3618 47.6737 47.6743 50.3612 44.359 50.3612Z",
       "M6.0012 0H35.2067C35.7565 0 36.2973 0.13918 36.7787 0.404568C39.4404 1.87183 38.824 5.94707 35.9469 6.92662C27.6329 9.75718 24.2632 13.9421 22.3034 22.1985C19.0862 32.3712 14.8111 37.2266 6.82042 39.7525C3.31397 40.8608 -0.00158691 37.9557 -0.00158691 34.2782V6.00279C-0.00158691 2.68753 2.68595 0 6.0012 0Z",
@@ -35,7 +41,7 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   metr: { src: "/benchmarks/metr.png" },
   arena: {
     viewBox: "0 -21.5 167 167",
-    brand: "light-dark(#242422, #FFFFFF)",
+    brand: { light: "#242422", dark: "#FFFFFF" },
     paths: [
       "M57.5364 53.3142C52.1508 53.3142 47.7887 57.6763 47.7887 63.0618V123.88H53.9963V63.0618C53.9963 61.0989 55.5902 59.505 57.5531 59.505C59.5161 59.505 61.11 61.0989 61.11 63.0618V123.88H67.3176V63.0618C67.3176 57.6763 62.9555 53.3142 57.5699 53.3142H57.5364Z",
       "M109.121 53.3142C103.735 53.3142 99.3734 57.6763 99.3734 63.0618V123.88H105.581V63.0618C105.581 61.0989 107.175 59.505 109.138 59.505C111.101 59.505 112.695 61.0989 112.695 63.0618V123.88H118.902V63.0618C118.902 57.6763 114.54 53.3142 109.155 53.3142H109.121Z",
@@ -62,7 +68,7 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   arcPrize: { src: "/benchmarks/arc-prize.png" },
   cursorBench: {
     viewBox: "90 67 331.963 378.45",
-    brand: "light-dark(#26251E, #F7F7F4)",
+    brand: { light: "#26251E", dark: "#F7F7F4" },
     paths: [
       "m415.348 156.575-151.504-87.4699c-4.865-2.8094-10.868-2.8094-15.733 0l-151.4964 87.4699c-4.0897 2.361-6.6146 6.728-6.6146 11.458v176.383c0 4.73 2.5249 9.097 6.6146 11.459l151.5034 87.469c4.865 2.81 10.868 2.81 15.733 0l151.504-87.469c4.09-2.362 6.615-6.729 6.615-11.459v-176.383c0-4.73-2.525-9.097-6.615-11.458zm-9.517 18.528-146.254 253.319c-.989 1.707-3.599 1.01-3.599-.967v-165.871c0-3.314-1.771-6.38-4.645-8.044l-143.644-82.932c-1.707-.989-1.01-3.599.967-3.599h292.51c4.153 0 6.749 4.502 4.672 8.101h-.007z",
     ],
@@ -71,7 +77,16 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   liveCodeBench: { src: "/benchmarks/live-code-bench.svg" },
 }
 
-export function SourceLogo({ source, className }: { source: ProviderName; className?: string }) {
+export function SourceLogo({
+  source,
+  className,
+  monochromeColor = "brand",
+}: {
+  source: ProviderName
+  className?: string
+  /** Inherit contrasting text on surfaces such as tooltips; colored brands keep their colors. */
+  monochromeColor?: "brand" | "inherit"
+}) {
   const mark = SOURCE_MARKS[source]
 
   if ("src" in mark) {
@@ -87,6 +102,15 @@ export function SourceLogo({ source, className }: { source: ProviderName; classN
     )
   }
 
+  const color =
+    typeof mark.brand === "string"
+      ? mark.brand
+      : mark.brand == null
+        ? undefined
+        : monochromeColor === "inherit"
+          ? "inherit"
+          : `light-dark(${mark.brand.light}, ${mark.brand.dark})`
+
   return (
     <svg
       aria-hidden="true"
@@ -96,7 +120,7 @@ export function SourceLogo({ source, className }: { source: ProviderName; classN
       strokeWidth={mark.stroke ? 2 : undefined}
       strokeLinecap={mark.stroke ? "round" : undefined}
       strokeLinejoin={mark.stroke ? "round" : undefined}
-      style={mark.brand ? { color: mark.brand } : undefined}
+      style={color == null ? undefined : { color }}
       className={cn("size-3.5 shrink-0", className)}
     >
       {mark.paths.map((path) => (
