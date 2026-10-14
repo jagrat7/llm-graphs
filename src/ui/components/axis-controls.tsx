@@ -65,7 +65,7 @@ export function AxisControls({
   )
 
   return (
-    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 lg:max-w-4xl lg:flex-row lg:items-start lg:gap-4">
+    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:max-w-4xl min-[56rem]:flex-row min-[56rem]:items-start min-[56rem]:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
           column, not the metric one: metric names are short and fixed, provider
@@ -78,7 +78,7 @@ export function AxisControls({
           spills into "via". The source column hugs its widest name, so the divider
           follows the labels instead of leaving a hole before the picker; slack
           collects past the picker, which keeps the axis rows themselves still. */}
-      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center gap-x-2 gap-y-1.5 lg:min-w-0 lg:flex-initial">
+      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center gap-x-2 gap-y-1.5 min-[56rem]:min-w-0 min-[56rem]:flex-initial">
         {AXIS_KEYS.map((key, index) => {
           const { metric, source } = axes[key]
           const swap = SWAP_PAIRS.find((pair) => pair.from === key)
@@ -119,8 +119,8 @@ export function AxisControls({
 
       {/* Orientation is a prop rather than a class, so the stacked and side-by-side
           rules each need their own separator; only one is ever in the tree. */}
-      <Separator className="lg:hidden" />
-      <Separator orientation="vertical" className="hidden self-stretch lg:block" />
+      <Separator className="min-[56rem]:hidden" />
+      <Separator orientation="vertical" className="hidden self-stretch min-[56rem]:block" />
 
       {children}
     </div>

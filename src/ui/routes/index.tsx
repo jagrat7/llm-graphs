@@ -210,7 +210,7 @@ function ComparePage() {
       onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       shortcut
-      className="lg:w-80"
+      className="min-[56rem]:w-80"
     />
   )
 
