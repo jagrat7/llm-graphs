@@ -135,8 +135,8 @@ describe("offeredVariants", () => {
   })
 
   it("preserves the server's effort rank instead of recomputing it in the UI", () => {
-    expect(effortLabel("unknown", "unknown")).toBe("reasoning not reported")
-    expect(effortLabel("on", "unknown")).toBe("reasoning, effort not reported")
+    expect(effortLabel("unknown", "unknown")).toBe("reasoning unknown")
+    expect(effortLabel("on", "unknown")).toBe("effort unknown")
     expect(effortLabel("off", "unknown")).toBe("non-reasoning")
     const variant = snapshot.variants.deepswe[0]
     const ranked = {

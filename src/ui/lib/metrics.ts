@@ -138,9 +138,34 @@ export function metricPresentation(
     : (info?.presentation[source]?.[METRIC_CONFIG[metric].dataKey] ?? fallback)
 }
 
+/** Units as an axis has room for them; the full unit stays in `metricAxisTitle`. */
+const AXIS_UNITS: Record<string, string> = {
+  "$/M tokens": "$/M",
+  "tokens/s": "tok/s",
+}
+
+/**
+ * The short axis caption: the metric's name with a compact unit in parentheses —
+ * "Token price ($/M)" rather than "Token price · $/M tokens". A unit the name already
+ * says ("Vote count", votes) is dropped, and a name that already ends in a qualifier
+ * shares its parentheses: "Task horizon (80%, h)". Durations get no unit at all.
+ */
 export function metricAxisLabel(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
-  const config = metricPresentation(metric, source, info)
-  return `${config.label} · ${config.unit}`
+  const { label, unit } = metricPresentation(metric, source, info)
+
+  // Duration ticks carry their own units ("8m 20s"), so "(s)" would only contradict them.
+  if (metric === "duration") return label
+
+  const compact = AXIS_UNITS[unit] ?? unit
+  // Whole words only, singular or plural, so "h" or "s" never matches inside a name.
+  const named =
+    /^[a-z]{3,}$/i.test(unit) && new RegExp(`\\b${unit.replace(/s$/i, "")}s?\\b`, "i").test(label)
+
+  if (!compact || named) return label
+
+  const qualifier = /^(.*) \(([^()]*)\)$/.exec(label)
+
+  return qualifier ? `${qualifier[1]} (${qualifier[2]}, ${compact})` : `${label} (${compact})`
 }
 
 /** The providers the chart offers for a metric. The first one is the default. */

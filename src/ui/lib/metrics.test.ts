@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest"
 
 import { ProvidersService } from "#/server/services/providers"
-import { formatMetric, metricAxisTitle, metricProviders, resolveSource } from "./metrics"
+import {
+  formatMetric,
+  metricAxisLabel,
+  metricAxisTitle,
+  metricProviders,
+  resolveSource,
+} from "./metrics"
 import { isSource, sourceLabel } from "./sources"
 
 const info = ProvidersService.info()
@@ -46,6 +52,26 @@ describe("provider metadata", () => {
     )
     expect(metricAxisTitle("speed", "artificialAnalysis", updated)).toBe("Output speed · tokens/s")
     expect(metricAxisTitle("price", null, updated)).toBe("Token price · $/M tokens")
+  })
+})
+
+describe("axis captions", () => {
+  it("pairs each metric with a compact unit", () => {
+    expect(metricAxisLabel("price", "artificialAnalysis", info)).toBe("Token price ($/M)")
+    expect(metricAxisLabel("cost", "deepswe", info)).toBe("Task cost ($/task)")
+    expect(metricAxisLabel("speed", "artificialAnalysis", info)).toBe("Output speed (tok/s)")
+    expect(metricAxisLabel("score", "automationBench", info)).toBe("Workflow completion (%)")
+  })
+
+  it("leaves the unit off a duration, whose ticks name their own", () => {
+    expect(metricAxisLabel("duration", "deepswe", info)).toBe("Task duration")
+  })
+
+  it("drops a unit the name already says and shares an existing qualifier", () => {
+    expect(metricAxisLabel("votes", "arena", info)).toBe("Vote count")
+    expect(metricAxisLabel("context", "arena", info)).toBe("Context length (tokens)")
+    expect(metricAxisLabel("score", "metr", info)).toBe("Task horizon (50%, h)")
+    expect(metricAxisLabel("horizon80", "metr", info)).toBe("Task horizon (80%, h)")
   })
 })
 

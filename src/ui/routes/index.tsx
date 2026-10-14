@@ -103,6 +103,7 @@ function ComparePage() {
   }, [snapshot, info, search])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
+  const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -185,18 +186,27 @@ function ComparePage() {
     updateSearch({ z: undefined, zSource: undefined })
   }
 
-  const selected = search.models ?? data?.defaultModels ?? []
-  const selectedModelIds = new Set(selected)
-  const selectedModels = data?.models.filter((model) => selectedModelIds.has(model.model)) ?? []
-  const quality = plotQuality(
-    buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z }),
+  const selected = useMemo(() => search.models ?? data?.defaultModels ?? [], [search.models, data])
+  // Memoized so hovering a pill re-renders the page without handing the chart new models.
+  const selectedModels = useMemo(() => {
+    const ids = new Set(selected)
+
+    return data?.models.filter((model) => ids.has(model.model)) ?? []
+  }, [data, selected])
+  const quality = useMemo(
+    () => plotQuality(buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z })),
+    [selectedModels, search.x, search.y, search.z],
   )
+  // The list can highlight models that are not on the chart; those emphasise nothing.
+  const highlight =
+    highlightedModel != null && selected.includes(highlightedModel) ? highlightedModel : null
   const controlsDisabled = isPending ? true : isError
   const picker = (
     <ModelPicker
       models={data?.models ?? []}
       selected={selected}
       onChange={(models) => updateSearch({ models })}
+      onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       className="sm:w-80"
     />
@@ -229,7 +239,7 @@ function ComparePage() {
             unavailable.length > 0
               ? `${unavailable.map(({ metric }) => METRIC_CONFIG[metric!].label).join(" and ")} unavailable for this score benchmark`
               : data.models.length === 0
-                ? "No model configurations have all selected metrics"
+                ? "No models have all selected metrics"
                 : selected.length === 0
                   ? "Select models to compare"
                   : "No selected models are available"
@@ -237,8 +247,8 @@ function ComparePage() {
         >
           <p className="text-muted-foreground mx-auto mb-3 max-w-sm text-sm">
             {unavailable.length > 0
-              ? "This benchmark does not publish these measurements. Compare token price instead, or choose another score source."
-              : "Only matching measured configurations can be compared. Try different metrics or restore the default comparison."}
+              ? "This benchmark doesn't publish them. Compare token price or pick another score source."
+              : "Try other metrics or restore the default comparison."}
           </p>
           <Button
             variant="outline"
@@ -282,8 +292,8 @@ function ComparePage() {
         <Alert className="mb-3">
           <AlertTitle>
             {quality.flatAxes.length > 0
-              ? `No variation on ${quality.flatAxes.map((axis) => `${axis.toUpperCase()} (${METRIC_CONFIG[search[axis]!].label})`).join(" and ")}. Add models with different measured values or change metrics.`
-              : "Select at least two models for a meaningful comparison."}
+              ? `Every model has the same ${quality.flatAxes.map((axis) => METRIC_CONFIG[search[axis]!].label.toLowerCase()).join(" and ")}. Add models or change metrics.`
+              : "Select at least two models to compare."}
           </AlertTitle>
         </Alert>
       ) : null}
@@ -303,6 +313,7 @@ function ComparePage() {
               sources={{ x: axes.x.source, y: axes.y.source }}
               xMetric={search.x}
               yMetric={search.y}
+              highlight={highlight}
             />
           )}
         </Suspense>

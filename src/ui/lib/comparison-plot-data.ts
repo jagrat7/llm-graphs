@@ -18,6 +18,8 @@ export type PlotPoint = {
   /** Stable render order, also the index used by the keyboard point list. */
   index: number
   label: string
+  /** `PlotSeries.key` of the run this point belongs to. */
+  seriesKey: string
   color: string
   /** The vendor logo drawn as the marker; null draws a circle. */
   logoUrl: string | null
@@ -139,9 +141,44 @@ export function axisTicks(domain: PlotDomain, count: number) {
   return ticks
 }
 
+/** Clock-friendly steps for a duration axis, in seconds: seconds, minutes, then hours. */
+const TIME_STEPS = [
+  1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200, 10_800, 21_600, 43_200, 86_400,
+]
+const DAY = 86_400
+
+/**
+ * Tick values for a duration axis. A 1-2-5 step in seconds lands on labels like
+ * "8m 20s"; these steps land on whole minutes and hours, and never go below zero.
+ */
+export function timeTicks(domain: PlotDomain, count: number) {
+  const span = domain.max - domain.min
+
+  if (!(span > 0) || count < 1) return [Math.max(0, domain.min)]
+
+  const step =
+    TIME_STEPS.find((candidate) => span / candidate <= count) ?? Math.ceil(span / count / DAY) * DAY
+  const ticks: Array<number> = []
+
+  for (
+    let value = Math.max(0, Math.ceil(domain.min / step) * step);
+    value <= domain.max + step * 1e-6;
+    value += step
+  ) {
+    ticks.push(value)
+  }
+
+  return ticks
+}
+
+/** Round tick values for a metric's axis: clock steps for durations, 1-2-5 steps otherwise. */
+export function metricTicks(metric: Metric | null, domain: PlotDomain, count: number) {
+  return metric === "duration" ? timeTicks(domain, count) : axisTicks(domain, count)
+}
+
 /**
  * Renderer-neutral plot model: one O(n) pass over the models produces the points,
- * per-axis domains, per-model series and the id lookup that both the Visx and the
+ * per-axis domains, per-model series and the id lookup that both the TanStack Charts and the
  * React Three Fiber charts read. Keeping it here is what makes the two renderers
  * agree on ordering, normalization and exclusions.
  */
@@ -168,10 +205,12 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     if (x == null || y == null || z == null) continue
 
     const values: Record<PlotAxis, number> = { x, y, z }
+    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
     const point: PlotPoint = {
       id: `${model.model}-${model.mode}-${model.level}${model.configuration ? `-${model.configuration}` : ""}`,
       index: points.length,
       label: pointLabel(model),
+      seriesKey,
       color: model.chartColor,
       logoUrl: model.logoUrl,
       model,
@@ -188,7 +227,6 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     pointById.set(point.id, point)
     modelKeys.add(model.model)
 
-    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
     const series = seriesByModel.get(seriesKey)
 
     if (series) series.points.push(point)
