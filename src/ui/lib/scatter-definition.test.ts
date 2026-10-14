@@ -125,6 +125,31 @@ describe("scatter definition", () => {
     expect(svg).toContain('class="logo-beta"')
   })
 
+  it("ticks a duration axis on whole minutes", () => {
+    const timed = models.map((model, index) => ({
+      ...model,
+      durationSeconds: [310, 1180, 2560][index],
+      sources: { ...model.sources, durationSeconds: "deepswe" as const },
+    }))
+    const data = buildPlotData(timed, { x: "duration", y: "score" })
+    const svg = renderChartSvg(
+      createChartScene(
+        scatterDefinition(data, {
+          highlight: null,
+          info,
+          logoClass: new Map(),
+          sources: { x: "deepswe", y: "deepswe" },
+        }),
+        SIZE,
+      ),
+      { ariaLabel: "Comparison" },
+    )
+
+    expect(svg).toContain(">Task duration<")
+    expect(svg).toMatch(/>\d+m</)
+    expect(svg).not.toMatch(/>\d+m \d+s</)
+  })
+
   it("finds the point under the pointer", () => {
     const { scene: chartScene } = scene()
     const beta = chartScene.points.find((point) => point.group === "beta")!

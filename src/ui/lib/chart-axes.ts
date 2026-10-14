@@ -12,10 +12,17 @@ export function axisPresentation<TValue>(
   label: string,
   format: (value: TValue) => string,
   spacing?: number,
+  /** Exact tick values, for axes whose round numbers are not the scale's 1-2-5 steps. */
+  values?: ReadonlyArray<TValue>,
 ) {
   return {
     line: { stroke: "var(--border)" },
-    ticks: { spacing, format, line: { stroke: "var(--border)" } },
+    // The library takes one tick policy: exact values when given, otherwise spacing.
+    ticks: {
+      ...(values ? { values } : { spacing }),
+      format,
+      line: { stroke: "var(--border)" },
+    },
     tickLabels: { fontSize: CHART_TICK_SIZE, thin: true },
     label: {
       text: label,

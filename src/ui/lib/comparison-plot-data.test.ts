@@ -7,8 +7,10 @@ import {
   axisTicks,
   buildPlotData,
   describePlot,
+  metricTicks,
   padDomain,
   plotQuality,
+  timeTicks,
 } from "#/ui/lib/comparison-plot-data"
 
 type ModelOverrides = Partial<Model> & { model: string }
@@ -236,6 +238,30 @@ describe("axisTicks", () => {
 
   it("collapses to a single value for a flat domain", () => {
     expect(axisTicks({ min: 7, max: 7 }, 5)).toEqual([7])
+  })
+})
+
+describe("timeTicks", () => {
+  it("steps by whole minutes where 1-2-5 seconds would read as 8m 20s", () => {
+    // About 5 to 43 minutes, as in a task-duration axis.
+    expect(timeTicks({ min: 300, max: 2600 }, 5)).toEqual([600, 1200, 1800, 2400])
+    expect(axisTicks({ min: 300, max: 2600 }, 5)).toContain(500)
+  })
+
+  it("moves to hours for long spans and seconds for short ones", () => {
+    expect(timeTicks({ min: 0, max: 5 * 3600 }, 5)).toEqual([0, 3600, 7200, 10_800, 14_400, 18_000])
+    expect(timeTicks({ min: 0, max: 40 }, 4)).toEqual([0, 10, 20, 30, 40])
+  })
+
+  it("never puts a tick below zero seconds", () => {
+    expect(timeTicks({ min: -120, max: 900 }, 5)[0]).toBe(0)
+  })
+
+  it("is the tick rule for durations only", () => {
+    const domain = { min: 300, max: 2600 }
+
+    expect(metricTicks("duration", domain, 5)).toEqual(timeTicks(domain, 5))
+    expect(metricTicks("cost", domain, 5)).toEqual(axisTicks(domain, 5))
   })
 })
 

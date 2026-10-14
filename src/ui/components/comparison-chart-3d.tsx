@@ -23,7 +23,7 @@ import {
   CHART_TOOLTIP_WIDTH,
   chartFontRem,
 } from "#/ui/lib/chart-styles"
-import { axisTicks, buildPlotData, describePlot } from "#/ui/lib/comparison-plot-data"
+import { buildPlotData, describePlot, metricTicks } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import {
   formatMetric,
@@ -1038,7 +1038,7 @@ export function ComparisonChart3D({
       const domain = data.domains[axis]
       const span = domain.max - domain.min
 
-      fractions[axis] = axisTicks(domain, TICK_TARGET).map((value) =>
+      fractions[axis] = metricTicks(data.metrics[axis], domain, TICK_TARGET).map((value) =>
         span === 0 ? 0.5 : (value - domain.min) / span,
       )
     }
@@ -1065,7 +1065,7 @@ export function ComparisonChart3D({
         screenOffset: AXIS_TITLE_PIXELS,
       })
 
-      for (const value of axisTicks(domain, TICK_TARGET)) {
+      for (const value of metricTicks(metric, domain, TICK_TARGET)) {
         items.push({
           key: `tick-${axis}-${value}`,
           text: formatMetric(value, metric, sources[axis], info),

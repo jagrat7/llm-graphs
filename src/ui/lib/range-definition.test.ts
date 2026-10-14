@@ -157,6 +157,8 @@ describe("range definition", () => {
     expect(svg).toContain("sonnet (between tools)")
     expect(svg).toMatch(/astra · \$20/)
     expect(svg).toContain("Score (%)")
+    // The rows are models, so the axis title says so rather than reading as a price scale.
+    expect(svg).toContain("Models, sorted by token price ($/M)")
   })
 
   it("dims every other row while one model is highlighted", () => {
@@ -276,5 +278,31 @@ describe("range definition", () => {
     expect(anchorOf(true)).toEqual({ x: chartScene.chart.x + chartScene.chart.width, y: lowest.y })
     // The scatter keeps its fixed-height frame, so its card stays in the top corner.
     expect(anchorOf(false)?.y).toBe(chartScene.chart.y)
+  })
+
+  it("ticks a duration on whole minutes when it is the metric that varies", () => {
+    const timed = models.map((model, index) => ({
+      ...model,
+      durationSeconds: [520, 1960, 310, 640, 1180, 900][index],
+      sources: { ...model.sources, durationSeconds: "deepswe" as const },
+    }))
+    const data = buildPlotData(timed, { x: "duration", y: "price" })
+    const svg = renderChartSvg(
+      createChartRuntime<PlotPoint>().render(
+        rangeDefinition(data, {
+          flat: "y",
+          highlight: null,
+          info,
+          logoClass: new Map(),
+          sources: { x: "deepswe", y: "artificialAnalysis" },
+        }),
+        SIZE,
+      ),
+      { ariaLabel: "Ranges" },
+    )
+
+    expect(svg).toContain(">Task duration<")
+    expect(svg).toMatch(/>\d+m</)
+    expect(svg).not.toMatch(/>\d+m \d+s</)
   })
 })

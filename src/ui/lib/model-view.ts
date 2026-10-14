@@ -55,11 +55,7 @@ export function logoDataUrl(svg: string | undefined) {
 
 export function effortLabel(mode: ReasoningMode, level: string) {
   if (level === "unknown") {
-    return mode === "on"
-      ? "reasoning, effort not reported"
-      : mode === "off"
-        ? "non-reasoning"
-        : "reasoning not reported"
+    return mode === "on" ? "effort unknown" : mode === "off" ? "non-reasoning" : "reasoning unknown"
   }
 
   return mode === "off" ? `${level} non-reasoning` : level

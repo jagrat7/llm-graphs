@@ -61,7 +61,10 @@ describe("axis captions", () => {
     expect(metricAxisLabel("cost", "deepswe", info)).toBe("Task cost ($/task)")
     expect(metricAxisLabel("speed", "artificialAnalysis", info)).toBe("Output speed (tok/s)")
     expect(metricAxisLabel("score", "automationBench", info)).toBe("Workflow completion (%)")
-    expect(metricAxisLabel("duration", "deepswe", info)).toBe("Task duration (s)")
+  })
+
+  it("leaves the unit off a duration, whose ticks name their own", () => {
+    expect(metricAxisLabel("duration", "deepswe", info)).toBe("Task duration")
   })
 
   it("drops a unit the name already says and shares an existing qualifier", () => {

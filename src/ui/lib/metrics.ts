@@ -148,10 +148,14 @@ const AXIS_UNITS: Record<string, string> = {
  * The short axis caption: the metric's name with a compact unit in parentheses —
  * "Token price ($/M)" rather than "Token price · $/M tokens". A unit the name already
  * says ("Vote count", votes) is dropped, and a name that already ends in a qualifier
- * shares its parentheses: "Task horizon (80%, h)".
+ * shares its parentheses: "Task horizon (80%, h)". Durations get no unit at all.
  */
 export function metricAxisLabel(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
   const { label, unit } = metricPresentation(metric, source, info)
+
+  // Duration ticks carry their own units ("8m 20s"), so "(s)" would only contradict them.
+  if (metric === "duration") return label
+
   const compact = AXIS_UNITS[unit] ?? unit
   // Whole words only, singular or plural, so "h" or "s" never matches inside a name.
   const named =

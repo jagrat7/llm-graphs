@@ -13,7 +13,6 @@ import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-st
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
 import { buildPlotData, describePlot, type PlotData } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
-import { METRIC_CONFIG } from "#/ui/lib/metrics"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
 import { stackedAxis } from "#/ui/lib/stacking"
@@ -61,22 +60,18 @@ function describeRanges(data: PlotData) {
 }
 
 /**
- * Lets the reader go back to the scatter when stacked efforts default to ranges.
+ * Lets the reader go back to the scatter when stacked efforts default to ranges. The
+ * range view's axis title already says how rows are sorted, so the switch stays bare.
  */
 function StackedViewSwitch({
-  metric,
   view,
   onChange,
 }: {
-  metric: Metric
   view: ChartView
   onChange: (view: ChartView) => void
 }) {
   return (
-    <div className="text-muted-foreground flex shrink-0 items-center justify-end gap-2 pb-2 text-xs">
-      <span className="hidden sm:inline">
-        Grouped by model · {METRIC_CONFIG[metric].label.toLowerCase()} in row captions
-      </span>
+    <div className="flex shrink-0 justify-end pb-2">
       <ToggleGroup
         aria-label="Chart view"
         size="sm"
@@ -161,7 +156,6 @@ export function ComparisonChart({
       <LogoMasks logoClass={logoClass} />
       {flat != null && (
         <StackedViewSwitch
-          metric={data.metrics[flat]!}
           view={view}
           onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
         />

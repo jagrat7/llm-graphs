@@ -8,13 +8,15 @@ import { modelLabelsMark, modelRunsMark, pointGuidesMark } from "#/ui/lib/chart-
 import { CHART_GRID_MINOR_OPACITY, CHART_GRID_OPACITY } from "#/ui/lib/chart-styles"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
-import { padDomain } from "#/ui/lib/comparison-plot-data"
+import { padDomain, timeTicks } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
 
 const DOMAIN_PAD = 0.08
 /** Minimum pixels between ticks — larger spacing means fewer, calmer axis markers. */
 const TICK_SPACING_X = 220
 const TICK_SPACING_Y = 120
+/** Interval counts for a duration axis, which picks its own clock-friendly steps. */
+const TIME_INTERVALS = { x: 5, y: 4 }
 /** Ring drawn around the active marker; clears a logo's box with a little air. */
 const FOCUS_RING_RADIUS = 13
 
@@ -42,6 +44,9 @@ export function scatterDefinition(
   const yDomain = padDomain(data.domains.y, DOMAIN_PAD)
   const formatX = (value: number) => formatMetric(value, xMetric, sources.x, info)
   const formatY = (value: number) => formatMetric(value, yMetric, sources.y, info)
+  // A duration axis keeps its padded domain: niced 1-2-5 bounds would fall between its ticks.
+  const xTicks = xMetric === "duration" ? timeTicks(xDomain, TIME_INTERVALS.x) : undefined
+  const yTicks = yMetric === "duration" ? timeTicks(yDomain, TIME_INTERVALS.y) : undefined
 
   return defineChart({
     marks: [
@@ -52,15 +57,25 @@ export function scatterDefinition(
     scales: {
       x: {
         scale: scaleLinear().domain([xDomain.min, xDomain.max]),
-        nice: true,
+        nice: xTicks == null,
         grid: { stroke: "var(--border)", strokeOpacity: CHART_GRID_MINOR_OPACITY },
-        axis: axisPresentation(metricAxisLabel(xMetric, sources.x, info), formatX, TICK_SPACING_X),
+        axis: axisPresentation(
+          metricAxisLabel(xMetric, sources.x, info),
+          formatX,
+          TICK_SPACING_X,
+          xTicks,
+        ),
       },
       y: {
         scale: scaleLinear().domain([yDomain.min, yDomain.max]),
-        nice: true,
+        nice: yTicks == null,
         grid: { stroke: "var(--border)", strokeOpacity: CHART_GRID_OPACITY },
-        axis: axisPresentation(metricAxisLabel(yMetric, sources.y, info), formatY, TICK_SPACING_Y),
+        axis: axisPresentation(
+          metricAxisLabel(yMetric, sources.y, info),
+          formatY,
+          TICK_SPACING_Y,
+          yTicks,
+        ),
       },
     },
     theme: {

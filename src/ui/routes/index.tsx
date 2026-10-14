@@ -239,7 +239,7 @@ function ComparePage() {
             unavailable.length > 0
               ? `${unavailable.map(({ metric }) => METRIC_CONFIG[metric!].label).join(" and ")} unavailable for this score benchmark`
               : data.models.length === 0
-                ? "No model configurations have all selected metrics"
+                ? "No models have all selected metrics"
                 : selected.length === 0
                   ? "Select models to compare"
                   : "No selected models are available"
@@ -247,8 +247,8 @@ function ComparePage() {
         >
           <p className="text-muted-foreground mx-auto mb-3 max-w-sm text-sm">
             {unavailable.length > 0
-              ? "This benchmark does not publish these measurements. Compare token price instead, or choose another score source."
-              : "Only matching measured configurations can be compared. Try different metrics or restore the default comparison."}
+              ? "This benchmark doesn't publish them. Compare token price or pick another score source."
+              : "Try other metrics or restore the default comparison."}
           </p>
           <Button
             variant="outline"
@@ -292,8 +292,8 @@ function ComparePage() {
         <Alert className="mb-3">
           <AlertTitle>
             {quality.flatAxes.length > 0
-              ? `No variation on ${quality.flatAxes.map((axis) => `${axis.toUpperCase()} (${METRIC_CONFIG[search[axis]!].label})`).join(" and ")}. Add models with different measured values or change metrics.`
-              : "Select at least two models for a meaningful comparison."}
+              ? `Every model has the same ${quality.flatAxes.map((axis) => METRIC_CONFIG[search[axis]!].label.toLowerCase()).join(" and ")}. Add models or change metrics.`
+              : "Select at least two models to compare."}
           </AlertTitle>
         </Alert>
       ) : null}

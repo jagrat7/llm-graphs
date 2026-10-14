@@ -11,7 +11,7 @@ import { CHART_GRID_MINOR_OPACITY, CHART_TICK_SIZE } from "#/ui/lib/chart-styles
 import { LABEL_WIDTH_RATIO } from "#/ui/lib/plot-labels"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
-import { padDomain } from "#/ui/lib/comparison-plot-data"
+import { padDomain, timeTicks } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
 import { rangeRows } from "#/ui/lib/stacking"
 
@@ -33,6 +33,11 @@ const CAPTION_WIDTH_SHARE = 0.32
 /** The height the range view needs so no row is squeezed below `ROW_MIN_HEIGHT`. */
 export function rangeMinHeight(rowCount: number) {
   return rowCount * ROW_MIN_HEIGHT + RANGE_CHROME_HEIGHT
+}
+
+/** "Input token price" → "input token price", leaving acronyms like "ARC-AGI-2" alone. */
+function lowerFirst(text: string) {
+  return /^[A-Z][a-z]/.test(text) ? text[0].toLowerCase() + text.slice(1) : text
 }
 
 function shorten(text: string, maxChars: number) {
@@ -101,8 +106,9 @@ export function rangeDefinition(
       const maxChars = Math.floor(
         (width * CAPTION_WIDTH_SHARE) / (CHART_TICK_SIZE * LABEL_WIDTH_RATIO),
       )
+      // The rows are models, not a scale of the flat metric; its values live in the captions.
       const rowAxis = axisPresentation(
-        metricAxisLabel(flatMetric, sources[flat], info),
+        `Models, sorted by ${lowerFirst(metricAxisLabel(flatMetric, sources[flat], info))}`,
         (key: string) => {
           const parts = captionParts.get(key)
 
@@ -134,6 +140,9 @@ export function rangeDefinition(
               metricAxisLabel(spreadMetric, sources[spread], info),
               formatSpread,
               TICK_SPACING_X,
+              spreadMetric === "duration"
+                ? timeTicks(domain, Math.max(2, Math.floor(width / TICK_SPACING_X)))
+                : undefined,
             ),
           },
           y: {

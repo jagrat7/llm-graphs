@@ -25,6 +25,17 @@ export function PointDetails({
   const displayedDetails = new Set<string>(
     point.model.configuration ? [point.model.configuration] : [],
   )
+  // One "Updated" line for the card when every measurement shares its date.
+  const updatedDates = new Set(
+    axes.flatMap((axis) => {
+      const metric = metrics[axis]
+      const updatedAt =
+        metric == null ? null : point.model.measurements?.[METRIC_CONFIG[metric].dataKey]?.updatedAt
+
+      return updatedAt ? [updatedAt.slice(0, 10)] : []
+    }),
+  )
+  const sharedUpdate = updatedDates.size === 1 ? [...updatedDates][0] : null
 
   return (
     <div className={className}>
@@ -102,7 +113,7 @@ export function PointDetails({
               {showDetail ? (
                 <dd className="text-muted-foreground text-xs wrap-anywhere">{detail}</dd>
               ) : null}
-              {measurement?.updatedAt ? (
+              {measurement?.updatedAt && sharedUpdate == null ? (
                 <dd className="text-muted-foreground text-xs">
                   Updated {measurement.updatedAt.slice(0, 10)}
                 </dd>
@@ -111,6 +122,9 @@ export function PointDetails({
           )
         })}
       </dl>
+      {sharedUpdate ? (
+        <p className="text-muted-foreground mt-2 text-xs">Updated {sharedUpdate}</p>
+      ) : null}
     </div>
   )
 }

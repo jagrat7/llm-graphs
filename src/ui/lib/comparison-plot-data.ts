@@ -141,6 +141,41 @@ export function axisTicks(domain: PlotDomain, count: number) {
   return ticks
 }
 
+/** Clock-friendly steps for a duration axis, in seconds: seconds, minutes, then hours. */
+const TIME_STEPS = [
+  1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600, 7200, 10_800, 21_600, 43_200, 86_400,
+]
+const DAY = 86_400
+
+/**
+ * Tick values for a duration axis. A 1-2-5 step in seconds lands on labels like
+ * "8m 20s"; these steps land on whole minutes and hours, and never go below zero.
+ */
+export function timeTicks(domain: PlotDomain, count: number) {
+  const span = domain.max - domain.min
+
+  if (!(span > 0) || count < 1) return [Math.max(0, domain.min)]
+
+  const step =
+    TIME_STEPS.find((candidate) => span / candidate <= count) ?? Math.ceil(span / count / DAY) * DAY
+  const ticks: Array<number> = []
+
+  for (
+    let value = Math.max(0, Math.ceil(domain.min / step) * step);
+    value <= domain.max + step * 1e-6;
+    value += step
+  ) {
+    ticks.push(value)
+  }
+
+  return ticks
+}
+
+/** Round tick values for a metric's axis: clock steps for durations, 1-2-5 steps otherwise. */
+export function metricTicks(metric: Metric | null, domain: PlotDomain, count: number) {
+  return metric === "duration" ? timeTicks(domain, count) : axisTicks(domain, count)
+}
+
 /**
  * Renderer-neutral plot model: one O(n) pass over the models produces the points,
  * per-axis domains, per-model series and the id lookup that both the TanStack Charts and the
