@@ -5,7 +5,13 @@ import type { MetricBinding } from "#/ui/lib/model-view"
 import { aggregateModels } from "#/server/services/model-aggregator/derive"
 import { fixtureInputs, fixtures } from "#/server/services/model-aggregator/fixture-inputs"
 import { ProvidersService } from "#/server/services/providers"
-import { defaultPicks, offeredVariants, effortLabel } from "#/ui/lib/model-view"
+import {
+  DEFAULT_PICK_COUNT,
+  DEFAULT_PICKS_PER_VENDOR,
+  defaultPicks,
+  offeredVariants,
+  effortLabel,
+} from "#/ui/lib/model-view"
 import { buildPlotData } from "./comparison-plot-data"
 import { metricRecord } from "./metrics"
 
@@ -213,34 +219,108 @@ describe("offeredVariants", () => {
 })
 
 describe("defaultPicks", () => {
-  it("extends a flat default axis with a real measurement when one is available", () => {
+  it("widens a flat default axis by trading the weakest pick for a real measurement", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
     const original = defaultPicks(snapshot, offered, "deepswe", info)
-    const extra = offered.find((model) => !original.includes(model.model))!
+    const kept = original.slice(0, -1)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const extra = offered.find(
+      (model) =>
+        !original.includes(model.model) &&
+        kept.filter((id) => vendorOf.get(id) === model.vendor).length < DEFAULT_PICKS_PER_VENDOR,
+    )!
     const flat = offered.map((model) => ({
       ...model,
       costPerTask: model.model === extra.model ? 2 : 1,
     }))
     const picks = defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask", "score"])
-    expect(picks).toContain(extra.model)
-    expect(picks).toEqual([...original, extra.model])
+
+    expect(picks).toEqual([...kept, extra.model])
     expect(
       new Set(flat.filter((model) => picks.includes(model.model)).map((model) => model.costPerTask))
         .size,
     ).toBe(2)
   })
 
-  it("opens Cost × Score on each of the six strongest vendors' strongest model", () => {
+  it("leaves a flat default axis alone when only a full vendor could widen it", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const original = defaultPicks(snapshot, offered, "deepswe", info)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const full = [...new Set(original.map((id) => vendorOf.get(id)))].find(
+      (vendor) =>
+        vendor !== vendorOf.get(original.at(-1)!) &&
+        original.filter((id) => vendorOf.get(id) === vendor).length === DEFAULT_PICKS_PER_VENDOR,
+    )
+    const extra = offered.find((model) => !original.includes(model.model) && model.vendor === full)!
+    const flat = offered.map((model) => ({
+      ...model,
+      costPerTask: model.model === extra.model ? 2 : 1,
+    }))
 
-    expect(defaultPicks(snapshot, offered, "deepswe", info)).toEqual([
-      "gpt-6-astra",
-      "gemini-3-8-flash",
-      "claude-opus-5",
-      "glm-5-3",
-      "kimi-k3",
-      "grok-4-6",
-    ])
+    expect(defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask"])).toEqual(original)
+  })
+
+  it("never flattens one axis while widening another", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const original = defaultPicks(snapshot, offered, "deepswe", info)
+    const [varied, traded] = [original.at(-1)!, original.at(-2)!]
+    const kept = original.filter((id) => id !== traded)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const extra = offered.find(
+      (model) =>
+        !original.includes(model.model) &&
+        kept.filter((id) => vendorOf.get(id) === model.vendor).length < DEFAULT_PICKS_PER_VENDOR,
+    )!
+    // Only the weakest pick varies on cost; only an unpicked model varies on score.
+    const flat = offered.map((model) => ({
+      ...model,
+      costPerTask: model.model === varied ? 2 : 1,
+      score: model.model === extra.model ? 2 : 1,
+    }))
+    const picks = defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask", "score"])
+
+    expect(picks).toEqual([...kept, extra.model])
+    for (const metric of ["costPerTask", "score"] as const) {
+      expect(
+        new Set(flat.filter((model) => picks.includes(model.model)).map((model) => model[metric]))
+          .size,
+      ).toBe(2)
+    }
+  })
+
+  it("opens Cost × Score on the strongest models, with a per-vendor cap", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const picks = defaultPicks(snapshot, offered, "deepswe", info)
+    const best = new Map<string, number>()
+    for (const variant of snapshot.variants.deepswe) {
+      const score = variant.metrics.score
+      if (score != null) best.set(variant.entryId, Math.max(score, best.get(variant.entryId) ?? 0))
+    }
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const taken = (vendor: string | null | undefined) =>
+      picks.filter((id) => vendorOf.get(id) === vendor).length
+
+    expect(picks).toHaveLength(DEFAULT_PICK_COUNT)
+    expect(picks.map((id) => best.get(id))).toEqual(
+      picks.map((id) => best.get(id)).toSorted((left, right) => right! - left!),
+    )
+    for (const id of picks)
+      expect(taken(vendorOf.get(id))).toBeLessThanOrEqual(DEFAULT_PICKS_PER_VENDOR)
+    // A model left out despite outscoring a pick was only skipped because its vendor is full.
+    const weakest = best.get(picks.at(-1)!)!
+    for (const [id, vendor] of vendorOf) {
+      if (picks.includes(id) || (best.get(id) ?? -Infinity) <= weakest) continue
+      expect(taken(vendor)).toBe(DEFAULT_PICKS_PER_VENDOR)
+    }
+  })
+
+  it("takes no more than the cap from one vendor", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE).map((model) => ({
+      ...model,
+      vendor: "one-vendor",
+    }))
+
+    expect(defaultPicks(snapshot, offered, "deepswe", info)).toHaveLength(DEFAULT_PICKS_PER_VENDOR)
   })
 
   it("ranks by average percentile when Score is off the chart", () => {
@@ -251,10 +331,13 @@ describe("defaultPicks", () => {
     const picks = defaultPicks(snapshot, offered, null, info)
 
     expect(picks.length).toBeGreaterThan(0)
-    expect(picks.length).toBeLessThanOrEqual(6)
-    expect(
-      new Set(picks.map((id) => offered.find((model) => model.model === id)?.vendor)).size,
-    ).toBe(picks.length)
+    expect(picks.length).toBeLessThanOrEqual(DEFAULT_PICK_COUNT)
+    const vendors = picks.map((id) => offered.find((model) => model.model === id)?.vendor)
+    for (const vendor of new Set(vendors)) {
+      expect(vendors.filter((each) => each === vendor).length).toBeLessThanOrEqual(
+        DEFAULT_PICKS_PER_VENDOR,
+      )
+    }
   })
 
   it("picks nothing when no offered model has a score", () => {
