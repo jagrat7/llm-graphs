@@ -5,6 +5,7 @@ import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "re
 
 import type { Model } from "#/ui/lib/model-view"
 
+import { groupByVendor, ModelChecklist } from "#/ui/components/model-checklist"
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button, buttonVariants } from "#/ui/components/ui/button"
 import {
@@ -21,7 +22,7 @@ import {
   useComboboxAnchor,
 } from "#/ui/components/ui/combobox"
 import { InputGroupAddon } from "#/ui/components/ui/input-group"
-import { Popover, PopoverContent, PopoverTrigger } from "#/ui/components/ui/popover"
+import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "#/ui/components/ui/popover"
 import { Skeleton } from "#/ui/components/ui/skeleton"
 import { cn } from "#/ui/lib/utils"
 
@@ -159,23 +160,42 @@ type ModelPickerProps = {
   models: Array<Model>
   selected: Array<string>
   onChange: (models: Array<string>) => void
+  /** Restores the default comparison; the list offers a reset only when this is given. */
+  onReset?: () => void
   /** Reports the model whose pill is hovered or focused, so the chart can emphasise it. */
   onHighlightChange?: (model: string | null) => void
   className?: string
   disabled?: boolean
+  /** Opens the search on `/`. Only one picker on a page should claim the key. */
+  shortcut?: boolean
 }
+
+/** Matches the axis selects opposite: roomy on touch, compact once a pointer is likely. */
+const CONTROL_HEIGHT_CLASS = "h-11 sm:h-9"
 
 export function ModelPicker({
   models,
   selected,
   onChange,
+  onReset,
   onHighlightChange,
   className,
   disabled = false,
+  shortcut = false,
 }: ModelPickerProps) {
   const inputId = useId()
   const anchor = useComboboxAnchor()
+  const listTriggerRef = useRef<HTMLButtonElement>(null)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
+  const checklistRef = useRef<HTMLDivElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [listOpen, setListOpen] = useState(false)
+  // Search is the quick route for a model you can name; the checklist is the main
+  // one, so the search bar folds down to a button until it is asked for.
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false)
+  // Where focus lands when the search folds or unfolds; null leaves it alone.
+  const focusAfterSearchToggle = useRef<"input" | "button" | null>(null)
   const ghostRef = useRef<HTMLDivElement>(null)
   const [visibleCount, setVisibleCount] = useState(Number.POSITIVE_INFINITY)
   const options = useMemo(
@@ -185,6 +205,7 @@ export function ModelPicker({
       ),
     [models],
   )
+  const groups = useMemo(() => groupByVendor(options), [options])
   const selectedSet = new Set(selected)
   const value = options.filter((option) => selectedSet.has(option.model))
   const hidden = value.slice(visibleCount)
@@ -213,7 +234,8 @@ export function ModelPicker({
   // An unmounted pill never reports leaving or blurring — whether it was deselected,
   // squeezed into the overflow list, or shut away with it — so forget it once it goes;
   // otherwise its highlight would linger, or come back with it, with nobody holding it.
-  const mountedKey = (moreOpen ? value : value.slice(0, visibleCount))
+  // The open checklist has a row for every selected model, so all of them count.
+  const mountedKey = (moreOpen || listOpen ? value : value.slice(0, visibleCount))
     .map((model) => model.model)
     .join("\n")
 
@@ -251,13 +273,78 @@ export function ModelPicker({
   }, [hasChips])
 
   // Emptying the list from inside the popover unmounts its own trigger, so hand
-  // focus back to the search bar rather than dropping it on the document.
+  // focus to the model list's button rather than dropping it on the document.
   useEffect(() => {
     if (hidden.length > 0 || !moreOpen) return
 
     setMoreOpen(false)
-    document.getElementById(inputId)?.focus()
-  }, [hidden.length, moreOpen, inputId])
+    listTriggerRef.current?.focus()
+  }, [hidden.length, moreOpen])
+
+  // Closing the checklist unmounts its rows before they can report leaving.
+  function handleListOpenChange(open: boolean) {
+    setListOpen(open)
+
+    if (open) return
+
+    setHoveredModel(null)
+    setFocusedModel(null)
+  }
+
+  function toggleModel(model: string) {
+    onChange(selectedSet.has(model) ? selected.filter((id) => id !== model) : [...selected, model])
+  }
+
+  function openSearch() {
+    focusAfterSearchToggle.current = "input"
+    setSearchOpen(true)
+  }
+
+  function closeSearch(returnFocus: boolean) {
+    focusAfterSearchToggle.current = returnFocus ? "button" : null
+    setSearchOpen(false)
+  }
+
+  // The field and its button swap places, so focus can only move once the new one is mounted.
+  useEffect(() => {
+    const target = focusAfterSearchToggle.current
+    focusAfterSearchToggle.current = null
+
+    if (target === "input") document.getElementById(inputId)?.focus()
+    if (target === "button") searchButtonRef.current?.focus()
+  }, [searchOpen, inputId])
+
+  // Folds the search away once nothing is using it. Runs a frame late because
+  // picking a suggestion briefly moves focus before handing it back to the field.
+  function closeSearchIfIdle() {
+    requestAnimationFrame(() => {
+      if (document.activeElement?.id === inputId) return
+
+      closeSearch(false)
+    })
+  }
+
+  useEffect(() => {
+    if (!shortcut || disabled) return undefined
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== "/" || event.defaultPrevented) return
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+      // A slash typed into a field is text, not a shortcut.
+      if (
+        event.target instanceof HTMLElement &&
+        event.target.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      openSearch()
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [shortcut, disabled])
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
@@ -282,24 +369,119 @@ export function ModelPicker({
           setListModel(reason === "none" ? null : (model?.model ?? null))
         }
         onOpenChange={(open: boolean) => {
-          if (!open) setListModel(null)
+          setSuggestionsOpen(open)
+          if (open) return
+
+          setListModel(null)
+          closeSearchIfIdle()
         }}
         disabled={disabled}
       >
-        {/* The popup anchors to whatever it is told to; left alone it takes the
-            `input`, which the leading icon insets from the bar's own edge. */}
-        <div ref={anchor} className="w-full">
-          <ComboboxInput
-            id={inputId}
-            placeholder="Search models"
-            showTrigger={false}
-            disabled={disabled}
-            className="min-h-11 w-full sm:min-h-9"
-          >
-            <InputGroupAddon align="inline-start">
-              <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
-            </InputGroupAddon>
-          </ComboboxInput>
+        <div className="flex w-full items-center gap-2">
+          {searchOpen ? (
+            /* The popup anchors to whatever it is told to; left alone it takes the
+               `input`, which the leading icon insets from the bar's own edge. */
+            <div ref={anchor} className="min-w-0 flex-1">
+              <ComboboxInput
+                id={inputId}
+                placeholder="Search models"
+                showTrigger={false}
+                disabled={disabled}
+                className={cn("w-full", CONTROL_HEIGHT_CLASS)}
+                onBlur={() => {
+                  if (!suggestionsOpen) closeSearchIfIdle()
+                }}
+                onKeyDown={(event) => {
+                  // The first Escape closes the suggestions; the next folds the search.
+                  // Base UI would spend that second press clearing every selected
+                  // model, which is never what leaving a search box means.
+                  if (event.key !== "Escape" || suggestionsOpen) return
+
+                  event.preventBaseUIHandler()
+                  closeSearch(true)
+                }}
+              >
+                <InputGroupAddon align="inline-start">
+                  <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
+                </InputGroupAddon>
+              </ComboboxInput>
+            </div>
+          ) : (
+            <Button
+              ref={searchButtonRef}
+              variant="ghost"
+              size="icon"
+              aria-label="Search models"
+              aria-keyshortcuts={shortcut ? "/" : undefined}
+              title={shortcut ? "Search models (/)" : "Search models"}
+              disabled={disabled}
+              className={cn("aspect-square w-auto", CONTROL_HEIGHT_CLASS)}
+              onClick={openSearch}
+            >
+              <RiSearchLine aria-hidden="true" />
+            </Button>
+          )}
+          <Popover open={listOpen} onOpenChange={handleListOpenChange}>
+            {/* The checklist is the picker's main surface, so its button takes the
+                row; it gives the room back while the search is open. */}
+            <PopoverTrigger
+              render={
+                <Button
+                  ref={listTriggerRef}
+                  variant="outline"
+                  disabled={disabled}
+                  className={cn(
+                    "justify-between gap-2 px-3 text-sm sm:text-xs",
+                    CONTROL_HEIGHT_CLASS,
+                    searchOpen ? "shrink-0" : "flex-1",
+                  )}
+                />
+              }
+            >
+              <span>
+                Models <span className="text-muted-foreground tabular-nums">{value.length}</span>
+              </span>
+              <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground" />
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              // Opening the list is for checking models, so start on the first box
+              // rather than on Reset or Clear, which sit first in tab order.
+              initialFocus={() =>
+                checklistRef.current?.querySelector<HTMLElement>("[role=checkbox]")
+              }
+              className="max-h-[min(32rem,var(--available-height))] w-[min(42rem,var(--available-width))] gap-0 p-0"
+            >
+              <div className="border-border flex items-center gap-2 border-b px-3 py-2">
+                <PopoverTitle>Models</PopoverTitle>
+                <span className="text-muted-foreground tabular-nums">{value.length} selected</span>
+                <span className="flex-1" />
+                {onReset ? (
+                  <Button variant="ghost" size="sm" className="h-11 sm:h-6" onClick={onReset}>
+                    Reset
+                  </Button>
+                ) : null}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-11 sm:h-6"
+                  // Ids a benchmark lacks still count: an old shared link can carry them.
+                  disabled={selected.length === 0}
+                  onClick={() => onChange([])}
+                >
+                  Clear
+                </Button>
+              </div>
+              <div ref={checklistRef} className="min-h-0 overflow-y-auto overscroll-contain p-2">
+                <ModelChecklist
+                  groups={groups}
+                  selected={selectedSet}
+                  onToggle={toggleModel}
+                  rowProps={highlightHandlers}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         {isLoading ? (
           <div aria-hidden="true" className="flex flex-wrap gap-1">
