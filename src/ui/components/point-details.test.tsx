@@ -13,7 +13,7 @@ import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
 afterEach(cleanup)
 
-function renderCard(updated: { score: string; costPerTask: string }) {
+function renderCard(updated: { score?: string; costPerTask?: string }) {
   const model: Model = {
     ...metricRecord<number | null>(() => null),
     model: "alpha",
@@ -34,8 +34,11 @@ function renderCard(updated: { score: string; costPerTask: string }) {
       costPerTask: "deepswe",
     },
     measurements: {
-      score: { label: "Pass rate", updatedAt: `${updated.score}T00:00:00Z` },
-      costPerTask: { label: "Cost", updatedAt: `${updated.costPerTask}T00:00:00Z` },
+      score: { label: "Pass rate", updatedAt: updated.score && `${updated.score}T00:00:00Z` },
+      costPerTask: {
+        label: "Cost",
+        updatedAt: updated.costPerTask && `${updated.costPerTask}T00:00:00Z`,
+      },
     },
   }
   const data = buildPlotData([model], { x: "cost", y: "score" })
@@ -64,5 +67,16 @@ describe("point details", () => {
       "Updated 2026-09-12",
       "Updated 2026-10-01",
     ])
+  })
+
+  it("keeps a date under its own row when another row has none", () => {
+    renderCard({ score: "2026-10-01" })
+
+    const [updated] = screen.getAllByText(/^Updated /)
+
+    expect(screen.getAllByText(/^Updated /)).toHaveLength(1)
+    // Inside the score row, not a card-wide footer that would also seem to date the cost.
+    expect(updated.closest("dl")).not.toBeNull()
+    expect(updated.closest("div")?.textContent).toContain("Score")
   })
 })
