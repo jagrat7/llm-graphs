@@ -206,8 +206,10 @@ function ComparePage() {
       models={data?.models ?? []}
       selected={selected}
       onChange={(models) => updateSearch({ models })}
+      onReset={search.models ? () => updateSearch({ models: undefined }) : undefined}
       onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
+      shortcut
       className="sm:w-80"
     />
   )

@@ -49,6 +49,45 @@ export function vendorColor(hue: number | null) {
   return hue == null ? "var(--vendor-unknown)" : `oklch(var(--vendor-l) var(--vendor-c) ${hue})`
 }
 
+/** Vendor slugs whose brand casing a plain title-case can't recover. */
+const VENDOR_LABELS: Record<string, string> = {
+  ai2: "Ai2",
+  ai21: "AI21 Labs",
+  "allen-institute-for-ai": "Allen Institute for AI",
+  "arcee-ai": "Arcee AI",
+  bytedance: "ByteDance",
+  "bytedance-seed": "ByteDance Seed",
+  deepseek: "DeepSeek",
+  ibm: "IBM",
+  inclusionai: "inclusionAI",
+  "lg-ai-research": "LG AI Research",
+  "liquid-ai": "Liquid AI",
+  minimax: "MiniMax",
+  moonshotai: "Moonshot AI",
+  nousresearch: "Nous Research",
+  nvidia: "NVIDIA",
+  openai: "OpenAI",
+  rekaai: "Reka AI",
+  servicenow: "ServiceNow",
+  "sk-telecom": "SK Telecom",
+  stepfun: "StepFun",
+  thinkingmachines: "Thinking Machines",
+  "tii-uae": "TII",
+  xai: "xAI",
+  zhipuai: "Zhipu AI",
+}
+
+/** A vendor slug as people write the name: `"mistral"` → `"Mistral"`, `"xai"` → `"xAI"`. */
+export function vendorLabel(slug: string) {
+  return (
+    VENDOR_LABELS[slug] ??
+    slug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
+  )
+}
+
 export function logoDataUrl(svg: string | undefined) {
   return svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null
 }
