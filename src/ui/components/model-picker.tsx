@@ -409,7 +409,7 @@ export function ModelPicker({
           ) : (
             <Button
               ref={searchButtonRef}
-              variant="outline"
+              variant="ghost"
               size="icon"
               aria-label="Search models"
               aria-keyshortcuts={shortcut ? "/" : undefined}
