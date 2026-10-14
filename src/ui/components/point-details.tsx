@@ -25,17 +25,17 @@ export function PointDetails({
   const displayedDetails = new Set<string>(
     point.model.configuration ? [point.model.configuration] : [],
   )
-  // One "Updated" line for the card when every measurement shares its date.
-  const updatedDates = new Set(
-    axes.flatMap((axis) => {
-      const metric = metrics[axis]
-      const updatedAt =
-        metric == null ? null : point.model.measurements?.[METRIC_CONFIG[metric].dataKey]?.updatedAt
+  // One "Updated" line for the card only when every row carries the same date. A row
+  // with no date counts too: otherwise another row's date would read as covering it.
+  const rowDates = axes.flatMap((axis) => {
+    const metric = metrics[axis]
 
-      return updatedAt ? [updatedAt.slice(0, 10)] : []
-    }),
-  )
-  const sharedUpdate = updatedDates.size === 1 ? [...updatedDates][0] : null
+    return metric == null
+      ? []
+      : [point.model.measurements?.[METRIC_CONFIG[metric].dataKey]?.updatedAt?.slice(0, 10)]
+  })
+  const sharedUpdate =
+    rowDates[0] != null && rowDates.every((date) => date === rowDates[0]) ? rowDates[0] : null
 
   return (
     <div className={className}>
