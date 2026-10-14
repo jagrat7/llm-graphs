@@ -50,7 +50,7 @@ export function MetricSelect({
   const metricLabel = value == null ? null : METRIC_CONFIG[value].shortLabel
 
   return (
-    <ButtonGroup className={cn("w-full", className)}>
+    <ButtonGroup className={cn("w-full min-w-0", className)}>
       <Select
         value={value ?? ""}
         onValueChange={(metric) => {
@@ -61,7 +61,7 @@ export function MetricSelect({
         <SelectTrigger
           aria-label={label}
           className={cn(
-            "text-muted-foreground w-full justify-between gap-2 px-3 text-sm shadow-none hover:bg-muted hover:text-foreground min-h-11 sm:min-h-9 w-full",
+            "text-muted-foreground w-full min-w-0 justify-between gap-2 px-3 text-sm shadow-none hover:bg-muted hover:text-foreground min-h-11 sm:min-h-9",
             isEmpty ? EMPTY_CHIP_CLASS : null,
           )}
         >
@@ -72,7 +72,10 @@ export function MetricSelect({
               Add {axis} axis
             </span>
           ) : (
-            <SelectValue className="text-foreground font-semibold">{metricLabel}</SelectValue>
+            // The trigger's flex row defeats `line-clamp`, so the label truncates itself.
+            <SelectValue className="text-foreground min-w-0 font-semibold">
+              <span className="truncate">{metricLabel}</span>
+            </SelectValue>
           )}
         </SelectTrigger>
         <SelectContent

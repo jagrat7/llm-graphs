@@ -38,7 +38,7 @@ export class DeepSWEProvider
   readonly name = "deepswe"
   readonly displayName = "DeepSWE"
   readonly href = "https://deepswe.datacurve.ai/"
-  readonly abbreviation = "D"
+  readonly abbreviation = "DSWE"
   readonly cacheKey = CACHE_KEY
   /** Refetched once its cached copy is an hour old. */
   readonly refreshWindowMs = 60 * 60 * 1000

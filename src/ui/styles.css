@@ -149,6 +149,17 @@ body,
   min-height: 100%;
 }
 
+/* Tailwind v4 leaves a bare `border` on currentColor, which draws table rules and
+   alert outlines in full ink. In the base layer so any `border-*` utility still wins. */
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    border-color: var(--color-border);
+  }
+}
+
 html {
   background: var(--background);
 }

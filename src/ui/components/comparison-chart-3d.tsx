@@ -1173,16 +1173,14 @@ export function ComparisonChart3D({
             onClick={() => setPreset((current) => ({ name: label, nonce: current.nonce + 1 }))}
             className={cn(
               "px-2 font-normal",
-              preset.name === label
-                ? "bg-muted text-foreground font-medium"
-                : "text-muted-foreground",
+              preset.name === label ? "bg-muted text-foreground" : "text-muted-foreground",
             )}
           >
             {label}
           </Button>
         ))}
       </div>
-      <p className="text-muted-foreground pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 text-xs sm:flex">
+      <p className="text-muted-foreground pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 text-xs lg:flex">
         <RiDragMove2Line aria-hidden="true" className="size-3.5" />
         Drag to rotate · scroll to zoom
       </p>

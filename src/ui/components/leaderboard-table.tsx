@@ -242,7 +242,8 @@ export function LeaderboardTable({ models }: { models: Array<Model> }) {
                   index === 0
                     ? cn(
                         STICKY_COLUMN_CLASS,
-                        "transition-colors duration-200 ease-out group-hover:bg-muted/60",
+                        // Opaque, or the cells scrolling underneath show through on hover.
+                        "transition-colors duration-200 ease-out group-hover:bg-[color-mix(in_oklch,var(--muted)_60%,var(--background))]",
                       )
                     : null,
                 )}
