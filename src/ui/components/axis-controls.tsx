@@ -46,19 +46,23 @@ export function AxisControls({
   onAxisChange,
   onSwapAxes,
   disabled = false,
+  unavailableMetrics,
   children,
 }: {
   axes: AxisState
   onAxisChange: (axis: AxisKey, change: Partial<AxisSetting>) => void
   onSwapAxes: (first: AxisKey, second: AxisKey) => void
   disabled?: boolean
+  unavailableMetrics?: Partial<Record<AxisKey, ReadonlyArray<Metric>>>
   /** The strip's right-hand side — the model picker in practice. */
   children?: React.ReactNode
 }) {
   const used = AXIS_KEYS.map((key) => axes[key].metric).filter(
     (metric): metric is Metric => metric != null,
   )
-  const hasSpareMetric = METRICS.some((metric) => !used.includes(metric))
+  const hasSpareMetric = METRICS.some(
+    (metric) => !used.includes(metric) && !unavailableMetrics?.z?.includes(metric),
+  )
 
   return (
     <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 sm:max-w-3xl sm:flex-row sm:items-start sm:gap-4">
@@ -82,7 +86,10 @@ export function AxisControls({
                 rowStartClass={AXIS_ROW_START_CLASSES[index]}
                 metric={metric}
                 source={source}
-                unavailable={used.filter((candidate) => candidate !== metric)}
+                unavailable={[
+                  ...used.filter((candidate) => candidate !== metric),
+                  ...(unavailableMetrics?.[key] ?? []),
+                ]}
                 onMetricChange={(next) => onAxisChange(key, { metric: next })}
                 onSourceChange={(next) => onAxisChange(key, { source: next })}
                 onRemove={

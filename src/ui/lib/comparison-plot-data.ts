@@ -83,7 +83,9 @@ function anchorPoint(points: Array<PlotPoint>) {
 }
 
 function pointLabel(model: Model) {
-  return model.effort === "default" ? model.displayName : `${model.displayName} [${model.effort}]`
+  const label =
+    model.effort === "default" ? model.displayName : `${model.displayName} [${model.effort}]`
+  return model.configuration ? `${label} (${model.configuration})` : label
 }
 
 /** 0.5 for a flat domain keeps single-valued axes centred instead of dividing by zero. */
@@ -167,7 +169,7 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
 
     const values: Record<PlotAxis, number> = { x, y, z }
     const point: PlotPoint = {
-      id: `${model.model}-${model.mode}-${model.level}`,
+      id: `${model.model}-${model.mode}-${model.level}${model.configuration ? `-${model.configuration}` : ""}`,
       index: points.length,
       label: pointLabel(model),
       color: model.chartColor,
@@ -186,12 +188,13 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     pointById.set(point.id, point)
     modelKeys.add(model.model)
 
-    const series = seriesByModel.get(model.model)
+    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
+    const series = seriesByModel.get(seriesKey)
 
     if (series) series.points.push(point)
     else {
-      seriesByModel.set(model.model, {
-        key: model.model,
+      seriesByModel.set(seriesKey, {
+        key: seriesKey,
         label: model.displayName,
         color: model.chartColor,
         labelPlacement: "top",
@@ -252,4 +255,29 @@ export function describePlot(data: PlotData) {
     .join(", ")
 
   return `${data.is3D ? "3D" : "2D"} scatter plot of ${data.modelCount} ${modelNoun} (${data.points.length} effort ${variantNoun}) by ${axisSummary}. Use arrow keys to move between points.`
+}
+
+/** Variation is evidence, not padding: flat axes never pass a meaningful-comparison audit. */
+export function plotQuality(data: PlotData) {
+  const axes = data.axes.map((axis) => {
+    const counts = new Map<number, number>()
+    for (const point of data.points)
+      counts.set(point.values[axis], (counts.get(point.values[axis]) ?? 0) + 1)
+    return {
+      axis,
+      distinctValues: counts.size,
+      largestShare:
+        data.points.length === 0 ? 0 : Math.max(...counts.values()) / data.points.length,
+    }
+  })
+  const flatAxes = axes.filter((axis) => axis.distinctValues < 2).map((axis) => axis.axis)
+  const distinctPoints = new Set(
+    data.points.map((point) => data.axes.map((axis) => point.values[axis]).join("/")),
+  ).size
+  return {
+    axes,
+    flatAxes,
+    distinctPoints,
+    meaningful: data.modelCount > 1 && flatAxes.length === 0,
+  }
 }

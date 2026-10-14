@@ -1,0 +1,855 @@
+{
+  "fetchedAt": "2026-10-01T00:28:02.776Z",
+  "payload": {
+    "rows": [
+      {
+        "rank": 1,
+        "label": "Gemini 4 Argon (High)",
+        "score": 51.29,
+        "cost": 1.7,
+        "costNote": "Standard list pricing; promotional discounts not applied"
+      },
+      {
+        "rank": 2,
+        "label": "Gemini 4 Argon (Medium)",
+        "score": 50.08,
+        "cost": 1.54,
+        "costNote": "Standard list pricing; promotional discounts not applied"
+      },
+      {
+        "rank": 3,
+        "label": "Claude Sonnet 5.5 (default fallbacks, Max)",
+        "score": 44.75,
+        "cost": 1.14,
+        "costNote": null
+      },
+      {
+        "rank": 4,
+        "label": "Claude Opus 5.5 (default fallbacks, Max)",
+        "score": 42.47,
+        "cost": 1.44,
+        "costNote": null
+      },
+      {
+        "rank": 5,
+        "label": "GPT 6 Astra (Max)",
+        "score": 41.4,
+        "cost": 1.73,
+        "costNote": null
+      },
+      {
+        "rank": 6,
+        "label": "GPT 6 Astra (XHigh)",
+        "score": 38.96,
+        "cost": 1.5,
+        "costNote": null
+      },
+      {
+        "rank": 7,
+        "label": "GPT 6 Astra (High)",
+        "score": 37.14,
+        "cost": 1.44,
+        "costNote": null
+      },
+      {
+        "rank": 8,
+        "label": "Claude Sonnet 5.5 (default fallbacks, XHigh)",
+        "score": 36.83,
+        "cost": 0.48,
+        "costNote": null
+      },
+      {
+        "rank": 9,
+        "label": "Claude Opus 5.5 (default fallbacks, XHigh)",
+        "score": 35.77,
+        "cost": 0.89,
+        "costNote": null
+      },
+      {
+        "rank": 10,
+        "label": "GPT 6 Astra (Medium)",
+        "score": 34.09,
+        "cost": 1.27,
+        "costNote": null
+      },
+      {
+        "rank": 11,
+        "label": "GPT 6 Sol (XHigh)",
+        "score": 33.2,
+        "cost": 0.27,
+        "costNote": null
+      },
+      {
+        "rank": 12,
+        "label": "Claude Opus 5.5 (default fallbacks, High)",
+        "score": 33.03,
+        "cost": 0.71,
+        "costNote": null
+      },
+      {
+        "rank": 13,
+        "label": "GPT 6 Sol (Max)",
+        "score": 32,
+        "cost": 0.34,
+        "costNote": null
+      },
+      {
+        "rank": 14,
+        "label": "Claude Fable 5.1 (with Opus 5 Fallback)",
+        "score": 31.4,
+        "cost": null,
+        "costNote": "Published cost excludes Opus fallback spending; task cost unavailable"
+      },
+      {
+        "rank": 15,
+        "label": "GPT 6 Sol (High)",
+        "score": 31.2,
+        "cost": 0.24,
+        "costNote": null
+      },
+      {
+        "rank": 16,
+        "label": "Gemini 3.7 Flash (High)",
+        "score": 30.44,
+        "cost": 0.61,
+        "costNote": "Standard list pricing; promotional discounts not applied"
+      },
+      {
+        "rank": 17,
+        "label": "GPT 6 Astra (Low)",
+        "score": 30.29,
+        "cost": 1.08,
+        "costNote": null
+      },
+      {
+        "rank": 18,
+        "label": "Gemini 3.8 Flash (Medium)",
+        "score": 29.68,
+        "cost": 0.55,
+        "costNote": "Standard list pricing; promotional discounts not applied"
+      },
+      {
+        "rank": 19,
+        "label": "Gemini 3.8 Flash (High)",
+        "score": 29.68,
+        "cost": 0.62,
+        "costNote": "Standard list pricing; promotional discounts not applied"
+      },
+      {
+        "rank": 20,
+        "label": "Claude Opus 5.5 (default fallbacks, Medium)",
+        "score": 29.53,
+        "cost": 0.65,
+        "costNote": null
+      },
+      {
+        "rank": 21,
+        "label": "Claude Sonnet 5.5 (default fallbacks, High)",
+        "score": 29.38,
+        "cost": 0.36,
+        "costNote": null
+      },
+      {
+        "rank": 22,
+        "label": "GPT-5.6 Sol (Max)",
+        "score": 28.77,
+        "cost": 0.67,
+        "costNote": null
+      },
+      {
+        "rank": 23,
+        "label": "Claude Opus 5 (Max)",
+        "score": 26.94,
+        "cost": 3.05,
+        "costNote": null
+      },
+      {
+        "rank": 24,
+        "label": "GPT 6 Sol (Medium)",
+        "score": 26.9,
+        "cost": 0.21,
+        "costNote": null
+      },
+      {
+        "rank": 25,
+        "label": "GPT-5.6 Sol (XHigh)",
+        "score": 26.33,
+        "cost": 0.74,
+        "costNote": null
+      },
+      {
+        "rank": 26,
+        "label": "Claude Opus 5 (XHigh)",
+        "score": 25.27,
+        "cost": 1.15,
+        "costNote": null
+      },
+      {
+        "rank": 27,
+        "label": "GPT 6 Astra (None)",
+        "score": 25.27,
+        "cost": 1.28,
+        "costNote": null
+      },
+      {
+        "rank": 28,
+        "label": "GPT-5.6 Sol (High)",
+        "score": 24.81,
+        "cost": 0.64,
+        "costNote": null
+      },
+      {
+        "rank": 29,
+        "label": "Claude Opus 5.5 (default fallbacks, Low)",
+        "score": 24.2,
+        "cost": 0.51,
+        "costNote": null
+      },
+      {
+        "rank": 30,
+        "label": "Claude Opus 5 (Medium)",
+        "score": 23.9,
+        "cost": 0.89,
+        "costNote": null
+      },
+      {
+        "rank": 31,
+        "label": "GPT-5.6 Terra (Max)",
+        "score": 23.59,
+        "cost": 0.51,
+        "costNote": null
+      },
+      {
+        "rank": 32,
+        "label": "Claude Sonnet 5.5 (default fallbacks, Medium)",
+        "score": 23.29,
+        "cost": 0.31,
+        "costNote": null
+      },
+      {
+        "rank": 33,
+        "label": "Kimi K3",
+        "score": 22.68,
+        "cost": 0.43,
+        "costNote": null
+      },
+      {
+        "rank": 34,
+        "label": "Claude Fable 5.1 (Max)",
+        "score": 22.37,
+        "cost": 2.45,
+        "costNote": null
+      },
+      {
+        "rank": 35,
+        "label": "Claude Fable 5.1 (XHigh)",
+        "score": 21.31,
+        "cost": 2.14,
+        "costNote": null
+      },
+      {
+        "rank": 36,
+        "label": "GPT 6 Sol (Low)",
+        "score": 21.2,
+        "cost": 0.19,
+        "costNote": null
+      },
+      {
+        "rank": 37,
+        "label": "GPT 6 Luna (Max)",
+        "score": 20.7,
+        "cost": 0.04,
+        "costNote": null
+      },
+      {
+        "rank": 38,
+        "label": "Muse Spark 1.3 (Max)",
+        "score": 20.7,
+        "cost": 1.39,
+        "costNote": null
+      },
+      {
+        "rank": 39,
+        "label": "Claude Opus 5 (High)",
+        "score": 20.55,
+        "cost": 1.03,
+        "costNote": null
+      },
+      {
+        "rank": 40,
+        "label": "Claude Opus 5 (Low)",
+        "score": 20.4,
+        "cost": 0.75,
+        "costNote": null
+      },
+      {
+        "rank": 41,
+        "label": "GPT-5.6 Sol (Medium)",
+        "score": 19.63,
+        "cost": 0.57,
+        "costNote": null
+      },
+      {
+        "rank": 42,
+        "label": "Claude Sonnet 5.5 (default fallbacks, Between tools)",
+        "score": 18.57,
+        "cost": 0.3,
+        "costNote": null
+      },
+      {
+        "rank": 43,
+        "label": "Claude Sonnet 5.5 (default fallbacks, Low)",
+        "score": 18.26,
+        "cost": 0.28,
+        "costNote": null
+      },
+      {
+        "rank": 44,
+        "label": "DeepSeek V4 Flash (Max)",
+        "score": 18.11,
+        "cost": 0.04,
+        "costNote": "Fireworks cached-token pricing"
+      },
+      {
+        "rank": 45,
+        "label": "GPT-5.6 Luna (Max)",
+        "score": 17.05,
+        "cost": 0.07,
+        "costNote": null
+      },
+      {
+        "rank": 46,
+        "label": "Gemini 3.6 Flash (High)",
+        "score": 17.05,
+        "cost": 0.58,
+        "costNote": null
+      },
+      {
+        "rank": 47,
+        "label": "Claude Fable 5.0 (Max)",
+        "score": 17.05,
+        "cost": 2.03,
+        "costNote": null
+      },
+      {
+        "rank": 48,
+        "label": "Claude Opus 4.8 (XHigh)",
+        "score": 16.89,
+        "cost": 1.91,
+        "costNote": null
+      },
+      {
+        "rank": 49,
+        "label": "GPT-5.5 (XHigh)",
+        "score": 16.59,
+        "cost": 1.72,
+        "costNote": null
+      },
+      {
+        "rank": 50,
+        "label": "Gemini 3.6 Flash (Medium)",
+        "score": 16.44,
+        "cost": 0.55,
+        "costNote": null
+      },
+      {
+        "rank": 51,
+        "label": "Claude Opus 4.8 (Max)",
+        "score": 16.44,
+        "cost": 2.36,
+        "costNote": null
+      },
+      {
+        "rank": 52,
+        "label": "Claude Opus 4.8 (High)",
+        "score": 16.13,
+        "cost": 1.48,
+        "costNote": null
+      },
+      {
+        "rank": 53,
+        "label": "Claude Fable 5.0 (High)",
+        "score": 16.13,
+        "cost": 1.65,
+        "costNote": null
+      },
+      {
+        "rank": 54,
+        "label": "Gemini 3.6 Flash (Low)",
+        "score": 15.68,
+        "cost": 0.48,
+        "costNote": null
+      },
+      {
+        "rank": 55,
+        "label": "Claude Fable 5.0 (XHigh)",
+        "score": 15.22,
+        "cost": 1.8,
+        "costNote": null
+      },
+      {
+        "rank": 56,
+        "label": "GPT-5.6 Terra (XHigh)",
+        "score": 14.76,
+        "cost": 0.37,
+        "costNote": null
+      },
+      {
+        "rank": 57,
+        "label": "GPT 6 Luna (High)",
+        "score": 14.46,
+        "cost": 0.02,
+        "costNote": null
+      },
+      {
+        "rank": 58,
+        "label": "Claude Opus 4.8 (Medium)",
+        "score": 14,
+        "cost": 1.44,
+        "costNote": null
+      },
+      {
+        "rank": 59,
+        "label": "Claude Fable 5.0 (Medium)",
+        "score": 13.7,
+        "cost": 1.52,
+        "costNote": null
+      },
+      {
+        "rank": 60,
+        "label": "Claude Opus 4.8 (Low)",
+        "score": 13.55,
+        "cost": 1.2,
+        "costNote": null
+      },
+      {
+        "rank": 61,
+        "label": "Gemini 3.5 Flash (High)",
+        "score": 13.39,
+        "cost": 0.42,
+        "costNote": null
+      },
+      {
+        "rank": 62,
+        "label": "Claude Opus 4.7 (Max)",
+        "score": 13.39,
+        "cost": 1.52,
+        "costNote": null
+      },
+      {
+        "rank": 63,
+        "label": "GPT-5.6 Luna (XHigh)",
+        "score": 12.94,
+        "cost": 0.06,
+        "costNote": null
+      },
+      {
+        "rank": 64,
+        "label": "GPT-5.5 (High)",
+        "score": 12.79,
+        "cost": 0.94,
+        "costNote": null
+      },
+      {
+        "rank": 65,
+        "label": "GPT 6 Luna (XHigh)",
+        "score": 12.63,
+        "cost": 0.02,
+        "costNote": null
+      },
+      {
+        "rank": 66,
+        "label": "Claude Fable 5.0 (Low)",
+        "score": 12.48,
+        "cost": 1.41,
+        "costNote": null
+      },
+      {
+        "rank": 67,
+        "label": "GPT-5.6 Terra (High)",
+        "score": 11.72,
+        "cost": 0.29,
+        "costNote": null
+      },
+      {
+        "rank": 68,
+        "label": "GPT-5.6 Sol (Low)",
+        "score": 11.72,
+        "cost": 0.42,
+        "costNote": null
+      },
+      {
+        "rank": 69,
+        "label": "GPT-5.4 (XHigh)",
+        "score": 11.57,
+        "cost": 1.15,
+        "costNote": null
+      },
+      {
+        "rank": 70,
+        "label": "Gemini 3.5 Flash (Medium)",
+        "score": 11.42,
+        "cost": 0.38,
+        "costNote": null
+      },
+      {
+        "rank": 71,
+        "label": "Claude Sonnet 5 (Max)",
+        "score": 10.65,
+        "cost": 0.88,
+        "costNote": null
+      },
+      {
+        "rank": 72,
+        "label": "GPT-5.4 (High)",
+        "score": 10.05,
+        "cost": 0.62,
+        "costNote": null
+      },
+      {
+        "rank": 73,
+        "label": "Claude Sonnet 5 (High)",
+        "score": 9.89,
+        "cost": 0.56,
+        "costNote": null
+      },
+      {
+        "rank": 74,
+        "label": "Claude Opus 4.7 (XHigh)",
+        "score": 9.74,
+        "cost": 1.26,
+        "costNote": null
+      },
+      {
+        "rank": 75,
+        "label": "GPT 6 Luna (Medium)",
+        "score": 9.44,
+        "cost": 0.02,
+        "costNote": null
+      },
+      {
+        "rank": 76,
+        "label": "GPT-5.6 Luna (High)",
+        "score": 9.13,
+        "cost": 0.05,
+        "costNote": null
+      },
+      {
+        "rank": 77,
+        "label": "Claude Opus 4.7 (High)",
+        "score": 9.13,
+        "cost": 1.08,
+        "costNote": null
+      },
+      {
+        "rank": 78,
+        "label": "GPT 6 Sol (None)",
+        "score": 9.1,
+        "cost": 0.25,
+        "costNote": null
+      },
+      {
+        "rank": 79,
+        "label": "Gemini 3.5 Flash (Low)",
+        "score": 8.98,
+        "cost": 0.3,
+        "costNote": null
+      },
+      {
+        "rank": 80,
+        "label": "GPT-5.5 (Medium)",
+        "score": 8.98,
+        "cost": 0.75,
+        "costNote": null
+      },
+      {
+        "rank": 81,
+        "label": "Gemini 3.1 Pro (preview) (High)",
+        "score": 8.68,
+        "cost": 0.3,
+        "costNote": null
+      },
+      {
+        "rank": 82,
+        "label": "GPT-5.6 Terra (Medium)",
+        "score": 8.07,
+        "cost": 0.22,
+        "costNote": null
+      },
+      {
+        "rank": 83,
+        "label": "GLM 5.2 (Max)",
+        "score": 7.76,
+        "cost": 0.22,
+        "costNote": null
+      },
+      {
+        "rank": 84,
+        "label": "Claude Sonnet 5 (XHigh)",
+        "score": 7.61,
+        "cost": 0.67,
+        "costNote": null
+      },
+      {
+        "rank": 85,
+        "label": "GPT-5.6 Terra (Low)",
+        "score": 7.46,
+        "cost": 0.19,
+        "costNote": null
+      },
+      {
+        "rank": 86,
+        "label": "Gemini 3.1 Pro (preview) (Medium)",
+        "score": 7,
+        "cost": 0.25,
+        "costNote": null
+      },
+      {
+        "rank": 87,
+        "label": "Claude Opus 4.7 (Medium)",
+        "score": 6.85,
+        "cost": 0.92,
+        "costNote": null
+      },
+      {
+        "rank": 88,
+        "label": "GLM 5.1 (Max)",
+        "score": 6.2,
+        "cost": 0.23,
+        "costNote": null
+      },
+      {
+        "rank": 89,
+        "label": "Claude Sonnet 5 (Medium)",
+        "score": 5.78,
+        "cost": 0.41,
+        "costNote": null
+      },
+      {
+        "rank": 90,
+        "label": "Claude Opus 4.7 (Low)",
+        "score": 5.48,
+        "cost": 0.78,
+        "costNote": null
+      },
+      {
+        "rank": 91,
+        "label": "GPT-5.4 (Medium)",
+        "score": 5.33,
+        "cost": 0.36,
+        "costNote": null
+      },
+      {
+        "rank": 92,
+        "label": "Claude Sonnet 4.6 (Max)",
+        "score": 5.33,
+        "cost": 0.9,
+        "costNote": null
+      },
+      {
+        "rank": 93,
+        "label": "Claude Sonnet 4.6 (High)",
+        "score": 5.02,
+        "cost": 0.84,
+        "costNote": null
+      },
+      {
+        "rank": 94,
+        "label": "Minimax M3 (Max)",
+        "score": 4.87,
+        "cost": 0.07,
+        "costNote": null
+      },
+      {
+        "rank": 95,
+        "label": "Gemini 3.1 Pro (preview) (Low)",
+        "score": 4.57,
+        "cost": 0.28,
+        "costNote": null
+      },
+      {
+        "rank": 96,
+        "label": "Qwen 3.6+ (High)",
+        "score": 4.3,
+        "cost": 0.08,
+        "costNote": null
+      },
+      {
+        "rank": 97,
+        "label": "GPT-5.6 Luna (Medium)",
+        "score": 4.26,
+        "cost": 0.02,
+        "costNote": null
+      },
+      {
+        "rank": 98,
+        "label": "Gemini 3.5 Flash Lite (Medium)",
+        "score": 3.96,
+        "cost": 0.12,
+        "costNote": null
+      },
+      {
+        "rank": 99,
+        "label": "GPT-5.6 Sol",
+        "score": 3.81,
+        "cost": 0.41,
+        "costNote": null
+      },
+      {
+        "rank": 100,
+        "label": "Qwen 3.7+",
+        "score": 3.7,
+        "cost": 0.05,
+        "costNote": null
+      },
+      {
+        "rank": 101,
+        "label": "Claude Sonnet 5 (Low)",
+        "score": 3.65,
+        "cost": 0.26,
+        "costNote": null
+      },
+      {
+        "rank": 102,
+        "label": "Claude Sonnet 4.6 (Medium)",
+        "score": 3.65,
+        "cost": 0.77,
+        "costNote": null
+      },
+      {
+        "rank": 103,
+        "label": "Gemini 3.5 Flash Lite (High)",
+        "score": 3.35,
+        "cost": 0.13,
+        "costNote": null
+      },
+      {
+        "rank": 104,
+        "label": "Kimi K2.7 Code",
+        "score": 3.2,
+        "cost": 0.24,
+        "costNote": null
+      },
+      {
+        "rank": 105,
+        "label": "Claude Sonnet 4.6 (Low)",
+        "score": 2.89,
+        "cost": 0.61,
+        "costNote": null
+      },
+      {
+        "rank": 106,
+        "label": "Kimi K2.6",
+        "score": 2.59,
+        "cost": 0.28,
+        "costNote": null
+      },
+      {
+        "rank": 107,
+        "label": "GPT-5.5 (Low)",
+        "score": 2.59,
+        "cost": 0.36,
+        "costNote": null
+      },
+      {
+        "rank": 108,
+        "label": "GPT-5.6 Luna (Low)",
+        "score": 1.83,
+        "cost": 0.01,
+        "costNote": null
+      },
+      {
+        "rank": 109,
+        "label": "Gemma 4 31B (Max)",
+        "score": 1.7,
+        "cost": null,
+        "costNote": "Dedicated deployment cost; comparable API task cost unavailable"
+      },
+      {
+        "rank": 110,
+        "label": "GPT-5.4 (Low)",
+        "score": 1.52,
+        "cost": 0.13,
+        "costNote": null
+      },
+      {
+        "rank": 111,
+        "label": "GPT 6 Luna (Low)",
+        "score": 1.22,
+        "cost": 0.01,
+        "costNote": null
+      },
+      {
+        "rank": 112,
+        "label": "Gemini 3.5 Flash (Minimal)",
+        "score": 1.22,
+        "cost": 0.18,
+        "costNote": null
+      },
+      {
+        "rank": 113,
+        "label": "GPT-5.5",
+        "score": 1.07,
+        "cost": 0.2,
+        "costNote": null
+      },
+      {
+        "rank": 114,
+        "label": "GPT-5.6 Terra",
+        "score": 0.76,
+        "cost": 0.12,
+        "costNote": null
+      },
+      {
+        "rank": 115,
+        "label": "Claude Haiku 4.5",
+        "score": 0.46,
+        "cost": 0.07,
+        "costNote": null
+      },
+      {
+        "rank": 116,
+        "label": "Minimax M2.7 (High)",
+        "score": 0.46,
+        "cost": 0.1,
+        "costNote": null
+      },
+      {
+        "rank": 117,
+        "label": "GPT 6 Luna (None)",
+        "score": 0.3,
+        "cost": 0.01,
+        "costNote": null
+      },
+      {
+        "rank": 118,
+        "label": "GPT-OSS 120B (High)",
+        "score": 0.15,
+        "cost": 0.01,
+        "costNote": null
+      },
+      {
+        "rank": 119,
+        "label": "GPT-5.6 Luna",
+        "score": 0.15,
+        "cost": 0.02,
+        "costNote": null
+      },
+      {
+        "rank": 120,
+        "label": "GPT-5.4",
+        "score": 0.15,
+        "cost": 0.07,
+        "costNote": null
+      },
+      {
+        "rank": 121,
+        "label": "Gemini 3.5 Flash Lite (Low)",
+        "score": 0,
+        "cost": 0.06,
+        "costNote": null
+      }
+    ],
+    "dropped": []
+  }
+}

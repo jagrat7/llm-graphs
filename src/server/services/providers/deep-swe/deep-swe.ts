@@ -1,6 +1,7 @@
+import { MetricProvider } from "../metric-provider"
 import { z } from "zod"
 
-import { fetchOk, normalizeLevel, parseRows, readMetrics } from "../utils"
+import { fetchOk, normalizeLevel, parseRows } from "../utils"
 import { deepsweMetrics } from "./metrics"
 import type { MetricRow, MetricSource } from "../provider.types"
 import type { DeepSWEPayload, DeepSWERow } from "./deep-swe.types"
@@ -30,17 +31,18 @@ const rowSchema: z.ZodType<DeepSWERow> = z.object({
 
 const payloadSchema = z.object({ rows: z.array(z.unknown()) })
 
-export class DeepSWEProvider implements MetricSource<DeepSWEPayload, DeepSWERow> {
+export class DeepSWEProvider
+  extends MetricProvider<DeepSWERow>
+  implements MetricSource<DeepSWEPayload, DeepSWERow>
+{
   readonly name = "deepswe"
   readonly displayName = "DeepSWE"
+  readonly href = "https://deepswe.datacurve.ai/"
+  readonly abbreviation = "D"
   readonly cacheKey = CACHE_KEY
   /** Refetched once its cached copy is an hour old. */
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics = deepsweMetrics
-
-  readMetrics(row: DeepSWERow) {
-    return readMetrics(this.metrics, row)
-  }
 
   /**
    * DeepSWE states effort in `reasoning_effort`. A null effort proves nothing about the mode, so

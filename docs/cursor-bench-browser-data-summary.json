@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-01T02:07:39.451Z",
+  "fetchedAt": {
+    "arcPrize": "2026-10-01T01:22:01.394Z",
+    "arena": "2026-09-30T23:07:20.061Z",
+    "artificialAnalysis": "2026-09-30T21:00:23.794Z",
+    "automationBench": "2026-10-01T01:32:58.914Z",
+    "cursorBench": "2026-10-01T01:57:07.708Z",
+    "deepswe": "2026-10-01T01:32:58.570Z",
+    "metr": "2026-09-30T23:07:18.473Z",
+    "modelsDev": "2026-09-30T04:42:08.692Z",
+    "terminalBench": "2026-10-01T01:32:59.572Z",
+    "terminalBenchScience": "2026-10-01T01:32:58.754Z"
+  },
+  "kind": "summary",
+  "scope": "Live shared-browser data",
+  "summary": {
+    "meaningful": 386,
+    "no-matching-configuration": 312,
+    "unavailable-metric": 97
+  }
+}

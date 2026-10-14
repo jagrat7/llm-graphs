@@ -1,4 +1,4 @@
-import type { ProviderName, SourceName } from "../providers"
+import { ProvidersService, type ProviderName, type SourceName } from "../providers"
 import type { DateGroup, Derivation, KeyClash } from "./derive"
 import type { MetadataSource, VendorRule } from "./model-aggregator.types"
 
@@ -45,10 +45,7 @@ export type DiagnosticsReport = {
   }
 }
 
-const METRIC_SOURCE_NAMES = [
-  "artificialAnalysis",
-  "deepswe",
-] as const satisfies ReadonlyArray<ProviderName>
+const METRIC_SOURCE_NAMES = ProvidersService.names
 
 function tally<T extends string>(values: Iterable<T>) {
   const counts: Partial<Record<T, number>> = {}
@@ -187,8 +184,7 @@ export function buildDiagnostics(derivation: Derivation): DiagnosticsReport {
     unmatched: [] as Array<UnmatchedId>,
   })
   const sources: DiagnosticsReport["sources"] = {
-    artificialAnalysis: sourceReport("artificialAnalysis"),
-    deepswe: sourceReport("deepswe"),
+    ...ProvidersService.record(sourceReport),
     modelsDev: sourceReport("modelsDev"),
   }
 
@@ -226,7 +222,10 @@ export function buildDiagnostics(derivation: Derivation): DiagnosticsReport {
   const variantKeys = (source: ProviderName, id: string) =>
     snapshot.variants[source]
       .filter((variant) => variant.entryId === id && !variant.refused)
-      .map((variant) => `${variant.mode}/${variant.level}`)
+      .map(
+        (variant) =>
+          `${variant.mode}/${variant.level}${variant.configuration ? `/${variant.configuration}` : ""}`,
+      )
   const noSharedVariant = provenance.flatMap((from) => {
     const listed = METRIC_SOURCE_NAMES.filter((source) =>
       from.members.some((member) => member.source === source),

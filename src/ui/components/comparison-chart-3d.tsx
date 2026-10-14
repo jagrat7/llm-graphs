@@ -25,7 +25,12 @@ import {
 } from "#/ui/lib/chart-styles"
 import { axisTicks, buildPlotData, describePlot } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
-import { formatMetric, metricAxisTitle, METRIC_CONFIG } from "#/ui/lib/metrics"
+import {
+  formatMetric,
+  metricAxisLabel,
+  metricAxisTitle,
+  metricPresentation,
+} from "#/ui/lib/metrics"
 import {
   buildSeriesLabels,
   LABEL_COLLISION_GAP,
@@ -35,6 +40,7 @@ import {
 import { useThemeColors } from "#/ui/lib/theme-colors"
 import { cn } from "#/ui/lib/utils"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
+import { PLOT_CAMERA_FOV, plotCameraFov } from "#/ui/lib/plot-camera"
 
 /**
  * `in` grows the cube out of the flat 2D framing, `out` collapses it back,
@@ -556,6 +562,7 @@ function PlotPoints({
         return spriteMaterial ? (
           <sprite
             key={point.id}
+            userData={{ plotPoint: point.id }}
             ref={ref}
             material={spriteMaterial}
             position={position}
@@ -565,6 +572,7 @@ function PlotPoints({
         ) : (
           <mesh
             key={point.id}
+            userData={{ plotPoint: point.id }}
             ref={ref}
             geometry={geometry}
             material={materials.get(point.color)}
@@ -602,6 +610,13 @@ function CameraDirector({
   scene: React.RefObject<SceneRefs>
 }) {
   const camera = useThree((state) => state.camera)
+  const { width, height } = useThree((state) => state.size)
+  useEffect(() => {
+    if (!(camera instanceof THREE.PerspectiveCamera)) return
+    camera.fov = plotCameraFov(width / height)
+    camera.updateProjectionMatrix()
+    invalidate()
+  }, [camera, width, height])
   const exitCompleteRef = useRef(onExitComplete)
   const firstPreset = useRef(true)
   const tween = useRef({
@@ -874,10 +889,21 @@ function LabelProjector({
 
       sizes.current[entry.index] ??= [node.offsetWidth, node.offsetHeight]
       const [measuredWidth, measuredHeight] = sizes.current[entry.index] ?? [0, 0]
-      // A steeply rotated title occupies its own bounding box turned on its side.
-      const upright = Math.abs(entry.angle) < 45
-      const labelWidth = upright ? measuredWidth : measuredHeight
-      const labelHeight = upright ? measuredHeight : measuredWidth
+      // Exact rotated bounds, including shallow angles where long titles still grow vertically.
+      const radians = (entry.angle * Math.PI) / 180
+      const labelWidth =
+        Math.abs(measuredWidth * Math.cos(radians)) + Math.abs(measuredHeight * Math.sin(radians))
+      const labelHeight =
+        Math.abs(measuredWidth * Math.sin(radians)) + Math.abs(measuredHeight * Math.cos(radians))
+      if (entry.item.kind === "axis") {
+        const inset = 6
+        entry.screenX = clamp(entry.screenX, labelWidth / 2 + inset, width - labelWidth / 2 - inset)
+        entry.screenY = clamp(
+          entry.screenY,
+          labelHeight / 2 + inset,
+          height - labelHeight / 2 - inset,
+        )
+      }
       const isActive = activeId != null && (entry.item.pointIds?.has(activeId) ?? false)
       const box = {
         left: entry.screenX - labelWidth / 2,
@@ -888,6 +914,7 @@ function LabelProjector({
       const offscreen =
         entry.behind || box.right < 0 || box.left > width || box.bottom < 0 || box.top > height
       const collides =
+        entry.item.kind !== "axis" &&
         !isActive &&
         placed.some(
           (other) =>
@@ -1029,7 +1056,7 @@ export function ComparisonChart3D({
 
       items.push({
         key: `axis-${axis}`,
-        text: `${METRIC_CONFIG[metric].label} · ${METRIC_CONFIG[metric].unit}`,
+        text: metricAxisLabel(metric, sources[axis], info),
         title: metricAxisTitle(metric, sources[axis], info),
         kind: "axis",
         axis,
@@ -1041,7 +1068,7 @@ export function ComparisonChart3D({
       for (const value of axisTicks(domain, TICK_TARGET)) {
         items.push({
           key: `tick-${axis}-${value}`,
-          text: formatMetric(value, metric),
+          text: formatMetric(value, metric, sources[axis], info),
           kind: "tick",
           axis,
           fraction: span === 0 ? 0.5 : (value - domain.min) / span,
@@ -1175,9 +1202,9 @@ export function ComparisonChart3D({
                 >
                   <dt className="truncate">{point.label}</dt>
                   <dd className="shrink-0 tabular-nums">
-                    {AXES.map((axis) => formatMetric(point.values[axis], metrics[axis])).join(
-                      " · ",
-                    )}
+                    {AXES.map((axis) =>
+                      formatMetric(point.values[axis], metrics[axis], sources[axis], info),
+                    ).join(" · ")}
                   </dd>
                 </div>
               ))}
@@ -1193,7 +1220,7 @@ export function ComparisonChart3D({
               dpr={[1, 2]}
               gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
               camera={{
-                fov: 38,
+                fov: PLOT_CAMERA_FOV,
                 near: 0.1,
                 far: 60,
                 position: viewPosition(startsFlat ? MORPH_VIEW : ORBIT_VIEW).toArray(),
@@ -1302,7 +1329,7 @@ export function ComparisonChart3D({
             type="button"
             tabIndex={point.index === 0 ? 0 : -1}
             data-plot-3d-point={point.index}
-            aria-label={`${point.label}, ${AXES.map((axis) => `${METRIC_CONFIG[metrics[axis]].label} ${formatMetric(point.values[axis], metrics[axis])}`).join(", ")}`}
+            aria-label={`${point.label}, ${AXES.map((axis) => `${metricPresentation(metrics[axis], sources[axis], info).label} ${formatMetric(point.values[axis], metrics[axis], sources[axis], info)}`).join(", ")}`}
             onFocus={() => setActiveId(point.id)}
             onClick={() => setActiveId(point.id)}
             onKeyDown={(event) => handlePointKeyDown(event, point.index)}

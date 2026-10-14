@@ -1,37 +1,21 @@
 import { createRouterClient } from "@orpc/server"
 import { describe, expect, it } from "vitest"
-
 import router from "."
+import { ProvidersService } from "../../services/providers"
 
 describe("providers.info", () => {
-  it("returns serializable provider metadata without downloader implementations", async () => {
-    const client = createRouterClient(router)
-    const info = await client.providers.info()
-
-    expect(info).toEqual({
-      displayNames: {
-        deepswe: "DeepSWE",
-        artificialAnalysis: "Artificial Analysis",
-      },
-      metricProviders: {
-        score: ["deepswe"],
-        costPerTask: ["deepswe"],
-        costPerMTokens: ["artificialAnalysis"],
-        tokensPerSecond: ["artificialAnalysis"],
-        durationSeconds: ["deepswe"],
-      },
-      notes: {
-        deepswe: {
-          score: "DeepSWE v1.1 pass rate",
-          costPerTask: "mean cost per evaluated task",
-          durationSeconds: "mean wall time per evaluated task",
-        },
-        artificialAnalysis: {
-          costPerMTokens: "3:1 input/output blend",
-          tokensPerSecond: "AA output-generation benchmark",
-        },
-      },
-    })
+  it("returns serializable provider metadata with native score units and no downloader code", async () => {
+    const info = await createRouterClient(router).providers.info()
+    expect(info).toEqual(ProvidersService.info())
     expect(JSON.parse(JSON.stringify(info))).toEqual(info)
+    expect(info.metricProviders.score).toEqual(ProvidersService.providersFor("score"))
+    expect(info.presentation.metr.score).toEqual({
+      label: "Task horizon (50%)",
+      unit: "h",
+      format: "hours",
+    })
+    expect(info.presentation.artificialAnalysis.score?.unit).toBe("points")
+    expect(info.presentation.arena.score?.unit).toBe("points")
+    expect(info.scopes.artificialAnalysis.costPerMTokens).toBe("model")
   })
 })

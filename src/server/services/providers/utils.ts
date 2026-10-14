@@ -3,6 +3,7 @@ import type { z } from "zod"
 import {
   METRIC_KEYS,
   type MetricKey,
+  type MeasurementInfo,
   type MetricReaders,
   type MetricValues,
   type ReasoningMode,
@@ -16,9 +17,24 @@ import {
 export async function fetchOk(
   label: string,
   url: string,
-  { timeoutMs, headers }: { timeoutMs: number; headers?: Record<string, string> },
+  {
+    timeoutMs,
+    headers,
+    method,
+    body,
+  }: {
+    timeoutMs: number
+    headers?: Record<string, string>
+    method?: "GET" | "POST"
+    body?: string
+  },
 ) {
-  const response = await fetch(url, { headers, signal: AbortSignal.timeout(timeoutMs) })
+  const response = await fetch(url, {
+    headers,
+    method,
+    body,
+    signal: AbortSignal.timeout(timeoutMs),
+  })
 
   if (!response.ok) throw new Error(`${label} returned ${response.status}`)
 
@@ -65,7 +81,10 @@ export function readMetrics<TRow>(readers: MetricReaders<TRow>, row: TRow) {
 
   for (const metric of METRIC_KEYS) {
     const reader = readers[metric]
-    if (reader) values[metric] = reader.read(row)
+    if (reader) {
+      const value = reader.read(row)
+      values[metric] = value != null && Number.isFinite(value) && value >= 0 ? value : null
+    }
   }
 
   return values
@@ -97,7 +116,7 @@ export function effortOrder(mode: ReasoningMode, level: string) {
 }
 
 /** The notes a source shows beside axis titles, by metric. */
-export function metricNotes<TRow>(readers: MetricReaders<TRow>) {
+export function metricNotes(readers: Partial<Record<MetricKey, { note?: string }>>) {
   const notes: Partial<Record<MetricKey, string>> = {}
 
   for (const metric of METRIC_KEYS) {
@@ -185,4 +204,13 @@ export function trailingDateLength(words: ReadonlyArray<string>) {
   if (count >= 2 && (/^20\d{6}$/.test(last) || isFourDigitStamp(last))) return 1
 
   return 0
+}
+
+export function describeMetrics<TRow>(readers: MetricReaders<TRow>, row: TRow) {
+  const measurements: Partial<Record<MetricKey, MeasurementInfo>> = {}
+  for (const key of METRIC_KEYS) {
+    const describe = readers[key]?.describe
+    if (describe) measurements[key] = describe(row)
+  }
+  return measurements
 }

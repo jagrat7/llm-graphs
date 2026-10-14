@@ -1,21 +1,12 @@
 import { describe, expect, it } from "vitest"
 
 import artificialAnalysisFixture from "../model-aggregator/fixtures/artificial-analysis.json"
-import deepsweFixture from "../model-aggregator/fixtures/deepswe.json"
+import { allFixtureInputs } from "../model-aggregator/fixture-inputs"
 import { ProvidersService } from "."
-import { METRIC_KEYS, type MetricSource } from "./provider.types"
+import { METRIC_KEYS } from "./provider.types"
 
-const { deepswe, artificialAnalysis } = ProvidersService.metricSources
+const { artificialAnalysis } = ProvidersService.metricSources
 const aaRow = artificialAnalysisFixture.payload.rows[0]
-
-/** The metrics a source lists that no row has a value for, which is how a misspelled field shows up. */
-function neverRead<TRow>(source: MetricSource<unknown, TRow>, rows: ReadonlyArray<TRow>) {
-  const read = rows.map((row) => source.readMetrics(row))
-
-  return METRIC_KEYS.filter(
-    (metric) => source.metrics[metric] != null && read.every((values) => values[metric] == null),
-  )
-}
 
 function aaCost(input: number | null, output: number | null) {
   return artificialAnalysis.readMetrics({
@@ -27,24 +18,20 @@ function aaCost(input: number | null, output: number | null) {
 
 describe("ProvidersService", () => {
   it("offers each metric from the sources that publish it, default first", () => {
-    expect({
-      score: ProvidersService.providersFor("score"),
-      costPerTask: ProvidersService.providersFor("costPerTask"),
-      costPerMTokens: ProvidersService.providersFor("costPerMTokens"),
-      tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
-      durationSeconds: ProvidersService.providersFor("durationSeconds"),
-    }).toEqual({
-      score: ["deepswe"],
-      costPerTask: ["deepswe"],
-      costPerMTokens: ["artificialAnalysis"],
-      tokensPerSecond: ["artificialAnalysis"],
-      durationSeconds: ["deepswe"],
-    })
+    expect(ProvidersService.providersFor("score")[0]).toBe("deepswe")
+    expect(ProvidersService.providersFor("costPerTask")[0]).toBe("deepswe")
+    expect(ProvidersService.providersFor("costPerMTokens")[0]).toBe("artificialAnalysis")
   })
 
-  it("reads a value for every metric a source lists from some real row", () => {
-    expect(neverRead(deepswe, deepsweFixture.payload.rows)).toEqual([])
-    expect(neverRead(artificialAnalysis, artificialAnalysisFixture.payload.rows)).toEqual([])
+  it("discovers every source's capabilities from real rows without a provider allowlist", () => {
+    const inputs = allFixtureInputs().metricSources
+    expect(new Set(inputs.map((input) => input.name))).toEqual(new Set(ProvidersService.names))
+    for (const metric of METRIC_KEYS) {
+      const measured = inputs
+        .filter((input) => input.rows.some((row) => row.metrics[metric] != null))
+        .map((input) => input.name)
+      expect(new Set(ProvidersService.providersFor(metric)), metric).toEqual(new Set(measured))
+    }
   })
 
   it("blends AA's prices three parts input to one part output", () => {

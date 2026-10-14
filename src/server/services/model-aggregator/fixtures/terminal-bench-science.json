@@ -1,0 +1,603 @@
+{
+  "fetchedAt": "2026-10-01T00:28:04.161Z",
+  "payload": {
+    "rows": [
+      {
+        "id": "76867ebc-8f35-43c5-a8b0-0cee9db46c96",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-22T11:46:04.426644+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "GPT-6 Astra"
+          },
+          "model_org": {
+            "label": "OpenAI"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-09-03"
+        },
+        "metrics": {
+          "accuracy": 68.0952380952381,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 4997.461181,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 3.2164475807033743,
+          "display_cost": "$4,997",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "cb24f3a2-82ab-4f97-be88-92a28118bf1c",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-23T16:29:34.906395+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Opus 5.5"
+          },
+          "model_org": {
+            "label": "Anthropic"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-09-22"
+        },
+        "metrics": {
+          "accuracy": 63.33333333333333,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 4874.2576698,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 3.3253873546101445,
+          "display_cost": "$4,874",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "1264a994-632f-4742-a143-a848a6ad4114",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Fable 5.1"
+          },
+          "model_org": {
+            "label": "Anthropic"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-09-01"
+        },
+        "metrics": {
+          "accuracy": 40,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 6247.1398385,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 3.380617018914066,
+          "display_cost": "$6,247",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "bcf50bd8-8555-48a6-8cae-9f697af54051",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Opus 5"
+          },
+          "model_org": {
+            "label": "Anthropic"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-07-24"
+        },
+        "metrics": {
+          "accuracy": 30,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 6992.67732375,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 3.162277660168379,
+          "display_cost": "$6,993",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "378f8b49-dbd8-4acf-a065-8c07e1712de2",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "GPT-5.6 Sol"
+          },
+          "model_org": {
+            "label": "OpenAI"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-07-09"
+        },
+        "metrics": {
+          "accuracy": 22.380952380952383,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 4221.8683028,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.876164947101791,
+          "display_cost": "$4,222",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "e3f2861a-97db-4730-a0ff-99f08d8c7299",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Fable 5"
+          },
+          "model_org": {
+            "label": "Anthropic"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-06-09"
+        },
+        "metrics": {
+          "accuracy": 21.428571428571427,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 14175.948185250001,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.831517739900328,
+          "display_cost": "$14,176",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "58d4c48d-791b-4873-ba3e-af1cf997a79c",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "DeepSeek V4.1 Flash"
+          },
+          "model_org": {
+            "label": "DeepSeek"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-09-10"
+        },
+        "metrics": {
+          "accuracy": 15.714285714285714,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 385.933474254,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.511392893650442,
+          "display_cost": "$386",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "360317df-baea-4ead-8a11-09db70a27d15",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-21T20:47:10.285461+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Grok 4.7"
+          },
+          "model_org": {
+            "label": "xAI"
+          },
+          "agent_display": {
+            "label": "Grok Build"
+          },
+          "agent_org": {
+            "label": "xAI"
+          },
+          "reasoning_effort": "xhigh",
+          "date": null,
+          "model_release_date": "2026-09-21"
+        },
+        "metrics": {
+          "accuracy": 14.285714285714286,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 3070.816824,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.414726442081476,
+          "display_cost": "$3,071",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "409f68a6-d6a4-43c9-adb8-63679dc17a45",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Gemini 3.8 Flash"
+          },
+          "model_org": {
+            "label": "Google DeepMind"
+          },
+          "agent_display": {
+            "label": "mini-SWE-agent"
+          },
+          "agent_org": {
+            "label": "SWE-agent"
+          },
+          "reasoning_effort": "high",
+          "date": null,
+          "model_release_date": "2026-09-02"
+        },
+        "metrics": {
+          "accuracy": 12.380952380952381,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 1116.97645035,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.2728283787427124,
+          "display_cost": "$1,117",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "e8bf7739-3c94-46a3-95a5-fa4d4444034e",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Opus 4.8"
+          },
+          "model_org": {
+            "label": "Anthropic"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-05-28"
+        },
+        "metrics": {
+          "accuracy": 10.476190476190476,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 5837.716905,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 2.1133008267654967,
+          "display_cost": "$5,838",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "c79d5ef6-b3c6-40da-84b5-946c11099426",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "GPT-5.6 Terra"
+          },
+          "model_org": {
+            "label": "OpenAI"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-07-09"
+        },
+        "metrics": {
+          "accuracy": 8.571428571428571,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 1983.9189368999998,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.9317811536651808,
+          "display_cost": "$1,984",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "78f18248-3ee9-4eb4-b7af-19019f1fc64f",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "GLM 5.3"
+          },
+          "model_org": {
+            "label": "Z.AI"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-08-14"
+        },
+        "metrics": {
+          "accuracy": 8.095238095238095,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 2733.16185912,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.8822364227102866,
+          "display_cost": "$2,733",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "66e64f64-abbd-40a6-a470-2151df25472e",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Kimi K3"
+          },
+          "model_org": {
+            "label": "Moonshot AI"
+          },
+          "agent_display": {
+            "label": "Claude Code"
+          },
+          "agent_org": {
+            "label": "Anthropic"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-07-16"
+        },
+        "metrics": {
+          "accuracy": 7.142857142857142,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 1523.7995976,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.7771905411718545,
+          "display_cost": "$1,524",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "231bc6c3-8f2b-455e-8c87-5a08ec200b05",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Grok 4.6"
+          },
+          "model_org": {
+            "label": "xAI"
+          },
+          "agent_display": {
+            "label": "Grok Build"
+          },
+          "agent_org": {
+            "label": "xAI"
+          },
+          "reasoning_effort": "xhigh",
+          "date": null,
+          "model_release_date": "2026-08-12"
+        },
+        "metrics": {
+          "accuracy": 7.142857142857142,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 3344.187332,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.7771905411718545,
+          "display_cost": "$3,344",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "5a71d088-1bfd-4bbe-a65a-973a4fffd50f",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "Gemini 3.7 Flash"
+          },
+          "model_org": {
+            "label": "Google DeepMind"
+          },
+          "agent_display": {
+            "label": "mini-SWE-agent"
+          },
+          "agent_org": {
+            "label": "SWE-agent"
+          },
+          "reasoning_effort": "high",
+          "date": null,
+          "model_release_date": "2026-08-13"
+        },
+        "metrics": {
+          "accuracy": 5.714285714285714,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 1296.5871279,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.6017483159468233,
+          "display_cost": "$1,297",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "00b5eabf-caca-435c-b8a8-458633192aa8",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "DeepSeek V4 Pro"
+          },
+          "model_org": {
+            "label": "DeepSeek"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-08-13"
+        },
+        "metrics": {
+          "accuracy": 3.8095238095238093,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 1120.15076932,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.3209662936780717,
+          "display_cost": "$1,120",
+          "display_total_cost_usd": ""
+        }
+      },
+      {
+        "id": "7cf10b06-3e5b-4723-b98f-c679e773959b",
+        "leaderboard_id": "9a545a14-78d0-44b4-9003-afe062522a47",
+        "status": "display",
+        "n_trials": 210,
+        "updated_at": "2026-09-16T13:45:27.369938+00:00",
+        "metadata": {
+          "model_display": {
+            "label": "GPT-5.6 Luna"
+          },
+          "model_org": {
+            "label": "OpenAI"
+          },
+          "agent_display": {
+            "label": "Codex"
+          },
+          "agent_org": {
+            "label": "OpenAI"
+          },
+          "reasoning_effort": "max",
+          "date": null,
+          "model_release_date": "2026-07-09"
+        },
+        "metrics": {
+          "accuracy": 3.3333333333333335,
+          "n_trials": null,
+          "tasks": 210,
+          "total_cost_usd": 383.19963959999995,
+          "avg_trial_duration_sec": null,
+          "accuracy_ci95_half_width": null,
+          "accuracy_stderr": 1.2387055882620108,
+          "display_cost": "$383",
+          "display_total_cost_usd": ""
+        }
+      }
+    ],
+    "dropped": []
+  }
+}

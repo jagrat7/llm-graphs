@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { aggregateModels, type Derivation } from "./derive"
 import { buildDiagnostics } from "./diagnostics"
+import { ProvidersService } from "../providers"
 import { fixtureInputs, fixtures } from "./fixture-inputs"
 
 const derivation = aggregateModels(fixtureInputs())
@@ -102,11 +103,9 @@ describe("model aggregation", () => {
   })
 
   it("reports declined matches per source and per model, never per pair of sources", () => {
-    expect(Object.keys(report.sources).toSorted()).toEqual([
-      "artificialAnalysis",
-      "deepswe",
-      "modelsDev",
-    ])
+    expect(Object.keys(report.sources).toSorted()).toEqual(
+      [...ProvidersService.names, "modelsDev"].toSorted(),
+    )
     expect(report.unresolvedDateGroups).toContainEqual(
       expect.objectContaining({
         ids: expect.arrayContaining([

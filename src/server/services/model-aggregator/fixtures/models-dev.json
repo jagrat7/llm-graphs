@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-28T01:55:07.861Z",
+  "fetchedAt": "2026-09-30T21:00:17.221Z",
   "payload": {
     "rows": [
       {
@@ -252,6 +252,12 @@
         "id": "anthropic/claude-sonnet-4-20250514",
         "name": "Claude Sonnet 4",
         "release_date": "2025-05-22",
+        "family": "claude-sonnet"
+      },
+      {
+        "id": "anthropic/claude-sonnet-5-5",
+        "name": "Claude Sonnet 5.5",
+        "release_date": "2026-09-28",
         "family": "claude-sonnet"
       },
       {
@@ -780,6 +786,12 @@
         "id": "alibaba/qwen3-coder-next",
         "name": "Qwen3 Coder Next",
         "release_date": "2026-02-03",
+        "family": "qwen"
+      },
+      {
+        "id": "alibaba/qwen-image-2.1",
+        "name": "Qwen-Image-2.1",
+        "release_date": "2026-09-14",
         "family": "qwen"
       },
       {
@@ -1503,6 +1515,12 @@
         "family": "fugu"
       },
       {
+        "id": "inclusionai/ling-3.1-flash",
+        "name": "Ling 3.1 Flash",
+        "release_date": "2026-09-29",
+        "family": "ling"
+      },
+      {
         "id": "inclusionai/ling-3.0-flash-fin",
         "name": "Ling 3.0 Flash Fin",
         "release_date": "2026-08-27",
@@ -1746,6 +1764,12 @@
         "id": "minimax/MiniMax-M2.1",
         "name": "MiniMax-M2.1",
         "release_date": "2025-12-23",
+        "family": "minimax"
+      },
+      {
+        "id": "minimax/MiniMax-M3.1-Flash-Preview",
+        "name": "MiniMax-M3.1-Flash-Preview",
+        "release_date": "2026-09-27",
         "family": "minimax"
       },
       {
@@ -2199,6 +2223,12 @@
         "family": "gpt-pro"
       },
       {
+        "id": "openai/gpt-5.6-cyber",
+        "name": "GPT-5.6 Cyber",
+        "release_date": "2026-08-07",
+        "family": "gpt"
+      },
+      {
         "id": "openai/gpt-5.4-nano",
         "name": "GPT-5.4 nano",
         "release_date": "2026-03-17",
@@ -2353,6 +2383,12 @@
         "name": "GPT-5.3 Codex Spark",
         "release_date": "2026-02-05",
         "family": "gpt-codex-spark"
+      },
+      {
+        "id": "openai/gpt-6.1-sol",
+        "name": "GPT-6.1 Sol",
+        "release_date": "2026-09-29",
+        "family": "gpt-sol"
       },
       {
         "id": "openai/gpt-5-chat-latest",
@@ -2696,6 +2732,10 @@
       {
         "id": "baseten",
         "name": "Baseten"
+      },
+      {
+        "id": "bee",
+        "name": "Bee by HEOSSI"
       },
       {
         "id": "berget",
@@ -3162,6 +3202,10 @@
         "name": "OVHcloud AI Endpoints"
       },
       {
+        "id": "pareto",
+        "name": "Pareto Inference"
+      },
+      {
         "id": "pendra",
         "name": "Pendra"
       },
@@ -3299,7 +3343,7 @@
       },
       {
         "id": "tempr",
-        "name": "Tempr"
+        "name": "Tempr Gateway"
       },
       {
         "id": "tencent-coding-plan",

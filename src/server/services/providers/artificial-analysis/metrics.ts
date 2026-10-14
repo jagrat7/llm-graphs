@@ -19,7 +19,23 @@ function blendedPrice(input: number | null, output: number | null) {
 }
 
 export const artificialAnalysisMetrics: MetricReaders<ArtificialAnalysisRow> = {
+  score: {
+    read: (row) => validMetric(row.intelligence_index),
+    presentation: { label: "Intelligence Index", unit: "points", format: "number" },
+    note: "AA Intelligence Index; native index points",
+    describe: (row) => ({
+      label: `AA Intelligence Index${row.index_version ? ` v${row.index_version}` : ""}`,
+    }),
+  },
+  costPerTask: {
+    read: (row) => validMetric(row.cost_per_task),
+    note: "AA Intelligence Index mean cost per task; same configuration",
+    describe: (row) => ({
+      label: `AA Intelligence Index${row.index_version ? ` v${row.index_version}` : ""}`,
+    }),
+  },
   costPerMTokens: {
+    scope: "model",
     read: (row) => blendedPrice(row.price_1m_input_tokens, row.price_1m_output_tokens),
     note: "3:1 input/output blend",
   },
@@ -32,4 +48,8 @@ export const artificialAnalysisMetrics: MetricReaders<ArtificialAnalysisRow> = {
         : null,
     note: "AA output-generation benchmark",
   },
+}
+
+function validMetric(value: number | null | undefined) {
+  return value != null && Number.isFinite(value) && value >= 0 ? value : null
 }

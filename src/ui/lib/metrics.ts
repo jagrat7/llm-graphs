@@ -1,6 +1,18 @@
 import type { MetricKey, ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 
-export const METRICS = ["score", "cost", "price", "speed", "duration"] as const
+export const METRICS = [
+  "score",
+  "cost",
+  "price",
+  "speed",
+  "duration",
+  "inputPrice",
+  "outputPrice",
+  "context",
+  "votes",
+  "horizon80",
+  "taskScore",
+] as const
 
 export type Metric = (typeof METRICS)[number]
 
@@ -15,6 +27,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: string
     unit: string
     dataKey: MetricKey
+    format?: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
   }
 > = {
   score: {
@@ -47,13 +60,87 @@ export const METRIC_CONFIG: Record<
     unit: "s",
     dataKey: "durationSeconds",
   },
+  inputPrice: {
+    label: "Input token price",
+    shortLabel: "Input price $/M",
+    unit: "$/M tokens",
+    dataKey: "inputPricePerMTokens",
+    format: "currency",
+  },
+  outputPrice: {
+    label: "Output token price",
+    shortLabel: "Output price $/M",
+    unit: "$/M tokens",
+    dataKey: "outputPricePerMTokens",
+    format: "currency",
+  },
+  context: {
+    label: "Context length",
+    shortLabel: "Context tokens",
+    unit: "tokens",
+    dataKey: "contextTokens",
+    format: "tokens",
+  },
+  votes: {
+    label: "Vote count",
+    shortLabel: "Arena votes",
+    unit: "votes",
+    dataKey: "votes",
+    format: "integer",
+  },
+  horizon80: {
+    label: "Task horizon (80%)",
+    shortLabel: "80% horizon h",
+    unit: "h",
+    dataKey: "horizon80Hours",
+    format: "hours",
+  },
+  taskScore: {
+    label: "Average task score",
+    shortLabel: "METR task score",
+    unit: "%",
+    dataKey: "averageTaskScore",
+    format: "percent",
+  },
+}
+
+export function metricRecord<T>(make: (key: MetricKey) => T): Record<MetricKey, T> {
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- every metric key has a UI definition
+  return Object.fromEntries(
+    METRICS.map((metric) => [METRIC_CONFIG[metric].dataKey, make(METRIC_CONFIG[metric].dataKey)]),
+  ) as Record<MetricKey, T>
 }
 
 export function metricAxisTitle(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
-  const config = METRIC_CONFIG[metric]
-  const sourceNote = source == null ? null : info.notes[source][config.dataKey]
+  const config = metricPresentation(metric, source, info)
+  const sourceNote = source == null ? null : info.notes[source][METRIC_CONFIG[metric].dataKey]
 
   return `${config.label} · ${config.unit}${sourceNote == null ? "" : ` (${sourceNote})`}`
+}
+
+export function metricPresentation(
+  metric: Metric,
+  source: ProviderName | null,
+  info?: ProvidersInfo,
+) {
+  const fallback = {
+    ...METRIC_CONFIG[metric],
+    format:
+      METRIC_CONFIG[metric].format ??
+      (metric === "score"
+        ? "percent"
+        : metric === "cost" || metric === "price"
+          ? "currency"
+          : "number"),
+  }
+  return source == null
+    ? fallback
+    : (info?.presentation[source]?.[METRIC_CONFIG[metric].dataKey] ?? fallback)
+}
+
+export function metricAxisLabel(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
+  const config = metricPresentation(metric, source, info)
+  return `${config.label} · ${config.unit}`
 }
 
 /** The providers the chart offers for a metric. The first one is the default. */
@@ -68,14 +155,23 @@ export function resolveSource(
   info: ProvidersInfo,
   scoreSource?: ProviderName | null,
 ): ProviderName {
-  if (metric === "cost") return scoreSource ?? info.metricProviders.score[0]
+  if (metric === "cost" || metric === "duration")
+    return scoreSource ?? info.metricProviders.score[0]
 
   const sources = metricProviders(metric, info)
 
-  return sources.find((candidate) => candidate === source) ?? sources[0]
+  return (
+    sources.find((candidate) => candidate === source) ??
+    (scoreSource != null && sources.includes(scoreSource) ? scoreSource : sources[0])
+  )
 }
 
-export function formatMetric(value: number | null, metric: Metric) {
+export function formatMetric(
+  value: number | null,
+  metric: Metric,
+  source: ProviderName | null = null,
+  info?: ProvidersInfo,
+) {
   if (value == null) return "—"
   if (!Number.isFinite(value)) return "—"
 
@@ -97,15 +193,28 @@ export function formatMetric(value: number | null, metric: Metric) {
     return remainingMinutes === 0 ? `${hours}h` : `${hours}h ${remainingMinutes}m`
   }
 
-  if (metric === "score") {
-    return `${value.toLocaleString("en-US", { maximumFractionDigits: 1 })}%`
+  const presentation = metricPresentation(metric, source, info)
+  if (presentation.format === "percent" || presentation.format === "hours" || metric === "score") {
+    const number = value.toLocaleString("en-US", {
+      maximumFractionDigits: presentation.format === "hours" ? (Math.abs(value) < 1 ? 3 : 2) : 1,
+    })
+    return `${number}${presentation.format === "percent" ? "%" : presentation.format === "hours" ? " h" : ""}`
   }
 
-  if (metric === "cost" || metric === "price") {
+  if (presentation.format === "currency") {
     return `$${value.toLocaleString("en-US", {
       maximumFractionDigits: value !== 0 && Math.abs(value) < 0.01 ? 4 : 2,
     })}`
   }
+
+  if (presentation.format === "integer")
+    return value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+  if (presentation.format === "tokens")
+    return value >= 1_000_000
+      ? `${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 2 })}M`
+      : value >= 1000
+        ? `${(value / 1000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+        : value.toLocaleString("en-US", { maximumFractionDigits: 0 })
 
   if (Math.abs(value) >= 1000) {
     return `${(value / 1000).toLocaleString("en-US", {
