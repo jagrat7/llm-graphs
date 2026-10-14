@@ -65,7 +65,7 @@ export function AxisControls({
   )
 
   return (
-    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 lg:w-fit lg:max-w-4xl lg:flex-row lg:items-start lg:gap-4">
+    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 lg:max-w-4xl lg:flex-row lg:items-start lg:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
           column, not the metric one: metric names are short and fixed, provider
@@ -75,10 +75,10 @@ export function AxisControls({
           that actually needs the room truncates. The metric floor stays, so on a
           phone the source beside it can't squeeze out the label. The metric ceiling
           fits the longest metric plus the Z row's remove button, so that row never
-          spills into "via". The source ceiling fits the longest provider name; past
-          it, slack would only open a hole before the picker, so the strip shrinks
-          to its columns instead — fixed ones, so picking a source never shifts it. */}
-      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,--spacing(62))] items-center gap-x-2 gap-y-1.5 lg:flex-none">
+          spills into "via". The source column hugs its widest name, so the divider
+          follows the labels instead of leaving a hole before the picker; slack
+          collects past the picker, which keeps the axis rows themselves still. */}
+      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center gap-x-2 gap-y-1.5 lg:min-w-0 lg:flex-initial">
         {AXIS_KEYS.map((key, index) => {
           const { metric, source } = axes[key]
           const swap = SWAP_PAIRS.find((pair) => pair.from === key)
