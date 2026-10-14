@@ -2,6 +2,7 @@ import { RiAddLine, RiCloseLine } from "@remixicon/react"
 
 import type { Metric } from "#/ui/lib/metrics"
 
+import { SourceLogos } from "#/ui/components/source-logos"
 import { Button } from "#/ui/components/ui/button"
 import { ButtonGroup } from "#/ui/components/ui/button-group"
 import {
@@ -13,13 +14,17 @@ import {
   SelectValue,
 } from "#/ui/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"
-import { isMetric, METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
+import { isMetric, metricProviders, METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
+import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { cn } from "#/ui/lib/utils"
 
 export type Axis = "X" | "Y" | "Z"
 
 const EMPTY_CHIP_CLASS =
   "border-primary/40 text-accent-foreground border-dashed hover:text-accent-foreground"
+
+/** Past this many marks a menu row stops reading as a glance. */
+const MAX_PROVIDER_LOGOS = 4
 
 export function MetricSelect({
   axis,
@@ -39,6 +44,7 @@ export function MetricSelect({
   className?: string
   disabled?: boolean
 }) {
+  const info = useProvidersInfo()
   const isEmpty = value == null
   const label = isEmpty ? `Add ${axis} axis` : `${axis}-axis metric`
   const metricLabel = value == null ? null : METRIC_CONFIG[value].shortLabel
@@ -72,7 +78,7 @@ export function MetricSelect({
         <SelectContent
           alignItemWithTrigger={false}
           align="start"
-          className="duration-200 ease-out motion-reduce:animate-none"
+          className="w-max max-w-(--available-width) min-w-(--anchor-width) duration-200 ease-out motion-reduce:animate-none"
         >
           <SelectGroup>
             {METRICS.map((metric) => (
@@ -80,9 +86,19 @@ export function MetricSelect({
                 key={metric}
                 value={metric}
                 disabled={unavailable.includes(metric)}
-                className="min-h-11 text-sm sm:min-h-8"
+                className="min-h-11 pr-7 text-sm sm:min-h-8"
               >
                 {METRIC_CONFIG[metric].shortLabel}
+                {/* Which providers publish the metric, so a choice can be weighed before it is
+                    made. Hidden from the option's name, which stays the metric alone; a
+                    disabled item swallows pointer events, so the marks opt back in. */}
+                <span aria-hidden="true" className="ml-auto pl-4">
+                  <SourceLogos
+                    sources={metricProviders(metric, info)}
+                    max={MAX_PROVIDER_LOGOS}
+                    className="pointer-events-auto gap-1"
+                  />
+                </span>
               </SelectItem>
             ))}
           </SelectGroup>
