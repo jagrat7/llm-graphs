@@ -219,21 +219,45 @@ describe("offeredVariants", () => {
 })
 
 describe("defaultPicks", () => {
-  it("extends a flat default axis with a real measurement when one is available", () => {
+  it("widens a flat default axis by trading the weakest pick for a real measurement", () => {
     const offered = offeredVariants(snapshot, COST_BY_SCORE)
     const original = defaultPicks(snapshot, offered, "deepswe", info)
-    const extra = offered.find((model) => !original.includes(model.model))!
+    const kept = original.slice(0, -1)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const extra = offered.find(
+      (model) =>
+        !original.includes(model.model) &&
+        kept.filter((id) => vendorOf.get(id) === model.vendor).length < DEFAULT_PICKS_PER_VENDOR,
+    )!
     const flat = offered.map((model) => ({
       ...model,
       costPerTask: model.model === extra.model ? 2 : 1,
     }))
     const picks = defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask", "score"])
-    expect(picks).toContain(extra.model)
-    expect(picks).toEqual([...original, extra.model])
+
+    expect(picks).toEqual([...kept, extra.model])
     expect(
       new Set(flat.filter((model) => picks.includes(model.model)).map((model) => model.costPerTask))
         .size,
     ).toBe(2)
+  })
+
+  it("leaves a flat default axis alone when only a full vendor could widen it", () => {
+    const offered = offeredVariants(snapshot, COST_BY_SCORE)
+    const original = defaultPicks(snapshot, offered, "deepswe", info)
+    const vendorOf = new Map(offered.map((model) => [model.model, model.vendor]))
+    const full = [...new Set(original.map((id) => vendorOf.get(id)))].find(
+      (vendor) =>
+        vendor !== vendorOf.get(original.at(-1)!) &&
+        original.filter((id) => vendorOf.get(id) === vendor).length === DEFAULT_PICKS_PER_VENDOR,
+    )
+    const extra = offered.find((model) => !original.includes(model.model) && model.vendor === full)!
+    const flat = offered.map((model) => ({
+      ...model,
+      costPerTask: model.model === extra.model ? 2 : 1,
+    }))
+
+    expect(defaultPicks(snapshot, flat, "deepswe", info, ["costPerTask"])).toEqual(original)
   })
 
   it("opens Cost × Score on the strongest models, with a per-vendor cap", () => {

@@ -313,18 +313,33 @@ export function defaultPicks(
     perVendor.set(candidate.vendor, taken + 1)
     picks.push(candidate.id)
   }
-  // Extend only a degenerate default selection; never jitter or alter published measurements.
+  // Widen only a degenerate default selection, within both limits; never jitter or alter
+  // published measurements.
+  const widened: string[] = []
   for (const metric of metrics) {
     const values = new Set(
       offered.filter((model) => picks.includes(model.model)).map((model) => model[metric]),
     )
     if (values.size !== 1) continue
+    // A full selection trades its weakest original pick for the different model.
+    const dropped =
+      picks.length === DEFAULT_PICK_COUNT ? picks.findLast((id) => !widened.includes(id)) : null
+    const droppedVendor = dropped ? candidates.get(dropped)!.vendor : null
+    const room = (vendor: string) =>
+      (perVendor.get(vendor) ?? 0) - (vendor === droppedVendor ? 1 : 0) < DEFAULT_PICKS_PER_VENDOR
     const different = offered
-      .filter((model) => strength.has(model.model) && !values.has(model[metric]))
-      .toSorted(
-        (a, b) => (strength.get(b.model) ?? -Infinity) - (strength.get(a.model) ?? -Infinity),
-      )[0]
-    if (different && !picks.includes(different.model)) picks.push(different.model)
+      .filter((model) => !values.has(model[metric]))
+      .map((model) => candidates.get(model.model))
+      .filter((candidate) => candidate != null && room(candidate.vendor))
+      .toSorted((a, b) => compareCandidates(a!, b!))[0]
+    if (!different) continue
+    if (dropped) {
+      picks.splice(picks.indexOf(dropped), 1)
+      perVendor.set(droppedVendor!, perVendor.get(droppedVendor!)! - 1)
+    }
+    picks.push(different.id)
+    perVendor.set(different.vendor, (perVendor.get(different.vendor) ?? 0) + 1)
+    widened.push(different.id)
   }
   return picks
 }
