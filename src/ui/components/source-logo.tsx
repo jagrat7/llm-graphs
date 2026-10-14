@@ -19,15 +19,18 @@ function logoAccentClass(brand: string | undefined, accent: boolean) {
   return accent ? "text-(--logo-brand)" : LOGO_BRAND_ACCENT_CLASS
 }
 
-type SourceMark = { viewBox: string; paths: ReadonlyArray<string>; brand?: string }
+type SourceMark =
+  | { viewBox: string; paths: ReadonlyArray<string>; brand?: string; stroke?: boolean }
+  | { src: string }
 
 /**
  * Data-source marks, flattened to `currentColor` so a source never
  * competes with the chart's own colour encoding at rest. Brand colour surfaces on hover/select;
  * native black/white marks use light-dark() with the site's exact off-black / off-white.
- * Sources: artificialanalysis.ai, datacurve.ai (DeepSWE). Trademarks of their owners.
+ * Official asset URLs and adaptations are recorded in docs/benchmark-icons.md.
+ * Trademarks belong to their owners.
  */
-const SOURCE_MARKS: Partial<Record<ProviderName, SourceMark>> = {
+const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   artificialAnalysis: {
     viewBox: "0 0 53 53",
     brand: "#7F4BF3",
@@ -47,6 +50,43 @@ const SOURCE_MARKS: Partial<Record<ProviderName, SourceMark>> = {
       "M6.0012 0H35.2067C35.7565 0 36.2973 0.13918 36.7787 0.404568C39.4404 1.87183 38.824 5.94707 35.9469 6.92662C27.6329 9.75718 24.2632 13.9421 22.3034 22.1985C19.0862 32.3712 14.8111 37.2266 6.82042 39.7525C3.31397 40.8608 -0.00158691 37.9557 -0.00158691 34.2782V6.00279C-0.00158691 2.68753 2.68595 0 6.0012 0Z",
     ],
   },
+  metr: { src: "/benchmarks/metr.png" },
+  arena: {
+    viewBox: "0 -21.5 167 167",
+    brand: "light-dark(#242422, #FFFFFF)",
+    paths: [
+      "M57.5364 53.3142C52.1508 53.3142 47.7887 57.6763 47.7887 63.0618V123.88H53.9963V63.0618C53.9963 61.0989 55.5902 59.505 57.5531 59.505C59.5161 59.505 61.11 61.0989 61.11 63.0618V123.88H67.3176V63.0618C67.3176 57.6763 62.9555 53.3142 57.5699 53.3142H57.5364Z",
+      "M109.121 53.3142C103.735 53.3142 99.3734 57.6763 99.3734 63.0618V123.88H105.581V63.0618C105.581 61.0989 107.175 59.505 109.138 59.505C111.101 59.505 112.695 61.0989 112.695 63.0618V123.88H118.902V63.0618C118.902 57.6763 114.54 53.3142 109.155 53.3142H109.121Z",
+      "M83.3286 53.3142C77.9431 53.3142 73.5809 57.6763 73.5809 63.0618V123.88H79.7886V63.0618C79.7886 61.0989 81.3824 59.505 83.3454 59.505C85.3083 59.505 86.9022 61.0989 86.9022 63.0618V123.88H93.1098V63.0618C93.1098 57.6763 88.7477 53.3142 83.3622 53.3142H83.3286Z",
+      "M143.782 28.035L148.077 20.5691H158.06L166.667 0H0L8.60681 20.5691H18.5894L22.8676 28.035C14.5292 30.8872 7.66727 38.135 7.66727 49.0571C7.66727 59.9792 15.5526 69.2235 27.3639 69.2235C29.9477 69.2235 32.3468 68.6867 34.4776 67.7471V123.901H40.6684V62.7978C42.6146 60.1637 43.7555 56.8754 43.8393 53.1508C43.8393 53.1005 43.8561 53.0333 43.8561 52.9662C43.8561 52.9159 43.8393 52.8823 43.8393 52.832C43.8393 52.7985 43.8561 52.7649 43.8561 52.7314C43.8561 52.681 43.8393 52.6307 43.8393 52.5636C43.7722 50.047 43.1011 47.6981 41.9267 45.7016H124.74C123.566 47.6981 122.894 50.047 122.827 52.5636C122.827 52.6307 122.811 52.681 122.811 52.7314V52.9662C122.811 52.9662 122.827 53.1005 122.827 53.1508C122.911 56.8754 124.052 60.1637 125.998 62.7978V123.901H132.189V67.7471C134.32 68.6867 136.702 69.2235 139.303 69.2235C151.097 69.2235 158.999 59.5765 158.999 49.0571C158.999 38.5377 152.121 30.8872 143.782 28.035ZM12.734 14.3615L9.31146 6.20764H157.355L153.933 14.3615H12.734ZM140.93 20.5691L137.491 26.5586H29.1759L25.7365 20.5691H140.93ZM139.303 63.0159C133.246 63.0159 129.085 58.9222 129.018 52.8991C129.052 48.6377 131.803 45.7855 135.796 45.7352H135.914C138.414 45.7352 140.46 47.7988 140.46 49.9631V50.0637C140.41 51.3221 139.403 52.2951 138.145 52.2951C136.434 52.2951 135.041 53.6877 135.041 55.399C135.041 57.1103 136.434 58.5028 138.145 58.5028C142.843 58.5028 146.685 54.6943 146.685 49.9631C146.685 49.8121 146.651 49.6611 146.634 49.5269C146.383 43.9736 141.836 39.5443 135.83 39.5443H83.3166L82.9139 39.5275H82.4945L30.8369 39.5443C24.8305 39.5443 20.2839 43.9736 20.0322 49.5269C20.0154 49.6611 19.9819 49.8121 19.9819 49.9631C19.9819 54.6943 23.8239 58.5028 28.5216 58.5028C30.2329 58.5028 31.6254 57.1103 31.6254 55.399C31.6254 53.6877 30.2329 52.2951 28.5216 52.2951C27.2633 52.2951 26.2566 51.3221 26.1895 50.0637C26.1895 50.0302 26.2063 49.9966 26.2063 49.9631C26.2063 47.7988 28.2364 45.7352 30.753 45.7352H30.8536C34.8634 45.7855 37.6149 48.6377 37.6485 52.8991C37.5814 58.9222 33.4038 63.0159 27.3639 63.0159C19.4114 63.0159 13.8749 56.5902 13.8749 49.0571C13.8749 38.89 21.8442 32.7495 31.6925 32.7495H134.974C144.822 32.7495 152.792 38.89 152.792 49.0571C152.792 56.5902 147.255 63.0159 139.303 63.0159Z",
+    ],
+  },
+  automationBench: {
+    viewBox: "0 30 39.0441 39.0441",
+    brand: "#FF4F00",
+    paths: ["M39.0441 45.2253H0V54.789H39.0441V45.2253Z"],
+  },
+  terminalBench: { src: "/benchmarks/terminal-bench.png" },
+  terminalBenchScience: {
+    viewBox: "0 0 24 24",
+    brand: "#18A9B3",
+    stroke: true,
+    paths: [
+      "M13 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0",
+      "M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z",
+      "M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z",
+    ],
+  },
+  arcPrize: { src: "/benchmarks/arc-prize.png" },
+  cursorBench: {
+    viewBox: "90 67 331.963 378.45",
+    brand: "light-dark(#26251E, #F7F7F4)",
+    paths: [
+      "m415.348 156.575-151.504-87.4699c-4.865-2.8094-10.868-2.8094-15.733 0l-151.4964 87.4699c-4.0897 2.361-6.6146 6.728-6.6146 11.458v176.383c0 4.73 2.5249 9.097 6.6146 11.459l151.5034 87.469c4.865 2.81 10.868 2.81 15.733 0l151.504-87.469c4.09-2.362 6.615-6.729 6.615-11.459v-176.383c0-4.73-2.525-9.097-6.615-11.458zm-9.517 18.528-146.254 253.319c-.989 1.707-3.599 1.01-3.599-.967v-165.871c0-3.314-1.771-6.38-4.645-8.044l-143.644-82.932c-1.707-.989-1.01-3.599.967-3.599h292.51c4.153 0 6.749 4.502 4.672 8.101h-.007z",
+    ],
+  },
+  sweBench: { src: "/benchmarks/swe-bench.svg" },
+  liveCodeBench: { src: "/benchmarks/live-code-bench.svg" },
 }
 
 export function SourceLogo({
@@ -61,21 +101,33 @@ export function SourceLogo({
 }) {
   const mark = SOURCE_MARKS[source]
 
-  if (!mark)
+  if ("src" in mark) {
     return (
-      <span
+      <img
         aria-hidden="true"
-        className={cn("text-muted-foreground shrink-0 text-[9px] font-semibold", className)}
-      >
-        {source === "metr" ? "M" : source === "arena" ? "A" : source.slice(0, 1).toUpperCase()}
-      </span>
+        alt=""
+        src={mark.src}
+        width={14}
+        height={14}
+        className={cn(
+          "size-3.5 shrink-0 object-contain",
+          !accent &&
+            "grayscale group-hover/mark:grayscale-0 group-focus-within/mark:grayscale-0 group-data-[highlighted]/mark:grayscale-0 group-data-[selected]/mark:grayscale-0 group-has-[:checked]/mark:grayscale-0 in-[[data-slot=select-trigger]]:grayscale-0",
+          className,
+        )}
+      />
     )
+  }
 
   return (
     <svg
       aria-hidden="true"
       viewBox={mark.viewBox}
-      fill="currentColor"
+      fill={mark.stroke ? "none" : "currentColor"}
+      stroke={mark.stroke ? "currentColor" : undefined}
+      strokeWidth={mark.stroke ? 2 : undefined}
+      strokeLinecap={mark.stroke ? "round" : undefined}
+      strokeLinejoin={mark.stroke ? "round" : undefined}
       style={logoBrandStyle(mark.brand)}
       className={cn("size-3.5 shrink-0", logoAccentClass(mark.brand, accent), className)}
     >
