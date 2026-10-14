@@ -4,7 +4,7 @@
 - `bun run fmt` / `bun run fmt:check` — oxfmt
 - Config: `.oxlintrc.json`, `.oxfmtrc.json`
 - Custom rules: `dev/oxlint/` (`local/no-server-deep-imports`, `local/only-service-export`)
--
+- `bun run typecheck` — Bun's built-in TypeScript checker (requires Bun 1.4.3+)
 
 ## Worktrees
 
