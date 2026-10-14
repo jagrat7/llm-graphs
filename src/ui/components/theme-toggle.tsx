@@ -89,7 +89,7 @@ export default function ThemeToggle() {
         }
       />
       <TooltipContent>
-        Toggle theme <kbd className="text-muted-foreground ml-1">D</kbd>
+        Toggle theme <kbd className="ml-1 opacity-60">D</kbd>
       </TooltipContent>
     </Tooltip>
   )

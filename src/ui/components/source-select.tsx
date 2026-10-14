@@ -48,7 +48,8 @@ export function SourceSelect({
     return (
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
-        <span className="flex min-h-11 items-center gap-1.5 truncate px-2 sm:min-h-8">
+        {/* The transparent border matches the trigger's, so marks line up across rows. */}
+        <span className="flex min-h-11 items-center gap-1.5 truncate border border-transparent px-2 sm:min-h-8">
           <SourceLogo source={value} className="size-3" />
           <span className="truncate">{sourceLabel(value, info)}</span>
         </span>
@@ -69,7 +70,7 @@ export function SourceSelect({
         <SelectTrigger
           size="sm"
           aria-label={`${axis}-axis data source`}
-          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground min-h-11 min-w-0 gap-1.5 border-transparent bg-transparent px-2 text-sm shadow-none sm:min-h-8 sm:text-xs"
+          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground dark:hover:bg-muted min-h-11 min-w-0 gap-1.5 border-transparent bg-transparent px-2 text-sm shadow-none sm:min-h-8 sm:text-xs dark:bg-transparent"
         >
           {/* Base UI resolves the label from the raw value, so the mark is rendered here. */}
           {/* The trigger lays the value out as a flex row, which kills the registry's

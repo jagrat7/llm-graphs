@@ -111,7 +111,12 @@ export function PointDetails({
                 ) : null}
               </dd>
               {showDetail ? (
-                <dd className="text-muted-foreground text-xs wrap-anywhere">{detail}</dd>
+                <dd
+                  title={detail}
+                  className="text-muted-foreground line-clamp-2 text-xs wrap-anywhere"
+                >
+                  {detail}
+                </dd>
               ) : null}
               {measurement?.updatedAt && sharedUpdate == null ? (
                 <dd className="text-muted-foreground text-xs">
