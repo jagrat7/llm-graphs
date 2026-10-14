@@ -62,7 +62,7 @@
       }
     },
     {
-      "files": ["src/**/*.test.ts"],
+      "files": ["src/**/*.test.{ts,tsx}"],
       "rules": {
         "local/no-server-deep-imports": "off"
       }

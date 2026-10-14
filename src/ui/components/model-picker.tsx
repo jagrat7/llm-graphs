@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react"
+import type { CSSProperties, FocusEvent } from "react"
 
 import { RiArrowDownSLine, RiCloseLine, RiSearchLine } from "@remixicon/react"
 import { useEffect, useId, useMemo, useState } from "react"
@@ -83,6 +83,8 @@ type ModelPickerProps = {
   models: Array<Model>
   selected: Array<string>
   onChange: (models: Array<string>) => void
+  /** Reports the model whose pill is hovered or focused, so the chart can emphasise it. */
+  onHighlightChange?: (model: string | null) => void
   className?: string
   disabled?: boolean
 }
@@ -91,6 +93,7 @@ export function ModelPicker({
   models,
   selected,
   onChange,
+  onHighlightChange,
   className,
   disabled = false,
 }: ModelPickerProps) {
@@ -109,6 +112,51 @@ export function ModelPicker({
   const hidden = value.slice(VISIBLE_CHIP_LIMIT)
   // No models yet and the controls are locked: the request is still in flight.
   const isLoading = disabled && models.length === 0
+  // Pointer, list and focus highlights are tracked apart so ending one gesture never
+  // clears a highlight another still holds; the pointer wins, then the list, then focus.
+  const [hoveredModel, setHoveredModel] = useState<string | null>(null)
+  const [listModel, setListModel] = useState<string | null>(null)
+  const [focusedModel, setFocusedModel] = useState<string | null>(null)
+  const highlightedModel = hoveredModel ?? listModel ?? focusedModel
+  const highlightHandlers = (model: string) => ({
+    onPointerEnter: () => setHoveredModel(model),
+    onPointerLeave: () => setHoveredModel((current) => (current === model ? null : current)),
+    onFocus: () => setFocusedModel(model),
+    onBlur: (event: FocusEvent<HTMLElement>) => {
+      // Moving between a pill and its own remove button is still the same pill.
+      if (event.currentTarget.contains(event.relatedTarget)) return
+
+      setFocusedModel((current) => (current === model ? null : current))
+    },
+  })
+
+  // A removed pill never reports leaving or blurring, so forget it once it is deselected —
+  // otherwise selecting it again would bring back a highlight nobody is holding.
+  useEffect(() => {
+    const keep = (current: string | null) =>
+      current != null && selected.includes(current) ? current : null
+
+    setHoveredModel(keep)
+    setFocusedModel(keep)
+  }, [selected])
+
+  useEffect(() => {
+    onHighlightChange?.(highlightedModel)
+  }, [highlightedModel, onHighlightChange])
+
+  // Closing the overflow list unmounts its pills before they can report leaving.
+  function handleMoreOpenChange(open: boolean) {
+    setMoreOpen(open)
+
+    if (open) return
+
+    const overflow = new Set(hidden.map((model) => model.model))
+    const keep = (current: string | null) =>
+      current != null && overflow.has(current) ? null : current
+
+    setHoveredModel(keep)
+    setFocusedModel(keep)
+  }
 
   // Emptying the list from inside the popover unmounts its own trigger, so hand
   // focus back to the search bar rather than dropping it on the document.
@@ -135,6 +183,15 @@ export function ModelPicker({
            opens scrolled to it — alphabetical order made that a jump to the bottom.
            Highlighting the first item instead keeps the list where it starts. */
         autoHighlight
+        // Arrowing (or pointing) through the list is the keyboard route to the same
+        // emphasis a hovered pill gives; Base UI keeps the chips themselves out of tab order.
+        // The automatic first-item highlight on open is not a gesture, so it is ignored.
+        onItemHighlighted={(model: Model | undefined, { reason }: { reason: string }) =>
+          setListModel(reason === "none" ? null : (model?.model ?? null))
+        }
+        onOpenChange={(open: boolean) => {
+          if (!open) setListModel(null)
+        }}
         disabled={disabled}
       >
         {/* The popup anchors to whatever it is told to; left alone it takes the
@@ -173,7 +230,11 @@ export function ModelPicker({
                   {/* Chips remove by render index, so they have to stay in value order —
                       taking the head keeps every visible chip pointing at its own model. */}
                   {shown.slice(0, VISIBLE_CHIP_LIMIT).map((model) => (
-                    <ComboboxChip key={model.model} className="h-8 text-sm sm:h-6 sm:text-xs">
+                    <ComboboxChip
+                      key={model.model}
+                      className="h-8 text-sm sm:h-6 sm:text-xs"
+                      {...highlightHandlers(model.model)}
+                    >
                       <ModelDot model={model} />
                       {model.displayName}
                     </ComboboxChip>
@@ -182,7 +243,7 @@ export function ModelPicker({
               )}
             </ComboboxValue>
             {hidden.length > 0 ? (
-              <Popover open={moreOpen} onOpenChange={setMoreOpen}>
+              <Popover open={moreOpen} onOpenChange={handleMoreOpenChange}>
                 {/* Carries the chips' fill so it reads as a control among them
                     rather than as a caption sitting at the end of the row. */}
                 <PopoverTrigger
@@ -204,6 +265,7 @@ export function ModelPicker({
                       <li
                         key={model.model}
                         className={cn(CHIP_SURFACE_CLASS, "h-8 text-sm sm:h-6 sm:text-xs")}
+                        {...highlightHandlers(model.model)}
                       >
                         <ModelDot model={model} />
                         {model.displayName}

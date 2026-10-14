@@ -103,6 +103,7 @@ function ComparePage() {
   }, [snapshot, info, search])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
+  const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -185,18 +186,27 @@ function ComparePage() {
     updateSearch({ z: undefined, zSource: undefined })
   }
 
-  const selected = search.models ?? data?.defaultModels ?? []
-  const selectedModelIds = new Set(selected)
-  const selectedModels = data?.models.filter((model) => selectedModelIds.has(model.model)) ?? []
-  const quality = plotQuality(
-    buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z }),
+  const selected = useMemo(() => search.models ?? data?.defaultModels ?? [], [search.models, data])
+  // Memoized so hovering a pill re-renders the page without handing the chart new models.
+  const selectedModels = useMemo(() => {
+    const ids = new Set(selected)
+
+    return data?.models.filter((model) => ids.has(model.model)) ?? []
+  }, [data, selected])
+  const quality = useMemo(
+    () => plotQuality(buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z })),
+    [selectedModels, search.x, search.y, search.z],
   )
+  // The list can highlight models that are not on the chart; those emphasise nothing.
+  const highlight =
+    highlightedModel != null && selected.includes(highlightedModel) ? highlightedModel : null
   const controlsDisabled = isPending ? true : isError
   const picker = (
     <ModelPicker
       models={data?.models ?? []}
       selected={selected}
       onChange={(models) => updateSearch({ models })}
+      onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       className="sm:w-80"
     />
@@ -303,6 +313,7 @@ function ComparePage() {
               sources={{ x: axes.x.source, y: axes.y.source }}
               xMetric={search.x}
               yMetric={search.y}
+              highlight={highlight}
             />
           )}
         </Suspense>

@@ -282,3 +282,11 @@ a {
     animation: none !important;
   }
 }
+
+/* Chart point labels sit on a background-coloured halo so grid lines never cut a name. */
+.chart-point-label {
+  stroke: var(--background);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}

@@ -18,6 +18,8 @@ export type PlotPoint = {
   /** Stable render order, also the index used by the keyboard point list. */
   index: number
   label: string
+  /** `PlotSeries.key` of the run this point belongs to. */
+  seriesKey: string
   color: string
   /** The vendor logo drawn as the marker; null draws a circle. */
   logoUrl: string | null
@@ -141,7 +143,7 @@ export function axisTicks(domain: PlotDomain, count: number) {
 
 /**
  * Renderer-neutral plot model: one O(n) pass over the models produces the points,
- * per-axis domains, per-model series and the id lookup that both the Visx and the
+ * per-axis domains, per-model series and the id lookup that both the TanStack Charts and the
  * React Three Fiber charts read. Keeping it here is what makes the two renderers
  * agree on ordering, normalization and exclusions.
  */
@@ -168,10 +170,12 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     if (x == null || y == null || z == null) continue
 
     const values: Record<PlotAxis, number> = { x, y, z }
+    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
     const point: PlotPoint = {
       id: `${model.model}-${model.mode}-${model.level}${model.configuration ? `-${model.configuration}` : ""}`,
       index: points.length,
       label: pointLabel(model),
+      seriesKey,
       color: model.chartColor,
       logoUrl: model.logoUrl,
       model,
@@ -188,7 +192,6 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     pointById.set(point.id, point)
     modelKeys.add(model.model)
 
-    const seriesKey = `${model.model}${model.configuration ? `/${model.configuration}` : ""}`
     const series = seriesByModel.get(seriesKey)
 
     if (series) series.points.push(point)
