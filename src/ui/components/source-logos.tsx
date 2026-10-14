@@ -43,10 +43,10 @@ export function SourceLogos({
             </TooltipTrigger>
             {/* Tooltip backgrounds invert the page theme; monochrome marks must follow. */}
             <TooltipContent
-              side={index === 1 ? "right" : "top"}
+              side="right"
               className="flex-col items-start gap-1 [color-scheme:dark] dark:[color-scheme:light]"
             >
-              {group.map((source) => (
+              {(index === 0 ? sources : hidden).map((source) => (
                 <span key={source} className="flex items-center gap-1.5">
                   <SourceLogo source={source} className="size-3" />
                   {sourceLabel(source, info)}
