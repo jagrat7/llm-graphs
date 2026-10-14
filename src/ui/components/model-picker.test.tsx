@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { Model } from "#/ui/lib/model-view"
 
-import { ModelPicker } from "#/ui/components/model-picker"
+import { countFittingChips, ModelPicker } from "#/ui/components/model-picker"
 import { metricRecord } from "#/ui/lib/metrics"
 
 function makeModel(model: string): Model {
@@ -26,7 +26,46 @@ function makeModel(model: string): Model {
 
 const models = [makeModel("alpha"), makeModel("beta"), makeModel("gamma")]
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+})
+
+/**
+ * jsdom has no layout or stylesheet, so give every chip 100px, no gap, and the ghost
+ * row 300px by default: three to a row. Resizing the row replays the observer the picker re-measures on.
+ */
+function stubChipLayout() {
+  let rowWidth = 300
+  const observers: Array<() => void> = []
+
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+    function (this: HTMLElement) {
+      return DOMRect.fromRect({
+        width: this.dataset.slot === "model-picker-ghost" ? rowWidth : 100,
+      })
+    },
+  )
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      constructor(callback: () => void) {
+        observers.push(callback)
+      }
+      observe() {}
+      disconnect() {}
+    },
+  )
+
+  return {
+    resizeRow: (width: number) =>
+      act(() => {
+        rowWidth = width
+        for (const notify of observers) notify()
+      }),
+  }
+}
 
 function renderPicker(selected: Array<string> = ["alpha", "beta"]) {
   const onHighlightChange = vi.fn()
@@ -49,8 +88,11 @@ function renderPicker(selected: Array<string> = ["alpha", "beta"]) {
   }
 }
 
-const pill = (name: string) =>
-  screen.getByText(name).closest<HTMLElement>("[data-slot=combobox-chip]")!
+/** Every selected name is also in the picker's hidden measuring row; skip that copy. */
+const shownText = (name: string) =>
+  screen.getAllByText(name).find((element) => !element.closest("[data-slot=model-picker-ghost]"))!
+
+const pill = (name: string) => shownText(name).closest<HTMLElement>("[data-slot=combobox-chip]")!
 
 describe("model picker highlight", () => {
   it("reports the model whose pill is hovered or focused", () => {
@@ -123,6 +165,7 @@ describe("model picker highlight", () => {
   })
 
   it("clears an overflow pill's highlight when its list closes", async () => {
+    stubChipLayout()
     const many = Array.from({ length: 13 }, (_, index) => `model${String(index).padStart(2, "0")}`)
     const onHighlightChange = vi.fn()
     const latest = () => onHighlightChange.mock.lastCall?.[0] ?? null
@@ -139,7 +182,7 @@ describe("model picker highlight", () => {
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /more selected models/ }))
     })
-    const overflowPill = screen.getByText("Model12").closest("li")!
+    const overflowPill = shownText("Model12").closest("li")!
 
     fireEvent.pointerEnter(overflowPill)
     expect(latest()).toBe("model12")
@@ -149,6 +192,34 @@ describe("model picker highlight", () => {
     })
 
     expect(overflowPill.isConnected).toBe(false)
+    expect(latest()).toBeNull()
+  })
+
+  it("clears a pill's highlight when a narrower row squeezes it into the overflow list", () => {
+    const { resizeRow } = stubChipLayout()
+    const many = Array.from({ length: 7 }, (_, index) => `model${index}`)
+    const onHighlightChange = vi.fn()
+    const latest = () => onHighlightChange.mock.lastCall?.[0] ?? null
+
+    render(
+      <ModelPicker
+        models={many.map(makeModel)}
+        selected={many}
+        onChange={() => {}}
+        onHighlightChange={onHighlightChange}
+      />,
+    )
+    // Wide enough for all seven on one row.
+    resizeRow(1000)
+    const lastPill = pill("Model6")
+
+    fireEvent.pointerEnter(lastPill)
+    expect(latest()).toBe("model6")
+
+    // Two to a row now: five chips and the trigger fill the three rows.
+    resizeRow(200)
+
+    expect(lastPill.isConnected).toBe(false)
     expect(latest()).toBeNull()
   })
 
@@ -241,5 +312,40 @@ describe("model picker checklist", () => {
 
     expect(row.isConnected).toBe(false)
     expect(highlighted()).toBeNull()
+  })
+})
+
+/** A trigger that grows a digit at ten. */
+const widerAtTen = (hiddenCount: number) => (hiddenCount >= 10 ? 60 : 40)
+
+describe("countFittingChips", () => {
+  const fit = { available: 100, gap: 4, rows: 3, moreWidth: () => 30 }
+
+  it("keeps every chip when they all fit the rows", () => {
+    expect(countFittingChips([48, 48, 48, 48, 48, 48], fit)).toBe(6)
+  })
+
+  it("leaves room on the last row for the count trigger", () => {
+    // Two chips a row; the seventh spills, so the last row trades a chip for the trigger.
+    expect(countFittingChips([48, 48, 48, 48, 48, 48, 48], fit)).toBe(5)
+  })
+
+  it("gives a chip wider than the row a row of its own", () => {
+    expect(countFittingChips([140, 20, 20], { ...fit, rows: 2 })).toBe(3)
+    expect(countFittingChips([140, 140, 140], { ...fit, rows: 2 })).toBe(1)
+  })
+
+  it("shows only the trigger when not even one chip fits beside it", () => {
+    expect(countFittingChips([90, 90], { ...fit, rows: 1 })).toBe(0)
+  })
+
+  it("sizes the trigger for the count it will actually show", () => {
+    // Ten selected, but only five hidden: the single-digit trigger fits beside the fifth chip.
+    expect(
+      countFittingChips(
+        Array.from({ length: 10 }, () => 48),
+        { ...fit, moreWidth: widerAtTen },
+      ),
+    ).toBe(5)
   })
 })
