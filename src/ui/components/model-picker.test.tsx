@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 
 import type { Model } from "#/ui/lib/model-view"
 
-import { ModelPicker } from "#/ui/components/model-picker"
+import { countFittingChips, ModelPicker } from "#/ui/components/model-picker"
 import { metricRecord } from "#/ui/lib/metrics"
 
 function makeModel(model: string): Model {
@@ -26,7 +26,19 @@ function makeModel(model: string): Model {
 
 const models = [makeModel("alpha"), makeModel("beta"), makeModel("gamma")]
 
-afterEach(cleanup)
+afterEach(() => {
+  cleanup()
+  vi.restoreAllMocks()
+})
+
+/** jsdom has no layout, so give the ghost row 300px and every chip 100px: two to a row. */
+function stubChipLayout() {
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+    function (this: HTMLElement) {
+      return DOMRect.fromRect({ width: this.dataset.slot === "model-picker-ghost" ? 300 : 100 })
+    },
+  )
+}
 
 function renderPicker(selected: Array<string> = ["alpha", "beta"]) {
   const onHighlightChange = vi.fn()
@@ -47,8 +59,11 @@ function renderPicker(selected: Array<string> = ["alpha", "beta"]) {
   }
 }
 
-const pill = (name: string) =>
-  screen.getByText(name).closest<HTMLElement>("[data-slot=combobox-chip]")!
+/** Every selected name is also in the picker's hidden measuring row; skip that copy. */
+const shownText = (name: string) =>
+  screen.getAllByText(name).find((element) => !element.closest("[data-slot=model-picker-ghost]"))!
+
+const pill = (name: string) => shownText(name).closest<HTMLElement>("[data-slot=combobox-chip]")!
 
 describe("model picker highlight", () => {
   it("reports the model whose pill is hovered or focused", () => {
@@ -118,6 +133,7 @@ describe("model picker highlight", () => {
   })
 
   it("clears an overflow pill's highlight when its list closes", async () => {
+    stubChipLayout()
     const many = Array.from({ length: 13 }, (_, index) => `model${String(index).padStart(2, "0")}`)
     const onHighlightChange = vi.fn()
     const latest = () => onHighlightChange.mock.lastCall?.[0] ?? null
@@ -134,7 +150,7 @@ describe("model picker highlight", () => {
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /more selected models/ }))
     })
-    const overflowPill = screen.getByText("Model12").closest("li")!
+    const overflowPill = shownText("Model12").closest("li")!
 
     fireEvent.pointerEnter(overflowPill)
     expect(latest()).toBe("model12")
@@ -156,5 +172,27 @@ describe("model picker highlight", () => {
 
     rerender(["alpha", "beta"])
     expect(highlighted()).toBeNull()
+  })
+})
+
+describe("countFittingChips", () => {
+  const fit = { available: 100, gap: 4, rows: 3, moreWidth: 30 }
+
+  it("keeps every chip when they all fit the rows", () => {
+    expect(countFittingChips([48, 48, 48, 48, 48, 48], fit)).toBe(6)
+  })
+
+  it("leaves room on the last row for the count trigger", () => {
+    // Two chips a row; the seventh spills, so the last row trades a chip for the trigger.
+    expect(countFittingChips([48, 48, 48, 48, 48, 48, 48], fit)).toBe(5)
+  })
+
+  it("gives a chip wider than the row a row of its own", () => {
+    expect(countFittingChips([140, 20, 20], { ...fit, rows: 2 })).toBe(3)
+    expect(countFittingChips([140, 140, 140], { ...fit, rows: 2 })).toBe(1)
+  })
+
+  it("shows only the trigger when not even one chip fits beside it", () => {
+    expect(countFittingChips([90, 90], { ...fit, rows: 1 })).toBe(0)
   })
 })
