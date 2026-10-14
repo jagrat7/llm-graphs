@@ -7,6 +7,7 @@ import { ButtonGroup } from "#/ui/components/ui/button-group"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -73,16 +74,18 @@ export function MetricSelect({
           align="start"
           className="duration-200 ease-out motion-reduce:animate-none"
         >
-          {METRICS.map((metric) => (
-            <SelectItem
-              key={metric}
-              value={metric}
-              disabled={unavailable.includes(metric)}
-              className="min-h-11 text-sm sm:min-h-8"
-            >
-              {METRIC_CONFIG[metric].shortLabel}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {METRICS.map((metric) => (
+              <SelectItem
+                key={metric}
+                value={metric}
+                disabled={unavailable.includes(metric)}
+                className="min-h-11 text-sm sm:min-h-8"
+              >
+                {METRIC_CONFIG[metric].shortLabel}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
       {onRemove ? (

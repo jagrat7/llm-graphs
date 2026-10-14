@@ -424,7 +424,7 @@ export function ComparisonChart({
                   d={path.d}
                   stroke={path.color}
                   strokeWidth={2}
-                  initial={reduceMotion ? false : { opacity: 0 }}
+                  initial={reduceMotion ? false : { d: path.d, opacity: 0 }}
                   animate={{
                     d: path.d,
                     opacity: activeId == null || path.ids.has(activeId) ? 0.5 : 0.16,

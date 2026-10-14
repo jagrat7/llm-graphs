@@ -27,6 +27,36 @@ function page(data: Array<unknown>, hasMore = false) {
 }
 
 describe("ArtificialAnalysisProvider", () => {
+  it("keeps task cost absent and rejects invalid prices and output speed", () => {
+    const provider = new ArtificialAnalysisProvider()
+    const measured = {
+      id: "test",
+      name: "test",
+      slug: "test",
+      release_date: null,
+      model_creator: null,
+      price_1m_input_tokens: 1,
+      price_1m_output_tokens: 5,
+      median_output_tokens_per_second: 120,
+    }
+    expect(provider.readMetrics(measured)).toEqual({ costPerMTokens: 2, tokensPerSecond: 120 })
+    for (const value of [null, -1, Infinity, NaN]) {
+      expect(
+        provider.readMetrics({ ...measured, price_1m_input_tokens: value }).costPerMTokens,
+      ).toBeNull()
+      expect(
+        provider.readMetrics({ ...measured, price_1m_output_tokens: value }).costPerMTokens,
+      ).toBeNull()
+      expect(
+        provider.readMetrics({ ...measured, median_output_tokens_per_second: value })
+          .tokensPerSecond,
+      ).toBeNull()
+    }
+    expect(
+      provider.readMetrics({ ...measured, median_output_tokens_per_second: 0 }).tokensPerSecond,
+    ).toBeNull()
+  })
+
   it("keeps only the fields the aggregator reads, across every page", async () => {
     globalThis.fetch = vi
       .fn()

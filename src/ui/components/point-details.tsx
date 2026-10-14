@@ -61,6 +61,7 @@ export function PointDetails({
               </dt>
               <dd className="shrink-0 font-medium tabular-nums">
                 {formatMetric(point.values[axis], metric)}
+                {metric === "cost" ? "/task" : metric === "price" ? "/M tokens" : null}
                 {abbreviation ? (
                   <span className="text-muted-foreground ml-1 font-normal">{abbreviation}</span>
                 ) : null}

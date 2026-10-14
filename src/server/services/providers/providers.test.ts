@@ -29,12 +29,14 @@ describe("ProvidersService", () => {
   it("offers each metric from the sources that publish it, default first", () => {
     expect({
       score: ProvidersService.providersFor("score"),
+      costPerTask: ProvidersService.providersFor("costPerTask"),
       costPerMTokens: ProvidersService.providersFor("costPerMTokens"),
       tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
       durationSeconds: ProvidersService.providersFor("durationSeconds"),
     }).toEqual({
       score: ["deepswe"],
-      costPerMTokens: ["deepswe", "artificialAnalysis"],
+      costPerTask: ["deepswe"],
+      costPerMTokens: ["artificialAnalysis"],
       tokensPerSecond: ["artificialAnalysis"],
       durationSeconds: ["deepswe"],
     })

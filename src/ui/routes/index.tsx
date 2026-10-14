@@ -14,7 +14,7 @@ import { DataError, DataState } from "#/ui/components/data-state"
 import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
-import { METRICS, METRIC_CONFIG, resolveSource } from "#/ui/lib/metrics"
+import { METRICS, METRIC_CONFIG, metricProviders, resolveSource } from "#/ui/lib/metrics"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
@@ -50,7 +50,16 @@ const compareSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search) => compareSearchSchema.parse(search),
+  validateSearch: (search) => {
+    const parsed = compareSearchSchema.parse(search)
+    // Existing links explicitly selecting AA's old Cost meant token pricing.
+    for (const axis of ["x", "y", "z"] as const) {
+      if (parsed[axis] === "cost" && parsed[AXIS_SOURCE_KEY[axis]] === "artificialAnalysis") {
+        parsed[axis] = "price"
+      }
+    }
+    return parsed
+  },
   component: ComparePage,
 })
 
@@ -61,8 +70,23 @@ function axisSetting(
   metric: Metric | null,
   source: string | undefined,
   info: ProvidersInfo,
+  scoreSource: ProviderName | null,
 ): AxisSetting {
-  return { metric, source: metric == null ? null : resolveSource(metric, source, info) }
+  return {
+    metric,
+    source: metric == null ? null : resolveSource(metric, source, info, scoreSource),
+  }
+}
+
+function axisSettings(search: z.infer<typeof compareSearchSchema>, info: ProvidersInfo): AxisState {
+  const scoreAxis = (["x", "y", "z"] as const).find((axis) => search[axis] === "score")
+  const scoreSource =
+    scoreAxis == null ? null : resolveSource("score", search[AXIS_SOURCE_KEY[scoreAxis]], info)
+  return {
+    x: axisSetting(search.x, search.xSource, info, scoreSource),
+    y: axisSetting(search.y, search.ySource, info, scoreSource),
+    z: axisSetting(search.z ?? null, search.zSource, info, scoreSource),
+  }
 }
 
 /** Each filled axis reads its metric from its own source. */
@@ -77,27 +101,23 @@ function ComparePage() {
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
   const reduceMotion = useReducedMotion()
-  const axes: AxisState = {
-    x: axisSetting(search.x, search.xSource, info),
-    y: axisSetting(search.y, search.ySource, info),
-    z: axisSetting(search.z ?? null, search.zSource, info),
-  }
+  const axes = axisSettings(search, info)
+  const unavailableTaskCost = Object.values(axes).some(
+    ({ metric, source }) =>
+      metric === "cost" && source != null && !metricProviders(metric, info).includes(source),
+  )
   const { data: snapshot, isPending, isError } = useModelSnapshot()
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
   const data = useMemo(() => {
     if (!snapshot) return undefined
 
-    const viewAxes: AxisState = {
-      x: axisSetting(search.x, search.xSource, info),
-      y: axisSetting(search.y, search.ySource, info),
-      z: axisSetting(search.z ?? null, search.zSource, info),
-    }
+    const viewAxes = axisSettings(search, info)
     const models = offeredVariants(snapshot, axisBindings(viewAxes))
     const scoreSource =
       Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
 
     return { models, defaultModels: defaultPicks(snapshot, models, scoreSource, info) }
-  }, [snapshot, info, search.x, search.xSource, search.y, search.ySource, search.z, search.zSource])
+  }, [snapshot, info, search])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
 
@@ -197,7 +217,13 @@ function ComparePage() {
         <DataState
           className={CHART_HEIGHT_CLASS}
           title={
-            selected.length === 0 ? "Select models to compare" : "No selected models are available"
+            unavailableTaskCost
+              ? "Task cost is unavailable for this score benchmark"
+              : data.models.length === 0
+                ? "No model configurations have all selected metrics"
+                : selected.length === 0
+                  ? "Select models to compare"
+                  : "No selected models are available"
           }
         >
           <ModelPicker

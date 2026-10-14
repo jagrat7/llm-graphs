@@ -35,7 +35,7 @@ import { cn } from "#/ui/lib/utils"
 const columnHelper = createColumnHelper<Model>()
 const RIGHT_ALIGNED_COLUMN_IDS = new Set([
   "score",
-  "costPerMTokens",
+  "costPerTask",
   "tokensPerSecond",
   "durationSeconds",
   "source",
@@ -135,7 +135,7 @@ const columns = [
     sortUndefined: "last",
     cell: renderScoreCell,
   }),
-  columnHelper.accessor("costPerMTokens", {
+  columnHelper.accessor("costPerTask", {
     header: METRIC_CONFIG.cost.shortLabel,
     sortUndefined: "last",
     cell: ({ getValue }) => formatMetric(getValue(), "cost"),

@@ -28,6 +28,7 @@ export type Model = {
   effort: string
   effortOrder: number
   score: number | null
+  costPerTask: number | null
   costPerMTokens: number | null
   tokensPerSecond: number | null
   durationSeconds: number | null
@@ -97,7 +98,7 @@ export function offeredVariants(
   const indexes = new Map(
     [...new Set(bindings.map((binding) => binding.source))].map((source) => [
       source,
-      indexVariants(snapshot.variants[source], joined),
+      indexVariants(snapshot.variants[source], joined || source !== base),
     ]),
   )
   const entries = new Map(snapshot.entries.map((entry) => [entry.id, entry]))
@@ -112,7 +113,16 @@ export function offeredVariants(
     const entry = entries.get(variant.entryId)
     if (!entry) continue
 
-    models.push(toModel(entry, variant, bindings, indexes, snapshot.logos))
+    const model = toModel(entry, variant, bindings, indexes, snapshot.logos)
+    if (
+      bindings.some(
+        (binding) =>
+          binding.required !== false &&
+          (model[binding.metric] == null || !Number.isFinite(model[binding.metric])),
+      )
+    )
+      continue
+    models.push(model)
   }
 
   return models
@@ -127,12 +137,14 @@ function toModel(
 ): Model {
   const values: Record<MetricKey, number | null> = {
     score: null,
+    costPerTask: null,
     costPerMTokens: null,
     tokensPerSecond: null,
     durationSeconds: null,
   }
   const sources: Record<MetricKey, ProviderName | null> = {
     score: null,
+    costPerTask: null,
     costPerMTokens: null,
     tokensPerSecond: null,
     durationSeconds: null,
@@ -141,7 +153,7 @@ function toModel(
 
   for (const binding of bindings) {
     const value = indexes.get(binding.source)?.get(key)?.metrics[binding.metric]
-    if (value == null) continue
+    if (value == null || !Number.isFinite(value)) continue
 
     values[binding.metric] = value
     sources[binding.metric] = binding.source

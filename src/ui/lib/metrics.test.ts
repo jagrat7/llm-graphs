@@ -7,8 +7,17 @@ import { isSource, sourceLabel } from "./sources"
 const info = ProvidersService.info()
 
 describe("provider metadata", () => {
+  it("binds task cost to the score benchmark, including a benchmark with no task cost", () => {
+    expect(resolveSource("cost", "artificialAnalysis", info)).toBe("deepswe")
+    expect(resolveSource("cost", undefined, info, "artificialAnalysis")).toBe("artificialAnalysis")
+    expect(metricProviders("cost", info)).not.toContain("artificialAnalysis")
+    expect(metricProviders("price", info)).toEqual(["artificialAnalysis"])
+    expect(metricAxisTitle("cost", "deepswe", info)).toContain("$/task")
+    expect(formatMetric(0.003, "price")).toBe("$0.003")
+  })
+
   it("resolves URL sources against the chosen metric after metadata loads", () => {
-    expect(resolveSource("cost", "artificialAnalysis", info)).toBe("artificialAnalysis")
+    expect(resolveSource("price", "artificialAnalysis", info)).toBe("artificialAnalysis")
     expect(resolveSource("score", "artificialAnalysis", info)).toBe("deepswe")
     expect(resolveSource("speed", "removed-provider", info)).toBe("artificialAnalysis")
     expect(resolveSource("duration", undefined, info)).toBe("deepswe")
@@ -28,13 +37,13 @@ describe("provider metadata", () => {
     }
 
     expect(sourceLabel("artificialAnalysis", updated)).toBe("Updated source name")
-    expect(metricProviders("cost", updated)).toEqual(["artificialAnalysis", "deepswe"])
-    expect(resolveSource("cost", undefined, updated)).toBe("artificialAnalysis")
-    expect(metricAxisTitle("cost", "artificialAnalysis", updated)).toBe(
-      "Cost · $/M tokens (Updated calculation)",
+    expect(metricProviders("price", updated)).toEqual(["artificialAnalysis"])
+    expect(resolveSource("price", undefined, updated)).toBe("artificialAnalysis")
+    expect(metricAxisTitle("price", "artificialAnalysis", updated)).toBe(
+      "Token price · $/M tokens (Updated calculation)",
     )
-    expect(metricAxisTitle("speed", "artificialAnalysis", updated)).toBe("Speed · tokens/s")
-    expect(metricAxisTitle("cost", null, updated)).toBe("Cost · $/M tokens")
+    expect(metricAxisTitle("speed", "artificialAnalysis", updated)).toBe("Output speed · tokens/s")
+    expect(metricAxisTitle("price", null, updated)).toBe("Token price · $/M tokens")
   })
 })
 

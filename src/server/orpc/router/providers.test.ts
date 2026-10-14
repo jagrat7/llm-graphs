@@ -15,13 +15,21 @@ describe("providers.info", () => {
       },
       metricProviders: {
         score: ["deepswe"],
-        costPerMTokens: ["deepswe", "artificialAnalysis"],
+        costPerTask: ["deepswe"],
+        costPerMTokens: ["artificialAnalysis"],
         tokensPerSecond: ["artificialAnalysis"],
         durationSeconds: ["deepswe"],
       },
       notes: {
-        deepswe: { costPerMTokens: "observed input/output mix" },
-        artificialAnalysis: { costPerMTokens: "3:1 input/output blend" },
+        deepswe: {
+          score: "DeepSWE v1.1 pass rate",
+          costPerTask: "mean cost per evaluated task",
+          durationSeconds: "mean wall time per evaluated task",
+        },
+        artificialAnalysis: {
+          costPerMTokens: "3:1 input/output blend",
+          tokensPerSecond: "AA output-generation benchmark",
+        },
       },
     })
     expect(JSON.parse(JSON.stringify(info))).toEqual(info)

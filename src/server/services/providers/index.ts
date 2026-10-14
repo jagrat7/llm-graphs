@@ -33,6 +33,7 @@ export const ProvidersService = {
       },
       metricProviders: {
         score: ProvidersService.providersFor("score"),
+        costPerTask: ProvidersService.providersFor("costPerTask"),
         costPerMTokens: ProvidersService.providersFor("costPerMTokens"),
         tokensPerSecond: ProvidersService.providersFor("tokensPerSecond"),
         durationSeconds: ProvidersService.providersFor("durationSeconds"),
