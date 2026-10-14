@@ -201,6 +201,17 @@ async function openChecklist() {
 }
 
 describe("model picker checklist", () => {
+  it("can clear a selection the current models do not include", async () => {
+    const { onChange } = renderPicker(["retired"])
+    await openChecklist()
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Clear" }))
+    })
+
+    expect(onChange).toHaveBeenLastCalledWith([])
+  })
+
   it("adds an unchecked model and removes a checked one", async () => {
     const { onChange } = renderPicker()
     await openChecklist()

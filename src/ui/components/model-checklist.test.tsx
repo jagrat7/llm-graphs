@@ -118,3 +118,29 @@ describe("model checklist providers", () => {
     expect(screen.getByRole("button", { name: "1 more provider" })).toBeTruthy()
   })
 })
+
+describe("model checklist kept rows", () => {
+  afterEach(cleanup)
+
+  it("keeps an unchecked row and its vendor in place until the list closes", () => {
+    const groups = groupByVendor([
+      ...["anthropic", "openai", "xai", "zhipuai", "moonshotai", "google"].map((vendor) =>
+        makeModel(vendor, vendor, null),
+      ),
+      makeModel("ds-1", "deepseek", "2026-04-01"),
+      makeModel("ds-2", "deepseek", "2026-03-01"),
+      makeModel("ds-3", "deepseek", "2026-02-01"),
+      makeModel("ds-old", "deepseek", "2026-01-01"),
+    ])
+    const element = (selected: Array<string>) => (
+      <ModelChecklist groups={groups} selected={new Set(selected)} onToggle={() => {}} />
+    )
+    const view = render(element(["ds-old"]))
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "ds-old" }))
+    view.rerender(element([]))
+
+    expect(screen.getByRole("checkbox", { name: "ds-old" })).toHaveProperty("ariaChecked", "false")
+    expect(screen.getByRole("heading", { name: "DeepSeek" })).toBeTruthy()
+  })
+})

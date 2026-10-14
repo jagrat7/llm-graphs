@@ -86,14 +86,20 @@ type ModelChecklistProps = {
 export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelChecklistProps) {
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set())
   const [allProviders, setAllProviders] = useState(false)
+  // What was on the chart when the list opened, plus anything toggled since. Those
+  // rows stay put until the list closes: unchecking one must not pull it, or its
+  // vendor, out from under the pointer or keyboard focus.
+  const [kept, setKept] = useState<ReadonlySet<string>>(() => new Set(selected))
+  const isKept = (model: Model) => kept.has(model.model) || selected.has(model.model)
 
-  // As with models, a vendor that has something on the chart never hides.
+  function toggle(model: string) {
+    setKept((current) => (current.has(model) ? current : new Set(current).add(model)))
+    onToggle(model)
+  }
+
   const shownGroups = allProviders
     ? groups
-    : groups.filter(
-        (group, index) =>
-          index < PROVIDER_PREVIEW_COUNT || group.models.some((model) => selected.has(model.model)),
-      )
+    : groups.filter((group, index) => index < PROVIDER_PREVIEW_COUNT || group.models.some(isKept))
   const hiddenProviderCount = groups.length - shownGroups.length
 
   return (
@@ -106,9 +112,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
           // A selected model never hides behind the toggle: what is on the chart stays checkable.
           const shown = isExpanded
             ? group.models
-            : group.models.filter(
-                (model, index) => index < VENDOR_PREVIEW_COUNT || selected.has(model.model),
-              )
+            : group.models.filter((model, index) => index < VENDOR_PREVIEW_COUNT || isKept(model))
           const hiddenCount = group.models.length - shown.length
           const selectedCount = group.models.filter((model) => selected.has(model.model)).length
           const headingId = `model-checklist-${group.key}`
@@ -142,7 +146,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
                           keys the chart the same way the chips do. */}
                         <Checkbox
                           checked={selected.has(model.model)}
-                          onCheckedChange={() => onToggle(model.model)}
+                          onCheckedChange={() => toggle(model.model)}
                           style={dotStyle}
                           className="data-checked:text-background data-checked:border-(--dot) data-checked:bg-(--dot) dark:data-checked:bg-(--dot)"
                         />

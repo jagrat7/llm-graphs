@@ -372,7 +372,8 @@ export function ModelPicker({
                   variant="ghost"
                   size="sm"
                   className="h-11 sm:h-6"
-                  disabled={value.length === 0}
+                  // Ids a benchmark lacks still count: an old shared link can carry them.
+                  disabled={selected.length === 0}
                   onClick={() => onChange([])}
                 >
                   Clear
