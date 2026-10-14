@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-14T18:32:06.513538+00:00",
+  "platform": "Linux-7.2.3-arch1-3-x86_64-with-glibc2.44",
+  "logical_cpus": 4,
+  "bun": "1.4.3",
+  "node": "v24.21.0",
+  "typescript": "6.0.3",
+  "baseline": "f6a7ac0",
+  "warmups_per_case": 1,
+  "samples_per_case": 3,
+  "cases": {
+    "tsc": {
+      "command": ["node", "node_modules/typescript/bin/tsc", "--noEmit"],
+      "samples": [
+        {
+          "seconds": 16.1478,
+          "peak_rss_kib": 1120684,
+          "exit_code": 0
+        },
+        {
+          "seconds": 23.5133,
+          "peak_rss_kib": 1121152,
+          "exit_code": 0
+        },
+        {
+          "seconds": 28.231,
+          "peak_rss_kib": 1123744,
+          "exit_code": 0
+        }
+      ],
+      "warmups": [
+        {
+          "seconds": 15.4979,
+          "peak_rss_kib": 1127784,
+          "exit_code": 0
+        }
+      ],
+      "median_seconds": 23.5133,
+      "median_peak_rss_kib": 1121152
+    },
+    "bun_check": {
+      "command": ["bun", "check"],
+      "samples": [
+        {
+          "seconds": 1.9646,
+          "peak_rss_kib": 452876,
+          "exit_code": 0
+        },
+        {
+          "seconds": 1.9553,
+          "peak_rss_kib": 448036,
+          "exit_code": 0
+        },
+        {
+          "seconds": 2.8941,
+          "peak_rss_kib": 437316,
+          "exit_code": 0
+        }
+      ],
+      "warmups": [
+        {
+          "seconds": 1.9865,
+          "peak_rss_kib": 455860,
+          "exit_code": 0
+        }
+      ],
+      "median_seconds": 1.9646,
+      "median_peak_rss_kib": 448036
+    },
+    "start_before": {
+      "command": ["bun", "run", "build"],
+      "samples": [
+        {
+          "seconds": 8.571,
+          "peak_rss_kib": 1108056,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1838116,
+          "client_js_gzip_bytes": 540622,
+          "server_bytes": 5145400
+        },
+        {
+          "seconds": 13.1943,
+          "peak_rss_kib": 1119524,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1838116,
+          "client_js_gzip_bytes": 540622,
+          "server_bytes": 5145400
+        },
+        {
+          "seconds": 18.6508,
+          "peak_rss_kib": 1094988,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1838116,
+          "client_js_gzip_bytes": 540622,
+          "server_bytes": 5145400
+        }
+      ],
+      "warmups": [
+        {
+          "seconds": 13.2395,
+          "peak_rss_kib": 1077440,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1838116,
+          "client_js_gzip_bytes": 540622,
+          "server_bytes": 5145400
+        }
+      ],
+      "median_seconds": 13.1943,
+      "median_peak_rss_kib": 1108056
+    },
+    "start_after": {
+      "command": ["bun", "run", "build"],
+      "samples": [
+        {
+          "seconds": 15.6963,
+          "peak_rss_kib": 1109788,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1833207,
+          "client_js_gzip_bytes": 540189,
+          "server_bytes": 5303563
+        },
+        {
+          "seconds": 17.1575,
+          "peak_rss_kib": 1090008,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1833207,
+          "client_js_gzip_bytes": 540189,
+          "server_bytes": 5303563
+        },
+        {
+          "seconds": 24.2287,
+          "peak_rss_kib": 1079616,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1833207,
+          "client_js_gzip_bytes": 540189,
+          "server_bytes": 5303563
+        }
+      ],
+      "warmups": [
+        {
+          "seconds": 15.5668,
+          "peak_rss_kib": 1149840,
+          "exit_code": 0,
+          "client_js_files": 17,
+          "client_js_bytes": 1833207,
+          "client_js_gzip_bytes": 540189,
+          "server_bytes": 5303563
+        }
+      ],
+      "median_seconds": 17.1575,
+      "median_peak_rss_kib": 1090008
+    }
+  }
+}
