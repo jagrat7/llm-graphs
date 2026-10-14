@@ -115,7 +115,13 @@ describe("comparison chart", () => {
     expect(announced).toContain("60%")
     expect(card?.className).toBe(CHART_TOOLTIP_CARD_CLASS)
     expect(card?.style.width).toBe(`${CHART_TOOLTIP_WIDTH}px`)
+    // The visible card has to describe the same effort as the announcement, not just
+    // the same model: alpha's low effort costs $2 and scores 40%.
     expect(card?.textContent).toContain("Alpha")
+    expect(card?.textContent).toContain("high")
+    expect(card?.textContent).toContain("$6")
+    expect(card?.textContent).toContain("60%")
+    expect(card?.textContent).not.toContain("$2")
   })
 
   it("dims other models while a point is focused", async () => {

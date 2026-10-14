@@ -41,6 +41,18 @@ export function pointTooltipContent(
   }
 }
 
+/**
+ * The point a tooltip describes: the focused one when the host names it, otherwise the
+ * first in the list. The announced text and the visible card both pick through here, so
+ * they can never describe different efforts.
+ */
+export function focusedPoint(
+  points: ReadonlyArray<ChartPoint<PlotPoint>>,
+  primaryPoint: ChartPoint | undefined,
+): PlotPoint | undefined {
+  return (points.find((candidate) => candidate.key === primaryPoint?.key) ?? points[0])?.datum
+}
+
 /** Shared tooltip behaviour for every 2D comparison view. */
 export function chartTooltip(
   data: PlotData,
@@ -62,8 +74,7 @@ export function chartTooltip(
     // Inspection follows focus only; the old chart never pinned a card on click or Enter.
     sticky: false,
     content: (points: ReadonlyArray<ChartPoint<PlotPoint>>, { primaryPoint }) => {
-      const point = (points.find((candidate) => candidate.key === primaryPoint?.key) ?? points[0])
-        ?.datum
+      const point = focusedPoint(points, primaryPoint)
 
       return point == null ? { rows: [] } : pointTooltipContent(point, data, sources, info)
     },

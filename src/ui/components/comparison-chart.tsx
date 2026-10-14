@@ -10,6 +10,7 @@ import { PointDetails } from "#/ui/components/point-details"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
+import { focusedPoint } from "#/ui/lib/chart-tooltip"
 import { buildPlotData, describePlot, type PlotData } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { METRIC_CONFIG } from "#/ui/lib/metrics"
@@ -178,8 +179,8 @@ export function ComparisonChart({
           initialWidth={1200}
           style={{ height: "100%" }}
           // A custom body drops the library's card chrome, so the card brings its own.
-          renderTooltipBody={({ points }) => {
-            const point = points[0]?.datum
+          renderTooltipBody={({ points, primaryPoint }) => {
+            const point = focusedPoint(points, primaryPoint)
 
             return point ? (
               <div className={CHART_TOOLTIP_CARD_CLASS} style={{ width: CHART_TOOLTIP_WIDTH }}>
