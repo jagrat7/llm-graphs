@@ -29,8 +29,10 @@ export type ModelEntry = {
   name: string
   /** A slug, or null when no rule could name one. */
   vendor: string | null
-  /** Chart hue in degrees, from the vendor slug. Null for an unknown vendor. */
+  /** Chart hue in degrees, near its vendor's brand or hashed hue. Null for an unknown vendor. */
   hue: number | null
+  /** For a black-and-white brand, which step of the theme's ink it draws in; its hue then tints it. */
+  shade?: number
   releaseDate: string | null
 }
 

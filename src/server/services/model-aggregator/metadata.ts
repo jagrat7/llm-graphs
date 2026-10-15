@@ -1,4 +1,5 @@
 import type { ModelsDevModel } from "../providers"
+import type { ModelEntry } from "./model-aggregator.types"
 
 import { firstWord, normalizeId } from "./match-key"
 
@@ -12,6 +13,86 @@ export function vendorHue(slug: string) {
   }
 
   return (hash >>> 0) % 360
+}
+
+/** The OKLCH chroma and hue of a `#rrggbb` colour, the space the chart draws vendor colours in. */
+export function oklch(hex: string) {
+  const [red, green, blue] = [1, 3, 5].map((start) => {
+    const channel = Number.parseInt(hex.slice(start, start + 2), 16) / 255
+    return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  })
+  const long = Math.cbrt(0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue)
+  const medium = Math.cbrt(0.2119034982 * red + 0.6806995451 * green + 0.1073969566 * blue)
+  const short = Math.cbrt(0.0883024619 * red + 0.2817188376 * green + 0.6299787005 * blue)
+  const a = 1.9779984951 * long - 2.428592205 * medium + 0.4505937099 * short
+  const b = 0.0259040371 * long + 0.7827717662 * medium - 0.808675766 * short
+
+  return {
+    chroma: Math.hypot(a, b),
+    hue: Math.round((Math.atan2(b, a) * 180) / Math.PI + 360) % 360,
+  }
+}
+
+/** Below this a brand colour is black, white or grey, and its hue means nothing. */
+const NEUTRAL_CHROMA = 0.02
+
+/**
+ * Where a vendor's models sit around its hue, newest first: the newest takes the hue itself and
+ * the next ones alternate either side, then the pattern repeats. Close enough to read as one
+ * vendor, far enough apart to tell its newest models apart.
+ */
+const MODEL_HUE_OFFSETS = [0, 10, -10, 20, -20]
+
+/**
+ * A black-and-white brand's models step from the theme's ink toward grey, `--vendor-ink-0` to `-2`,
+ * all faintly tinted toward the brand's one tint hue.
+ */
+const NEUTRAL_SHADES = 3
+
+/**
+ * Each entry's chart colour: a hue near its vendor's brand (or hashed) hue, or for a black-and-white
+ * brand a shade of the theme's ink tinted toward its tint (or hashed) hue. Neither for an entry with
+ * no vendor.
+ */
+export function modelColors(
+  entries: ReadonlyArray<Pick<ModelEntry, "id" | "vendor" | "releaseDate">>,
+  styleOf: (vendor: string) => { color?: string; tint?: string } | undefined,
+) {
+  const colors = new Map<string, Pick<ModelEntry, "hue" | "shade">>()
+  const byVendor = new Map<string, Array<(typeof entries)[number]>>()
+
+  for (const entry of entries) {
+    if (entry.vendor == null) {
+      colors.set(entry.id, { hue: null })
+      continue
+    }
+    const members = byVendor.get(entry.vendor) ?? []
+    members.push(entry)
+    byVendor.set(entry.vendor, members)
+  }
+
+  for (const [vendor, members] of byVendor) {
+    const style = styleOf(vendor)
+    const base = style?.color ? oklch(style.color) : { chroma: 1, hue: vendorHue(vendor) }
+    const tintHue = style?.tint ? oklch(style.tint).hue : vendorHue(vendor)
+    const newestFirst = members.toSorted(
+      (left, right) =>
+        (right.releaseDate ?? "").localeCompare(left.releaseDate ?? "") ||
+        left.id.localeCompare(right.id),
+    )
+
+    newestFirst.forEach((entry, rank) => {
+      const offset = MODEL_HUE_OFFSETS[rank % MODEL_HUE_OFFSETS.length]
+      colors.set(
+        entry.id,
+        base.chroma < NEUTRAL_CHROMA
+          ? { hue: tintHue, shade: rank % NEUTRAL_SHADES }
+          : { hue: (base.hue + offset + 360) % 360 },
+      )
+    })
+  }
+
+  return colors
 }
 
 /** "Qwen3 VL 8B (Reasoning)" → "Qwen3 VL 8B". Every trailing group goes. */

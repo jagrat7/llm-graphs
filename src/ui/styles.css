@@ -35,9 +35,15 @@
   --border: oklch(0.885 0.006 260);
   --input: oklch(0.885 0.006 260);
   --ring: oklch(0.56 0.18 255);
-  /* Vendor colours: the hue comes from the vendor slug, lightness and chroma from the theme. */
+  /* Vendor colours: the hue comes from the vendor's brand or slug, lightness and chroma from the
+     theme. A black-and-white brand draws in ink instead, its models stepping toward grey, faintly
+     tinted toward the brand's tint hue. The ink steps are lightnesses. */
   --vendor-l: 0.62;
   --vendor-c: 0.15;
+  --vendor-ink-0: 0.2;
+  --vendor-ink-1: 0.32;
+  --vendor-ink-2: 0.42;
+  --vendor-tint-c: 0.045;
   --vendor-unknown: oklch(0.52 0.01 260);
   --radius: 0.5rem;
   --sidebar: oklch(0.97 0.002 260);
@@ -72,6 +78,10 @@
   --ring: oklch(0.7 0.15 250);
   --vendor-l: 0.74;
   --vendor-c: 0.13;
+  --vendor-ink-0: 0.95;
+  --vendor-ink-1: 0.87;
+  --vendor-ink-2: 0.79;
+  --vendor-tint-c: 0.035;
   --vendor-unknown: oklch(0.7 0.01 260);
   --sidebar: oklch(0.19 0.006 260);
 }

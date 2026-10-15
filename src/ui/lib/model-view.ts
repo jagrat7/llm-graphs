@@ -47,7 +47,8 @@ export const DEFAULT_PICK_COUNT = 9
 /** The most models one vendor contributes to the opening selection. */
 export const DEFAULT_PICKS_PER_VENDOR = 3
 
-export function vendorColor(hue: number | null) {
+export function vendorColor({ hue, shade }: { hue: number | null; shade?: number }) {
+  if (shade != null) return `oklch(var(--vendor-ink-${shade}) var(--vendor-tint-c) ${hue ?? 0})`
   return hue == null ? "var(--vendor-unknown)" : `oklch(var(--vendor-l) var(--vendor-c) ${hue})`
 }
 
@@ -229,7 +230,7 @@ function toModel(
     displayName: entry.name,
     vendor: entry.vendor,
     releaseDate: entry.releaseDate,
-    chartColor: vendorColor(entry.hue),
+    chartColor: vendorColor(entry),
     logoUrl: entry.vendor == null ? null : (logos[entry.vendor] ?? null),
     mode: variant.mode,
     level: variant.level,

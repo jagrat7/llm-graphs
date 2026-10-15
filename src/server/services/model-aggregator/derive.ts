@@ -1,5 +1,6 @@
 import type { MetricRow, ModelsDevModel, ProviderName, SourceName } from "../providers"
 
+import { VENDOR_STYLES } from "../providers/models-dev/vendor-styles"
 import { effortOrder, trailingDateLength } from "../providers/utils"
 import type {
   EntryProvenance,
@@ -25,9 +26,9 @@ import {
   catalogVendor,
   deriveName,
   earliestDate,
+  modelColors,
   pickSourceName,
   slugify,
-  vendorHue,
 } from "./metadata"
 import { ProvidersService } from "../providers"
 
@@ -421,7 +422,7 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
       id,
       name: metadata.name,
       vendor: metadata.vendor,
-      hue: metadata.vendor ? vendorHue(metadata.vendor) : null,
+      hue: null,
       releaseDate: metadata.releaseDate,
     })
     provenance.push({
@@ -458,10 +459,13 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
     }
   }
 
+  const colors = modelColors(entries, (vendor) => VENDOR_STYLES[vendor])
+  for (const entry of entries) Object.assign(entry, colors.get(entry.id))
+
   const logos: Record<string, string> = {}
   for (const vendor of [...vendors].toSorted()) {
-    const logo = catalogPayload?.logos[vendor]
-    if (logo && logo !== catalogPayload.genericLogo) logos[vendor] = logo
+    const logo = VENDOR_STYLES[vendor]?.logo ?? catalogPayload?.logos[vendor]
+    if (logo && logo !== catalogPayload?.genericLogo) logos[vendor] = logo
   }
 
   const fetchedAtOf = (name: ProviderName) =>
