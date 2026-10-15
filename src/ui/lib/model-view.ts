@@ -43,7 +43,7 @@ export type MetricBinding = {
 }
 
 /** How many models the chart opens on. */
-export const DEFAULT_PICK_COUNT = 10
+export const DEFAULT_PICK_COUNT = 9
 /** The most models one vendor contributes to the opening selection. */
 export const DEFAULT_PICKS_PER_VENDOR = 3
 
