@@ -4,9 +4,12 @@ import type { Model } from "#/ui/lib/model-view"
 import { metricRecord } from "./metrics"
 
 import {
+  axisScale,
+  logAllowed,
   axisTicks,
   buildPlotData,
   describePlot,
+  logTicks,
   metricTicks,
   padDomain,
   plotQuality,
@@ -212,9 +215,88 @@ describe("buildPlotData", () => {
   })
 })
 
+describe("axisScale", () => {
+  it("goes log when a wide ratio metric crowds the low end of the axis", () => {
+    // Token prices: one $600 model would flatten the $1–$5 ones onto the baseline.
+    expect(axisScale(true, [1, 2, 2.5, 3, 5, 600])).toBe("log")
+    // Evenly spread across decades, as task horizons often are.
+    expect(axisScale(true, [0.01, 0.1, 1, 10, 100])).toBe("log")
+  })
+
+  it("stays linear when values spread evenly, however wide their range", () => {
+    expect(axisScale(true, [10, 50, 100, 150, 200])).toBe("linear")
+  })
+
+  it("stays linear under a decade of spread", () => {
+    expect(axisScale(true, [1, 1.1, 1.2, 9])).toBe("linear")
+  })
+
+  it("stays linear for zero, negative, or too few values", () => {
+    expect(axisScale(true, [0, 1, 2, 500])).toBe("linear")
+    expect(axisScale(true, [-1, 1, 2, 500])).toBe("linear")
+    // Repeated efforts at one price are one position, not three.
+    expect(axisScale(true, [1, 1, 1, 500])).toBe("linear")
+  })
+
+  it("never puts a score or rating on a log axis", () => {
+    expect(axisScale(false, [1, 2, 2.5, 3, 5, 600])).toBe("linear")
+  })
+})
+
+describe("buildPlotData axis scales", () => {
+  const spread = [0.1, 0.2, 0.3, 1, 100].map((costPerTask, index) =>
+    makeModel({ model: `m${index}`, costPerTask, score: 10 + index * 10 }),
+  )
+
+  it("places points on a log axis by their decade", () => {
+    const data = buildPlotData(spread, XY)
+
+    expect(data.scales).toEqual({ x: "log", y: "linear", z: "linear" })
+    // $1 is a third of the way from $0.10 to $100 in decades, not 1% of the dollars.
+    expect(data.pointById.get("m3-unknown-unknown")?.unit.x).toBeCloseTo(1 / 3)
+  })
+
+  it("lets a source mark a plain metric as a ratio, like METR's horizon score", () => {
+    const horizons = [0.01, 0.02, 0.05, 1, 40].map((score, index) =>
+      makeModel({ model: `h${index}`, score }),
+    )
+
+    expect(buildPlotData(horizons, XY).scales.y).toBe("linear")
+    expect(buildPlotData(horizons, XY, { y: true }).scales.y).toBe("log")
+  })
+  it("lets the reader's choice win over detection, where log is possible", () => {
+    const even = [1, 25, 50, 75, 100].map((costPerTask, index) =>
+      makeModel({ model: `e${index}`, costPerTask, score: 10 + index * 10 }),
+    )
+    const forced = buildPlotData(even, XY, {}, { x: "log", y: "log" })
+
+    expect(forced.autoScales.x).toBe("linear")
+    expect(forced.logAllowed).toEqual({ x: true, y: false, z: false })
+    // Score is no ratio metric, so asking for log there changes nothing.
+    expect(forced.scales).toEqual({ x: "log", y: "linear", z: "linear" })
+    expect(buildPlotData(spread, XY, {}, { x: "linear" }).scales.x).toBe("linear")
+  })
+})
+
+describe("logAllowed", () => {
+  it("allows log for a ratio metric with two or more positive values", () => {
+    expect(logAllowed(true, [2, 6])).toBe(true)
+    expect(logAllowed(true, [0, 6, 12])).toBe(false)
+    expect(logAllowed(true, [5, 5])).toBe(false)
+    expect(logAllowed(false, [1, 100, 10_000])).toBe(false)
+  })
+})
+
 describe("padDomain", () => {
   it("widens a domain by a share of its span", () => {
     expect(padDomain({ min: 0, max: 10 }, 0.1)).toEqual({ min: -1, max: 11 })
+  })
+
+  it("widens a log domain by a share of its decades, never reaching zero", () => {
+    const padded = padDomain({ min: 0.1, max: 1000 }, 0.1, "log")
+
+    expect(padded.min).toBeCloseTo(0.1 / 10 ** 0.4)
+    expect(padded.max).toBeCloseTo(1000 * 10 ** 0.4)
   })
 
   it("falls back to a proportional pad when the span is zero", () => {
@@ -262,6 +344,29 @@ describe("timeTicks", () => {
 
     expect(metricTicks("duration", domain, 5)).toEqual(timeTicks(domain, 5))
     expect(metricTicks("cost", domain, 5)).toEqual(axisTicks(domain, 5))
+  })
+})
+
+describe("logTicks", () => {
+  it("ticks powers of ten across several decades", () => {
+    expect(logTicks("cost", { min: 0.01, max: 1000 }, 5)).toEqual([0.01, 0.1, 1, 10, 100, 1000])
+    expect(logTicks("cost", { min: 0.001, max: 1e6 }, 4)).toEqual([0.001, 1, 1000, 1e6])
+  })
+
+  it("fills a short span with 2× and 5× steps", () => {
+    expect(logTicks("cost", { min: 0.4, max: 22 }, 5)).toEqual([0.5, 1, 2, 5, 10, 20])
+    expect(logTicks("cost", { min: 0.18, max: 3.2 }, 5)).toEqual([0.2, 0.5, 1, 2])
+  })
+
+  it("ticks a duration on clock decades: seconds, minutes, then hours", () => {
+    expect(logTicks("duration", { min: 5, max: 20_000 }, 5)).toEqual([10, 60, 600, 3600])
+    expect(logTicks("duration", { min: 150, max: 5700 }, 5)).toEqual([300, 600, 1800, 3600])
+  })
+
+  it("is the tick rule for log axes", () => {
+    const domain = { min: 0.01, max: 1000 }
+
+    expect(metricTicks("cost", domain, 5, "log")).toEqual(logTicks("cost", domain, 5))
   })
 })
 

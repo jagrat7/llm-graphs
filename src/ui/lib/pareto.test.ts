@@ -4,7 +4,7 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { buildPlotData, type PlotMetrics } from "#/ui/lib/comparison-plot-data"
 import { metricRecord } from "#/ui/lib/metrics"
-import { hasParetoFrontier, paretoFrontier } from "#/ui/lib/pareto"
+import { drawnFrontier, hasParetoFrontier, paretoFrontier } from "#/ui/lib/pareto"
 
 function makeModel({
   model,
@@ -39,6 +39,10 @@ const models = [
 
 function frontierIds(metrics: PlotMetrics, input = models) {
   return paretoFrontier(buildPlotData(input, metrics)).map((point) => point.id)
+}
+
+function drawn(input: Array<Model>) {
+  return drawnFrontier(buildPlotData(input, { x: "cost", y: "score" })).map((point) => point.id)
 }
 
 describe("pareto frontier", () => {
@@ -103,5 +107,24 @@ describe("pareto frontier", () => {
     expect(plot({ x: "cost", y: "duration" })).toBe(false)
     expect(plot({ x: "cost", y: "score", z: "duration" })).toBe(false)
     expect(frontierIds({ x: "price", y: "score" })).toEqual([])
+  })
+
+  it("draws a frontier only when some variant falls off it", () => {
+    // Each dearer model scores higher, so all of them are on it and nothing is muted.
+    const climbing = [
+      makeModel({ model: "alpha", score: 40, costPerTask: 2 }),
+      makeModel({ model: "beta", score: 55, costPerTask: 5 }),
+      makeModel({ model: "gamma", score: 70, costPerTask: 20 }),
+    ]
+
+    expect(drawn(climbing)).toEqual([])
+    expect(drawn(models)).toEqual(["alpha-on-low", "alpha-on-high", "gamma-unknown-unknown"])
+    // One variant beating every other leaves a single point, which draws no line.
+    expect(
+      drawn([
+        makeModel({ model: "alpha", score: 70, costPerTask: 2 }),
+        makeModel({ model: "beta", score: 50, costPerTask: 5 }),
+      ]),
+    ).toEqual([])
   })
 })

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import { ProvidersService } from "#/server/services/providers"
 import {
   formatMetric,
+  isRatioMetric,
   metricAxisLabel,
   metricAxisTitle,
   metricProviders,
@@ -72,6 +73,29 @@ describe("axis captions", () => {
     expect(metricAxisLabel("context", "arena", info)).toBe("Context length (tokens)")
     expect(metricAxisLabel("score", "metr", info)).toBe("Task horizon (50%, h)")
     expect(metricAxisLabel("horizon80", "metr", info)).toBe("Task horizon (80%, h)")
+  })
+
+  it("says when an axis is on a log scale", () => {
+    expect(metricAxisLabel("price", "artificialAnalysis", info, "log")).toBe(
+      "Token price ($/M, log scale)",
+    )
+    expect(metricAxisLabel("horizon80", "metr", info, "log")).toBe(
+      "Task horizon (80%, h, log scale)",
+    )
+    expect(metricAxisLabel("duration", "deepswe", info, "log")).toBe("Task duration (log scale)")
+    expect(metricAxisLabel("votes", "arena", info, "log")).toBe("Vote count (log scale)")
+  })
+})
+
+describe("ratio metrics", () => {
+  it("lets prices, costs and horizons go log but never percentages or ratings", () => {
+    expect(isRatioMetric("price", "artificialAnalysis", info)).toBe(true)
+    expect(isRatioMetric("horizon80", "metr", info)).toBe(true)
+    // METR reports its score as a task horizon in hours.
+    expect(isRatioMetric("score", "metr", info)).toBe(true)
+    expect(isRatioMetric("score", "deepswe", info)).toBe(false)
+    expect(isRatioMetric("score", "arena", info)).toBe(false)
+    expect(isRatioMetric("taskScore", "metr", info)).toBe(false)
   })
 })
 

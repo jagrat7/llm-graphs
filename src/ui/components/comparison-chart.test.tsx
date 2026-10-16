@@ -278,6 +278,44 @@ describe("comparison chart", () => {
     expect(curve()).not.toBeNull()
   })
 
+  it("starts the log switch where detection put the axis, and flips it", async () => {
+    const crowded = [0.05, 0.1, 0.2, 0.4, 60].map((costPerTask, index) =>
+      makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
+    )
+    const client = new QueryClient()
+    client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
+    const { container } = render(
+      <QueryClientProvider client={client}>
+        <ComparisonChart
+          models={crowded}
+          sources={{ x: "deepswe", y: "deepswe" }}
+          xMetric="cost"
+          yMetric="score"
+        />
+      </QueryClientProvider>,
+    )
+    const toggle = screen.getByRole("button", { name: "Log scale for Task cost" })
+
+    expect(toggle.getAttribute("aria-pressed")).toBe("true")
+    expect(container.textContent).toContain("log scale")
+    // Score is no ratio metric, so it never gets a switch.
+    expect(screen.queryByRole("button", { name: /Log scale for Score/ })).toBeNull()
+
+    await act(async () => fireEvent.click(toggle))
+    await settle()
+
+    expect(toggle.getAttribute("aria-pressed")).toBe("false")
+    expect(container.textContent).not.toContain("log scale")
+  })
+
+  it("offers log on a narrow axis without turning it on", () => {
+    renderChart()
+
+    expect(
+      screen.getByRole("button", { name: "Log scale for Task cost" }).getAttribute("aria-pressed"),
+    ).toBe("false")
+  })
+
   it("says a highlighted model, not the frontier, keeps its emphasis", () => {
     const { container } = renderChart("beta")
     const description = container.querySelector("svg.ts-chart desc")?.textContent ?? ""

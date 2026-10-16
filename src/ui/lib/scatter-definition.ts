@@ -1,5 +1,6 @@
 import { defineChart } from "@tanstack/charts"
 import { scaleLinear } from "@tanstack/charts/scales/linear"
+import { scaleLog } from "d3-scale"
 
 import type { PlotData } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
@@ -13,16 +14,16 @@ import {
 import { CHART_GRID_MINOR_OPACITY, CHART_GRID_OPACITY } from "#/ui/lib/chart-styles"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
-import { padDomain, timeTicks } from "#/ui/lib/comparison-plot-data"
+import { metricTicks, padDomain } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
-import { paretoFrontier } from "#/ui/lib/pareto"
+import { drawnFrontier } from "#/ui/lib/pareto"
 
 const DOMAIN_PAD = 0.08
 /** Minimum pixels between ticks — larger spacing means fewer, calmer axis markers. */
 const TICK_SPACING_X = 220
 const TICK_SPACING_Y = 120
-/** Interval counts for a duration axis, which picks its own clock-friendly steps. */
-const TIME_INTERVALS = { x: 5, y: 4 }
+/** Interval counts for axes that pick their own steps: durations and log axes. */
+const TICK_INTERVALS = { x: 5, y: 4 }
 /** Ring drawn around the active marker; clears a logo's box with a little air. */
 const FOCUS_RING_RADIUS = 13
 
@@ -51,16 +52,27 @@ export function scatterDefinition(
 ) {
   const xMetric = data.metrics.x!
   const yMetric = data.metrics.y!
-  const xDomain = padDomain(data.domains.x, DOMAIN_PAD)
-  const yDomain = padDomain(data.domains.y, DOMAIN_PAD)
+  const xDomain = padDomain(data.domains.x, DOMAIN_PAD, data.scales.x)
+  const yDomain = padDomain(data.domains.y, DOMAIN_PAD, data.scales.y)
   const formatX = (value: number) => formatMetric(value, xMetric, sources.x, info)
   const formatY = (value: number) => formatMetric(value, yMetric, sources.y, info)
-  // A duration axis keeps its padded domain: niced 1-2-5 bounds would fall between its ticks.
-  const xTicks = xMetric === "duration" ? timeTicks(xDomain, TIME_INTERVALS.x) : undefined
-  const yTicks = yMetric === "duration" ? timeTicks(yDomain, TIME_INTERVALS.y) : undefined
-  // A lone point draws no line, so it has nothing to mute the rest for.
-  const front = frontier ? paretoFrontier(data) : []
-  const onFront = front.length > 1 ? new Set(front.map((point) => point.id)) : undefined
+  // Duration and log axes keep their padded domain: niced 1-2-5 bounds would fall
+  // between their ticks.
+  const ownTicks = (axis: "x" | "y") =>
+    data.metrics[axis] === "duration" || data.scales[axis] === "log"
+      ? metricTicks(
+          data.metrics[axis],
+          axis === "x" ? xDomain : yDomain,
+          TICK_INTERVALS[axis],
+          data.scales[axis],
+        )
+      : undefined
+  const xTicks = ownTicks("x")
+  const yTicks = ownTicks("y")
+  const scaleFor = (axis: "x" | "y", { min, max }: { min: number; max: number }) =>
+    data.scales[axis] === "log" ? scaleLog().domain([min, max]) : scaleLinear().domain([min, max])
+  const front = frontier ? drawnFrontier(data) : []
+  const onFront = front.length > 0 ? new Set(front.map((point) => point.id)) : undefined
 
   return defineChart({
     marks: [
@@ -73,22 +85,22 @@ export function scatterDefinition(
     ],
     scales: {
       x: {
-        scale: scaleLinear().domain([xDomain.min, xDomain.max]),
+        scale: scaleFor("x", xDomain),
         nice: xTicks == null,
         grid: { stroke: "var(--border)", strokeOpacity: CHART_GRID_MINOR_OPACITY },
         axis: axisPresentation(
-          metricAxisLabel(xMetric, sources.x, info),
+          metricAxisLabel(xMetric, sources.x, info, data.scales.x),
           formatX,
           TICK_SPACING_X,
           xTicks,
         ),
       },
       y: {
-        scale: scaleLinear().domain([yDomain.min, yDomain.max]),
+        scale: scaleFor("y", yDomain),
         nice: yTicks == null,
         grid: { stroke: "var(--border)", strokeOpacity: CHART_GRID_OPACITY },
         axis: axisPresentation(
-          metricAxisLabel(yMetric, sources.y, info),
+          metricAxisLabel(yMetric, sources.y, info, data.scales.y),
           formatY,
           TICK_SPACING_Y,
           yTicks,

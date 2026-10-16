@@ -1,6 +1,7 @@
 import { defineChart } from "@tanstack/charts"
 import { scaleLinear } from "@tanstack/charts/scales/linear"
 import { scalePoint } from "@tanstack/charts/scales/point"
+import { scaleLog } from "d3-scale"
 
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
@@ -11,7 +12,7 @@ import { CHART_GRID_MINOR_OPACITY, CHART_TICK_SIZE } from "#/ui/lib/chart-styles
 import { LABEL_WIDTH_RATIO } from "#/ui/lib/plot-labels"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
-import { padDomain, timeTicks } from "#/ui/lib/comparison-plot-data"
+import { metricTicks, padDomain } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
 import { rangeRows } from "#/ui/lib/stacking"
 
@@ -96,7 +97,8 @@ export function rangeDefinition(
     x: (point) => point.values[spread],
     y: (point) => point.seriesKey,
   }
-  const domain = padDomain(data.domains[spread], DOMAIN_PAD)
+  const spreadScale = data.scales[spread]
+  const domain = padDomain(data.domains[spread], DOMAIN_PAD, spreadScale)
   const formatSpread = (value: number) => formatMetric(value, spreadMetric, sources[spread], info)
 
   // Captions shorten the model name, never the value, so a narrow plot keeps its width.
@@ -132,16 +134,24 @@ export function rangeDefinition(
         ],
         scales: {
           x: {
-            scale: scaleLinear().domain([domain.min, domain.max]),
+            scale:
+              spreadScale === "log"
+                ? scaleLog().domain([domain.min, domain.max])
+                : scaleLinear().domain([domain.min, domain.max]),
             // Tick density changes with width; keep that from expanding the data domain.
             nice: false,
             grid: { stroke: "var(--border)", strokeOpacity: CHART_GRID_MINOR_OPACITY },
             axis: axisPresentation(
-              metricAxisLabel(spreadMetric, sources[spread], info),
+              metricAxisLabel(spreadMetric, sources[spread], info, spreadScale),
               formatSpread,
               TICK_SPACING_X,
-              spreadMetric === "duration"
-                ? timeTicks(domain, Math.max(2, Math.floor(width / TICK_SPACING_X)))
+              spreadMetric === "duration" || spreadScale === "log"
+                ? metricTicks(
+                    spreadMetric,
+                    domain,
+                    Math.max(2, Math.floor(width / TICK_SPACING_X)),
+                    spreadScale,
+                  )
                 : undefined,
             ),
           },

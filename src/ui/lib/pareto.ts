@@ -52,3 +52,15 @@ export function paretoFrontier(data: PlotData): Array<PlotPoint> {
 
   return frontier
 }
+
+/**
+ * The frontier worth drawing, or none. A line takes at least two variants, and it only
+ * says something when some variant falls off it: with every variant on the frontier, as
+ * when each dearer model also scores higher, the line would retrace the points and mute
+ * nothing, reading as one more model's run.
+ */
+export function drawnFrontier(data: PlotData): Array<PlotPoint> {
+  const frontier = paretoFrontier(data)
+
+  return frontier.length > 1 && frontier.length < data.points.length ? frontier : []
+}

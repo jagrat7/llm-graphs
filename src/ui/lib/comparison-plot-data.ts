@@ -13,6 +13,9 @@ export type PlotMetrics = { x: Metric; y: Metric; z?: Metric | null }
 
 export type PlotDomain = { min: number; max: number }
 
+/** How an axis maps values to positions; see `axisScale` for when an axis goes log. */
+export type AxisScale = "linear" | "log"
+
 export type PlotPoint = {
   id: string
   /** Stable render order, also the index used by the keyboard point list. */
@@ -48,6 +51,12 @@ export type PlotData = {
   points: Array<PlotPoint>
   series: Array<PlotSeries>
   domains: Record<PlotAxis, PlotDomain>
+  /** The scale each axis is drawn on: the reader's choice where made, else `autoScales`. */
+  scales: Record<PlotAxis, AxisScale>
+  /** The scale `axisScale` picks for each axis from its values. */
+  autoScales: Record<PlotAxis, AxisScale>
+  /** Axes a reader may switch to log; see `logAllowed`. */
+  logAllowed: Record<PlotAxis, boolean>
   pointById: Map<string, PlotPoint>
   /** Models dropped because a selected metric had no value. */
   excludedCount: number
@@ -90,15 +99,91 @@ function pointLabel(model: Model) {
   return model.configuration ? `${label} (${model.configuration})` : label
 }
 
-/** 0.5 for a flat domain keeps single-valued axes centred instead of dividing by zero. */
-function normalize(value: number, domain: PlotDomain) {
+/** A log axis needs at least one decade of spread; below that it barely differs from linear. */
+const LOG_MIN_RATIO = 10
+/**
+ * Where the median value sits along a linear axis, as a share of its span, below which
+ * the axis counts as crowded: half the values squeezed into its bottom fifth.
+ */
+const LOG_CROWDED_MEDIAN = 0.2
+
+/** Distinct values, ascending: repeated values share one position on an axis. */
+function distinctSorted(values: Iterable<number>) {
+  return Array.from(new Set(values)).toSorted((left, right) => left - right)
+}
+
+/**
+ * Whether an axis can be drawn on a log scale at all: a ratio metric (see
+ * `isRatioMetric`) with at least two distinct values, every one of them positive.
+ */
+export function logAllowed(ratio: boolean, values: Iterable<number>) {
+  if (!ratio) return false
+
+  const distinct = distinctSorted(values)
+
+  return distinct.length >= 2 && distinct[0] > 0
+}
+
+/**
+ * Whether an axis reads better on a log scale. It goes log only for ratio metrics (see
+ * `isRatioMetric`) whose values are all positive, span at least a decade and crowd the
+ * low end of a linear axis — one $600 model flattening every $1–$5 one. Evenly spread
+ * values stay linear however wide their range, so differences keep reading as
+ * differences.
+ */
+export function axisScale(ratio: boolean, values: Iterable<number>): AxisScale {
+  if (!ratio) return "linear"
+
+  const distinct = distinctSorted(values)
+
+  if (distinct.length < 3 || distinct[0] <= 0) return "linear"
+
+  const min = distinct[0]
+  const max = distinct[distinct.length - 1]
+
+  if (max / min < LOG_MIN_RATIO) return "linear"
+
+  const middle = Math.floor(distinct.length / 2)
+  const median =
+    distinct.length % 2 === 1 ? distinct[middle] : (distinct[middle - 1] + distinct[middle]) / 2
+
+  return (median - min) / (max - min) < LOG_CROWDED_MEDIAN ? "log" : "linear"
+}
+
+/**
+ * A value's 0–1 position along an axis. 0.5 for a flat domain keeps single-valued axes
+ * centred instead of dividing by zero.
+ */
+export function unitPosition(value: number, domain: PlotDomain, scale: AxisScale = "linear") {
+  if (scale === "log") {
+    const min = Math.log10(domain.min)
+    const span = Math.log10(domain.max) - min
+
+    return span === 0 ? 0.5 : (Math.log10(value) - min) / span
+  }
+
   const span = domain.max - domain.min
 
   return span === 0 ? 0.5 : (value - domain.min) / span
 }
 
-/** Widens a domain by a share of its span so marks never sit on the frame. */
-export function padDomain(domain: PlotDomain, ratio: number): PlotDomain {
+/**
+ * Widens a domain by a share of its span so marks never sit on the frame. A log domain
+ * is widened by a share of its decades, so it never reaches zero.
+ */
+export function padDomain(
+  domain: PlotDomain,
+  ratio: number,
+  scale: AxisScale = "linear",
+): PlotDomain {
+  if (scale === "log") {
+    const min = Math.log10(domain.min)
+    const max = Math.log10(domain.max)
+    const pad = (max - min) * ratio || ratio
+
+    return { min: 10 ** (min - pad), max: 10 ** (max + pad) }
+  }
+
   const span = domain.max - domain.min
 
   if (span === 0) {
@@ -171,18 +256,113 @@ export function timeTicks(domain: PlotDomain, count: number) {
   return ticks
 }
 
-/** Round tick values for a metric's axis: clock steps for durations, 1-2-5 steps otherwise. */
-export function metricTicks(metric: Metric | null, domain: PlotDomain, count: number) {
+/**
+ * How far a log axis may tighten its tick spacing to reach three ticks. Two thirds still
+ * admits 1-2-5 steps (0.3 decades apart) without crowding 10m next to 15m.
+ */
+const LOG_TICK_RELAX = 2 / 3
+
+/** Duration steps a log axis prefers, one per rough decade: 1s, 10s, 1m, 10m, 1h, 10h, 1d. */
+const TIME_DECADES = [1, 10, 60, 600, 3600, 36_000, DAY, 10 * DAY]
+/** Half-decade clock steps come first, as 5× does between powers of ten, then the rest. */
+const TIME_FILLERS = [5, 30, 300, 1800, 21_600, 5 * DAY, ...TIME_STEPS, 2 * DAY]
+
+/** `multiplier × 10^n` for every power of ten that could fall inside the domain. */
+function decadeMultiples(domain: PlotDomain, multipliers: ReadonlyArray<number>) {
+  const values: Array<number> = []
+
+  for (
+    let exponent = Math.floor(Math.log10(domain.min));
+    exponent <= Math.ceil(Math.log10(domain.max));
+    exponent += 1
+  ) {
+    // toPrecision drops float noise such as 0.30000000000000004 before it reaches a label.
+    for (const multiplier of multipliers)
+      values.push(Number((multiplier * 10 ** exponent).toPrecision(12)))
+  }
+
+  return values
+}
+
+/**
+ * Tick values for a log axis. Powers of ten come first (or whole clock decades for a
+ * duration); when fewer than three fit, 5× and 2× steps fill the gaps, each kept only
+ * if it sits at least a `count`th of the axis away from every tick already chosen, so
+ * labels stay evenly spaced on screen. That spacing loosens when it would leave two ticks.
+ */
+export function logTicks(metric: Metric | null, domain: PlotDomain, count: number) {
+  if (!(domain.min > 0) || !(domain.max > domain.min) || count < 1) return [domain.min]
+
+  const inside = (value: number) => value >= domain.min && value <= domain.max
+  const duration = metric === "duration"
+  const primary = (duration ? TIME_DECADES : decadeMultiples(domain, [1])).filter(inside)
+
+  if (primary.length >= 3) {
+    // `count` is a number of intervals, so it allows one more tick than that.
+    const stride = Math.ceil((primary.length - 1) / count)
+
+    return primary.filter((_, index) => index % stride === 0)
+  }
+
+  const span = Math.log10(domain.max / domain.min)
+  const fillers = (
+    duration ? TIME_FILLERS : [...decadeMultiples(domain, [5]), ...decadeMultiples(domain, [2])]
+  ).filter(inside)
+  const fill = (minGap: number) => {
+    const picked = [...primary]
+
+    for (const value of fillers) {
+      if (picked.every((tick) => Math.abs(Math.log10(value / tick)) >= minGap)) picked.push(value)
+    }
+
+    return picked
+  }
+  const spaced = fill(span / count)
+  // Two ticks cannot show the scale is logarithmic; loosen the spacing for a third.
+  const picked = spaced.length >= 3 ? spaced : fill((span / count) * LOG_TICK_RELAX)
+
+  return picked.length >= 2
+    ? picked.toSorted((left, right) => left - right)
+    : duration
+      ? timeTicks(domain, count)
+      : axisTicks(domain, count)
+}
+
+/**
+ * Round tick values for a metric's axis: log steps on a log axis, clock steps for
+ * durations, 1-2-5 steps otherwise.
+ */
+export function metricTicks(
+  metric: Metric | null,
+  domain: PlotDomain,
+  count: number,
+  scale: AxisScale = "linear",
+) {
+  if (scale === "log") return logTicks(metric, domain, count)
+
   return metric === "duration" ? timeTicks(domain, count) : axisTicks(domain, count)
+}
+
+function byAxis<T>(pick: (axis: PlotAxis) => T): Record<PlotAxis, T> {
+  return { x: pick("x"), y: pick("y"), z: pick("z") }
 }
 
 /**
  * Renderer-neutral plot model: one O(n) pass over the models produces the points,
  * per-axis domains, per-model series and the id lookup that both the TanStack Charts and the
  * React Three Fiber charts read. Keeping it here is what makes the two renderers
- * agree on ordering, normalization and exclusions.
+ * agree on ordering, normalization, axis scales and exclusions.
+ *
+ * `ratio` marks the axes whose metric may go log (see `isRatioMetric`); an axis it
+ * leaves out falls back to the metric's own `ratio` flag. `scale` holds the reader's
+ * choice per axis, which wins over detection wherever the axis allows log.
  */
-export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotData {
+export function buildPlotData(
+  models: Array<Model>,
+  metrics: PlotMetrics,
+  ratio: Partial<Record<PlotAxis, boolean>> = {},
+  scale: Partial<Record<PlotAxis, AxisScale>> = {},
+): PlotData {
   const zMetric = metrics.z ?? null
   const is3D = zMetric != null
   const axes = is3D ? PLOT_AXES_3D : PLOT_AXES_2D
@@ -248,8 +428,20 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     z: is3D && points.length > 0 ? bounds.z : EMPTY_DOMAIN,
   }
 
+  // A 2D plot resolves no z metric, so its z axis stays linear.
+  const ratioOf = (axis: PlotAxis) => {
+    const metric = resolved[axis]
+
+    return metric != null && (ratio[axis] ?? METRIC_CONFIG[metric].ratio === true)
+  }
+  const valuesOf = (axis: PlotAxis) => points.map((point) => point.values[axis])
+  const autoScales = byAxis((axis) => axisScale(ratioOf(axis), valuesOf(axis)))
+  const allowed = byAxis((axis) => logAllowed(ratioOf(axis), valuesOf(axis)))
+  const scales = byAxis((axis) => (allowed[axis] ? (scale[axis] ?? autoScales[axis]) : "linear"))
+
   for (const point of points) {
-    for (const axis of axes) point.unit[axis] = normalize(point.values[axis], domains[axis])
+    for (const axis of axes)
+      point.unit[axis] = unitPosition(point.values[axis], domains[axis], scales[axis])
   }
 
   // Alternating placement per vendor spreads labels apart before collision culling.
@@ -272,6 +464,9 @@ export function buildPlotData(models: Array<Model>, metrics: PlotMetrics): PlotD
     points,
     series,
     domains,
+    scales,
+    autoScales,
+    logAllowed: allowed,
     pointById,
     excludedCount: models.length - points.length,
     modelCount: modelKeys.size,
