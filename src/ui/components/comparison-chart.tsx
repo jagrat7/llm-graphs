@@ -67,8 +67,14 @@ function describeRanges(data: PlotData) {
   return `Range chart of ${data.modelCount} ${modelNoun} in ${data.series.length} ${rowNoun}, one per model configuration, its efforts spread along the varying metric. Use arrow keys to move between points.`
 }
 
-function describeFrontier(frontier: Array<PlotPoint>) {
-  return `The dashed line is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. Variants off it are muted.`
+/** A highlighted model wins over the frontier's emphasis, so the description says which fades. */
+function describeFrontier(frontier: Array<PlotPoint>, highlighted: string | null) {
+  const emphasis =
+    highlighted == null
+      ? "Variants off it are muted."
+      : `${highlighted} is highlighted, so every other model is muted, the frontier's included.`
+
+  return `The dashed line is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. ${emphasis}`
 }
 
 /** A small dashed line with a bend, as the toggle's key. */
@@ -235,7 +241,15 @@ export function ComparisonChart({
           ariaDescription={
             view === "ranges" && flat != null
               ? rangeAxisDescription(data, flat, sources, info)
-              : [axisDescription(data, sources, info), showFrontier && describeFrontier(frontier)]
+              : [
+                  axisDescription(data, sources, info),
+                  showFrontier &&
+                    describeFrontier(
+                      frontier,
+                      data.series.find((series) => series.points[0]?.model.model === lit)?.label ??
+                        null,
+                    ),
+                ]
                   .filter(Boolean)
                   .join(" ")
           }

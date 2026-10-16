@@ -278,6 +278,15 @@ describe("comparison chart", () => {
     expect(curve()).not.toBeNull()
   })
 
+  it("says a highlighted model, not the frontier, keeps its emphasis", () => {
+    const { container } = renderChart("beta")
+    const description = container.querySelector("svg.ts-chart desc")?.textContent ?? ""
+
+    expect(description).toContain("Pareto frontier")
+    expect(description).toContain("is highlighted, so every other model is muted")
+    expect(description).not.toContain("Variants off it are muted")
+  })
+
   it("ignores a highlight for a model that has no plotted points", () => {
     const opacities = (highlight: string | null = null) => {
       const { container, unmount } = renderChart(highlight)
