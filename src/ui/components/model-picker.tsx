@@ -355,7 +355,13 @@ export function ModelPicker({
         items={options}
         multiple
         value={value}
-        onValueChange={(next: Array<Model>) => onChange(next.map((model) => model.model))}
+        // The combobox only knows the models offered here; picks this benchmark lacks stay picked.
+        onValueChange={(next: Array<Model>) =>
+          onChange([
+            ...selected.filter((id) => !options.some((option) => option.model === id)),
+            ...next.map((model) => model.model),
+          ])
+        }
         itemToStringLabel={(model: Model) => model.displayName}
         isItemEqualToValue={(item: Model, candidate: Model) => item.model === candidate.model}
         /* In multi-select Base UI treats the *last* value as the selected index and

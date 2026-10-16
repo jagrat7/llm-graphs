@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { useAtom } from "jotai"
+import { RESET } from "jotai/utils"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
@@ -26,6 +28,7 @@ import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
+import { pickedModelsAtom } from "#/ui/lib/picked-models"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
@@ -104,6 +107,7 @@ function ComparePage() {
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
+  const [pickedModels, setPickedModels] = useAtom(pickedModelsAtom)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -122,7 +126,6 @@ function ComparePage() {
       xSource: compatible.xSource,
       ySource: compatible.ySource,
       zSource: compatible.zSource,
-      models: undefined,
     })
   }
 
@@ -186,7 +189,23 @@ function ComparePage() {
     updateSearch({ z: undefined, zSource: undefined })
   }
 
-  const selected = useMemo(() => search.models ?? data?.defaultModels ?? [], [search.models, data])
+  // A shared link's models win, then this browser's own picks, then the benchmark's defaults.
+  const selected = useMemo(
+    () => search.models ?? pickedModels ?? data?.defaultModels ?? [],
+    [search.models, pickedModels, data],
+  )
+
+  /** Picks are entry ids, so they carry across benchmarks; ones a benchmark lacks wait unseen. */
+  function pickModels(models: Array<string>) {
+    setPickedModels(models)
+    updateSearch({ models })
+  }
+
+  function resetModels() {
+    setPickedModels(RESET)
+    updateSearch({ models: undefined })
+  }
+
   // Memoized so hovering a pill re-renders the page without handing the chart new models.
   const selectedModels = useMemo(() => {
     const ids = new Set(selected)
@@ -205,8 +224,8 @@ function ComparePage() {
     <ModelPicker
       models={data?.models ?? []}
       selected={selected}
-      onChange={(models) => updateSearch({ models })}
-      onReset={search.models ? () => updateSearch({ models: undefined }) : undefined}
+      onChange={pickModels}
+      onReset={search.models || pickedModels ? resetModels : undefined}
       onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       shortcut
@@ -254,38 +273,39 @@ function ComparePage() {
           </p>
           <Button
             variant="outline"
-            onClick={() =>
-              updateSearch(
-                unavailable.length > 0
-                  ? {
-                      x: "price",
-                      y: "score",
-                      z: undefined,
-                      xSource: undefined,
-                      ySource:
-                        Object.values(axes).find((axis) => axis.metric === "score")?.source ??
-                        undefined,
-                      zSource: undefined,
-                      models: undefined,
-                    }
-                  : {
-                      x: "cost",
-                      y: "score",
-                      z: undefined,
-                      xSource: undefined,
-                      ySource: undefined,
-                      zSource: undefined,
-                      models: undefined,
-                    },
-              )
-            }
+            onClick={() => {
+              if (unavailable.length > 0) {
+                updateSearch({
+                  x: "price",
+                  y: "score",
+                  z: undefined,
+                  xSource: undefined,
+                  ySource:
+                    Object.values(axes).find((axis) => axis.metric === "score")?.source ??
+                    undefined,
+                  zSource: undefined,
+                })
+                return
+              }
+
+              setPickedModels(RESET)
+              updateSearch({
+                x: "cost",
+                y: "score",
+                z: undefined,
+                xSource: undefined,
+                ySource: undefined,
+                zSource: undefined,
+                models: undefined,
+              })
+            }}
           >
             {unavailable.length > 0 ? "Compare token price" : "Restore default comparison"}
           </Button>
           <ModelPicker
             models={data.models}
             selected={selected}
-            onChange={(models) => updateSearch({ models })}
+            onChange={pickModels}
             className="mx-auto max-w-sm"
           />
         </DataState>
