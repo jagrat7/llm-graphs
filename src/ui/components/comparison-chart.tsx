@@ -7,12 +7,20 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
+import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
-import { buildPlotData, describePlot, type PlotData } from "#/ui/lib/comparison-plot-data"
+import {
+  buildPlotData,
+  describePlot,
+  type PlotData,
+  type PlotPoint,
+} from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import { PARETO_STYLE } from "#/ui/lib/chart-marks"
+import { paretoFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
 import { stackedAxis } from "#/ui/lib/stacking"
@@ -59,6 +67,54 @@ function describeRanges(data: PlotData) {
   return `Range chart of ${data.modelCount} ${modelNoun} in ${data.series.length} ${rowNoun}, one per model configuration, its efforts spread along the varying metric. Use arrow keys to move between points.`
 }
 
+function describeFrontier(frontier: Array<PlotPoint>) {
+  return `The dashed curve is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. Variants off it are muted.`
+}
+
+/** A small dashed curve, as the toggle's key. */
+const FRONTIER_SWATCH = "M2 10 C8 10 11 3 18 3"
+
+/**
+ * Shows or hides the frontier, and doubles as its key: the swatch names the dashed
+ * curve, which would otherwise read as one more model's run. On, it takes a firmer fill
+ * and full-strength text than the toggle's muted default, so its state reads at a glance.
+ */
+function FrontierToggle({
+  pressed,
+  onPressedChange,
+}: {
+  pressed: boolean
+  onPressedChange: (pressed: boolean) => void
+}) {
+  return (
+    <Toggle
+      size="sm"
+      pressed={pressed}
+      onPressedChange={(next) => onPressedChange(next)}
+      className="text-muted-foreground aria-pressed:bg-foreground/12 aria-pressed:text-foreground gap-1.5"
+    >
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="13"
+        viewBox="0 0 20 13"
+        // `size-auto` opts out of the toggle's square icon size, keeping the swatch wide.
+        className="size-auto overflow-visible opacity-40 transition-opacity group-aria-pressed/toggle:opacity-100"
+        fill="none"
+        strokeLinecap="round"
+      >
+        <path
+          d={FRONTIER_SWATCH}
+          stroke={PARETO_STYLE.stroke}
+          strokeWidth={PARETO_STYLE.strokeWidth}
+          strokeDasharray="3.5 3"
+        />
+      </svg>
+      Pareto frontier
+    </Toggle>
+  )
+}
+
 /**
  * Lets the reader go back to the scatter when stacked efforts default to ranges. The
  * range view's axis title already says how rows are sorted, so the switch stays bare.
@@ -71,23 +127,21 @@ function StackedViewSwitch({
   onChange: (view: ChartView) => void
 }) {
   return (
-    <div className="flex shrink-0 justify-end pb-2">
-      <ToggleGroup
-        aria-label="Chart view"
-        size="sm"
-        variant="outline"
-        spacing={0}
-        value={[view]}
-        onValueChange={(values) => {
-          const next = values[0]
+    <ToggleGroup
+      aria-label="Chart view"
+      size="sm"
+      variant="outline"
+      spacing={0}
+      value={[view]}
+      onValueChange={(values) => {
+        const next = values[0]
 
-          if (next === "ranges" || next === "scatter") onChange(next)
-        }}
-      >
-        <ToggleGroupItem value="ranges">Ranges</ToggleGroupItem>
-        <ToggleGroupItem value="scatter">Scatter</ToggleGroupItem>
-      </ToggleGroup>
-    </div>
+        if (next === "ranges" || next === "scatter") onChange(next)
+      }}
+    >
+      <ToggleGroupItem value="ranges">Ranges</ToggleGroupItem>
+      <ToggleGroupItem value="scatter">Scatter</ToggleGroupItem>
+    </ToggleGroup>
   )
 }
 
@@ -131,13 +185,19 @@ export function ComparisonChart({
   const [choices, setChoices] = useState<Record<string, ChartView>>({})
   const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "ranges")
   const { x: xSource, y: ySource } = sources
+  // The range view has no numeric axis to draw it along, so only the scatter shows it.
+  const frontier = useMemo(() => (view === "scatter" ? paretoFrontier(data) : []), [data, view])
+  // One switch for every pair of metrics: someone who hides the frontier wants it gone.
+  const [frontierOn, setFrontierOn] = useState(true)
+  const hasFrontier = frontier.length > 1
+  const showFrontier = hasFrontier && frontierOn
   const definition = useMemo(() => {
     const options = { highlight: lit, info, logoClass, sources: { x: xSource, y: ySource } }
 
     return view === "ranges" && flat != null
       ? rangeDefinition(data, { ...options, flat })
-      : scatterDefinition(data, options)
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource])
+      : scatterDefinition(data, { ...options, frontier: frontierOn })
+  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn])
 
   if (data.points.length === 0) {
     return <DataState className={CHART_HEIGHT_CLASS} title="No models have both selected metrics" />
@@ -154,11 +214,18 @@ export function ComparisonChart({
       }
     >
       <LogoMasks logoClass={logoClass} />
-      {flat != null && (
-        <StackedViewSwitch
-          view={view}
-          onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
-        />
+      {(flat != null || hasFrontier) && (
+        <div className="flex shrink-0 items-center gap-2 pb-2">
+          {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+          {flat != null && (
+            <div className="ml-auto">
+              <StackedViewSwitch
+                view={view}
+                onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
+              />
+            </div>
+          )}
+        </div>
       )}
       <div className="min-h-0 flex-1">
         <Chart
@@ -168,7 +235,9 @@ export function ComparisonChart({
           ariaDescription={
             view === "ranges" && flat != null
               ? rangeAxisDescription(data, flat, sources, info)
-              : axisDescription(data, sources, info)
+              : [axisDescription(data, sources, info), showFrontier && describeFrontier(frontier)]
+                  .filter(Boolean)
+                  .join(" ")
           }
           initialWidth={1200}
           style={{ height: "100%" }}

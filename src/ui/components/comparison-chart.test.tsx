@@ -92,7 +92,7 @@ async function settle() {
 }
 
 function marker(container: HTMLElement, id: string) {
-  const node = container.querySelector(`[data-ts-key="model-runs-1:${id}"]`)
+  const node = container.querySelector(`[data-ts-key="model-runs-2:${id}"]`)
 
   expect(node).not.toBeNull()
 
@@ -238,8 +238,8 @@ describe("comparison chart", () => {
     expect(Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))).toBeLessThan(
       1,
     )
-    expect(opacity('[data-ts-key="model-labels-2:alpha:name"]')).toBe(1)
-    expect(opacity('[data-ts-key="model-labels-2:beta:name"]')).toBeLessThan(1)
+    expect(opacity('[data-ts-key="model-labels-3:alpha:name"]')).toBe(1)
+    expect(opacity('[data-ts-key="model-labels-3:beta:name"]')).toBeLessThan(1)
   })
 
   it("keeps the full axis notes in the chart's accessible description", () => {
@@ -252,11 +252,43 @@ describe("comparison chart", () => {
     expect(description).toContain("Vertical axis: Score · % (DeepSWE")
   })
 
-  it("ignores a highlight for a model that has no plotted points", () => {
-    const { container } = renderChart("gamma")
+  it("shows the Pareto frontier until the reader toggles it off, and back on", async () => {
+    const { container } = renderChart()
+    const toggle = screen.getByRole("button", { name: "Pareto frontier" })
+    const curve = () => container.querySelector('[data-ts-key="pareto-frontier-1:line"]')
+    const description = () => container.querySelector("svg.ts-chart desc")?.textContent ?? ""
+    // Beta sits off the frontier, so it is muted while the frontier shows.
+    const beta = () => Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))
 
-    expect(Number(marker(container, "alpha-on-high").getAttribute("opacity"))).toBe(1)
-    expect(Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))).toBe(1)
+    expect(toggle.getAttribute("aria-pressed")).toBe("true")
+    expect(curve()).not.toBeNull()
+    expect(description()).toContain("Pareto frontier")
+    expect(beta()).toBeLessThan(1)
+
+    await act(async () => fireEvent.click(toggle))
+    await settle()
+
+    expect(toggle.getAttribute("aria-pressed")).toBe("false")
+    expect(curve()).toBeNull()
+    expect(description()).not.toContain("Pareto frontier")
+    expect(beta()).toBe(1)
+
+    await act(async () => fireEvent.click(toggle))
+
+    expect(curve()).not.toBeNull()
+  })
+
+  it("ignores a highlight for a model that has no plotted points", () => {
+    const opacities = (highlight: string | null = null) => {
+      const { container, unmount } = renderChart(highlight)
+      const read = (id: string) => marker(container, id).getAttribute("opacity")
+      const values = [read("alpha-on-high"), read("beta-unknown-unknown")]
+
+      unmount()
+      return values
+    }
+
+    expect(opacities("gamma")).toEqual(opacities())
   })
 })
 
@@ -317,6 +349,8 @@ describe("stacked runs", () => {
     expect(viewButton("Scatter").getAttribute("aria-pressed")).toBe("true")
     expect(container.textContent).not.toContain("Alpha · $4")
     expect(screen.getByRole("img", { name: /^2D scatter plot/ })).toBeTruthy()
+    // Token price does not trade off against Score the way task cost does.
+    expect(screen.queryByRole("button", { name: "Pareto frontier" })).toBeNull()
   })
 
   it("offers no view switch when efforts spread along both axes", () => {
