@@ -30,6 +30,36 @@ export function axisSettings(search: GraphSearch, info: ProvidersInfo): AxisStat
   }
 }
 
+/** Old links that explicitly picked AA's former Cost meant token pricing. */
+export function upgradeLegacySearch<T extends GraphSearch>(search: T): T {
+  for (const axis of ["x", "y", "z"] as const) {
+    if (search[axis] === "cost" && search[AXIS_SOURCE_KEY[axis]] === "artificialAnalysis") {
+      search[axis] = "price"
+    }
+  }
+
+  return search
+}
+
+/**
+ * Each axis's resolved source, for a link that should keep its benchmarks when the
+ * defaults change. Task cost and duration are left out: they always read the score
+ * axis's benchmark, which is pinned already, and an explicit source on cost would
+ * read as an old token-price link.
+ */
+export function shareSources(search: GraphSearch, info: ProvidersInfo) {
+  const axes = axisSettings(search, info)
+  const pinned = (axis: "x" | "y" | "z") => {
+    const metric = axes[axis].metric
+
+    return metric == null || metric === "cost" || metric === "duration"
+      ? undefined
+      : (axes[axis].source ?? undefined)
+  }
+
+  return { xSource: pinned("x"), ySource: pinned("y"), zSource: pinned("z") }
+}
+
 export function axisBindings(axes: AxisState, info: ProvidersInfo): Array<MetricBinding> {
   return Object.values(axes).flatMap(({ metric, source }) =>
     metric == null || source == null

@@ -21,6 +21,8 @@ import {
   unavailableMetrics,
   compatibleComparison,
   hasMeaningfulComparison,
+  shareSources,
+  upgradeLegacySearch,
 } from "#/ui/lib/graph-state"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
@@ -60,16 +62,7 @@ const compareSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search) => {
-    const parsed = compareSearchSchema.parse(search)
-    // Existing links explicitly selecting AA's old Cost meant token pricing.
-    for (const axis of ["x", "y", "z"] as const) {
-      if (parsed[axis] === "cost" && parsed[AXIS_SOURCE_KEY[axis]] === "artificialAnalysis") {
-        parsed[axis] = "price"
-      }
-    }
-    return parsed
-  },
+  validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
   component: ComparePage,
 })
 
@@ -203,9 +196,7 @@ function ComparePage() {
       to: "/",
       search: {
         ...search,
-        xSource: axes.x.source ?? undefined,
-        ySource: axes.y.source ?? undefined,
-        zSource: search.z == null ? undefined : (axes.z.source ?? undefined),
+        ...shareSources(search, info),
         models: selected,
       },
     })
