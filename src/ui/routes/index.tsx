@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { lazy, Suspense, useMemo, useState } from "react"
@@ -23,6 +23,8 @@ import {
   unavailableMetrics,
   compatibleComparison,
   hasMeaningfulComparison,
+  shareSources,
+  upgradeLegacySearch,
 } from "#/ui/lib/graph-state"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
@@ -63,16 +65,7 @@ const compareSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search) => {
-    const parsed = compareSearchSchema.parse(search)
-    // Existing links explicitly selecting AA's old Cost meant token pricing.
-    for (const axis of ["x", "y", "z"] as const) {
-      if (parsed[axis] === "cost" && parsed[AXIS_SOURCE_KEY[axis]] === "artificialAnalysis") {
-        parsed[axis] = "price"
-      }
-    }
-    return parsed
-  },
+  validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
   component: ComparePage,
 })
 
@@ -80,6 +73,7 @@ function ComparePage() {
   const info = useProvidersInfo()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
+  const router = useRouter()
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
@@ -212,6 +206,22 @@ function ComparePage() {
 
     return data?.models.filter((model) => ids.has(model.model)) ?? []
   }, [data, selected])
+  /**
+   * Pins the models and sources on screen, so the link keeps showing this comparison
+   * after the default picks or default benchmarks move on.
+   */
+  function shareLink() {
+    const location = router.buildLocation({
+      to: "/",
+      search: {
+        ...search,
+        ...shareSources(search, info),
+        models: selected,
+      },
+    })
+
+    return new URL(location.href, window.location.origin).href
+  }
   const quality = useMemo(
     () => plotQuality(buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z })),
     [selectedModels, search.x, search.y, search.z],
@@ -328,6 +338,7 @@ function ComparePage() {
               sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
               phase={morphPhase}
               onExitComplete={handleExitComplete}
+              getShareLink={shareLink}
             />
           ) : (
             <ComparisonChart
@@ -336,6 +347,7 @@ function ComparePage() {
               xMetric={search.x}
               yMetric={search.y}
               highlight={highlight}
+              getShareLink={shareLink}
             />
           )}
         </Suspense>

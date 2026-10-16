@@ -7,6 +7,7 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { ProvidersService } from "#/server/services/providers"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
+import { standaloneChartSvg } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { metricRecord } from "#/ui/lib/metrics"
 import { rangeMinHeight } from "#/ui/lib/range-definition"
@@ -59,18 +60,23 @@ beforeAll(() => {
 
 afterEach(cleanup)
 
-function renderChart(highlight: string | null = null) {
+function renderChart(
+  highlight: string | null = null,
+  getShareLink?: () => string,
+  chartModels = models,
+) {
   const client = new QueryClient()
   client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
 
   return render(
     <QueryClientProvider client={client}>
       <ComparisonChart
-        models={models}
+        models={chartModels}
         sources={{ x: "deepswe", y: "deepswe" }}
         xMetric="cost"
         yMetric="score"
         highlight={highlight}
+        getShareLink={getShareLink}
       />
     </QueryClientProvider>,
   )
@@ -92,7 +98,7 @@ async function settle() {
 }
 
 function marker(container: HTMLElement, id: string) {
-  const node = container.querySelector(`[data-ts-key="model-runs-1:${id}"]`)
+  const node = container.querySelector(`[data-ts-key="model-runs-2:${id}"]`)
 
   expect(node).not.toBeNull()
 
@@ -238,8 +244,8 @@ describe("comparison chart", () => {
     expect(Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))).toBeLessThan(
       1,
     )
-    expect(opacity('[data-ts-key="model-labels-2:alpha:name"]')).toBe(1)
-    expect(opacity('[data-ts-key="model-labels-2:beta:name"]')).toBeLessThan(1)
+    expect(opacity('[data-ts-key="model-labels-3:alpha:name"]')).toBe(1)
+    expect(opacity('[data-ts-key="model-labels-3:beta:name"]')).toBeLessThan(1)
   })
 
   it("keeps the full axis notes in the chart's accessible description", () => {
@@ -252,11 +258,52 @@ describe("comparison chart", () => {
     expect(description).toContain("Vertical axis: Score · % (DeepSWE")
   })
 
-  it("ignores a highlight for a model that has no plotted points", () => {
-    const { container } = renderChart("gamma")
+  it("shows the Pareto frontier until the reader toggles it off, and back on", async () => {
+    const { container } = renderChart()
+    const toggle = screen.getByRole("button", { name: "Pareto frontier" })
+    const curve = () => container.querySelector('[data-ts-key="pareto-frontier-1:line"]')
+    const description = () => container.querySelector("svg.ts-chart desc")?.textContent ?? ""
+    // Beta sits off the frontier, so it is muted while the frontier shows.
+    const beta = () => Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))
 
-    expect(Number(marker(container, "alpha-on-high").getAttribute("opacity"))).toBe(1)
-    expect(Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))).toBe(1)
+    expect(toggle.getAttribute("aria-pressed")).toBe("true")
+    expect(curve()).not.toBeNull()
+    expect(description()).toContain("Pareto frontier")
+    expect(beta()).toBeLessThan(1)
+
+    await act(async () => fireEvent.click(toggle))
+    await settle()
+
+    expect(toggle.getAttribute("aria-pressed")).toBe("false")
+    expect(curve()).toBeNull()
+    expect(description()).not.toContain("Pareto frontier")
+    expect(beta()).toBe(1)
+
+    await act(async () => fireEvent.click(toggle))
+
+    expect(curve()).not.toBeNull()
+  })
+
+  it("says a highlighted model, not the frontier, keeps its emphasis", () => {
+    const { container } = renderChart("beta")
+    const description = container.querySelector("svg.ts-chart desc")?.textContent ?? ""
+
+    expect(description).toContain("Pareto frontier")
+    expect(description).toContain("is highlighted, so every other model is muted")
+    expect(description).not.toContain("Variants off it are muted")
+  })
+
+  it("ignores a highlight for a model that has no plotted points", () => {
+    const opacities = (highlight: string | null = null) => {
+      const { container, unmount } = renderChart(highlight)
+      const read = (id: string) => marker(container, id).getAttribute("opacity")
+      const values = [read("alpha-on-high"), read("beta-unknown-unknown")]
+
+      unmount()
+      return values
+    }
+
+    expect(opacities("gamma")).toEqual(opacities())
   })
 })
 
@@ -317,6 +364,8 @@ describe("stacked runs", () => {
     expect(viewButton("Scatter").getAttribute("aria-pressed")).toBe("true")
     expect(container.textContent).not.toContain("Alpha · $4")
     expect(screen.getByRole("img", { name: /^2D scatter plot/ })).toBeTruthy()
+    // Token price does not trade off against Score the way task cost does.
+    expect(screen.queryByRole("button", { name: "Pareto frontier" })).toBeNull()
   })
 
   it("offers no view switch when efforts spread along both axes", () => {
@@ -499,5 +548,106 @@ describe("stacked runs", () => {
     expect(top + card.height).toBeLessThanOrEqual(viewport.height)
     expect(left).toBeGreaterThanOrEqual(0)
     expect(left + card.width).toBeLessThanOrEqual(viewport.width)
+  })
+})
+
+async function chooseShareItem(item: string) {
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Share" }))
+  })
+  await act(async () => {
+    fireEvent.click(await screen.findByRole("menuitem", { name: new RegExp(item) }))
+  })
+}
+
+/** jsdom has no clipboard or blob URLs, so a test lends them and puts back what was there. */
+function lend(target: object, key: string, value: unknown) {
+  const original = Object.getOwnPropertyDescriptor(target, key)
+
+  Object.defineProperty(target, key, { value, configurable: true })
+
+  return () => {
+    if (original) Object.defineProperty(target, key, original)
+    else Reflect.deleteProperty(target, key)
+  }
+}
+
+describe("share menu", () => {
+  it("copies the page's link to this comparison and says so", async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    const restore = lend(navigator, "clipboard", { writeText })
+
+    try {
+      renderChart(null, () => "https://example.test/?models=alpha")
+      await chooseShareItem("Copy link")
+
+      expect(writeText).toHaveBeenCalledWith("https://example.test/?models=alpha")
+      expect(await screen.findByRole("button", { name: "Link copied" })).not.toBeNull()
+    } finally {
+      restore()
+    }
+  })
+
+  it("reports a refused clipboard instead of claiming success", async () => {
+    const restore = lend(navigator, "clipboard", {
+      writeText: () => Promise.reject(new Error("denied")),
+    })
+
+    try {
+      renderChart(null, () => "https://example.test/")
+      await chooseShareItem("Copy link")
+
+      expect(await screen.findByRole("button", { name: "Couldn't copy link" })).not.toBeNull()
+    } finally {
+      restore()
+    }
+  })
+
+  it("downloads the plotted values as CSV", async () => {
+    const createObjectURL = vi.fn((_blob: Blob) => "blob:csv")
+    const filenames: Array<string> = []
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(function (this: HTMLElement) {
+        if (this instanceof HTMLAnchorElement) filenames.push(this.download)
+      })
+
+    const restoreCreate = lend(URL, "createObjectURL", createObjectURL)
+    const restoreRevoke = lend(URL, "revokeObjectURL", () => {})
+
+    try {
+      renderChart()
+      await chooseShareItem("Download data")
+
+      expect(filenames).toEqual(["llm-graphs-score-vs-cost.csv"])
+      expect(await createObjectURL.mock.calls[0][0].text()).toContain("Alpha,Alpha,low,2,40")
+      expect(await screen.findByRole("button", { name: "CSV saved" })).not.toBeNull()
+    } finally {
+      click.mockRestore()
+      restoreCreate()
+      restoreRevoke()
+    }
+  })
+
+  it("exports a standalone SVG that carries its logo masks and drops focus decoration", async () => {
+    const logoUrl = "data:image/svg+xml,%3Csvg%2F%3E"
+    const { container } = renderChart(null, undefined, [
+      ...models,
+      { ...makeModel({ model: "gamma", score: 70, costPerTask: 4 }), logoUrl },
+    ])
+    const frame = container.querySelector<HTMLElement>("[data-chart-frame]")!
+    const { markup, width, height } = await standaloneChartSvg(frame, 2)
+    const exported = new DOMParser().parseFromString(markup, "image/svg+xml").documentElement
+    const logo = exported.querySelector('rect[class^="chart-logo-"]')!
+    const maskId = `${logo.getAttribute("class")}-mask`
+    const [, , viewWidth, viewHeight] = exported.getAttribute("viewBox")!.split(" ").map(Number)
+
+    expect([width, height]).toEqual([viewWidth, viewHeight])
+    expect(exported.getAttribute("width")).toBe(String(viewWidth * 2))
+    expect(exported.getAttribute("height")).toBe(String(viewHeight * 2))
+    expect(exported.querySelector(`mask[id="${maskId}"] image`)?.getAttribute("href")).toBe(logoUrl)
+    expect(exported.querySelector("style")?.textContent).toContain(`mask:url(#${maskId})`)
+    expect(exported.querySelectorAll("[data-ts-focus-layer]")).toHaveLength(0)
+    expect(exported.textContent).toContain("Gamma")
   })
 })

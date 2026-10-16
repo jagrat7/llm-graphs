@@ -38,6 +38,41 @@ export function isLit(series: PlotSeries, highlight: string | null) {
   return highlight == null || series.points[0]?.model.model === highlight
 }
 
+/**
+ * What stays lit at rest. A model highlighted from outside wins; otherwise a drawn Pareto
+ * frontier keeps its own variants lit and mutes everything else, every run's line
+ * included, since the frontier's line is the one to follow. Pointer focus still lights
+ * a whole run over either.
+ */
+type Emphasis = {
+  highlight: string | null
+  /** Ids of the variants on a drawn Pareto frontier. */
+  frontier?: ReadonlySet<string>
+}
+
+function markerOpacity(point: PlotPoint, series: PlotSeries, { highlight, frontier }: Emphasis) {
+  const lit =
+    highlight != null || frontier == null ? isLit(series, highlight) : frontier.has(point.id)
+
+  return lit ? 1 : DIMMED_OPACITY
+}
+
+function runLineOpacity(series: PlotSeries, { highlight, frontier }: Emphasis) {
+  const lit = highlight != null || frontier == null ? isLit(series, highlight) : false
+
+  return lit ? 1 : DIMMED_OPACITY
+}
+
+/** A model's name stays lit while any of its variants is on the frontier. */
+function nameOpacity(series: PlotSeries, { highlight, frontier }: Emphasis) {
+  const lit =
+    highlight != null || frontier == null
+      ? isLit(series, highlight)
+      : series.points.some((point) => frontier.has(point.id))
+
+  return lit ? 1 : DIMMED_OPACITY
+}
+
 /** Half the marker's box: a logo's square, or a fallback circle's radius. */
 export function markerHalf(point: PlotPoint) {
   return point.logoUrl == null ? POINT_RADIUS : LOGO_SIZE / 2
@@ -121,10 +156,11 @@ export function modelRunsMark(
   data: PlotData,
   {
     highlight,
+    frontier,
     logoClass,
     encoding = SCATTER_ENCODING,
     run = SCATTER_RUN,
-  }: {
+  }: Emphasis & {
     /** Model id to emphasise from outside the chart, e.g. a hovered picker pill. */
     highlight: string | null
     logoClass: Map<string, string>
@@ -132,6 +168,8 @@ export function modelRunsMark(
     run?: RunStyle
   },
 ) {
+  const emphasis = { highlight, frontier }
+
   return createMark<PlotPoint>(({ markIndex }) => {
     const id = `model-runs-${markIndex}`
 
@@ -145,13 +183,14 @@ export function modelRunsMark(
         const markers: Array<SceneNode> = []
 
         for (const series of data.series) {
-          const opacity = isLit(series, highlight) ? 1 : DIMMED_OPACITY
           const owners: Array<ChartPoint<PlotPoint>> = []
 
           for (const point of series.points) {
             const position = positions.get(point.id)
 
             if (!position) continue
+
+            const opacity = markerOpacity(point, series, emphasis)
 
             const chartPoint: ChartPoint<PlotPoint> = {
               key: `${id}:${point.id}`,
@@ -218,7 +257,7 @@ export function modelRunsMark(
                 stroke: series.color,
                 strokeWidth: run.strokeWidth,
                 strokeOpacity: run.strokeOpacity,
-                opacity,
+                opacity: runLineOpacity(series, emphasis),
                 lineCap: "round",
                 lineJoin: "round",
               },
@@ -241,7 +280,7 @@ export function modelRunsMark(
  * One name per model, placed beside a free side of one of its markers. Labels are
  * decorative: the markers own focus, and each label fades with its run.
  */
-export function modelLabelsMark(data: PlotData, { highlight }: { highlight: string | null }) {
+export function modelLabelsMark(data: PlotData, emphasis: Emphasis) {
   return createMark<PlotPoint, number, number>(({ markIndex }) => {
     const id = `model-labels-${markIndex}`
 
@@ -267,7 +306,7 @@ export function modelLabelsMark(data: PlotData, { highlight }: { highlight: stri
         )
         const nodes = placed.flatMap((label): Array<SceneLabel> => {
           const series = seriesByKey.get(label.key)
-          const restingOpacity = series == null || isLit(series, highlight) ? 1 : DIMMED_OPACITY
+          const restingOpacity = series == null ? 1 : nameOpacity(series, emphasis)
           const focusOpacity: SceneLabel["focusOpacity"] = ({ focus }) =>
             focus == null ? undefined : focus.primary.group === label.key ? 1 : DIMMED_OPACITY
           const shared = {
@@ -388,6 +427,63 @@ export function pointGuidesMark(data: PlotData) {
       }
     }),
   )
+}
+
+/** Dashed, so the frontier never reads as one more model's solid run. */
+export const PARETO_STYLE = {
+  stroke: "var(--muted-foreground)",
+  strokeOpacity: 0.75,
+  strokeWidth: 1.5,
+  strokeDasharray: "5 4",
+} as const
+
+/**
+ * The Pareto frontier as a dashed line through the variants nothing beats on both
+ * axes. It sits under the runs and takes no focus; the markers it passes through do. With
+ * no frontier it draws nothing but stays in the chart, so the marks after it keep their keys.
+ */
+export function paretoFrontierMark(data: PlotData, frontier: ReadonlyArray<PlotPoint>) {
+  return createMark<PlotPoint, number, number>(({ markIndex }) => {
+    const id = `pareto-frontier-${markIndex}`
+
+    return {
+      id,
+      channels: {
+        x: { scale: "x", values: frontier.map((point) => point.values.x) },
+        y: { scale: "y", values: frontier.map((point) => point.values.y) },
+      },
+      render(context) {
+        const positions = positionsOf(data, context)
+        const placed = frontier.flatMap((point) => {
+          const position = positions.get(point.id)
+
+          return position ? [{ point, position }] : []
+        })
+
+        if (placed.length < 2) return { nodes: [] }
+
+        const points = placed.map(({ position }) => [position.x, position.y] as const)
+
+        return {
+          nodes: [
+            {
+              kind: "group",
+              key: id,
+              ariaHidden: true,
+              children: [
+                {
+                  kind: "polyline",
+                  key: `${id}:line`,
+                  points,
+                  style: { fill: "none", lineCap: "round", lineJoin: "round", ...PARETO_STYLE },
+                },
+              ],
+            },
+          ],
+        }
+      },
+    }
+  })
 }
 
 /** Effort names like "xhigh" read as small caps beneath their markers. */
