@@ -46,7 +46,10 @@ export function isDefaultSettings(settings: Settings) {
 }
 
 export function parseSettings(value: unknown): Settings {
-  return settingsSchema.parse(value != null && typeof value === "object" ? value : {})
+  // An array is an object too, but no settings ever stored one; it starts over from defaults.
+  return settingsSchema.parse(
+    value != null && typeof value === "object" && !Array.isArray(value) ? value : {},
+  )
 }
 
 const json = createJSONStorage<unknown>()

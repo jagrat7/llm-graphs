@@ -59,6 +59,12 @@ describe("settings", () => {
     })
   })
 
+  it("falls back to the defaults when the stored value is not an object", () => {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify([]))
+
+    expect(mountedStore().get(settingsAtom)).toEqual(DEFAULT_SETTINGS)
+  })
+
   it("drops hidden providers' models and keeps models without a vendor", () => {
     const models = [
       { id: "a", vendor: "openai" },
