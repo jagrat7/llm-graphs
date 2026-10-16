@@ -7,6 +7,7 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { ProvidersService } from "#/server/services/providers"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
+import { standaloneChartSvg } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { metricRecord } from "#/ui/lib/metrics"
 import { rangeMinHeight } from "#/ui/lib/range-definition"
@@ -59,18 +60,23 @@ beforeAll(() => {
 
 afterEach(cleanup)
 
-function renderChart(highlight: string | null = null) {
+function renderChart(
+  highlight: string | null = null,
+  getShareLink?: () => string,
+  chartModels = models,
+) {
   const client = new QueryClient()
   client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
 
   return render(
     <QueryClientProvider client={client}>
       <ComparisonChart
-        models={models}
+        models={chartModels}
         sources={{ x: "deepswe", y: "deepswe" }}
         xMetric="cost"
         yMetric="score"
         highlight={highlight}
+        getShareLink={getShareLink}
       />
     </QueryClientProvider>,
   )
@@ -580,5 +586,106 @@ describe("stacked runs", () => {
     expect(top + card.height).toBeLessThanOrEqual(viewport.height)
     expect(left).toBeGreaterThanOrEqual(0)
     expect(left + card.width).toBeLessThanOrEqual(viewport.width)
+  })
+})
+
+async function chooseShareItem(item: string) {
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Share" }))
+  })
+  await act(async () => {
+    fireEvent.click(await screen.findByRole("menuitem", { name: new RegExp(item) }))
+  })
+}
+
+/** jsdom has no clipboard or blob URLs, so a test lends them and puts back what was there. */
+function lend(target: object, key: string, value: unknown) {
+  const original = Object.getOwnPropertyDescriptor(target, key)
+
+  Object.defineProperty(target, key, { value, configurable: true })
+
+  return () => {
+    if (original) Object.defineProperty(target, key, original)
+    else Reflect.deleteProperty(target, key)
+  }
+}
+
+describe("share menu", () => {
+  it("copies the page's link to this comparison and says so", async () => {
+    const writeText = vi.fn(() => Promise.resolve())
+    const restore = lend(navigator, "clipboard", { writeText })
+
+    try {
+      renderChart(null, () => "https://example.test/?models=alpha")
+      await chooseShareItem("Copy link")
+
+      expect(writeText).toHaveBeenCalledWith("https://example.test/?models=alpha")
+      expect(await screen.findByRole("button", { name: "Link copied" })).not.toBeNull()
+    } finally {
+      restore()
+    }
+  })
+
+  it("reports a refused clipboard instead of claiming success", async () => {
+    const restore = lend(navigator, "clipboard", {
+      writeText: () => Promise.reject(new Error("denied")),
+    })
+
+    try {
+      renderChart(null, () => "https://example.test/")
+      await chooseShareItem("Copy link")
+
+      expect(await screen.findByRole("button", { name: "Couldn't copy link" })).not.toBeNull()
+    } finally {
+      restore()
+    }
+  })
+
+  it("downloads the plotted values as CSV", async () => {
+    const createObjectURL = vi.fn((_blob: Blob) => "blob:csv")
+    const filenames: Array<string> = []
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(function (this: HTMLElement) {
+        if (this instanceof HTMLAnchorElement) filenames.push(this.download)
+      })
+
+    const restoreCreate = lend(URL, "createObjectURL", createObjectURL)
+    const restoreRevoke = lend(URL, "revokeObjectURL", () => {})
+
+    try {
+      renderChart()
+      await chooseShareItem("Download data")
+
+      expect(filenames).toEqual(["llm-graphs-score-vs-cost.csv"])
+      expect(await createObjectURL.mock.calls[0][0].text()).toContain("Alpha,Alpha,low,2,40")
+      expect(await screen.findByRole("button", { name: "CSV saved" })).not.toBeNull()
+    } finally {
+      click.mockRestore()
+      restoreCreate()
+      restoreRevoke()
+    }
+  })
+
+  it("exports a standalone SVG that carries its logo masks and drops focus decoration", async () => {
+    const logoUrl = "data:image/svg+xml,%3Csvg%2F%3E"
+    const { container } = renderChart(null, undefined, [
+      ...models,
+      { ...makeModel({ model: "gamma", score: 70, costPerTask: 4 }), logoUrl },
+    ])
+    const frame = container.querySelector<HTMLElement>("[data-chart-frame]")!
+    const { markup, width, height } = await standaloneChartSvg(frame, 2)
+    const exported = new DOMParser().parseFromString(markup, "image/svg+xml").documentElement
+    const logo = exported.querySelector('rect[class^="chart-logo-"]')!
+    const maskId = `${logo.getAttribute("class")}-mask`
+    const [, , viewWidth, viewHeight] = exported.getAttribute("viewBox")!.split(" ").map(Number)
+
+    expect([width, height]).toEqual([viewWidth, viewHeight])
+    expect(exported.getAttribute("width")).toBe(String(viewWidth * 2))
+    expect(exported.getAttribute("height")).toBe(String(viewHeight * 2))
+    expect(exported.querySelector(`mask[id="${maskId}"] image`)?.getAttribute("href")).toBe(logoUrl)
+    expect(exported.querySelector("style")?.textContent).toContain(`mask:url(#${maskId})`)
+    expect(exported.querySelectorAll("[data-ts-focus-layer]")).toHaveLength(0)
+    expect(exported.textContent).toContain("Gamma")
   })
 })

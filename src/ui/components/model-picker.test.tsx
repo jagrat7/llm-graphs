@@ -283,6 +283,16 @@ describe("model picker checklist", () => {
     expect(onChange).toHaveBeenLastCalledWith([])
   })
 
+  it("keeps picks the current models do not include when a pill is removed", async () => {
+    const { onChange } = renderPicker(["retired", "alpha", "beta"])
+
+    await act(async () => {
+      fireEvent.click(pill("Beta").querySelector("button")!)
+    })
+
+    expect(onChange).toHaveBeenLastCalledWith(["retired", "alpha"])
+  })
+
   it("adds an unchecked model and removes a checked one", async () => {
     const { onChange } = renderPicker()
     await openChecklist()

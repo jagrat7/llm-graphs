@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { useAtom } from "jotai"
+import { RESET } from "jotai/utils"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
@@ -21,11 +23,14 @@ import {
   unavailableMetrics,
   compatibleComparison,
   hasMeaningfulComparison,
+  shareSources,
+  upgradeLegacySearch,
 } from "#/ui/lib/graph-state"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
+import { pickedModelsAtom } from "#/ui/lib/picked-models"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
@@ -60,16 +65,7 @@ const compareSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/")({
-  validateSearch: (search) => {
-    const parsed = compareSearchSchema.parse(search)
-    // Existing links explicitly selecting AA's old Cost meant token pricing.
-    for (const axis of ["x", "y", "z"] as const) {
-      if (parsed[axis] === "cost" && parsed[AXIS_SOURCE_KEY[axis]] === "artificialAnalysis") {
-        parsed[axis] = "price"
-      }
-    }
-    return parsed
-  },
+  validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
   component: ComparePage,
 })
 
@@ -77,6 +73,7 @@ function ComparePage() {
   const info = useProvidersInfo()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
+  const router = useRouter()
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
@@ -104,6 +101,7 @@ function ComparePage() {
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
+  const [pickedModels, setPickedModels] = useAtom(pickedModelsAtom)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -122,7 +120,6 @@ function ComparePage() {
       xSource: compatible.xSource,
       ySource: compatible.ySource,
       zSource: compatible.zSource,
-      models: undefined,
     })
   }
 
@@ -186,13 +183,45 @@ function ComparePage() {
     updateSearch({ z: undefined, zSource: undefined })
   }
 
-  const selected = useMemo(() => search.models ?? data?.defaultModels ?? [], [search.models, data])
+  // A shared link's models win, then this browser's own picks, then the benchmark's defaults.
+  const selected = useMemo(
+    () => search.models ?? pickedModels ?? data?.defaultModels ?? [],
+    [search.models, pickedModels, data],
+  )
+
+  /** Picks are entry ids, so they carry across benchmarks; ones a benchmark lacks wait unseen. */
+  function pickModels(models: Array<string>) {
+    setPickedModels(models)
+    updateSearch({ models })
+  }
+
+  function resetModels() {
+    setPickedModels(RESET)
+    updateSearch({ models: undefined })
+  }
+
   // Memoized so hovering a pill re-renders the page without handing the chart new models.
   const selectedModels = useMemo(() => {
     const ids = new Set(selected)
 
     return data?.models.filter((model) => ids.has(model.model)) ?? []
   }, [data, selected])
+  /**
+   * Pins the models and sources on screen, so the link keeps showing this comparison
+   * after the default picks or default benchmarks move on.
+   */
+  function shareLink() {
+    const location = router.buildLocation({
+      to: "/",
+      search: {
+        ...search,
+        ...shareSources(search, info),
+        models: selected,
+      },
+    })
+
+    return new URL(location.href, window.location.origin).href
+  }
   const quality = useMemo(
     () => plotQuality(buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z })),
     [selectedModels, search.x, search.y, search.z],
@@ -205,8 +234,8 @@ function ComparePage() {
     <ModelPicker
       models={data?.models ?? []}
       selected={selected}
-      onChange={(models) => updateSearch({ models })}
-      onReset={search.models ? () => updateSearch({ models: undefined }) : undefined}
+      onChange={pickModels}
+      onReset={search.models || pickedModels ? resetModels : undefined}
       onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       shortcut
@@ -254,38 +283,39 @@ function ComparePage() {
           </p>
           <Button
             variant="outline"
-            onClick={() =>
-              updateSearch(
-                unavailable.length > 0
-                  ? {
-                      x: "price",
-                      y: "score",
-                      z: undefined,
-                      xSource: undefined,
-                      ySource:
-                        Object.values(axes).find((axis) => axis.metric === "score")?.source ??
-                        undefined,
-                      zSource: undefined,
-                      models: undefined,
-                    }
-                  : {
-                      x: "cost",
-                      y: "score",
-                      z: undefined,
-                      xSource: undefined,
-                      ySource: undefined,
-                      zSource: undefined,
-                      models: undefined,
-                    },
-              )
-            }
+            onClick={() => {
+              if (unavailable.length > 0) {
+                updateSearch({
+                  x: "price",
+                  y: "score",
+                  z: undefined,
+                  xSource: undefined,
+                  ySource:
+                    Object.values(axes).find((axis) => axis.metric === "score")?.source ??
+                    undefined,
+                  zSource: undefined,
+                })
+                return
+              }
+
+              setPickedModels(RESET)
+              updateSearch({
+                x: "cost",
+                y: "score",
+                z: undefined,
+                xSource: undefined,
+                ySource: undefined,
+                zSource: undefined,
+                models: undefined,
+              })
+            }}
           >
             {unavailable.length > 0 ? "Compare token price" : "Restore default comparison"}
           </Button>
           <ModelPicker
             models={data.models}
             selected={selected}
-            onChange={(models) => updateSearch({ models })}
+            onChange={pickModels}
             className="mx-auto max-w-sm"
           />
         </DataState>
@@ -308,6 +338,7 @@ function ComparePage() {
               sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
               phase={morphPhase}
               onExitComplete={handleExitComplete}
+              getShareLink={shareLink}
             />
           ) : (
             <ComparisonChart
@@ -316,6 +347,7 @@ function ComparePage() {
               xMetric={search.x}
               yMetric={search.y}
               highlight={highlight}
+              getShareLink={shareLink}
             />
           )}
         </Suspense>

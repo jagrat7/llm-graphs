@@ -10,6 +10,7 @@ import type { ProviderName } from "#/ui/lib/orpc-client"
 import type { Model } from "#/ui/lib/model-view"
 import type { PlotAxis, PlotData } from "#/ui/lib/comparison-plot-data"
 
+import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
 import { Button } from "#/ui/components/ui/button"
@@ -23,6 +24,7 @@ import {
   CHART_TOOLTIP_WIDTH,
   chartFontRem,
 } from "#/ui/lib/chart-styles"
+import { glPlotImage } from "#/ui/lib/chart-image"
 import {
   buildPlotData,
   describePlot,
@@ -172,6 +174,32 @@ function edgePoint(
   coordinate[second] = signs[second] * CUBE_HALF
 
   return target.set(coordinate.x, coordinate.y, coordinate.z * depth)
+}
+
+type FrameReaderFn = () => HTMLCanvasElement
+
+/**
+ * Hands image export a way to draw a frame on demand. The canvas keeps no copy of its
+ * last frame, so the export renders one and reads it before the browser clears it.
+ */
+function FrameReader({ reader }: { reader: React.RefObject<FrameReaderFn | null> }) {
+  const gl = useThree((state) => state.gl)
+  const scene = useThree((state) => state.scene)
+  const camera = useThree((state) => state.camera)
+
+  useEffect(() => {
+    reader.current = () => {
+      gl.render(scene, camera)
+
+      return gl.domElement
+    }
+
+    return () => {
+      reader.current = null
+    }
+  }, [camera, gl, reader, scene])
+
+  return null
 }
 
 function supportsWebGL() {
@@ -1004,12 +1032,15 @@ export function ComparisonChart3D({
   sources,
   phase = "instant",
   onExitComplete,
+  getShareLink,
 }: {
   models: Array<Model>
   metrics: Record<"x" | "y" | "z", Metric>
   sources: Record<"x" | "y" | "z", ProviderName | null>
   phase?: MorphPhase
   onExitComplete?: () => void
+  /** The page's link to this exact comparison, for the share menu. */
+  getShareLink?: () => string
 }) {
   const info = useProvidersInfo()
   const reduceMotion = useReducedMotion()
@@ -1019,6 +1050,9 @@ export function ComparisonChart3D({
   const [webgl, setWebgl] = useState<boolean | null>(null)
   const [showPointLabels, setShowPointLabels] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
+  const plotRef = useRef<HTMLDivElement>(null)
+  const labelLayerRef = useRef<HTMLDivElement>(null)
+  const frameReader = useRef<FrameReaderFn | null>(null)
   const labelNodes = useRef<Array<HTMLElement | null>>([])
   const tooltipCard = useRef<HTMLDivElement>(null)
   const controlsRef = useRef<PlotControls>(null)
@@ -1195,11 +1229,23 @@ export function ComparisonChart3D({
           </Button>
         ))}
       </div>
+      <ChartShareMenu
+        className="absolute top-3 right-3 z-20"
+        data={data}
+        sources={sources}
+        getLink={getShareLink}
+        renderPlot={(scale) => {
+          if (!plotRef.current || !frameReader.current) throw new Error("3D chart is not ready")
+
+          return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
+        }}
+      />
       <p className="text-muted-foreground pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 text-xs lg:flex">
         <RiDragMove2Line aria-hidden="true" className="size-3.5" />
         Drag to rotate · scroll to zoom
       </p>
       <div
+        ref={plotRef}
         role="img"
         aria-label={describePlot(data)}
         className={`relative w-full touch-none select-none ${CHART_HEIGHT_CLASS}`}
@@ -1269,6 +1315,7 @@ export function ComparisonChart3D({
                 reduceMotion={reduceMotion}
                 scene={sceneRef}
               />
+              <FrameReader reader={frameReader} />
               <OrbitControls
                 ref={controlsRef}
                 makeDefault
@@ -1285,6 +1332,7 @@ export function ComparisonChart3D({
             </Canvas>
 
             <div
+              ref={labelLayerRef}
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 overflow-hidden"
             >
