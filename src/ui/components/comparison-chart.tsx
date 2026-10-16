@@ -1,15 +1,17 @@
 import { Chart } from "@tanstack/charts/react/tooltip"
-import { useId, useMemo, useState } from "react"
+import { useId, useMemo, useRef, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/ui/lib/orpc-client"
 import type { Model } from "#/ui/lib/model-view"
 
+import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
 import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
+import { CHART_EXPORT_DEFS_ATTRIBUTE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
 import {
@@ -37,7 +39,14 @@ function LogoMasks({ logoClass }: { logoClass: Map<string, string> }) {
   const entries = Array.from(logoClass)
 
   return (
-    <svg aria-hidden="true" width="0" height="0" className="absolute">
+    // Image export copies these into the chart's own SVG, which has no other way to reach them.
+    <svg
+      aria-hidden="true"
+      width="0"
+      height="0"
+      className="absolute"
+      {...{ [CHART_EXPORT_DEFS_ATTRIBUTE]: "" }}
+    >
       <defs>
         {entries.map(([url, className]) => (
           // Alpha, not luminance: the logo is a dark shape on a transparent field.
@@ -157,6 +166,7 @@ export function ComparisonChart({
   xMetric,
   yMetric,
   highlight = null,
+  getShareLink,
 }: {
   models: Array<Model>
   sources: Record<"x" | "y", ProviderName | null>
@@ -164,8 +174,11 @@ export function ComparisonChart({
   yMetric: Metric
   /** Model id to emphasise, e.g. while its picker pill is hovered. */
   highlight?: string | null
+  /** The page's link to this exact comparison, for the share menu. */
+  getShareLink?: () => string
 }) {
   const info = useProvidersInfo()
+  const frameRef = useRef<HTMLDivElement>(null)
   const logoPrefix = `chart-logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
   const data = useMemo(
     () => buildPlotData(models, { x: xMetric, y: yMetric }),
@@ -211,6 +224,7 @@ export function ComparisonChart({
 
   return (
     <div
+      ref={frameRef}
       className={`relative flex w-full flex-col ${CHART_HEIGHT_CLASS}`}
       data-chart-frame="loaded"
       style={
@@ -220,19 +234,29 @@ export function ComparisonChart({
       }
     >
       <LogoMasks logoClass={logoClass} />
-      {(flat != null || hasFrontier) && (
-        <div className="flex shrink-0 items-center gap-2 pb-2">
-          {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+      {/* A row of its own rather than an overlay: the plot's top-right corner is where
+          the strongest, priciest models land. */}
+      <div className="flex shrink-0 items-center gap-2 pb-2">
+        {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+        <div className="ml-auto flex items-center gap-2">
           {flat != null && (
-            <div className="ml-auto">
-              <StackedViewSwitch
-                view={view}
-                onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
-              />
-            </div>
+            <StackedViewSwitch
+              view={view}
+              onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
+            />
           )}
+          <ChartShareMenu
+            data={data}
+            sources={sources}
+            getLink={getShareLink}
+            renderPlot={(scale) => {
+              if (!frameRef.current) throw new Error("Chart is not mounted")
+
+              return svgPlotImage(frameRef.current, scale)
+            }}
+          />
         </div>
-      )}
+      </div>
       <div className="min-h-0 flex-1">
         <Chart
           key={view}
