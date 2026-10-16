@@ -289,10 +289,23 @@ function effectiveOpacity(element: Element, root: Element) {
   return opacity
 }
 
+/** A label's rotation in radians, from the `rotate()` the 3D chart gives axis titles. */
+function labelAngle(label: Element) {
+  const transform = getComputedStyle(label).transform
+
+  if (!transform || transform === "none") return 0
+
+  const { a, b } = new DOMMatrix(transform)
+
+  return Math.atan2(b, a)
+}
+
 /**
  * Draws the visible text of an HTML label layer where the browser laid it out, with
  * the background halo the labels wear on screen. Each text node is placed from its
- * own range, so stacked lines and transformed labels land where they are drawn.
+ * own range, so stacked lines land where they are drawn. A rotated label (an axis
+ * title following a cube edge) is a single line, drawn turned about its centre: its
+ * range box is the rotated text's bounds, not where the text starts.
  */
 function drawHtmlText(
   context: CanvasRenderingContext2D,
@@ -302,6 +315,10 @@ function drawHtmlText(
 ) {
   const walker = document.createTreeWalker(layer, NodeFilter.SHOW_TEXT)
   const range = document.createRange()
+
+  context.lineJoin = "round"
+  context.lineWidth = 3
+  context.strokeStyle = halo
 
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
     const text = node.textContent ?? ""
@@ -318,23 +335,40 @@ function drawHtmlText(
 
     if (box.width === 0 || box.height === 0) continue
 
-    const style = getComputedStyle(element)
-    const x = box.left - origin.left
-    const y = box.top - origin.top + box.height / 2
+    let label: Element = element
 
+    while (label.parentElement && label.parentElement !== layer) label = label.parentElement
+
+    const angle = labelAngle(label)
+    const rotated = Math.abs(angle) > 0.001
+    const style = getComputedStyle(element)
+
+    context.save()
     context.globalAlpha = opacity
     context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`
-    context.textAlign = "left"
     context.textBaseline = "middle"
-    context.lineJoin = "round"
-    context.lineWidth = 3
-    context.strokeStyle = halo
-    context.strokeText(text, x, y)
     context.fillStyle = style.color
-    context.fillText(text, x, y)
-  }
 
-  context.globalAlpha = 1
+    if (rotated) {
+      context.translate(
+        box.left - origin.left + box.width / 2,
+        box.top - origin.top + box.height / 2,
+      )
+      context.rotate(angle)
+      context.textAlign = "center"
+      context.strokeText(text, 0, 0)
+      context.fillText(text, 0, 0)
+    } else {
+      const x = box.left - origin.left
+      const y = box.top - origin.top + box.height / 2
+
+      context.textAlign = "left"
+      context.strokeText(text, x, y)
+      context.fillText(text, x, y)
+    }
+
+    context.restore()
+  }
 }
 
 /**

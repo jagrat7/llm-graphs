@@ -195,11 +195,20 @@ function ComparePage() {
     return data?.models.filter((model) => ids.has(model.model)) ?? []
   }, [data, selected])
   /**
-   * Pins the models on screen, so the link keeps showing this comparison after the
-   * default picks move on to newer models.
+   * Pins the models and sources on screen, so the link keeps showing this comparison
+   * after the default picks or default benchmarks move on.
    */
   function shareLink() {
-    const location = router.buildLocation({ to: "/", search: { ...search, models: selected } })
+    const location = router.buildLocation({
+      to: "/",
+      search: {
+        ...search,
+        xSource: axes.x.source ?? undefined,
+        ySource: axes.y.source ?? undefined,
+        zSource: search.z == null ? undefined : (axes.z.source ?? undefined),
+        models: selected,
+      },
+    })
 
     return new URL(location.href, window.location.origin).href
   }
