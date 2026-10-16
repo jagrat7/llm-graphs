@@ -5,7 +5,6 @@ import { flushSync } from "react-dom"
 import type { Theme } from "#/ui/lib/theme"
 
 import { Button } from "#/ui/components/ui/button"
-import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"
 import {
   applyTheme,
   storeTheme,
@@ -73,24 +72,15 @@ export default function ThemeToggle() {
   const Icon = theme === "dark" ? RiMoonLine : RiSunLine
 
   return (
-    <Tooltip>
-      <TooltipTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={toggle}
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-            aria-keyshortcuts={TOGGLE_KEY}
-            className="text-muted-foreground min-h-11 w-11 sm:min-h-8 sm:w-8"
-          >
-            <Icon aria-hidden="true" />
-          </Button>
-        }
-      />
-      <TooltipContent>
-        Toggle theme <kbd className="ml-1 opacity-60">D</kbd>
-      </TooltipContent>
-    </Tooltip>
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      onClick={toggle}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+      aria-keyshortcuts={TOGGLE_KEY}
+      className="text-muted-foreground min-h-11 w-11 sm:min-h-8 sm:w-8"
+    >
+      <Icon aria-hidden="true" />
+    </Button>
   )
 }

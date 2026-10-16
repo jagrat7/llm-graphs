@@ -7,7 +7,7 @@ import type { Model } from "#/ui/lib/model-view"
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"
 import { Checkbox } from "#/ui/components/ui/checkbox"
-import { vendorLabel } from "#/ui/lib/model-view"
+import { pinRank, vendorLabel } from "#/ui/lib/model-view"
 
 type DotStyle = CSSProperties & { "--dot": string }
 
@@ -20,9 +20,6 @@ const VENDOR_PREVIEW_COUNT = 3
 /** Likewise for vendors: the panel opens on a handful, the long tail sits behind a toggle. */
 const PROVIDER_PREVIEW_COUNT = 6
 
-/** The labs most comparisons start from, pinned ahead of the rest in this order. */
-const PINNED_VENDORS = ["anthropic", "openai", "xai", "zhipuai", "moonshotai", "google"]
-
 const OTHER_VENDOR = "\u0000other"
 
 export type VendorGroup = {
@@ -31,11 +28,6 @@ export type VendorGroup = {
   logoUrl: string | null
   /** Newest release first, so the preview shows what people are comparing now. */
   models: Array<Model>
-}
-
-function pinRank(key: string) {
-  const index = PINNED_VENDORS.indexOf(key)
-  return index === -1 ? PINNED_VENDORS.length : index
 }
 
 /**

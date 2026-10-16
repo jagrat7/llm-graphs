@@ -31,6 +31,7 @@ import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { pickedModelsAtom } from "#/ui/lib/picked-models"
+import { highestEffortOnly, settingsAtom, withoutHiddenProviders } from "#/ui/lib/settings"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
@@ -78,12 +79,18 @@ function ComparePage() {
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
   const { data: snapshot, isPending, isError } = useModelSnapshot()
+  const [settings, setSettings] = useAtom(settingsAtom)
+  const { hiddenProviders, vendorLogos, effortLevels, openingModels } = settings
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
   const data = useMemo(() => {
     if (!snapshot) return undefined
 
     const viewAxes = axisSettings(search, info)
-    const models = offeredVariants(snapshot, axisBindings(viewAxes, info))
+    // A provider turned off in settings leaves the picker and the opening picks alike.
+    const models = withoutHiddenProviders(
+      offeredVariants(snapshot, axisBindings(viewAxes, info)),
+      hiddenProviders,
+    )
     const scoreSource =
       Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
 
@@ -95,9 +102,10 @@ function ComparePage() {
         scoreSource,
         info,
         axisBindings(viewAxes, info).map((binding) => binding.metric),
+        openingModels,
       ),
     }
-  }, [snapshot, info, search])
+  }, [snapshot, info, search, hiddenProviders, openingModels])
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
@@ -204,8 +212,16 @@ function ComparePage() {
   const selectedModels = useMemo(() => {
     const ids = new Set(selected)
 
-    return data?.models.filter((model) => ids.has(model.model)) ?? []
-  }, [data, selected])
+    const picked = data?.models.filter((model) => ids.has(model.model)) ?? []
+
+    return effortLevels === "highest" ? highestEffortOnly(picked) : picked
+  }, [data, selected, effortLevels])
+  // Without logos, every point falls back to the plain dot the chart draws for a logoless vendor.
+  const chartModels = useMemo(
+    () =>
+      vendorLogos ? selectedModels : selectedModels.map((model) => ({ ...model, logoUrl: null })),
+    [selectedModels, vendorLogos],
+  )
   /**
    * Pins the models and sources on screen, so the link keeps showing this comparison
    * after the default picks or default benchmarks move on.
@@ -270,7 +286,9 @@ function ComparePage() {
             unavailable.length > 0
               ? `${unavailable.map(({ metric }) => METRIC_CONFIG[metric!].label).join(" and ")} unavailable for this score benchmark`
               : data.models.length === 0
-                ? "No models have all selected metrics"
+                ? hiddenProviders.length > 0
+                  ? "No models from the providers you have on"
+                  : "No models have all selected metrics"
                 : selected.length === 0
                   ? "Select models to compare"
                   : "No selected models are available"
@@ -279,11 +297,22 @@ function ComparePage() {
           <p className="text-muted-foreground mx-auto mb-3 max-w-sm text-sm">
             {unavailable.length > 0
               ? "This benchmark doesn't publish them. Compare token price or pick another score source."
-              : "Try other metrics or restore the default comparison."}
+              : data.models.length === 0 && hiddenProviders.length > 0
+                ? "Turn providers back on in settings, or turn them all on here."
+                : "Try other metrics or restore the default comparison."}
           </p>
           <Button
             variant="outline"
             onClick={() => {
+              if (
+                unavailable.length === 0 &&
+                data.models.length === 0 &&
+                hiddenProviders.length > 0
+              ) {
+                setSettings((current) => ({ ...current, hiddenProviders: [] }))
+                return
+              }
+
               if (unavailable.length > 0) {
                 updateSearch({
                   x: "price",
@@ -310,7 +339,11 @@ function ComparePage() {
               })
             }}
           >
-            {unavailable.length > 0 ? "Compare token price" : "Restore default comparison"}
+            {unavailable.length > 0
+              ? "Compare token price"
+              : data.models.length === 0 && hiddenProviders.length > 0
+                ? "Turn all providers on"
+                : "Restore default comparison"}
           </Button>
           <ModelPicker
             models={data.models}
@@ -333,7 +366,7 @@ function ComparePage() {
         <Suspense fallback={<ChartSkeleton />}>
           {search.z ? (
             <ComparisonChart3D
-              models={selectedModels}
+              models={chartModels}
               metrics={{ x: search.x, y: search.y, z: search.z }}
               sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
               phase={morphPhase}
@@ -342,7 +375,7 @@ function ComparePage() {
             />
           ) : (
             <ComparisonChart
-              models={selectedModels}
+              models={chartModels}
               sources={{ x: axes.x.source, y: axes.y.source }}
               xMetric={search.x}
               yMetric={search.y}
