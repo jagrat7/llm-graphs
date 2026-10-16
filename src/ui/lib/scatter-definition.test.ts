@@ -70,6 +70,13 @@ function flatten(nodes: ReadonlyArray<SceneNode>): Array<SceneNode> {
   return nodes.flatMap((node) => (node.kind === "group" ? flatten(node.children) : [node]))
 }
 
+/** Each interactive point's pixel position, keyed by its plot id. */
+function chartPoints(chartScene: ChartScene) {
+  return new Map(
+    chartScene.points.map((point) => [point.key.replace(/^model-runs-2:/, ""), [point.x, point.y]]),
+  )
+}
+
 function labels(chartScene: ChartScene) {
   return flatten(chartScene.nodes).flatMap((node) => (node.kind === "label" ? [node.text] : []))
 }
@@ -150,15 +157,20 @@ describe("scatter definition", () => {
     expect(svg).not.toMatch(/>\d+m \d+s</)
   })
 
-  it("draws the Pareto frontier as a smooth dashed curve under the runs", () => {
+  it("draws the Pareto frontier as a dashed line under the runs", () => {
     const nodes = flatten(scene().scene.nodes)
     const pareto = nodes.filter((node) => node.key.startsWith("pareto-frontier-1:"))
     const firstRun = nodes.findIndex((node) => node.key.startsWith("model-runs-2:"))
 
+    const runs = chartPoints(scene().scene)
+
     expect(pareto.map((node) => node.key)).toEqual(["pareto-frontier-1:line"])
-    // Two points join in a straight segment; `pareto.test.ts` covers the curve itself.
-    expect(pareto[0]).toMatchObject({ kind: "polyline", points: expect.any(Array) })
-    expect(pareto[0].kind === "polyline" && pareto[0].path).toMatch(/^M[\d.]+,[\d.]+L/)
+    // Straight segments through alpha's two efforts, the variants nothing beats.
+    expect(pareto[0]).toMatchObject({
+      kind: "polyline",
+      points: [runs.get("alpha-on-low"), runs.get("alpha-on-high")],
+    })
+    expect(pareto[0].kind === "polyline" && pareto[0].path).toBeUndefined()
     expect(pareto[0].style?.strokeDasharray).toBeTruthy()
     expect(nodes.indexOf(pareto[0])).toBeLessThan(firstRun)
   })

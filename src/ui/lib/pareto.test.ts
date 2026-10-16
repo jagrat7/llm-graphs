@@ -4,7 +4,7 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { buildPlotData, type PlotMetrics } from "#/ui/lib/comparison-plot-data"
 import { metricRecord } from "#/ui/lib/metrics"
-import { hasParetoFrontier, paretoCurve, paretoFrontier } from "#/ui/lib/pareto"
+import { hasParetoFrontier, paretoFrontier } from "#/ui/lib/pareto"
 
 function makeModel({
   model,
@@ -103,31 +103,5 @@ describe("pareto frontier", () => {
     expect(plot({ x: "cost", y: "duration" })).toBe(false)
     expect(plot({ x: "cost", y: "score", z: "duration" })).toBe(false)
     expect(frontierIds({ x: "price", y: "score" })).toEqual([])
-  })
-
-  it("curves through every frontier point from left to right", () => {
-    const path = paretoCurve([
-      [300, 40],
-      [10, 200],
-      [120, 90],
-    ])
-
-    expect(path.startsWith("M10,200")).toBe(true)
-    expect(path.endsWith("300,40")).toBe(true)
-    expect(path).toContain("120,90")
-    expect(path).toMatch(/C/)
-  })
-
-  it("never bulges past a point, so the curve keeps the frontier's direction", () => {
-    const path = paretoCurve([
-      [0, 100],
-      [10, 20],
-      [100, 10],
-    ])
-    // Every cubic control point lies within the y range of the points it joins.
-    const ys = [...path.matchAll(/-?[\d.]+,(-?[\d.]+)/g)].map((match) => Number(match[1]))
-
-    expect(Math.max(...ys)).toBeLessThanOrEqual(100)
-    expect(Math.min(...ys)).toBeGreaterThanOrEqual(10)
   })
 })

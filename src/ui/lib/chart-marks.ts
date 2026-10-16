@@ -13,7 +13,6 @@ import { createMark, whenFocused } from "@tanstack/charts"
 import type { PlotData, PlotPoint, PlotSeries } from "#/ui/lib/comparison-plot-data"
 
 import { CHART_ACTIVE_SCALE, CHART_TRANSITION_MS } from "#/ui/lib/chart-styles"
-import { paretoCurve } from "#/ui/lib/pareto"
 import {
   LABEL_COLLISION_GAP,
   LABEL_EFFORT_SIZE,
@@ -42,7 +41,7 @@ export function isLit(series: PlotSeries, highlight: string | null) {
 /**
  * What stays lit at rest. A model highlighted from outside wins; otherwise a drawn Pareto
  * frontier keeps its own variants lit and mutes everything else, every run's line
- * included, since the frontier's curve is the line to follow. Pointer focus still lights
+ * included, since the frontier's line is the one to follow. Pointer focus still lights
  * a whole run over either.
  */
 type Emphasis = {
@@ -439,7 +438,7 @@ export const PARETO_STYLE = {
 } as const
 
 /**
- * The Pareto frontier as a smooth dashed curve through the variants nothing beats on both
+ * The Pareto frontier as a dashed line through the variants nothing beats on both
  * axes. It sits under the runs and takes no focus; the markers it passes through do. With
  * no frontier it draws nothing but stays in the chart, so the marks after it keep their keys.
  */
@@ -476,7 +475,6 @@ export function paretoFrontierMark(data: PlotData, frontier: ReadonlyArray<PlotP
                   kind: "polyline",
                   key: `${id}:line`,
                   points,
-                  path: paretoCurve(points),
                   style: { fill: "none", lineCap: "round", lineJoin: "round", ...PARETO_STYLE },
                 },
               ],

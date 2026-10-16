@@ -68,15 +68,15 @@ function describeRanges(data: PlotData) {
 }
 
 function describeFrontier(frontier: Array<PlotPoint>) {
-  return `The dashed curve is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. Variants off it are muted.`
+  return `The dashed line is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. Variants off it are muted.`
 }
 
-/** A small dashed curve, as the toggle's key. */
-const FRONTIER_SWATCH = "M2 10 C8 10 11 3 18 3"
+/** A small dashed line with a bend, as the toggle's key. */
+const FRONTIER_SWATCH = "M2 11 L7 4 L18 2"
 
 /**
  * Shows or hides the frontier, and doubles as its key: the swatch names the dashed
- * curve, which would otherwise read as one more model's run. On, it takes a firmer fill
+ * line, which would otherwise read as one more model's run. On, it takes a firmer fill
  * and full-strength text than the toggle's muted default, so its state reads at a glance.
  */
 function FrontierToggle({

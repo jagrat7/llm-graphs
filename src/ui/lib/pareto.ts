@@ -1,5 +1,3 @@
-import { curveMonotoneX, line } from "d3-shape"
-
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
 
 import { METRIC_CONFIG } from "#/ui/lib/metrics"
@@ -53,18 +51,4 @@ export function paretoFrontier(data: PlotData): Array<PlotPoint> {
   }
 
   return frontier
-}
-
-const monotoneLine = line<readonly [number, number]>(
-  (point) => point[0],
-  (point) => point[1],
-).curve(curveMonotoneX)
-
-/**
- * A smooth SVG path through the frontier's pixel positions. A frontier only ever rises
- * or only ever falls along x, and a monotone cubic keeps it that way between points, so
- * the curve never bulges past a variant into a dip or peak the data does not have.
- */
-export function paretoCurve(points: ReadonlyArray<readonly [number, number]>) {
-  return monotoneLine(points.toSorted((left, right) => left[0] - right[0])) ?? ""
 }

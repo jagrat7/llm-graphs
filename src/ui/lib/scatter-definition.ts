@@ -58,7 +58,7 @@ export function scatterDefinition(
   // A duration axis keeps its padded domain: niced 1-2-5 bounds would fall between its ticks.
   const xTicks = xMetric === "duration" ? timeTicks(xDomain, TIME_INTERVALS.x) : undefined
   const yTicks = yMetric === "duration" ? timeTicks(yDomain, TIME_INTERVALS.y) : undefined
-  // A lone point draws no curve, so it has nothing to mute the rest for.
+  // A lone point draws no line, so it has nothing to mute the rest for.
   const front = frontier ? paretoFrontier(data) : []
   const onFront = front.length > 1 ? new Set(front.map((point) => point.id)) : undefined
 
