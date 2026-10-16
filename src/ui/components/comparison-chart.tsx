@@ -10,6 +10,7 @@ import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
 import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
+import { isRatioMetric, metricPresentation } from "#/ui/lib/metrics"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_EXPORT_DEFS_ATTRIBUTE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
@@ -17,12 +18,13 @@ import { focusedPoint } from "#/ui/lib/chart-tooltip"
 import {
   buildPlotData,
   describePlot,
+  type AxisScale,
   type PlotData,
   type PlotPoint,
 } from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { PARETO_STYLE } from "#/ui/lib/chart-marks"
-import { paretoFrontier } from "#/ui/lib/pareto"
+import { drawnFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
 import { stackedAxis } from "#/ui/lib/stacking"
@@ -86,6 +88,16 @@ function describeFrontier(frontier: Array<PlotPoint>, highlighted: string | null
   return `The dashed line is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. ${emphasis}`
 }
 
+/**
+ * The toolbar toggles' look: on, they take a firmer fill and full-strength text than the
+ * toggle's muted default, so their state reads at a glance.
+ */
+const TOOLBAR_TOGGLE_CLASS =
+  "text-muted-foreground aria-pressed:bg-foreground/12 aria-pressed:text-foreground gap-1.5"
+/** Swatches stay dim until their toggle is on. */
+const TOOLBAR_SWATCH_CLASS =
+  "size-auto overflow-visible opacity-40 transition-opacity group-aria-pressed/toggle:opacity-100"
+
 /** A small dashed line with a bend, as the toggle's key. */
 const FRONTIER_SWATCH = "M2 11 L7 4 L18 2"
 
@@ -106,7 +118,7 @@ function FrontierToggle({
       size="sm"
       pressed={pressed}
       onPressedChange={(next) => onPressedChange(next)}
-      className="text-muted-foreground aria-pressed:bg-foreground/12 aria-pressed:text-foreground gap-1.5"
+      className={TOOLBAR_TOGGLE_CLASS}
     >
       <svg
         aria-hidden="true"
@@ -114,7 +126,7 @@ function FrontierToggle({
         height="13"
         viewBox="0 0 20 13"
         // `size-auto` opts out of the toggle's square icon size, keeping the swatch wide.
-        className="size-auto overflow-visible opacity-40 transition-opacity group-aria-pressed/toggle:opacity-100"
+        className={TOOLBAR_SWATCH_CLASS}
         fill="none"
         strokeLinecap="round"
       >
@@ -126,6 +138,49 @@ function FrontierToggle({
         />
       </svg>
       Pareto frontier
+    </Toggle>
+  )
+}
+
+/** Ruler ticks that close up along the line, as on one decade of a log axis. */
+const LOG_SWATCH = "M2 2 V11 M10 5 V11 M14.5 5 V11 M17 5 V11 M18.5 2 V11"
+
+/**
+ * Puts one axis on a log scale or back. It starts in the state detection picked (see
+ * `axisScale`), and names the metric rather than the axis, since the range view lays
+ * either metric out left to right.
+ */
+function LogToggle({
+  label,
+  pressed,
+  onPressedChange,
+}: {
+  label: string
+  pressed: boolean
+  onPressedChange: (pressed: boolean) => void
+}) {
+  return (
+    <Toggle
+      size="sm"
+      pressed={pressed}
+      onPressedChange={(next) => onPressedChange(next)}
+      aria-label={`Log scale for ${label}`}
+      className={TOOLBAR_TOGGLE_CLASS}
+    >
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="13"
+        viewBox="0 0 20 13"
+        className={TOOLBAR_SWATCH_CLASS}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.25}
+        strokeLinecap="round"
+      >
+        <path d={LOG_SWATCH} />
+      </svg>
+      Log {label.charAt(0).toLowerCase() + label.slice(1)}
     </Toggle>
   )
 }
@@ -180,9 +235,25 @@ export function ComparisonChart({
   const info = useProvidersInfo()
   const frameRef = useRef<HTMLDivElement>(null)
   const logoPrefix = `chart-logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
+  const { x: xSource, y: ySource } = sources
+  // A reader's linear or log choice follows the metric, whichever axis it moves to; a
+  // metric they have not touched takes the scale detection picks.
+  const scaleKey = { x: `${xMetric}@${xSource}`, y: `${yMetric}@${ySource}` }
+  const [scaleChoices, setScaleChoices] = useState<Record<string, AxisScale>>({})
+  const xScale = scaleChoices[scaleKey.x]
+  const yScale = scaleChoices[scaleKey.y]
   const data = useMemo(
-    () => buildPlotData(models, { x: xMetric, y: yMetric }),
-    [models, xMetric, yMetric],
+    () =>
+      buildPlotData(
+        models,
+        { x: xMetric, y: yMetric },
+        {
+          x: isRatioMetric(xMetric, xSource, info),
+          y: isRatioMetric(yMetric, ySource, info),
+        },
+        { x: xScale, y: yScale },
+      ),
+    [models, xMetric, yMetric, xSource, ySource, info, xScale, yScale],
   )
   // One mask per vendor logo, shared by every point of that vendor.
   const logoClass = useMemo(() => {
@@ -203,13 +274,17 @@ export function ComparisonChart({
   const metricsKey = `${xMetric}/${yMetric}`
   const [choices, setChoices] = useState<Record<string, ChartView>>({})
   const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "ranges")
-  const { x: xSource, y: ySource } = sources
   // The range view has no numeric axis to draw it along, so only the scatter shows it.
-  const frontier = useMemo(() => (view === "scatter" ? paretoFrontier(data) : []), [data, view])
+  const frontier = useMemo(() => (view === "scatter" ? drawnFrontier(data) : []), [data, view])
   // One switch for every pair of metrics: someone who hides the frontier wants it gone.
   const [frontierOn, setFrontierOn] = useState(true)
-  const hasFrontier = frontier.length > 1
+  const hasFrontier = frontier.length > 0
   const showFrontier = hasFrontier && frontierOn
+  // Rows in the range view have no numeric scale along the fixed metric, so only the
+  // metric that spreads gets a switch there.
+  const logAxes = (["x", "y"] as const).filter(
+    (axis) => data.logAllowed[axis] && !(view === "ranges" && axis === flat),
+  )
   const definition = useMemo(() => {
     const options = { highlight: lit, info, logoClass, sources: { x: xSource, y: ySource } }
 
@@ -235,9 +310,22 @@ export function ComparisonChart({
     >
       <LogoMasks logoClass={logoClass} />
       {/* A row of its own rather than an overlay: the plot's top-right corner is where
-          the strongest, priciest models land. */}
-      <div className="flex shrink-0 items-center gap-2 pb-2">
+          the strongest, priciest models land. It wraps rather than overflow a phone. */}
+      <div className="flex shrink-0 flex-wrap items-center gap-2 pb-2">
         {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+        {logAxes.map((axis) => (
+          <LogToggle
+            key={axis}
+            label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
+            pressed={data.scales[axis] === "log"}
+            onPressedChange={(next) =>
+              setScaleChoices((previous) => ({
+                ...previous,
+                [scaleKey[axis]]: next ? "log" : "linear",
+              }))
+            }
+          />
+        ))}
         <div className="ml-auto flex items-center gap-2">
           {flat != null && (
             <StackedViewSwitch
