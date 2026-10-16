@@ -482,7 +482,10 @@ export function describePlot(data: PlotData) {
     .map((axis) => {
       const metric = data.metrics[axis]
 
-      return metric == null ? null : `${axis.toUpperCase()} ${METRIC_CONFIG[metric].label}`
+      // The 3D chart's axis captions are hidden from screen readers, so the scale is said here.
+      const scale = data.scales[axis] === "log" ? " on a log scale" : ""
+
+      return metric == null ? null : `${axis.toUpperCase()} ${METRIC_CONFIG[metric].label}${scale}`
     })
     .filter((entry): entry is string => entry != null)
     .join(", ")

@@ -297,7 +297,7 @@ export function ComparisonChart({
     >
       <LogoMasks logoClass={logoClass} />
       {hasToolbar && (
-        <div className="flex shrink-0 items-center gap-2 pb-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2 pb-2">
           {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
           {logAxes.map((axis) => (
             <LogToggle

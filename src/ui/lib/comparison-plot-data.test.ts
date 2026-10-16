@@ -380,4 +380,14 @@ describe("describePlot", () => {
     expect(describePlot(buildPlotData(models, XYZ))).toContain("3D scatter plot")
     expect(describePlot(buildPlotData(models, XYZ))).toContain("Z Output speed")
   })
+
+  it("says which axes are on a log scale", () => {
+    const crowded = [0.05, 0.1, 0.2, 0.4, 60].map((costPerTask, index) =>
+      makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
+    )
+
+    expect(describePlot(buildPlotData(crowded, XYZ))).toContain(
+      "by X Task cost on a log scale, Y Score,",
+    )
+  })
 })
