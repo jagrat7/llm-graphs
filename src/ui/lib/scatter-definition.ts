@@ -4,12 +4,18 @@ import { scaleLinear } from "@tanstack/charts/scales/linear"
 import type { PlotData } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 
-import { modelLabelsMark, modelRunsMark, pointGuidesMark } from "#/ui/lib/chart-marks"
+import {
+  modelLabelsMark,
+  modelRunsMark,
+  paretoFrontierMark,
+  pointGuidesMark,
+} from "#/ui/lib/chart-marks"
 import { CHART_GRID_MINOR_OPACITY, CHART_GRID_OPACITY } from "#/ui/lib/chart-styles"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
 import { padDomain, timeTicks } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
+import { paretoFrontier } from "#/ui/lib/pareto"
 
 const DOMAIN_PAD = 0.08
 /** Minimum pixels between ticks — larger spacing means fewer, calmer axis markers. */
@@ -22,7 +28,9 @@ const FOCUS_RING_RADIUS = 13
 
 /**
  * The 2D comparison as a TanStack Charts definition: dashed guides to both axes for the
- * active point, each model's effort run, then the model names on top.
+ * active point, the Pareto frontier when the metrics trade off and the reader has it on,
+ * each model's effort run, then the model names on top. A drawn frontier mutes every
+ * variant off it.
  */
 export function scatterDefinition(
   data: PlotData,
@@ -31,11 +39,14 @@ export function scatterDefinition(
     info,
     logoClass,
     sources,
+    frontier = true,
   }: {
     highlight: string | null
     info: ProvidersInfo
     logoClass: Map<string, string>
     sources: Record<"x" | "y", ProviderName | null>
+    /** Whether to draw the Pareto frontier, where the metrics have one. */
+    frontier?: boolean
   },
 ) {
   const xMetric = data.metrics.x!
@@ -47,12 +58,18 @@ export function scatterDefinition(
   // A duration axis keeps its padded domain: niced 1-2-5 bounds would fall between its ticks.
   const xTicks = xMetric === "duration" ? timeTicks(xDomain, TIME_INTERVALS.x) : undefined
   const yTicks = yMetric === "duration" ? timeTicks(yDomain, TIME_INTERVALS.y) : undefined
+  // A lone point draws no line, so it has nothing to mute the rest for.
+  const front = frontier ? paretoFrontier(data) : []
+  const onFront = front.length > 1 ? new Set(front.map((point) => point.id)) : undefined
 
   return defineChart({
     marks: [
       pointGuidesMark(data),
-      modelRunsMark(data, { highlight, logoClass }),
-      modelLabelsMark(data, { highlight }),
+      // Always present, empty when hidden or when the metrics do not trade off, so the
+      // marks after it keep their keys and animate across either change.
+      paretoFrontierMark(data, front),
+      modelRunsMark(data, { highlight, frontier: onFront, logoClass }),
+      modelLabelsMark(data, { highlight, frontier: onFront }),
     ],
     scales: {
       x: {

@@ -28,6 +28,11 @@ export const METRIC_CONFIG: Record<
     unit: string
     dataKey: MetricKey
     format?: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
+    /**
+     * Which end of the axis a reader wants, for metrics that trade off against Score.
+     * Only metrics with a direction take part in the Pareto frontier.
+     */
+    better?: "higher" | "lower"
   }
 > = {
   score: {
@@ -35,12 +40,14 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Score",
     unit: "%",
     dataKey: "score",
+    better: "higher",
   },
   cost: {
     label: "Task cost",
     shortLabel: "Task cost $/task",
     unit: "$/task",
     dataKey: "costPerTask",
+    better: "lower",
   },
   price: {
     label: "Token price",
@@ -53,12 +60,14 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Tokens/s",
     unit: "tokens/s",
     dataKey: "tokensPerSecond",
+    better: "higher",
   },
   duration: {
     label: "Task duration",
     shortLabel: "Duration",
     unit: "s",
     dataKey: "durationSeconds",
+    better: "lower",
   },
   inputPrice: {
     label: "Input token price",
