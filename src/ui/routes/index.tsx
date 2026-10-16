@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
@@ -77,6 +77,7 @@ function ComparePage() {
   const info = useProvidersInfo()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
+  const router = useRouter()
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
@@ -193,6 +194,15 @@ function ComparePage() {
 
     return data?.models.filter((model) => ids.has(model.model)) ?? []
   }, [data, selected])
+  /**
+   * Pins the models on screen, so the link keeps showing this comparison after the
+   * default picks move on to newer models.
+   */
+  function shareLink() {
+    const location = router.buildLocation({ to: "/", search: { ...search, models: selected } })
+
+    return new URL(location.href, window.location.origin).href
+  }
   const quality = useMemo(
     () => plotQuality(buildPlotData(selectedModels, { x: search.x, y: search.y, z: search.z })),
     [selectedModels, search.x, search.y, search.z],
@@ -308,6 +318,7 @@ function ComparePage() {
               sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
               phase={morphPhase}
               onExitComplete={handleExitComplete}
+              getShareLink={shareLink}
             />
           ) : (
             <ComparisonChart
@@ -316,6 +327,7 @@ function ComparePage() {
               xMetric={search.x}
               yMetric={search.y}
               highlight={highlight}
+              getShareLink={shareLink}
             />
           )}
         </Suspense>
