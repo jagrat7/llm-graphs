@@ -237,6 +237,28 @@ describe("scatter definition", () => {
     expect(chartScene.points[0]?.key.startsWith("model-runs-2:")).toBe(true)
   })
 
+  it("puts a crowded cost axis on a log scale with decade ticks", () => {
+    const priced = [0.05, 0.1, 0.2, 0.4, 60].map((costPerTask, index) =>
+      makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
+    )
+    const data = buildPlotData(priced, { x: "cost", y: "score" })
+    const svg = renderChartSvg(
+      createChartScene(
+        scatterDefinition(data, {
+          highlight: null,
+          info,
+          logoClass: new Map(),
+          sources: { x: "deepswe", y: "deepswe" },
+        }),
+        SIZE,
+      ),
+      { ariaLabel: "Comparison" },
+    )
+
+    expect(svg).toContain("Task cost ($/task, log scale)")
+    for (const tick of ["$0.1", "$1", "$10"]) expect(svg).toContain(`>${tick}<`)
+  })
+
   it("finds the point under the pointer", () => {
     const { scene: chartScene } = scene()
     const beta = chartScene.points.find((point) => point.group === "beta")!

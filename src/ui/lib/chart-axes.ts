@@ -34,6 +34,11 @@ export function axisPresentation<TValue>(
   }
 }
 
+/** Spoken after an axis title, since a log axis changes how distances between points read. */
+function logNote(data: PlotData, axis: "x" | "y") {
+  return data.scales[axis] === "log" ? ", on a logarithmic scale" : ""
+}
+
 /**
  * The full axis titles, provider notes included, for the chart's accessible
  * description. The visible captions are trimmed to name and unit, so this is where
@@ -51,7 +56,7 @@ export function axisDescription(
       return metric == null
         ? []
         : [
-            `${axis === "x" ? "Horizontal" : "Vertical"} axis: ${metricAxisTitle(metric, sources[axis], info)}.`,
+            `${axis === "x" ? "Horizontal" : "Vertical"} axis: ${metricAxisTitle(metric, sources[axis], info)}${logNote(data, axis)}.`,
           ]
     })
     .join(" ")
@@ -67,5 +72,5 @@ export function rangeAxisDescription(
   const horizontal = metricAxisTitle(data.metrics[spread]!, sources[spread], info)
   const rowMetric = metricAxisTitle(data.metrics[flat]!, sources[flat], info)
 
-  return `Horizontal axis: ${horizontal}. Vertical axis: model configurations, ordered by their minimum ${rowMetric}. Row captions show this metric's value or range across efforts. Each marker represents one effort; inspect it for both exact metric values.`
+  return `Horizontal axis: ${horizontal}${logNote(data, spread)}. Vertical axis: model configurations, ordered by their minimum ${rowMetric}. Row captions show this metric's value or range across efforts. Each marker represents one effort; inspect it for both exact metric values.`
 }

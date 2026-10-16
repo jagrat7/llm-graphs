@@ -25,11 +25,17 @@ import {
   chartFontRem,
 } from "#/ui/lib/chart-styles"
 import { glPlotImage } from "#/ui/lib/chart-image"
-import { buildPlotData, describePlot, metricTicks } from "#/ui/lib/comparison-plot-data"
+import {
+  buildPlotData,
+  describePlot,
+  metricTicks,
+  unitPosition,
+} from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import {
   formatMetric,
   metricAxisLabel,
+  isRatioMetric,
   metricAxisTitle,
   metricPresentation,
 } from "#/ui/lib/metrics"
@@ -1050,7 +1056,16 @@ export function ComparisonChart3D({
   const labelNodes = useRef<Array<HTMLElement | null>>([])
   const tooltipCard = useRef<HTMLDivElement>(null)
   const controlsRef = useRef<PlotControls>(null)
-  const data = useMemo(() => buildPlotData(models, metrics), [metrics, models])
+  const { x: xSource, y: ySource, z: zSource } = sources
+  const data = useMemo(
+    () =>
+      buildPlotData(models, metrics, {
+        x: isRatioMetric(metrics.x, xSource, info),
+        y: isRatioMetric(metrics.y, ySource, info),
+        z: isRatioMetric(metrics.z, zSource, info),
+      }),
+    [metrics, models, xSource, ySource, zSource, info],
+  )
   const startsFlat = phase === "in" && !reduceMotion
   const sceneRef = useRef<SceneRefs>({ depth: startsFlat ? 0 : 1, activeId: null })
   const positions = useMemo(
@@ -1070,10 +1085,10 @@ export function ComparisonChart3D({
 
     for (const axis of AXES) {
       const domain = data.domains[axis]
-      const span = domain.max - domain.min
+      const scale = data.scales[axis]
 
-      fractions[axis] = metricTicks(data.metrics[axis], domain, TICK_TARGET).map((value) =>
-        span === 0 ? 0.5 : (value - domain.min) / span,
+      fractions[axis] = metricTicks(data.metrics[axis], domain, TICK_TARGET, scale).map((value) =>
+        unitPosition(value, domain, scale),
       )
     }
 
@@ -1085,12 +1100,12 @@ export function ComparisonChart3D({
     for (const axis of AXES) {
       const metric = metrics[axis]
       const domain = data.domains[axis]
-      const span = domain.max - domain.min
+      const scale = data.scales[axis]
       const fadeWithDepth = axis === "z"
 
       items.push({
         key: `axis-${axis}`,
-        text: metricAxisLabel(metric, sources[axis], info),
+        text: metricAxisLabel(metric, sources[axis], info, scale),
         title: metricAxisTitle(metric, sources[axis], info),
         kind: "axis",
         axis,
@@ -1099,13 +1114,13 @@ export function ComparisonChart3D({
         screenOffset: AXIS_TITLE_PIXELS,
       })
 
-      for (const value of metricTicks(metric, domain, TICK_TARGET)) {
+      for (const value of metricTicks(metric, domain, TICK_TARGET, scale)) {
         items.push({
           key: `tick-${axis}-${value}`,
           text: formatMetric(value, metric, sources[axis], info),
           kind: "tick",
           axis,
-          fraction: span === 0 ? 0.5 : (value - domain.min) / span,
+          fraction: unitPosition(value, domain, scale),
           fadeWithDepth,
           screenOffset: TICK_LABEL_PIXELS,
         })

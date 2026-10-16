@@ -1,3 +1,4 @@
+import type { AxisScale } from "#/ui/lib/comparison-plot-data"
 import type { MetricKey, ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
 
 export const METRICS = [
@@ -33,6 +34,11 @@ export const METRIC_CONFIG: Record<
      * Only metrics with a direction take part in the Pareto frontier.
      */
     better?: "higher" | "lower"
+    /**
+     * A ratio-scale quantity, where "5× cheaper" says more than "$0.40 cheaper". Only
+     * these axes may switch to log; see `axisScale`. Scores and ratings stay linear.
+     */
+    ratio?: true
   }
 > = {
   score: {
@@ -48,12 +54,14 @@ export const METRIC_CONFIG: Record<
     unit: "$/task",
     dataKey: "costPerTask",
     better: "lower",
+    ratio: true,
   },
   price: {
     label: "Token price",
     shortLabel: "Token price $/M",
     unit: "$/M tokens",
     dataKey: "costPerMTokens",
+    ratio: true,
   },
   speed: {
     label: "Output speed",
@@ -61,6 +69,7 @@ export const METRIC_CONFIG: Record<
     unit: "tokens/s",
     dataKey: "tokensPerSecond",
     better: "higher",
+    ratio: true,
   },
   duration: {
     label: "Task duration",
@@ -68,12 +77,14 @@ export const METRIC_CONFIG: Record<
     unit: "s",
     dataKey: "durationSeconds",
     better: "lower",
+    ratio: true,
   },
   inputPrice: {
     label: "Input token price",
     shortLabel: "Input price $/M",
     unit: "$/M tokens",
     dataKey: "inputPricePerMTokens",
+    ratio: true,
     format: "currency",
   },
   outputPrice: {
@@ -81,6 +92,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Output price $/M",
     unit: "$/M tokens",
     dataKey: "outputPricePerMTokens",
+    ratio: true,
     format: "currency",
   },
   context: {
@@ -88,6 +100,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Context tokens",
     unit: "tokens",
     dataKey: "contextTokens",
+    ratio: true,
     format: "tokens",
   },
   votes: {
@@ -95,6 +108,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: "Arena votes",
     unit: "votes",
     dataKey: "votes",
+    ratio: true,
     format: "integer",
   },
   horizon80: {
@@ -102,6 +116,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: "80% horizon h",
     unit: "h",
     dataKey: "horizon80Hours",
+    ratio: true,
     format: "hours",
   },
   taskScore: {
@@ -147,6 +162,17 @@ export function metricPresentation(
     : (info?.presentation[source]?.[METRIC_CONFIG[metric].dataKey] ?? fallback)
 }
 
+/**
+ * Whether a metric, as this source reports it, is a ratio-scale quantity that may go
+ * log. A source can turn a plain metric into one: METR's score is a task horizon in hours.
+ */
+export function isRatioMetric(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
+  return (
+    METRIC_CONFIG[metric].ratio === true ||
+    metricPresentation(metric, source, info).format === "hours"
+  )
+}
+
 /** Units as an axis has room for them; the full unit stays in `metricAxisTitle`. */
 const AXIS_UNITS: Record<string, string> = {
   "$/M tokens": "$/M",
@@ -157,24 +183,33 @@ const AXIS_UNITS: Record<string, string> = {
  * The short axis caption: the metric's name with a compact unit in parentheses —
  * "Token price ($/M)" rather than "Token price · $/M tokens". A unit the name already
  * says ("Vote count", votes) is dropped, and a name that already ends in a qualifier
- * shares its parentheses: "Task horizon (80%, h)". Durations get no unit at all.
+ * shares its parentheses: "Task horizon (80%, h)". Durations get no unit at all. A log
+ * axis says so in the same parentheses: "Token price ($/M, log scale)".
  */
-export function metricAxisLabel(metric: Metric, source: ProviderName | null, info: ProvidersInfo) {
+export function metricAxisLabel(
+  metric: Metric,
+  source: ProviderName | null,
+  info: ProvidersInfo,
+  scale: AxisScale = "linear",
+) {
   const { label, unit } = metricPresentation(metric, source, info)
-
-  // Duration ticks carry their own units ("8m 20s"), so "(s)" would only contradict them.
-  if (metric === "duration") return label
-
   const compact = AXIS_UNITS[unit] ?? unit
   // Whole words only, singular or plural, so "h" or "s" never matches inside a name.
   const named =
     /^[a-z]{3,}$/i.test(unit) && new RegExp(`\\b${unit.replace(/s$/i, "")}s?\\b`, "i").test(label)
+  const notes = [
+    // Duration ticks carry their own units ("8m 20s"), so "(s)" would only contradict them.
+    ...(metric === "duration" || !compact || named ? [] : [compact]),
+    ...(scale === "log" ? ["log scale"] : []),
+  ]
 
-  if (!compact || named) return label
+  if (notes.length === 0) return label
 
   const qualifier = /^(.*) \(([^()]*)\)$/.exec(label)
 
-  return qualifier ? `${qualifier[1]} (${qualifier[2]}, ${compact})` : `${label} (${compact})`
+  return qualifier
+    ? `${qualifier[1]} (${[qualifier[2], ...notes].join(", ")})`
+    : `${label} (${notes.join(", ")})`
 }
 
 /** The providers the chart offers for a metric. The first one is the default. */
