@@ -4,6 +4,7 @@ import { APP_NAME } from "#/ui/lib/app-meta"
 import { CONTENT_WIDTH_CLASS, HEADER_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { cn } from "#/ui/lib/utils"
 
+import SettingsMenu from "./settings-menu"
 import ThemeToggle from "./theme-toggle"
 
 /** Models on the Pareto frontier — the best score you can get at each cost. */
@@ -48,7 +49,7 @@ function AppMark() {
 
 /**
  * One destination, so there is nothing to navigate between — the bar carries the
- * mark and the theme control and stays out of the chart's way.
+ * mark, the settings, and the theme control, and stays out of the chart's way.
  */
 export default function AppHeader() {
   return (
@@ -75,7 +76,10 @@ export default function AppHeader() {
           <AppMark />
         </Link>
 
-        <ThemeToggle />
+        <div className="flex items-center gap-1">
+          <SettingsMenu />
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   )

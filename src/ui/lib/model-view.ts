@@ -80,6 +80,15 @@ const VENDOR_LABELS: Record<string, string> = {
   zhipuai: "Zhipu AI",
 }
 
+/** The labs most comparisons start from, pinned ahead of the rest in this order. */
+const PINNED_VENDORS = ["anthropic", "openai", "xai", "zhipuai", "moonshotai", "google"]
+
+/** A vendor's place among the pinned labs; every other vendor ties after them. */
+export function pinRank(vendor: string) {
+  const index = PINNED_VENDORS.indexOf(vendor)
+  return index === -1 ? PINNED_VENDORS.length : index
+}
+
 /** A vendor slug as people write the name: `"mistral"` → `"Mistral"`, `"xai"` → `"xAI"`. */
 export function vendorLabel(slug: string) {
   return (
@@ -318,7 +327,7 @@ function compareCandidates(left: Candidate, right: Candidate) {
 }
 
 /**
- * The models the chart opens on: the ten strongest models offered, with no vendor taking more
+ * The models the chart opens on: the `count` strongest models offered, with no vendor taking more
  * than three of them. A model no score source lists is never pre-selected.
  */
 export function defaultPicks(
@@ -327,6 +336,7 @@ export function defaultPicks(
   scoreSource: ProviderName | null,
   info: ProvidersInfo,
   metrics: ReadonlyArray<MetricKey> = [],
+  count = DEFAULT_PICK_COUNT,
 ) {
   const strength = strengths(snapshot, scoreSource, info)
   const candidates = new Map<string, Candidate & { vendor: string }>()
@@ -347,7 +357,7 @@ export function defaultPicks(
   const perVendor = new Map<string, number>()
   const picks: string[] = []
   for (const candidate of [...candidates.values()].toSorted(compareCandidates)) {
-    if (picks.length === DEFAULT_PICK_COUNT) break
+    if (picks.length === count) break
     const taken = perVendor.get(candidate.vendor) ?? 0
     if (taken === DEFAULT_PICKS_PER_VENDOR) continue
     perVendor.set(candidate.vendor, taken + 1)
@@ -365,7 +375,7 @@ export function defaultPicks(
     if (values.size !== 1) continue
     // A full selection trades its weakest original pick whose loss flattens no other axis.
     const dropped =
-      picks.length === DEFAULT_PICK_COUNT
+      picks.length === count
         ? picks.findLast(
             (id) =>
               !widened.includes(id) &&
