@@ -8,13 +8,21 @@ import type { Model } from "#/ui/lib/model-view"
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
+import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_EXPORT_DEFS_ATTRIBUTE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
-import { buildPlotData, describePlot, type PlotData } from "#/ui/lib/comparison-plot-data"
+import {
+  buildPlotData,
+  describePlot,
+  type PlotData,
+  type PlotPoint,
+} from "#/ui/lib/comparison-plot-data"
 import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import { PARETO_STYLE } from "#/ui/lib/chart-marks"
+import { paretoFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
 import { stackedAxis } from "#/ui/lib/stacking"
@@ -66,6 +74,60 @@ function describeRanges(data: PlotData) {
   const rowNoun = data.series.length === 1 ? "row" : "rows"
 
   return `Range chart of ${data.modelCount} ${modelNoun} in ${data.series.length} ${rowNoun}, one per model configuration, its efforts spread along the varying metric. Use arrow keys to move between points.`
+}
+
+/** A highlighted model wins over the frontier's emphasis, so the description says which fades. */
+function describeFrontier(frontier: Array<PlotPoint>, highlighted: string | null) {
+  const emphasis =
+    highlighted == null
+      ? "Variants off it are muted."
+      : `${highlighted} is highlighted, so every other model is muted, the frontier's included.`
+
+  return `The dashed line is the Pareto frontier, the effort variants no other variant beats on both axes: ${frontier.map((point) => point.label).join(", ")}. ${emphasis}`
+}
+
+/** A small dashed line with a bend, as the toggle's key. */
+const FRONTIER_SWATCH = "M2 11 L7 4 L18 2"
+
+/**
+ * Shows or hides the frontier, and doubles as its key: the swatch names the dashed
+ * line, which would otherwise read as one more model's run. On, it takes a firmer fill
+ * and full-strength text than the toggle's muted default, so its state reads at a glance.
+ */
+function FrontierToggle({
+  pressed,
+  onPressedChange,
+}: {
+  pressed: boolean
+  onPressedChange: (pressed: boolean) => void
+}) {
+  return (
+    <Toggle
+      size="sm"
+      pressed={pressed}
+      onPressedChange={(next) => onPressedChange(next)}
+      className="text-muted-foreground aria-pressed:bg-foreground/12 aria-pressed:text-foreground gap-1.5"
+    >
+      <svg
+        aria-hidden="true"
+        width="20"
+        height="13"
+        viewBox="0 0 20 13"
+        // `size-auto` opts out of the toggle's square icon size, keeping the swatch wide.
+        className="size-auto overflow-visible opacity-40 transition-opacity group-aria-pressed/toggle:opacity-100"
+        fill="none"
+        strokeLinecap="round"
+      >
+        <path
+          d={FRONTIER_SWATCH}
+          stroke={PARETO_STYLE.stroke}
+          strokeWidth={PARETO_STYLE.strokeWidth}
+          strokeDasharray="3.5 3"
+        />
+      </svg>
+      Pareto frontier
+    </Toggle>
+  )
 }
 
 /**
@@ -142,13 +204,19 @@ export function ComparisonChart({
   const [choices, setChoices] = useState<Record<string, ChartView>>({})
   const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "ranges")
   const { x: xSource, y: ySource } = sources
+  // The range view has no numeric axis to draw it along, so only the scatter shows it.
+  const frontier = useMemo(() => (view === "scatter" ? paretoFrontier(data) : []), [data, view])
+  // One switch for every pair of metrics: someone who hides the frontier wants it gone.
+  const [frontierOn, setFrontierOn] = useState(true)
+  const hasFrontier = frontier.length > 1
+  const showFrontier = hasFrontier && frontierOn
   const definition = useMemo(() => {
     const options = { highlight: lit, info, logoClass, sources: { x: xSource, y: ySource } }
 
     return view === "ranges" && flat != null
       ? rangeDefinition(data, { ...options, flat })
-      : scatterDefinition(data, options)
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource])
+      : scatterDefinition(data, { ...options, frontier: frontierOn })
+  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn])
 
   if (data.points.length === 0) {
     return <DataState className={CHART_HEIGHT_CLASS} title="No models have both selected metrics" />
@@ -168,23 +236,26 @@ export function ComparisonChart({
       <LogoMasks logoClass={logoClass} />
       {/* A row of its own rather than an overlay: the plot's top-right corner is where
           the strongest, priciest models land. */}
-      <div className="flex shrink-0 items-center justify-end gap-2 pb-2">
-        {flat != null && (
-          <StackedViewSwitch
-            view={view}
-            onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
-          />
-        )}
-        <ChartShareMenu
-          data={data}
-          sources={sources}
-          getLink={getShareLink}
-          renderPlot={(scale) => {
-            if (!frameRef.current) throw new Error("Chart is not mounted")
+      <div className="flex shrink-0 items-center gap-2 pb-2">
+        {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+        <div className="ml-auto flex items-center gap-2">
+          {flat != null && (
+            <StackedViewSwitch
+              view={view}
+              onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
+            />
+          )}
+          <ChartShareMenu
+            data={data}
+            sources={sources}
+            getLink={getShareLink}
+            renderPlot={(scale) => {
+              if (!frameRef.current) throw new Error("Chart is not mounted")
 
-            return svgPlotImage(frameRef.current, scale)
-          }}
-        />
+              return svgPlotImage(frameRef.current, scale)
+            }}
+          />
+        </div>
       </div>
       <div className="min-h-0 flex-1">
         <Chart
@@ -194,7 +265,17 @@ export function ComparisonChart({
           ariaDescription={
             view === "ranges" && flat != null
               ? rangeAxisDescription(data, flat, sources, info)
-              : axisDescription(data, sources, info)
+              : [
+                  axisDescription(data, sources, info),
+                  showFrontier &&
+                    describeFrontier(
+                      frontier,
+                      data.series.find((series) => series.points[0]?.model.model === lit)?.label ??
+                        null,
+                    ),
+                ]
+                  .filter(Boolean)
+                  .join(" ")
           }
           initialWidth={1200}
           style={{ height: "100%" }}

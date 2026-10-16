@@ -152,12 +152,15 @@ export function ChartShareMenu({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            // Matches the 3D view presets: a quiet ghost button that fills in only while open.
+            // Styled as the Pareto toggle beside it, with "open" standing in for "on".
             <Button
               variant="ghost"
               size="sm"
               aria-busy={status.kind === "busy"}
-              className={cn("text-muted-foreground px-2 font-normal", className)}
+              className={cn(
+                "text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground gap-1.5 px-2 text-[0.625rem]",
+                className,
+              )}
             />
           }
         >
