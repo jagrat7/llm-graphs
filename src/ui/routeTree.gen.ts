@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as Graph3dRouteImport } from './routes/graph-3d'
-import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
 
@@ -23,11 +22,6 @@ const IndexRoute = IndexRouteImport.update({
 const Graph3dRoute = Graph3dRouteImport.update({
   id: '/graph-3d',
   path: '/graph-3d',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeaderboardRoute = LeaderboardRouteImport.update({
-  id: '/leaderboard',
-  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
@@ -44,14 +38,12 @@ const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -59,22 +51,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/api/$': typeof ApiSplatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
+  fullPaths: '/' | '/graph-3d' | '/api/$' | '/api/rpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
-  id: '__root__' | '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
+  to: '/' | '/graph-3d' | '/api/$' | '/api/rpc/$'
+  id: '__root__' | '/' | '/graph-3d' | '/api/$' | '/api/rpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   Graph3dRoute: typeof Graph3dRoute
-  LeaderboardRoute: typeof LeaderboardRoute
   ApiSplatRoute: typeof ApiSplatRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
 }
@@ -93,13 +83,6 @@ declare module '@tanstack/react-router' {
       path: '/graph-3d'
       fullPath: '/graph-3d'
       preLoaderRoute: typeof Graph3dRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/leaderboard': {
-      id: '/leaderboard'
-      path: '/leaderboard'
-      fullPath: '/leaderboard'
-      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$': {
@@ -122,7 +105,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   Graph3dRoute: Graph3dRoute,
-  LeaderboardRoute: LeaderboardRoute,
   ApiSplatRoute: ApiSplatRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
 }

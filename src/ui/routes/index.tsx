@@ -1,3 +1,4 @@
+import { noop, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
@@ -11,6 +12,7 @@ import type { ProviderName } from "#/ui/lib/orpc-client"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
+import { ComparisonChart } from "#/ui/components/comparison-chart"
 import { DataError, DataState } from "#/ui/components/data-state"
 import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
@@ -34,19 +36,18 @@ import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { pickedModelsAtom } from "#/ui/lib/picked-models"
 import { highestEffortOnly, settingsAtom, withoutHiddenProviders } from "#/ui/lib/settings"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
-import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
+import { orpc } from "#/ui/lib/orpc-client"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
-const ComparisonChart = lazy(() =>
-  import("#/ui/components/comparison-chart").then((module) => ({
-    default: module.ComparisonChart,
-  })),
-)
+// three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand.
 const ComparisonChart3D = lazy(() =>
   import("#/ui/components/comparison-chart-3d").then((module) => ({
     default: module.ComparisonChart3D,
   })),
 )
+
+/** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
+const snapshotQuery = orpc.models.snapshot.queryOptions({ staleTime: Infinity, gcTime: Infinity })
 
 const metricSchema = z.enum(METRICS)
 const sourceSchema = z.string().optional().catch(undefined)
@@ -68,6 +69,9 @@ const compareSearchSchema = z.object({
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
+  // Fetched before the server renders, so the snapshot arrives inside the HTML. A failure is
+  // left to the page's own error state rather than the route's.
+  loader: ({ context }) => context.queryClient.query(snapshotQuery).catch(noop),
   component: ComparePage,
 })
 
@@ -79,7 +83,7 @@ function ComparePage() {
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
-  const { data: snapshot, isPending, isError } = useModelSnapshot()
+  const { data: snapshot, isPending, isError } = useQuery(snapshotQuery)
   const [settings, setSettings] = useAtom(settingsAtom)
   const { hiddenProviders, vendorLogos, effortLevels, openingModels } = settings
   // Changing an axis source re-filters the page-load snapshot; nothing is refetched.

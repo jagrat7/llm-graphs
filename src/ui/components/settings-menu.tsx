@@ -1,4 +1,5 @@
 import { RiEqualizer2Line, RiSearchLine } from "@remixicon/react"
+import { useQuery } from "@tanstack/react-query"
 import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { useMemo, useState } from "react"
@@ -26,7 +27,7 @@ import {
   providerOptions,
   settingsAtom,
 } from "#/ui/lib/settings"
-import { useModelSnapshot } from "#/ui/lib/use-model-snapshot"
+import { orpc } from "#/ui/lib/orpc-client"
 
 const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
@@ -132,7 +133,10 @@ function Segmented<T extends string | number>({
  */
 export default function SettingsMenu() {
   const [settings, setSettings] = useAtom(settingsAtom)
-  const { data: snapshot } = useModelSnapshot()
+  // Never stale, like the compare route's copy, so this reads that cache entry instead of refetching.
+  const { data: snapshot } = useQuery(
+    orpc.models.snapshot.queryOptions({ staleTime: Infinity, gcTime: Infinity }),
+  )
   const providers = useMemo(() => (snapshot ? providerOptions(snapshot) : []), [snapshot])
   const [query, setQuery] = useState("")
 
