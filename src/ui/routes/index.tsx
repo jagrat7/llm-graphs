@@ -1,7 +1,6 @@
 import { noop, useQuery } from "@tanstack/react-query"
 import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
 import { useAtom } from "jotai"
-import { RESET } from "jotai/utils"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
@@ -33,7 +32,7 @@ import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
-import { pickedModelsAtom } from "#/ui/lib/picked-models"
+import { readPickedModels, savePickedModels, usePickedModels } from "#/ui/lib/picked-models"
 import { highestEffortOnly, settingsAtom, withoutHiddenProviders } from "#/ui/lib/settings"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { orpc } from "#/ui/lib/orpc-client"
@@ -70,8 +69,13 @@ const compareSearchSchema = z.object({
 export const Route = createFileRoute("/")({
   validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
   // Fetched before the server renders, so the snapshot arrives inside the HTML. A failure is
-  // left to the page's own error state rather than the route's.
-  loader: ({ context }) => context.queryClient.query(snapshotQuery).catch(noop),
+  // left to the page's own error state rather than the route's. The saved picks come from
+  // the request's cookie, so the first HTML already shows them.
+  loader: async ({ context }) => {
+    await context.queryClient.query(snapshotQuery).catch(noop)
+
+    return { savedPicks: await readPickedModels() }
+  },
   component: ComparePage,
 })
 
@@ -114,7 +118,8 @@ function ComparePage() {
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
-  const [pickedModels, setPickedModels] = useAtom(pickedModelsAtom)
+  // Saved here or in another tab; a shared link's models still override them below.
+  const pickedModels = usePickedModels(Route.useLoaderData().savedPicks)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -204,12 +209,12 @@ function ComparePage() {
 
   /** Picks are entry ids, so they carry across benchmarks; ones a benchmark lacks wait unseen. */
   function pickModels(models: Array<string>) {
-    setPickedModels(models)
+    void savePickedModels(models)
     updateSearch({ models })
   }
 
   function resetModels() {
-    setPickedModels(RESET)
+    void savePickedModels(null)
     updateSearch({ models: undefined })
   }
 
@@ -307,7 +312,7 @@ function ComparePage() {
             : "No selected models are available",
       action: "Restore default comparison",
       onAction: () => {
-        setPickedModels(RESET)
+        void savePickedModels(null)
         updateSearch({
           x: "cost",
           y: "score",

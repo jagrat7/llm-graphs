@@ -1,46 +1,104 @@
 // @vitest-environment jsdom
-import { createStore } from "jotai"
-import { RESET } from "jotai/utils"
-import { afterEach, describe, expect, it } from "vitest"
+import { act, cleanup, renderHook } from "@testing-library/react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { PICKED_MODELS_STORAGE_KEY, pickedModelsAtom } from "#/ui/lib/picked-models"
+/** jsdom has no Cookie Store API, so stand in a map that fires the same change events. */
+class FakeCookieStore extends EventTarget {
+  cookies = new Map<string, string>()
 
-afterEach(() => localStorage.clear())
+  async set({ name, value }: { name: string; value: string }) {
+    this.cookies.set(name, value)
+    this.dispatchEvent(
+      Object.assign(new Event("change"), { changed: [{ name, value }], deleted: [] }),
+    )
+  }
 
-/** The atom reads storage when something first subscribes to it, as a mounted component does. */
-function mountedStore() {
-  const store = createStore()
-  store.sub(pickedModelsAtom, () => {})
-  return store
+  async delete({ name }: { name: string }) {
+    this.cookies.delete(name)
+    this.dispatchEvent(Object.assign(new Event("change"), { changed: [], deleted: [{ name }] }))
+  }
 }
 
+let store: FakeCookieStore
+
+beforeEach(() => {
+  store = new FakeCookieStore()
+  vi.stubGlobal("cookieStore", store)
+  // The module keeps this tab's latest picks, so each test starts from a fresh copy.
+  vi.resetModules()
+})
+
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
+
+const load = () => import("#/ui/lib/picked-models")
+
 describe("picked models", () => {
-  it("starts on the defaults when this browser has never picked", () => {
-    expect(mountedStore().get(pickedModelsAtom)).toBeNull()
+  it("shows the loader's picks until this tab saves any", async () => {
+    const { usePickedModels } = await load()
+
+    expect(renderHook(() => usePickedModels(["alpha"])).result.current).toEqual(["alpha"])
+    expect(renderHook(() => usePickedModels(null)).result.current).toBeNull()
   })
 
-  it("restores the picks a previous visit stored", () => {
-    localStorage.setItem(PICKED_MODELS_STORAGE_KEY, JSON.stringify(["alpha", "beta"]))
+  it("shows a save at once and writes it to the cookie", async () => {
+    const { PICKED_MODELS_COOKIE, parsePickedModels, savePickedModels, usePickedModels } =
+      await load()
+    const { result } = renderHook(() => usePickedModels(null))
 
-    expect(mountedStore().get(pickedModelsAtom)).toEqual(["alpha", "beta"])
+    await act(() => savePickedModels(["alpha", "beta"]))
+
+    expect(result.current).toEqual(["alpha", "beta"])
+    expect(parsePickedModels(decodeURIComponent(store.cookies.get(PICKED_MODELS_COOKIE)!))).toEqual(
+      ["alpha", "beta"],
+    )
   })
 
-  it("stores new picks and forgets them on reset", () => {
-    const store = mountedStore()
+  it("forgets picks on reset", async () => {
+    const { PICKED_MODELS_COOKIE, savePickedModels, usePickedModels } = await load()
+    const { result } = renderHook(() => usePickedModels(["alpha"]))
 
-    store.set(pickedModelsAtom, ["gamma"])
-    expect(localStorage.getItem(PICKED_MODELS_STORAGE_KEY)).toBe('["gamma"]')
+    await act(() => savePickedModels(["gamma"]))
+    await act(() => savePickedModels(null))
 
-    store.set(pickedModelsAtom, RESET)
-    expect(store.get(pickedModelsAtom)).toBeNull()
-    expect(localStorage.getItem(PICKED_MODELS_STORAGE_KEY)).toBeNull()
+    expect(result.current).toBeNull()
+    expect(store.cookies.has(PICKED_MODELS_COOKIE)).toBe(false)
   })
 
-  it("ignores a stored value that is not a list of ids", () => {
-    localStorage.setItem(PICKED_MODELS_STORAGE_KEY, JSON.stringify({ models: ["alpha"] }))
-    expect(mountedStore().get(pickedModelsAtom)).toBeNull()
+  it("follows picks changed in another tab", async () => {
+    const { PICKED_MODELS_COOKIE, usePickedModels } = await load()
+    const { result } = renderHook(() => usePickedModels(null))
 
-    localStorage.setItem(PICKED_MODELS_STORAGE_KEY, "not json")
-    expect(mountedStore().get(pickedModelsAtom)).toBeNull()
+    await act(() =>
+      store.set({ name: PICKED_MODELS_COOKIE, value: encodeURIComponent('["delta"]') }),
+    )
+    expect(result.current).toEqual(["delta"])
+
+    await act(() => store.delete({ name: PICKED_MODELS_COOKIE }))
+    expect(result.current).toBeNull()
+  })
+
+  it("keeps the same picks object when its own save echoes back", async () => {
+    const { savePickedModels, usePickedModels } = await load()
+    let renders = 0
+    const { result } = renderHook(() => {
+      renders += 1
+      return usePickedModels(null)
+    })
+
+    await act(() => savePickedModels(["epsilon"]))
+
+    expect(result.current).toEqual(["epsilon"])
+    expect(renders).toBe(2)
+  })
+
+  it("ignores a value that is not a list of ids", async () => {
+    const { parsePickedModels } = await load()
+
+    expect(parsePickedModels(JSON.stringify({ models: ["alpha"] }))).toBeNull()
+    expect(parsePickedModels("not json")).toBeNull()
+    expect(parsePickedModels(undefined)).toBeNull()
   })
 })
