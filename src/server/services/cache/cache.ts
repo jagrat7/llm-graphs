@@ -23,6 +23,9 @@ const RELEASE_LOCK_SCRIPT =
 const EXTEND_LOCK_SCRIPT =
   'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("expire", KEYS[1], ARGV[2]) end return 0'
 
+/** One hash of every source's last fetch time, so a reader can tell what changed in one read. */
+export const SOURCE_STAMPS_KEY = "llm-scores:sources"
+
 export type CachedPayload<T> = {
   payload: T
   fetchedAt: string
@@ -30,7 +33,10 @@ export type CachedPayload<T> = {
 
 export interface CacheStore {
   get(key: string): Promise<unknown>
-  set(key: string, value: unknown): Promise<void>
+  /** With `ttlSeconds`, the value expires on its own. */
+  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>
+  getHash(key: string): Promise<Record<string, unknown> | null>
+  setHashFields(key: string, fields: Record<string, string>): Promise<void>
   /** Resolves a token for exactly one caller until the lock expires or is released; else null. */
   acquireLock(key: string, ttlSeconds: number): Promise<string | null>
   /**
@@ -53,11 +59,27 @@ class RedisStore implements CacheStore {
     }
   }
 
-  async set(key: string, value: unknown) {
+  async set(key: string, value: unknown, ttlSeconds?: number) {
     try {
-      await this.redis.set(key, value)
+      await this.redis.set(key, value, ttlSeconds ? { ex: ttlSeconds } : undefined)
     } catch {
       // A failed write keeps the previous copy, which is still the last good one.
+    }
+  }
+
+  async getHash(key: string) {
+    try {
+      return await this.redis.hgetall<Record<string, unknown>>(key)
+    } catch {
+      return null
+    }
+  }
+
+  async setHashFields(key: string, fields: Record<string, string>) {
+    try {
+      await this.redis.hset(key, fields)
+    } catch {
+      // Readers missing a stamp read that source's payload instead.
     }
   }
 
@@ -102,6 +124,15 @@ export class MemoryStore implements CacheStore {
 
   async set(key: string, value: unknown) {
     this.values.set(key, value)
+  }
+
+  async getHash(key: string) {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only setHashFields writes hashes
+    return (this.values.get(key) as Record<string, unknown> | undefined) ?? null
+  }
+
+  async setHashFields(key: string, fields: Record<string, string>) {
+    this.values.set(key, { ...(await this.getHash(key)), ...fields })
   }
 
   async acquireLock(key: string, ttlSeconds: number) {
@@ -166,6 +197,39 @@ export class SourceCache {
     }
 
     return cached
+  }
+
+  /** Each source's last fetch time, from one small read; a source never stored has none. */
+  async stamps(sources: ReadonlyArray<SourceDefinition<unknown>>) {
+    const stored = (await this.store.getHash(SOURCE_STAMPS_KEY)) ?? {}
+
+    return Object.fromEntries(
+      sources.map((source) => {
+        const stamp = stored[source.cacheKey]
+        return [source.cacheKey, typeof stamp === "string" ? stamp : null]
+      }),
+    )
+  }
+
+  /** Fills in stamps for copies stored before the stamps existed. */
+  async recordStamps(stamps: Record<string, string>) {
+    if (Object.keys(stamps).length > 0) await this.store.setHashFields(SOURCE_STAMPS_KEY, stamps)
+  }
+
+  /** Starts the background refresh `read` would, from a stamp alone, without reading the copy. */
+  refreshIfStale<T>(source: SourceDefinition<T>, fetchedAt: string) {
+    if (this.now() - Date.parse(fetchedAt) > source.refreshWindowMs) {
+      void this.refreshInBackground(source)
+    }
+  }
+
+  /** A value shared across instances, such as a built snapshot. */
+  async readShared(key: string) {
+    return this.store.get(key)
+  }
+
+  async writeShared(key: string, value: unknown, ttlSeconds: number) {
+    await this.store.set(key, value, ttlSeconds)
   }
 
   private async stored<T>(source: SourceDefinition<T>) {
@@ -251,6 +315,7 @@ export class SourceCache {
 
     const entry = { payload, fetchedAt: new Date(this.now()).toISOString() }
     await this.store.set(source.cacheKey, entry)
+    await this.store.setHashFields(SOURCE_STAMPS_KEY, { [source.cacheKey]: entry.fetchedAt })
 
     return entry
   }

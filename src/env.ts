@@ -7,6 +7,8 @@ export const env = createEnv({
     SERVER_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+    /** Set by Vercel at runtime; keys the built snapshot that instances of one deploy share. */
+    VERCEL_DEPLOYMENT_ID: z.string().min(1).optional(),
   },
 
   /**
