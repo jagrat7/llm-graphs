@@ -1,12 +1,13 @@
-import { atomWithStorage, createJSONStorage } from "jotai/utils"
+import { createContext, useContext } from "react"
 import { z } from "zod"
 
 import type { Model } from "#/ui/lib/model-view"
 import type { ModelSnapshot } from "#/server/api"
 
+import { createCookieStore, parseJsonCookie } from "#/ui/lib/cookie-store"
 import { DEFAULT_PICK_COUNT, logoDataUrl, pinRank, vendorLabel } from "#/ui/lib/model-view"
 
-export const SETTINGS_STORAGE_KEY = "settings"
+export const SETTINGS_COOKIE = "settings"
 
 /** How many models the chart may open on, before the reader picks their own. */
 export const OPENING_MODEL_COUNTS = [6, DEFAULT_PICK_COUNT, 12] as const
@@ -52,25 +53,31 @@ export function parseSettings(value: unknown): Settings {
   )
 }
 
-const json = createJSONStorage<unknown>()
-
 /**
- * This browser's settings. Read on mount rather than on init, so the server render and
- * the first client render agree; other tabs pick up changes through the `storage` event.
+ * This browser's settings, kept in a cookie so the server renders the chart with them: hidden
+ * providers and the opening count decide which models the first HTML carries.
  */
-export const settingsAtom = atomWithStorage<Settings>(SETTINGS_STORAGE_KEY, DEFAULT_SETTINGS, {
-  getItem: (key, fallback) => parseSettings(json.getItem(key, fallback)),
-  setItem: (key, value) => {
-    try {
-      json.setItem(key, value)
-    } catch {
-      // Private browsing denies writes; the settings still hold for this session.
-    }
-  },
-  removeItem: (key) => json.removeItem(key),
-  subscribe: (key, callback, fallback) =>
-    json.subscribe?.(key, (value) => callback(parseSettings(value)), fallback),
+const settingsCookie = createCookieStore<Settings>({
+  name: SETTINGS_COOKIE,
+  parse: (value) => parseSettings(parseJsonCookie(value)),
+  isEmpty: isDefaultSettings,
 })
+
+export const readSettings = settingsCookie.read
+
+/** The request's settings, handed down by the root route; the defaults outside a router. */
+export const SavedSettingsContext = createContext<Settings>(DEFAULT_SETTINGS)
+
+/** This tab's settings and a setter, like `useState`. Saving the defaults deletes the cookie. */
+export function useSettings() {
+  const settings = settingsCookie.useValue(useContext(SavedSettingsContext))
+
+  function setSettings(update: Settings | ((current: Settings) => Settings)) {
+    void settingsCookie.save(typeof update === "function" ? update(settings) : update)
+  }
+
+  return [settings, setSettings] as const
+}
 
 /** Models without a vendor have nothing to hide them by, so they always stay. */
 export function withoutHiddenProviders<T extends Pick<Model, "vendor">>(

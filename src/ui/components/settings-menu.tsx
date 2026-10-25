@@ -1,7 +1,5 @@
 import { RiEqualizer2Line, RiSearchLine } from "@remixicon/react"
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useAtom } from "jotai"
-import { RESET } from "jotai/utils"
 import { useMemo, useState } from "react"
 
 import type { Settings } from "#/ui/lib/settings"
@@ -22,12 +20,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "#/ui/components/ui
 import { Switch } from "#/ui/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import {
+  DEFAULT_SETTINGS,
   isDefaultSettings,
   OPENING_MODEL_COUNTS,
   providerOptions,
-  settingsAtom,
+  useSettings,
 } from "#/ui/lib/settings"
-import { api } from "#/server/api"
+import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
 
 const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
@@ -132,12 +131,12 @@ function Segmented<T extends string | number>({
  * the picker, the opening selection, and the chart; turning it back on restores any picks.
  */
 export default function SettingsMenu() {
-  const [settings, setSettings] = useAtom(settingsAtom)
+  const [settings, setSettings] = useSettings()
   // Never stale, like the compare route's copy, so this reads that cache entry instead of refetching.
   const { data: snapshot } = useQuery(
     queryOptions({
       queryKey: ["models", "snapshot"],
-      queryFn: () => api.models.snapshot(),
+      queryFn: () => fetchModelSnapshot(),
       staleTime: Infinity,
       gcTime: Infinity,
     }),
@@ -322,7 +321,11 @@ export default function SettingsMenu() {
         </div>
 
         <DialogFooter className="border-border/60 border-t px-6 py-4 sm:justify-between">
-          <Button variant="ghost" disabled={isDefault} onClick={() => setSettings(RESET)}>
+          <Button
+            variant="ghost"
+            disabled={isDefault}
+            onClick={() => setSettings(DEFAULT_SETTINGS)}
+          >
             Reset to defaults
           </Button>
           <DialogClose render={<Button className="px-4" />}>Done</DialogClose>

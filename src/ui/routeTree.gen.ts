@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
+import { Route as ApiModelsSnapshotRouteImport } from './routes/api.models.snapshot'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ApiModelsDiagnosticsRoute = ApiModelsDiagnosticsRouteImport.update({
   path: '/api/models/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiModelsSnapshotRoute = ApiModelsSnapshotRouteImport.update({
+  id: '/api/models/snapshot',
+  path: '/api/models/snapshot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/models/diagnostics'
+  fullPaths: '/' | '/api/models/diagnostics' | '/api/models/snapshot'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/models/diagnostics'
-  id: '__root__' | '/' | '/api/models/diagnostics'
+  to: '/' | '/api/models/diagnostics' | '/api/models/snapshot'
+  id: '__root__' | '/' | '/api/models/diagnostics' | '/api/models/snapshot'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
+  ApiModelsSnapshotRoute: typeof ApiModelsSnapshotRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiModelsDiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/models/snapshot': {
+      id: '/api/models/snapshot'
+      path: '/api/models/snapshot'
+      fullPath: '/api/models/snapshot'
+      preLoaderRoute: typeof ApiModelsSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
+  ApiModelsSnapshotRoute: ApiModelsSnapshotRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,6 +7,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import AppHeader from "#/ui/components/app-header"
 import { TooltipProvider } from "#/ui/components/ui/tooltip"
 import { APP_DESCRIPTION, APP_NAME } from "#/ui/lib/app-meta"
+import { DEFAULT_SETTINGS, readSettings, SavedSettingsContext } from "#/ui/lib/settings"
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
 import TanStackQueryDevtools from "../components/integrations/tanstack-query/devtools"
@@ -21,8 +22,14 @@ interface MyRouterContext {
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var resolved=stored==='light'||stored==='dark'?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved}catch(e){}})()`
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  // Settings come from the request's cookie, so the server renders with this reader's own.
   beforeLoad: async ({ context }) => {
-    await context.queryClient.ensureQueryData(providersInfoQueryOptions)
+    const [savedSettings] = await Promise.all([
+      readSettings(),
+      context.queryClient.ensureQueryData(providersInfoQueryOptions),
+    ])
+
+    return { savedSettings }
   },
   head: () => ({
     meta: [
@@ -52,6 +59,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // Absent when the root's beforeLoad never ran, as on an error page; the defaults stand then.
+  const savedSettings = Route.useRouteContext({ select: (context) => context.savedSettings })
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -59,10 +69,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="font-sans antialiased">
-        <TooltipProvider>
-          <AppHeader />
-          {children}
-        </TooltipProvider>
+        <SavedSettingsContext value={savedSettings ?? DEFAULT_SETTINGS}>
+          <TooltipProvider>
+            <AppHeader />
+            {children}
+          </TooltipProvider>
+        </SavedSettingsContext>
         <TanStackDevtools
           config={{
             hideUntilHover: true,

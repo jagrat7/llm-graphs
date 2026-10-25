@@ -1,13 +1,18 @@
-import { noop, queryOptions, useQuery } from "@tanstack/react-query"
+import type { QueryClient } from "@tanstack/react-query"
+
+import { queryOptions, useQuery } from "@tanstack/react-query"
 import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
-import { useAtom } from "jotai"
+import { createIsomorphicFn } from "@tanstack/react-start"
 import { lazy, Suspense, useMemo, useState } from "react"
 import { z } from "zod"
 
 import type { AxisKey, AxisSetting } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/server/api"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
+import type { GraphSearch } from "#/ui/lib/graph-state"
+import type { PickedModels } from "#/ui/lib/picked-models"
+import type { ComparisonSettings } from "#/ui/lib/comparison-view"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
@@ -19,7 +24,6 @@ import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
 import { METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
 import {
   axisSettings,
-  axisBindings,
   AXIS_SOURCE_KEY,
   unavailableMetrics,
   compatibleComparison,
@@ -31,11 +35,12 @@ import {
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
-import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
+import { comparisonModels, comparisonSlice } from "#/ui/lib/comparison-view"
 import { readPickedModels, savePickedModels, usePickedModels } from "#/ui/lib/picked-models"
-import { highestEffortOnly, settingsAtom, withoutHiddenProviders } from "#/ui/lib/settings"
-import { useProvidersInfo } from "#/ui/lib/use-providers-info"
+import { highestEffortOnly, useSettings } from "#/ui/lib/settings"
+import { providersInfoQueryOptions, useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { api } from "#/server/api"
+import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
 // three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand.
@@ -48,10 +53,31 @@ const ComparisonChart3D = lazy(() =>
 /** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
 const snapshotQuery = queryOptions({
   queryKey: ["models", "snapshot"],
-  queryFn: () => api.models.snapshot(),
+  queryFn: () => fetchModelSnapshot(),
   staleTime: Infinity,
   gcTime: Infinity,
 })
+
+type ComparisonRequest = {
+  info: ProvidersInfo
+  search: GraphSearch
+  picks: PickedModels
+  settings: ComparisonSettings
+}
+
+/**
+ * The server sends only what the first render draws, so the HTML stays small; the browser
+ * fetches the whole snapshot once it has hydrated. A browser navigation waits for that fetch,
+ * which by then has usually finished.
+ */
+const loadComparison = createIsomorphicFn()
+  .server(async (_queryClient: QueryClient, { info, search, picks, settings }: ComparisonRequest) =>
+    comparisonSlice(await api.models.snapshot(), info, search, picks, settings),
+  )
+  .client(async (queryClient: QueryClient) => {
+    await queryClient.query(snapshotQuery)
+    return null
+  })
 
 const metricSchema = z.enum(METRICS)
 const sourceSchema = z.string().optional().catch(undefined)
@@ -73,13 +99,19 @@ const compareSearchSchema = z.object({
 
 export const Route = createFileRoute("/")({
   validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
-  // Fetched before the server renders, so the snapshot arrives inside the HTML. A failure is
-  // left to the page's own error state rather than the route's. The saved picks come from
-  // the request's cookie, so the first HTML already shows them.
-  loader: async ({ context }) => {
-    await context.queryClient.query(snapshotQuery).catch(noop)
+  loaderDeps: ({ search }) => ({ search }),
+  // The picks and settings come from the request's cookies, so the first HTML already shows
+  // this reader's own comparison. A failure is left to the page's own error state.
+  loader: async ({ context, deps: { search } }) => {
+    const savedPicks = await readPickedModels()
+    const slice = await loadComparison(context.queryClient, {
+      info: await context.queryClient.ensureQueryData(providersInfoQueryOptions),
+      search,
+      picks: search.models ?? savedPicks,
+      settings: context.savedSettings,
+    }).catch(() => null)
 
-    return { savedPicks: await readPickedModels() }
+    return { savedPicks, slice }
   },
   component: ComparePage,
 })
@@ -92,39 +124,30 @@ function ComparePage() {
   const reduceMotion = useReducedMotion()
   const axes = axisSettings(search, info)
   const unavailable = unavailableMetrics(axes, info)
-  const { data: snapshot, isPending, isError } = useQuery(snapshotQuery)
-  const [settings, setSettings] = useAtom(settingsAtom)
+  const { savedPicks, slice } = Route.useLoaderData()
+  // Starts once the page has hydrated: the server never fetches it, so it stays out of the HTML.
+  const { data: snapshot, isError } = useQuery(snapshotQuery)
+  const [settings, setSettings] = useSettings()
   const { hiddenProviders, vendorLogos, effortLevels, openingModels } = settings
-  // Changing an axis source re-filters the page-load snapshot; nothing is refetched.
+  // Changing an axis source re-filters the whole snapshot; nothing is refetched. Until it
+  // arrives, the server's slice draws the opening chart with the picks it worked out.
   const data = useMemo(() => {
-    if (!snapshot) return undefined
+    const comparisonSettings = { hiddenProviders, openingModels }
 
-    const viewAxes = axisSettings(search, info)
-    // A provider turned off in settings leaves the picker and the opening picks alike.
-    const models = withoutHiddenProviders(
-      offeredVariants(snapshot, axisBindings(viewAxes, info)),
-      hiddenProviders,
-    )
-    const scoreSource =
-      Object.values(viewAxes).find((axis) => axis.metric === "score")?.source ?? null
+    if (snapshot) return comparisonModels(snapshot, info, search, comparisonSettings)
+    if (!slice) return undefined
 
     return {
-      models,
-      defaultModels: defaultPicks(
-        snapshot,
-        models,
-        scoreSource,
-        info,
-        axisBindings(viewAxes, info).map((binding) => binding.metric),
-        openingModels,
-      ),
+      models: comparisonModels(slice.snapshot, info, search, comparisonSettings).models,
+      defaultModels: slice.defaultModels,
     }
-  }, [snapshot, info, search, hiddenProviders, openingModels])
+  }, [snapshot, slice, info, search, hiddenProviders, openingModels])
+  const isPending = !data && !isError
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
   // Saved here or in another tab; a shared link's models still override them below.
-  const pickedModels = usePickedModels(Route.useLoaderData().savedPicks)
+  const pickedModels = usePickedModels(savedPicks)
 
   function updateSearch(update: Partial<typeof search>) {
     void navigate({
@@ -260,7 +283,7 @@ function ComparePage() {
   // The list can highlight models that are not on the chart; those emphasise nothing.
   const highlight =
     highlightedModel != null && selected.includes(highlightedModel) ? highlightedModel : null
-  const controlsDisabled = isPending ? true : isError
+  const controlsDisabled = !data
   const picker = (
     <ModelPicker
       models={data?.models ?? []}
@@ -349,7 +372,7 @@ function ComparePage() {
       </p>
 
       {isPending ? <ChartSkeleton /> : null}
-      {isError ? (
+      {isError && !data ? (
         <DataError className={CHART_HEIGHT_CLASS}>Unable to load model data</DataError>
       ) : null}
       {empty ? (
