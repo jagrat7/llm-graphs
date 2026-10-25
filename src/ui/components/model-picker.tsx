@@ -28,14 +28,6 @@ import { cn } from "#/ui/lib/utils"
 
 type DotStyle = CSSProperties & { "--dot": string }
 
-/**
- * Three rows of chips lands the picker at the same height as the three axis rows
- * opposite it, so neither side of the strip pushes the chart down on its own.
- * Names vary too much in length for a fixed chip count to hold that, so the rows
- * are measured instead.
- */
-const CHIP_ROWS = 3
-
 const CHIP_SIZE_CLASS = "h-8 text-sm sm:h-6 sm:text-xs"
 
 /**
@@ -48,7 +40,7 @@ const CHIPS_RESET_CLASS =
 
 /**
  * Uneven on purpose: model names differ in length, so equal blocks read as fake.
- * Three rows' worth at the picker's desktop width, like the chips they stand in for.
+ * More than the chip area holds at any width; it clips the rest, as it does chips.
  */
 const SKELETON_CHIP_WIDTHS = [
   "w-24",
@@ -122,9 +114,10 @@ export function countFittingChips(
 const roundedWidth = (element: Element) => Math.ceil(element.getBoundingClientRect().width)
 
 /**
- * Reads the ghost row: every selected chip at its natural width, then one count
- * trigger per digit length. Widths round up so a sub-pixel miss can only drop a
- * chip, never wrap one onto a fourth row.
+ * Reads the ghost, which covers the chip area: its box is the space to fill, and its
+ * row holds every selected chip at its natural width, then one count trigger per digit
+ * length. Widths round up so a sub-pixel miss can only drop a chip, never wrap one
+ * past the last row that fits.
  */
 function measureFittingChips(ghost: HTMLElement) {
   const row = ghost.firstElementChild
@@ -134,11 +127,15 @@ function measureFittingChips(ghost: HTMLElement) {
   const children = Array.from(row.children)
   const widths = children.filter((child) => !child.hasAttribute("data-more")).map(roundedWidth)
   const moreWidths = children.filter((child) => child.hasAttribute("data-more")).map(roundedWidth)
+  const area = ghost.getBoundingClientRect()
+  const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0
+  const rows = Math.floor((area.height + gap) / (row.getBoundingClientRect().height + gap))
 
   return countFittingChips(widths, {
-    available: ghost.getBoundingClientRect().width,
-    gap: Number.parseFloat(getComputedStyle(row).columnGap) || 0,
-    rows: CHIP_ROWS,
+    available: area.width,
+    gap,
+    // The area is never shorter than a row, so a short count only means it hasn't laid out.
+    rows: rows >= 1 ? rows : 1,
     moreWidth: (hiddenCount) => moreWidths[String(hiddenCount).length - 1] ?? 0,
   })
 }
@@ -213,6 +210,10 @@ export function ModelPicker({
   const valueKey = value.map((model) => model.model).join("\n")
   // No models yet and the controls are locked: the request is still in flight.
   const isLoading = disabled && models.length === 0
+  const hasChipArea = isLoading || hasChips
+  // The server can't measure, so chips wait for the browser's first count; until then the
+  // skeleton holds their place rather than every chip showing and then folding away.
+  const isMeasured = Number.isFinite(visibleCount)
   // Pointer, list and focus highlights are tracked apart so ending one gesture never
   // clears a highlight another still holds; the pointer wins, then the list, then focus.
   const [hoveredModel, setHoveredModel] = useState<string | null>(null)
@@ -257,11 +258,12 @@ export function ModelPicker({
     if (ghostRef.current) setVisibleCount(measureFittingChips(ghostRef.current))
   }, [valueKey])
 
-  // The row narrows with the viewport, and chips widen once the web font lands.
+  // The area follows the viewport and the axes opposite, and chips widen once the web
+  // font lands.
   useEffect(() => {
     const ghost = ghostRef.current
 
-    if (!hasChips || !ghost?.firstElementChild || typeof ResizeObserver === "undefined")
+    if (!hasChipArea || !ghost?.firstElementChild || typeof ResizeObserver === "undefined")
       return undefined
 
     const observer = new ResizeObserver(() => setVisibleCount(measureFittingChips(ghost)))
@@ -270,7 +272,7 @@ export function ModelPicker({
     observer.observe(ghost.firstElementChild)
 
     return () => observer.disconnect()
-  }, [hasChips])
+  }, [hasChipArea])
 
   // Emptying the list from inside the popover unmounts its own trigger, so hand
   // focus to the model list's button rather than dropping it on the document.
@@ -347,7 +349,7 @@ export function ModelPicker({
   }, [shortcut, disabled])
 
   return (
-    <div className={cn("flex w-full flex-col gap-2", className)}>
+    <div className={cn("flex w-full flex-col gap-1", className)}>
       <label htmlFor={inputId} className="sr-only">
         Models
       </label>
@@ -489,25 +491,19 @@ export function ModelPicker({
             </PopoverContent>
           </Popover>
         </div>
-        {isLoading ? (
-          <div aria-hidden="true" className="flex flex-wrap gap-1">
-            {SKELETON_CHIP_WIDTHS.map((width, index) => (
-              <Skeleton
-                key={`${width}-${index}`}
-                className={cn(CHIP_SIZE_CLASS, "rounded-[calc(var(--radius-sm)-2px)]", width)}
-              />
-            ))}
-          </div>
-        ) : null}
-        {hasChips ? (
-          <div className="relative">
+        {hasChipArea ? (
+          /* Takes whatever height the picker is given past its controls, and three chip rows
+             when it's given none. Size containment keeps the chips themselves out of the
+             picker's height, so a long selection folds into the count instead of growing it.
+             Three rows plus the controls is exactly the axes' height opposite. */
+          <div className="relative min-h-26 flex-1 overflow-hidden contain-size sm:min-h-20">
             {/* Every chip laid out unwrapped, out of sight, so the real row knows how many
-              it can hold. Zero height and clipped, so its overflow never scrolls the page. */}
+              it can hold. Covers the area and is clipped to it, so it measures the space too. */}
             <div
               ref={ghostRef}
               data-slot="model-picker-ghost"
               aria-hidden="true"
-              className="pointer-events-none invisible absolute inset-x-0 top-0 h-0 overflow-hidden"
+              className="pointer-events-none invisible absolute inset-0 overflow-hidden"
             >
               <div className="flex w-max gap-1">
                 {value.map((model) => (
@@ -539,73 +535,84 @@ export function ModelPicker({
                 ))}
               </div>
             </div>
-            <ComboboxChips className={CHIPS_RESET_CLASS}>
-              <ComboboxValue>
-                {(shown: Array<Model>) => (
-                  <>
-                    {/* Chips remove by render index, so they have to stay in value order —
+            {isLoading || !isMeasured ? (
+              <div aria-hidden="true" className="flex flex-wrap gap-1">
+                {SKELETON_CHIP_WIDTHS.map((width, index) => (
+                  <Skeleton
+                    key={`${width}-${index}`}
+                    className={cn(CHIP_SIZE_CLASS, "rounded-[calc(var(--radius-sm)-2px)]", width)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <ComboboxChips className={CHIPS_RESET_CLASS}>
+                <ComboboxValue>
+                  {(shown: Array<Model>) => (
+                    <>
+                      {/* Chips remove by render index, so they have to stay in value order —
                       taking the head keeps every visible chip pointing at its own model. */}
-                    {shown.slice(0, visibleCount).map((model) => (
-                      <ComboboxChip
-                        key={model.model}
-                        className={CHIP_SIZE_CLASS}
-                        {...highlightHandlers(model.model)}
-                      >
-                        <ModelDot model={model} />
-                        {model.displayName}
-                      </ComboboxChip>
-                    ))}
-                  </>
-                )}
-              </ComboboxValue>
-              {hidden.length > 0 ? (
-                <Popover open={moreOpen} onOpenChange={setMoreOpen}>
-                  {/* Carries the chips' fill so it reads as a control among them
-                    rather than as a caption sitting at the end of the row. */}
-                  {/* Opens on hover so the rest can be skimmed in passing; a click still
-                    toggles it for touch and keyboard. */}
-                  <PopoverTrigger
-                    openOnHover
-                    delay={100}
-                    closeDelay={150}
-                    render={
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        aria-label={`Show ${hidden.length} more selected models`}
-                        className={CHIP_SIZE_CLASS}
-                      />
-                    }
-                  >
-                    {hidden.length} more
-                    <RiArrowDownSLine aria-hidden="true" />
-                  </PopoverTrigger>
-                  <PopoverContent align="start" className="w-80 p-2">
-                    <ul className="flex max-h-64 flex-wrap gap-1 overflow-y-auto">
-                      {hidden.map((model) => (
-                        <li
+                      {shown.slice(0, visibleCount).map((model) => (
+                        <ComboboxChip
                           key={model.model}
-                          className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS)}
+                          className={CHIP_SIZE_CLASS}
                           {...highlightHandlers(model.model)}
                         >
                           <ModelDot model={model} />
                           {model.displayName}
-                          <Button
-                            variant="ghost"
-                            size="icon-xs"
-                            aria-label={`Remove ${model.displayName}`}
-                            className="-mr-1 opacity-50 hover:opacity-100"
-                            onClick={() => onChange(selected.filter((id) => id !== model.model))}
-                          >
-                            <RiCloseLine aria-hidden="true" />
-                          </Button>
-                        </li>
+                        </ComboboxChip>
                       ))}
-                    </ul>
-                  </PopoverContent>
-                </Popover>
-              ) : null}
-            </ComboboxChips>
+                    </>
+                  )}
+                </ComboboxValue>
+                {hidden.length > 0 ? (
+                  <Popover open={moreOpen} onOpenChange={setMoreOpen}>
+                    {/* Carries the chips' fill so it reads as a control among them
+                    rather than as a caption sitting at the end of the row. */}
+                    {/* Opens on hover so the rest can be skimmed in passing; a click still
+                    toggles it for touch and keyboard. */}
+                    <PopoverTrigger
+                      openOnHover
+                      delay={100}
+                      closeDelay={150}
+                      render={
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          aria-label={`Show ${hidden.length} more selected models`}
+                          className={CHIP_SIZE_CLASS}
+                        />
+                      }
+                    >
+                      {hidden.length} more
+                      <RiArrowDownSLine aria-hidden="true" />
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-80 p-2">
+                      <ul className="flex max-h-64 flex-wrap gap-1 overflow-y-auto">
+                        {hidden.map((model) => (
+                          <li
+                            key={model.model}
+                            className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS)}
+                            {...highlightHandlers(model.model)}
+                          >
+                            <ModelDot model={model} />
+                            {model.displayName}
+                            <Button
+                              variant="ghost"
+                              size="icon-xs"
+                              aria-label={`Remove ${model.displayName}`}
+                              className="-mr-1 opacity-50 hover:opacity-100"
+                              onClick={() => onChange(selected.filter((id) => id !== model.model))}
+                            >
+                              <RiCloseLine aria-hidden="true" />
+                            </Button>
+                          </li>
+                        ))}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                ) : null}
+              </ComboboxChips>
+            )}
           </div>
         ) : null}
         <ComboboxContent anchor={anchor}>

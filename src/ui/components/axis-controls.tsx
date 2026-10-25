@@ -65,7 +65,10 @@ export function AxisControls({
   )
 
   return (
-    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:max-w-4xl min-[56rem]:flex-row min-[56rem]:items-start min-[56rem]:justify-center min-[56rem]:gap-4">
+    // Side by side, the row stretches the right-hand side to the axes' height, so neither
+    // pushes the chart down on its own. That side has to contain its own height for this
+    // to hold, as the picker's chips do.
+    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:max-w-4xl min-[56rem]:flex-row min-[56rem]:justify-center min-[56rem]:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
           column, not the metric one: metric names are short and fixed, provider

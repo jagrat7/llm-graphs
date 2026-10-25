@@ -33,8 +33,9 @@ afterEach(() => {
 })
 
 /**
- * jsdom has no layout or stylesheet, so give every chip 100px, no gap, and the ghost
- * row 300px by default: three to a row. Resizing the row replays the observer the picker re-measures on.
+ * jsdom has no layout or stylesheet, so give every chip 100px by 20px, no gap, and the
+ * chip area 300px by 60px by default: three to a row, three rows. Resizing the row
+ * replays the observer the picker re-measures on.
  */
 function stubChipLayout() {
   let rowWidth = 300
@@ -42,9 +43,9 @@ function stubChipLayout() {
 
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
     function (this: HTMLElement) {
-      return DOMRect.fromRect({
-        width: this.dataset.slot === "model-picker-ghost" ? rowWidth : 100,
-      })
+      const isArea = this.dataset.slot === "model-picker-ghost"
+
+      return DOMRect.fromRect({ width: isArea ? rowWidth : 100, height: isArea ? 60 : 20 })
     },
   )
   vi.stubGlobal(
