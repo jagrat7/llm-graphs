@@ -23,7 +23,7 @@ export type MetricSource<TPayload, TRow> = SourceDefinition<TPayload> & {
   toMetricRows(payload: TPayload): Array<MetricRow>
 }
 
-/** What the UI needs to know about the metric sources, as plain data it gets over orpc. */
+/** What the UI needs to know about the metric sources, as plain data it gets from a server function. */
 export type ProvidersInfo = {
   displayNames: Record<ProviderName, string>
   sources: Record<ProviderName, { href: string; abbreviation: string }>

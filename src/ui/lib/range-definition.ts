@@ -4,7 +4,7 @@ import { scalePoint } from "@tanstack/charts/scales/point"
 import { scaleLog } from "d3-scale"
 
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 import type { PlotEncoding } from "#/ui/lib/chart-marks"
 
 import { effortLabelsMark, modelRunsMark } from "#/ui/lib/chart-marks"

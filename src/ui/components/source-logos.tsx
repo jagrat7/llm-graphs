@@ -1,4 +1,4 @@
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 
 import { SourceLogo } from "#/ui/components/source-logo"
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"

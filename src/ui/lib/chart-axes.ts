@@ -1,5 +1,5 @@
 import type { PlotData } from "#/ui/lib/comparison-plot-data"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
 import { CHART_AXIS_TITLE_SIZE, CHART_TICK_SIZE } from "#/ui/lib/chart-styles"
 import { metricAxisTitle } from "#/ui/lib/metrics"

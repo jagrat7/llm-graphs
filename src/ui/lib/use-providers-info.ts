@@ -1,9 +1,11 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
-import { orpc } from "./orpc-client"
+import { api } from "#/server/api"
 
 /** Static provider metadata, loaded by the root route before any page renders. */
-export const providersInfoQueryOptions = orpc.providers.info.queryOptions({
+export const providersInfoQueryOptions = queryOptions({
+  queryKey: ["providers", "info"],
+  queryFn: () => api.providers.info(),
   staleTime: Infinity,
   gcTime: Infinity,
 })

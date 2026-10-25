@@ -10,53 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiSplatRouteImport } from './routes/api.$'
-import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
+import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
-  id: '/api/rpc/$',
-  path: '/api/rpc/$',
+const ApiModelsDiagnosticsRoute = ApiModelsDiagnosticsRouteImport.update({
+  id: '/api/models/diagnostics',
+  path: '/api/models/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/$' | '/api/rpc/$'
+  fullPaths: '/' | '/api/models/diagnostics'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/$' | '/api/rpc/$'
-  id: '__root__' | '/' | '/api/$' | '/api/rpc/$'
+  to: '/' | '/api/models/diagnostics'
+  id: '__root__' | '/' | '/api/models/diagnostics'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApiSplatRoute: typeof ApiSplatRoute
-  ApiRpcSplatRoute: typeof ApiRpcSplatRoute
+  ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,18 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rpc/$': {
-      id: '/api/rpc/$'
-      path: '/api/rpc/$'
-      fullPath: '/api/rpc/$'
-      preLoaderRoute: typeof ApiRpcSplatRouteImport
+    '/api/models/diagnostics': {
+      id: '/api/models/diagnostics'
+      path: '/api/models/diagnostics'
+      fullPath: '/api/models/diagnostics'
+      preLoaderRoute: typeof ApiModelsDiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,8 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiSplatRoute: ApiSplatRoute,
-  ApiRpcSplatRoute: ApiRpcSplatRoute,
+  ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
