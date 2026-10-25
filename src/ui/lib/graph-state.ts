@@ -1,5 +1,5 @@
 import type { AxisState } from "#/ui/components/axis-controls"
-import type { ProvidersInfo, ProviderName, ModelSnapshot } from "./orpc-client"
+import type { ProvidersInfo, ProviderName, ModelSnapshot } from "#/server/api"
 import type { MetricBinding } from "./model-view"
 import { defaultPicks, offeredVariants } from "./model-view"
 import { buildPlotData, plotQuality } from "./comparison-plot-data"

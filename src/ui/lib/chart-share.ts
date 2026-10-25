@@ -1,5 +1,5 @@
 import type { PlotAxis, PlotData } from "#/ui/lib/comparison-plot-data"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
 import { APP_NAME } from "#/ui/lib/app-meta"
 import { METRIC_CONFIG, metricPresentation } from "#/ui/lib/metrics"

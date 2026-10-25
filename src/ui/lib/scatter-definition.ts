@@ -3,7 +3,7 @@ import { scaleLinear } from "@tanstack/charts/scales/linear"
 import { scaleLog } from "d3-scale"
 
 import type { PlotData } from "#/ui/lib/comparison-plot-data"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
 import {
   modelLabelsMark,

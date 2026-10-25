@@ -1,4 +1,4 @@
-import { noop, useQuery } from "@tanstack/react-query"
+import { noop, queryOptions, useQuery } from "@tanstack/react-query"
 import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 import { lazy, Suspense, useMemo, useState } from "react"
@@ -7,7 +7,7 @@ import { z } from "zod"
 import type { AxisKey, AxisSetting } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 
 import { AxisControls } from "#/ui/components/axis-controls"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
@@ -35,7 +35,7 @@ import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { readPickedModels, savePickedModels, usePickedModels } from "#/ui/lib/picked-models"
 import { highestEffortOnly, settingsAtom, withoutHiddenProviders } from "#/ui/lib/settings"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
-import { orpc } from "#/ui/lib/orpc-client"
+import { api } from "#/server/api"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 
 // three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand.
@@ -46,7 +46,12 @@ const ComparisonChart3D = lazy(() =>
 )
 
 /** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
-const snapshotQuery = orpc.models.snapshot.queryOptions({ staleTime: Infinity, gcTime: Infinity })
+const snapshotQuery = queryOptions({
+  queryKey: ["models", "snapshot"],
+  queryFn: () => api.models.snapshot(),
+  staleTime: Infinity,
+  gcTime: Infinity,
+})
 
 const metricSchema = z.enum(METRICS)
 const sourceSchema = z.string().optional().catch(undefined)

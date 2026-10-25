@@ -3,7 +3,7 @@ import { Fragment } from "react"
 
 import type { Axis } from "#/ui/components/metric-select"
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 
 import { MetricSelect } from "#/ui/components/metric-select"
 import { SourceSelect } from "#/ui/components/source-select"

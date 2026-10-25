@@ -43,3 +43,20 @@ describe("ProvidersService", () => {
     expect(aaCost(null, 5)).toBeNull()
   })
 })
+
+describe("ProvidersService.info", () => {
+  it("returns serializable provider metadata with native score units and no downloader code", () => {
+    const info = ProvidersService.info()
+
+    expect(JSON.parse(JSON.stringify(info))).toEqual(info)
+    expect(info.metricProviders.score).toEqual(ProvidersService.providersFor("score"))
+    expect(info.presentation.metr.score).toEqual({
+      label: "Task horizon (50%)",
+      unit: "h",
+      format: "hours",
+    })
+    expect(info.presentation.artificialAnalysis.score?.unit).toBe("points")
+    expect(info.presentation.arena.score?.unit).toBe("points")
+    expect(info.scopes.artificialAnalysis.costPerMTokens).toBe("model")
+  })
+})

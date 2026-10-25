@@ -1,4 +1,4 @@
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
 export function isSource(value: string, info: ProvidersInfo): value is ProviderName {
   return Object.hasOwn(info.displayNames, value)

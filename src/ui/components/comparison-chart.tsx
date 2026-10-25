@@ -3,7 +3,7 @@ import { useAtom } from "jotai"
 import { useId, useMemo, useRef, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
 
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"

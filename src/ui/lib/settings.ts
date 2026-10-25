@@ -2,7 +2,7 @@ import { atomWithStorage, createJSONStorage } from "jotai/utils"
 import { z } from "zod"
 
 import type { Model } from "#/ui/lib/model-view"
-import type { ModelSnapshot } from "#/ui/lib/orpc-client"
+import type { ModelSnapshot } from "#/server/api"
 
 import { DEFAULT_PICK_COUNT, logoDataUrl, pinRank, vendorLabel } from "#/ui/lib/model-view"
 
