@@ -1,5 +1,5 @@
 import { noop, useQuery } from "@tanstack/react-query"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 import { RESET } from "jotai/utils"
 import { lazy, Suspense, useMemo, useState } from "react"
@@ -381,14 +381,18 @@ function ComparePage() {
               getShareLink={shareLink}
             />
           ) : (
-            <ComparisonChart
-              models={chartModels}
-              sources={{ x: axes.x.source, y: axes.y.source }}
-              xMetric={search.x}
-              yMetric={search.y}
-              highlight={highlight}
-              getShareLink={shareLink}
-            />
+            // Sized from its container, which the server can't measure: drawn there, it
+            // comes out at a guessed size and jumps once the browser redraws it.
+            <ClientOnly fallback={<ChartSkeleton />}>
+              <ComparisonChart
+                models={chartModels}
+                sources={{ x: axes.x.source, y: axes.y.source }}
+                xMetric={search.x}
+                yMetric={search.y}
+                highlight={highlight}
+                getShareLink={shareLink}
+              />
+            </ClientOnly>
           )}
         </Suspense>
       ) : null}
