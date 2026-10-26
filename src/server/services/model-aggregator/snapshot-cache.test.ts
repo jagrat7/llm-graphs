@@ -109,8 +109,13 @@ describe("snapshot caching", () => {
 
     const { cacheKey } = ProvidersService.metricSources.metr
     const refreshedAt = new Date(start + 1).toISOString()
-    await store.set(cacheKey, { ...fixtures.metr, fetchedAt: refreshedAt })
-    await store.setHashFields(SOURCE_STAMPS_KEY, { [cacheKey]: refreshedAt })
+    await store.setWithHashField(
+      cacheKey,
+      { ...fixtures.metr, fetchedAt: refreshedAt },
+      SOURCE_STAMPS_KEY,
+      cacheKey,
+      refreshedAt,
+    )
 
     store.reset()
     clock.now += 10_000
@@ -132,10 +137,43 @@ describe("snapshot caching", () => {
 
     const { cacheKey } = ProvidersService.metricSources.metr
     const refreshedAt = new Date(start + 1).toISOString()
-    await store.set(cacheKey, { ...fixtures.metr, fetchedAt: refreshedAt })
-    await store.setHashFields(SOURCE_STAMPS_KEY, { [cacheKey]: refreshedAt })
+    await store.setWithHashField(
+      cacheKey,
+      { ...fixtures.metr, fetchedAt: refreshedAt },
+      SOURCE_STAMPS_KEY,
+      cacheKey,
+      refreshedAt,
+    )
 
     clock.now += 10_000
     expect((await aggregator.getTaggedSnapshot()).tag).not.toBe(tag)
+  })
+
+  it("never lets a rebuild's backfill replace a stamp a refresh wrote since", async () => {
+    const store = await seededStore()
+    const clock = { now: start }
+    const { cacheKey } = ProvidersService.metricSources.metr
+    const refreshedAt = new Date(Date.parse(fixtures.metr.fetchedAt) + 1).toISOString()
+
+    // A refresh saves a newer copy right after the rebuild read the older one.
+    const get = store.get.bind(store)
+    let refreshed = false
+    store.get = async (key) => {
+      const value = await get(key)
+      if (key === cacheKey && !refreshed) {
+        refreshed = true
+        await store.setWithHashField(
+          cacheKey,
+          { ...fixtures.metr, fetchedAt: refreshedAt },
+          SOURCE_STAMPS_KEY,
+          cacheKey,
+          refreshedAt,
+        )
+      }
+      return value
+    }
+    await service(store, clock).getSnapshot()
+
+    expect((await store.getHash(SOURCE_STAMPS_KEY))?.[cacheKey]).toBe(refreshedAt)
   })
 })

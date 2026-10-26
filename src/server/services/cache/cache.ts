@@ -36,7 +36,16 @@ export interface CacheStore {
   /** With `ttlSeconds`, the value expires on its own. */
   set(key: string, value: unknown, ttlSeconds?: number): Promise<void>
   getHash(key: string): Promise<Record<string, unknown> | null>
-  setHashFields(key: string, fields: Record<string, string>): Promise<void>
+  /** Saves the value and one hash field in one step: a reader sees both or neither. */
+  setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ): Promise<void>
+  /** Sets only the fields the hash lacks, so it never replaces a value written since. */
+  fillHashFields(key: string, fields: Record<string, string>): Promise<void>
   /** Resolves a token for exactly one caller until the lock expires or is released; else null. */
   acquireLock(key: string, ttlSeconds: number): Promise<string | null>
   /**
@@ -75,9 +84,29 @@ class RedisStore implements CacheStore {
     }
   }
 
-  async setHashFields(key: string, fields: Record<string, string>) {
+  async setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ) {
     try {
-      await this.redis.hset(key, fields)
+      await this.redis
+        .multi()
+        .set(key, value)
+        .hset(hash, { [field]: fieldValue })
+        .exec()
+    } catch {
+      // Neither was written, so the previous copy and its stamp still match.
+    }
+  }
+
+  async fillHashFields(key: string, fields: Record<string, string>) {
+    try {
+      const pipeline = this.redis.pipeline()
+      for (const [field, value] of Object.entries(fields)) pipeline.hsetnx(key, field, value)
+      await pipeline.exec()
     } catch {
       // Readers missing a stamp read that source's payload instead.
     }
@@ -127,12 +156,23 @@ export class MemoryStore implements CacheStore {
   }
 
   async getHash(key: string) {
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only setHashFields writes hashes
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only the hash methods write hashes
     return (this.values.get(key) as Record<string, unknown> | undefined) ?? null
   }
 
-  async setHashFields(key: string, fields: Record<string, string>) {
-    this.values.set(key, { ...(await this.getHash(key)), ...fields })
+  async setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ) {
+    this.values.set(key, value)
+    this.values.set(hash, { ...(await this.getHash(hash)), [field]: fieldValue })
+  }
+
+  async fillHashFields(key: string, fields: Record<string, string>) {
+    this.values.set(key, { ...fields, ...(await this.getHash(key)) })
   }
 
   async acquireLock(key: string, ttlSeconds: number) {
@@ -211,9 +251,12 @@ export class SourceCache {
     )
   }
 
-  /** Fills in stamps for copies stored before the stamps existed. */
+  /**
+   * Fills in stamps for copies stored before the stamps existed. A refresh can save a newer copy
+   * and stamp after the caller read its copies, so an existing stamp is never replaced.
+   */
   async recordStamps(stamps: Record<string, string>) {
-    if (Object.keys(stamps).length > 0) await this.store.setHashFields(SOURCE_STAMPS_KEY, stamps)
+    if (Object.keys(stamps).length > 0) await this.store.fillHashFields(SOURCE_STAMPS_KEY, stamps)
   }
 
   /** Starts the background refresh `read` would, from a stamp alone, without reading the copy. */
@@ -314,8 +357,14 @@ export class SourceCache {
     if (current && Date.parse(current.fetchedAt) > startedAt) return current
 
     const entry = { payload, fetchedAt: new Date(this.now()).toISOString() }
-    await this.store.set(source.cacheKey, entry)
-    await this.store.setHashFields(SOURCE_STAMPS_KEY, { [source.cacheKey]: entry.fetchedAt })
+    // Together, so a stamp never names an older copy than the one stored.
+    await this.store.setWithHashField(
+      source.cacheKey,
+      entry,
+      SOURCE_STAMPS_KEY,
+      source.cacheKey,
+      entry.fetchedAt,
+    )
 
     return entry
   }
