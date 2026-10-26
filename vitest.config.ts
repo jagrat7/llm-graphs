@@ -7,6 +7,7 @@ export default defineConfig({
       "#": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  define: { "import.meta.env.BUILD_ID": JSON.stringify("test-build") },
   test: {
     environment: "node",
   },

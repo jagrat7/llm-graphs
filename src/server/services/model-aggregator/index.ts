@@ -1,8 +1,6 @@
 import type { MetricSource, SourceDefinition, SourcePayload } from "../providers"
 import type { AggregatorInputs, ModelSnapshot } from "./model-aggregator.types"
 
-import { env } from "#/env"
-
 import { SourceCache } from "../cache/cache"
 import { ProvidersService } from "../providers"
 import { aggregateModels, type Derivation } from "./derive"
@@ -61,9 +59,11 @@ export class ModelAggregatorService {
 
   constructor(
     private readonly cache = new SourceCache(),
-    /** Keys the shared snapshot, so no deploy reads one an older deploy's code built. */
-    private readonly deploymentId: string | null = env.VERCEL_DEPLOYMENT_ID ?? null,
+    /** Names the code that built a snapshot, so no build reuses or tags one an older build made. */
+    private readonly buildId: string = import.meta.env.BUILD_ID,
     private readonly now: () => number = Date.now,
+    /** Off in dev, so each restart doesn't leave its own copy in Redis for a week. */
+    private readonly shareBuilt: boolean = !import.meta.env.DEV,
   ) {}
 
   async getSnapshot(): Promise<ModelSnapshot> {
@@ -143,7 +143,7 @@ export class ModelAggregatorService {
   }
 
   private builtKey() {
-    return this.deploymentId ? `llm-scores:snapshot:${this.deploymentId}` : null
+    return this.shareBuilt ? `llm-scores:snapshot:${this.buildId}` : null
   }
 
   private async readBuilt() {

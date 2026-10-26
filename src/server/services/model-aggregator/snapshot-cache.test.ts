@@ -46,13 +46,9 @@ async function seededStore() {
   return store
 }
 
-function service(
-  store: CountingStore,
-  clock: { now: number },
-  deploymentId: string | null = "dep-1",
-) {
+function service(store: CountingStore, clock: { now: number }, buildId = "build-1") {
   const now = () => clock.now
-  return new ModelAggregatorService(new SourceCache(store, now), deploymentId, now)
+  return new ModelAggregatorService(new SourceCache(store, now), buildId, now, true)
 }
 
 describe("snapshot caching", () => {
@@ -98,10 +94,10 @@ describe("snapshot caching", () => {
   it("never reuses a snapshot another deploy built", async () => {
     const store = await seededStore()
     const clock = { now: start }
-    await service(store, clock, "dep-1").getSnapshot()
+    await service(store, clock, "build-1").getSnapshot()
 
     store.reset()
-    await service(store, clock, "dep-2").getSnapshot()
+    await service(store, clock, "build-2").getSnapshot()
     expect(store.payloadReads).toBe(payloads.length)
   })
 
@@ -123,4 +119,5 @@ describe("snapshot caching", () => {
     expect(second.fetchedAt.metr).toBe(refreshedAt)
     expect(store.payloadReads).toBe(payloads.length)
   })
+
 })
