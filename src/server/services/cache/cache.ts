@@ -23,6 +23,9 @@ const RELEASE_LOCK_SCRIPT =
 const EXTEND_LOCK_SCRIPT =
   'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("expire", KEYS[1], ARGV[2]) end return 0'
 
+/** One hash of every source's last fetch time, so a reader can tell what changed in one read. */
+export const SOURCE_STAMPS_KEY = "llm-scores:sources"
+
 export type CachedPayload<T> = {
   payload: T
   fetchedAt: string
@@ -30,7 +33,19 @@ export type CachedPayload<T> = {
 
 export interface CacheStore {
   get(key: string): Promise<unknown>
-  set(key: string, value: unknown): Promise<void>
+  /** With `ttlSeconds`, the value expires on its own. */
+  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>
+  getHash(key: string): Promise<Record<string, unknown> | null>
+  /** Saves the value and one hash field in one step: a reader sees both or neither. */
+  setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ): Promise<void>
+  /** Sets only the fields the hash lacks, so it never replaces a value written since. */
+  fillHashFields(key: string, fields: Record<string, string>): Promise<void>
   /** Resolves a token for exactly one caller until the lock expires or is released; else null. */
   acquireLock(key: string, ttlSeconds: number): Promise<string | null>
   /**
@@ -53,11 +68,47 @@ class RedisStore implements CacheStore {
     }
   }
 
-  async set(key: string, value: unknown) {
+  async set(key: string, value: unknown, ttlSeconds?: number) {
     try {
-      await this.redis.set(key, value)
+      await this.redis.set(key, value, ttlSeconds ? { ex: ttlSeconds } : undefined)
     } catch {
       // A failed write keeps the previous copy, which is still the last good one.
+    }
+  }
+
+  async getHash(key: string) {
+    try {
+      return await this.redis.hgetall<Record<string, unknown>>(key)
+    } catch {
+      return null
+    }
+  }
+
+  async setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ) {
+    try {
+      await this.redis
+        .multi()
+        .set(key, value)
+        .hset(hash, { [field]: fieldValue })
+        .exec()
+    } catch {
+      // Neither was written, so the previous copy and its stamp still match.
+    }
+  }
+
+  async fillHashFields(key: string, fields: Record<string, string>) {
+    try {
+      const pipeline = this.redis.pipeline()
+      for (const [field, value] of Object.entries(fields)) pipeline.hsetnx(key, field, value)
+      await pipeline.exec()
+    } catch {
+      // Readers missing a stamp read that source's payload instead.
     }
   }
 
@@ -102,6 +153,26 @@ export class MemoryStore implements CacheStore {
 
   async set(key: string, value: unknown) {
     this.values.set(key, value)
+  }
+
+  async getHash(key: string) {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- only the hash methods write hashes
+    return (this.values.get(key) as Record<string, unknown> | undefined) ?? null
+  }
+
+  async setWithHashField(
+    key: string,
+    value: unknown,
+    hash: string,
+    field: string,
+    fieldValue: string,
+  ) {
+    this.values.set(key, value)
+    this.values.set(hash, { ...(await this.getHash(hash)), [field]: fieldValue })
+  }
+
+  async fillHashFields(key: string, fields: Record<string, string>) {
+    this.values.set(key, { ...fields, ...(await this.getHash(key)) })
   }
 
   async acquireLock(key: string, ttlSeconds: number) {
@@ -166,6 +237,42 @@ export class SourceCache {
     }
 
     return cached
+  }
+
+  /** Each source's last fetch time, from one small read; a source never stored has none. */
+  async stamps(sources: ReadonlyArray<SourceDefinition<unknown>>) {
+    const stored = (await this.store.getHash(SOURCE_STAMPS_KEY)) ?? {}
+
+    return Object.fromEntries(
+      sources.map((source) => {
+        const stamp = stored[source.cacheKey]
+        return [source.cacheKey, typeof stamp === "string" ? stamp : null]
+      }),
+    )
+  }
+
+  /**
+   * Fills in stamps for copies stored before the stamps existed. A refresh can save a newer copy
+   * and stamp after the caller read its copies, so an existing stamp is never replaced.
+   */
+  async recordStamps(stamps: Record<string, string>) {
+    if (Object.keys(stamps).length > 0) await this.store.fillHashFields(SOURCE_STAMPS_KEY, stamps)
+  }
+
+  /** Starts the background refresh `read` would, from a stamp alone, without reading the copy. */
+  refreshIfStale<T>(source: SourceDefinition<T>, fetchedAt: string) {
+    if (this.now() - Date.parse(fetchedAt) > source.refreshWindowMs) {
+      void this.refreshInBackground(source)
+    }
+  }
+
+  /** A value shared across instances, such as a built snapshot. */
+  async readShared(key: string) {
+    return this.store.get(key)
+  }
+
+  async writeShared(key: string, value: unknown, ttlSeconds: number) {
+    await this.store.set(key, value, ttlSeconds)
   }
 
   private async stored<T>(source: SourceDefinition<T>) {
@@ -250,7 +357,14 @@ export class SourceCache {
     if (current && Date.parse(current.fetchedAt) > startedAt) return current
 
     const entry = { payload, fetchedAt: new Date(this.now()).toISOString() }
-    await this.store.set(source.cacheKey, entry)
+    // Together, so a stamp never names an older copy than the one stored.
+    await this.store.setWithHashField(
+      source.cacheKey,
+      entry,
+      SOURCE_STAMPS_KEY,
+      source.cacheKey,
+      entry.fetchedAt,
+    )
 
     return entry
   }

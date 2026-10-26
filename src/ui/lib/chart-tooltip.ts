@@ -4,7 +4,7 @@ import { tooltip } from "@tanstack/charts/tooltip"
 import { portal } from "@tanstack/charts/tooltip/portal"
 
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
-import type { ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
 import { CHART_TOOLTIP_GAP } from "#/ui/lib/chart-styles"
 import { formatMetric, metricPresentation } from "#/ui/lib/metrics"

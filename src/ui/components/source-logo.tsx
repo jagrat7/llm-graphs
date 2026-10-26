@@ -1,4 +1,4 @@
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 
 import { cn } from "#/ui/lib/utils"
 

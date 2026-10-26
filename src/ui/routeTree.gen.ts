@@ -10,73 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as Graph3dRouteImport } from './routes/graph-3d'
-import { Route as LeaderboardRouteImport } from './routes/leaderboard'
-import { Route as ApiSplatRouteImport } from './routes/api.$'
-import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
+import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
+import { Route as ApiModelsSnapshotRouteImport } from './routes/api.models.snapshot'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Graph3dRoute = Graph3dRouteImport.update({
-  id: '/graph-3d',
-  path: '/graph-3d',
+const ApiModelsDiagnosticsRoute = ApiModelsDiagnosticsRouteImport.update({
+  id: '/api/models/diagnostics',
+  path: '/api/models/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LeaderboardRoute = LeaderboardRouteImport.update({
-  id: '/leaderboard',
-  path: '/leaderboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
-  id: '/api/rpc/$',
-  path: '/api/rpc/$',
+const ApiModelsSnapshotRoute = ApiModelsSnapshotRouteImport.update({
+  id: '/api/models/snapshot',
+  path: '/api/models/snapshot',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/graph-3d': typeof Graph3dRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/api/$': typeof ApiSplatRoute
-  '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
+  '/api/models/snapshot': typeof ApiModelsSnapshotRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
+  fullPaths: '/' | '/api/models/diagnostics' | '/api/models/snapshot'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
-  id: '__root__' | '/' | '/graph-3d' | '/leaderboard' | '/api/$' | '/api/rpc/$'
+  to: '/' | '/api/models/diagnostics' | '/api/models/snapshot'
+  id: '__root__' | '/' | '/api/models/diagnostics' | '/api/models/snapshot'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  Graph3dRoute: typeof Graph3dRoute
-  LeaderboardRoute: typeof LeaderboardRoute
-  ApiSplatRoute: typeof ApiSplatRoute
-  ApiRpcSplatRoute: typeof ApiRpcSplatRoute
+  ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
+  ApiModelsSnapshotRoute: typeof ApiModelsSnapshotRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -88,32 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/graph-3d': {
-      id: '/graph-3d'
-      path: '/graph-3d'
-      fullPath: '/graph-3d'
-      preLoaderRoute: typeof Graph3dRouteImport
+    '/api/models/diagnostics': {
+      id: '/api/models/diagnostics'
+      path: '/api/models/diagnostics'
+      fullPath: '/api/models/diagnostics'
+      preLoaderRoute: typeof ApiModelsDiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/leaderboard': {
-      id: '/leaderboard'
-      path: '/leaderboard'
-      fullPath: '/leaderboard'
-      preLoaderRoute: typeof LeaderboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rpc/$': {
-      id: '/api/rpc/$'
-      path: '/api/rpc/$'
-      fullPath: '/api/rpc/$'
-      preLoaderRoute: typeof ApiRpcSplatRouteImport
+    '/api/models/snapshot': {
+      id: '/api/models/snapshot'
+      path: '/api/models/snapshot'
+      fullPath: '/api/models/snapshot'
+      preLoaderRoute: typeof ApiModelsSnapshotRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -121,10 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  Graph3dRoute: Graph3dRoute,
-  LeaderboardRoute: LeaderboardRoute,
-  ApiSplatRoute: ApiSplatRoute,
-  ApiRpcSplatRoute: ApiRpcSplatRoute,
+  ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
+  ApiModelsSnapshotRoute: ApiModelsSnapshotRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,9 +1,8 @@
 import { Chart } from "@tanstack/charts/react/tooltip"
-import { useAtom } from "jotai"
 import { useId, useMemo, useRef, useState } from "react"
 
 import type { Metric } from "#/ui/lib/metrics"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
 
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"
@@ -28,7 +27,7 @@ import { PARETO_STYLE } from "#/ui/lib/chart-marks"
 import { drawnFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
-import { settingsAtom } from "#/ui/lib/settings"
+import { useSettings } from "#/ui/lib/settings"
 import { stackedAxis } from "#/ui/lib/stacking"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 
@@ -280,7 +279,7 @@ export function ComparisonChart({
   const frontier = useMemo(() => (view === "scatter" ? drawnFrontier(data) : []), [data, view])
   // One switch for every pair of metrics: someone who hides the frontier wants it gone.
   // It is the same setting the header's settings carry, so the choice outlives the visit.
-  const [settings, setSettings] = useAtom(settingsAtom)
+  const [settings, setSettings] = useSettings()
   const frontierOn = settings.paretoFrontier
   const setFrontierOn = (next: boolean) =>
     setSettings((current) => ({ ...current, paretoFrontier: next }))

@@ -4,7 +4,6 @@ import { z } from "zod"
 export const env = createEnv({
   server: {
     AA_API_KEY: z.string().min(1).optional(),
-    DATABASE_URL: z.string().url(),
     SERVER_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),

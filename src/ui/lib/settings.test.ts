@@ -1,28 +1,16 @@
-// @vitest-environment jsdom
-import { createStore } from "jotai"
-import { RESET } from "jotai/utils"
-import { afterEach, describe, expect, it } from "vitest"
+import { describe, expect, it } from "vitest"
 
 import {
   DEFAULT_SETTINGS,
-  SETTINGS_STORAGE_KEY,
   highestEffortOnly,
-  settingsAtom,
+  isDefaultSettings,
+  parseSettings,
   withoutHiddenProviders,
 } from "#/ui/lib/settings"
 
-afterEach(() => localStorage.clear())
-
-/** The atom reads storage when something first subscribes to it, as a mounted component does. */
-function mountedStore() {
-  const store = createStore()
-  store.sub(settingsAtom, () => {})
-  return store
-}
-
 describe("settings", () => {
   it("starts on the defaults when this browser has never changed one", () => {
-    expect(mountedStore().get(settingsAtom)).toEqual({
+    expect(parseSettings(null)).toEqual({
       hiddenProviders: [],
       paretoFrontier: true,
       vendorLogos: true,
@@ -31,26 +19,15 @@ describe("settings", () => {
     })
   })
 
-  it("stores changes and forgets them on reset", () => {
-    const store = mountedStore()
-
-    store.set(settingsAtom, { ...DEFAULT_SETTINGS, hiddenProviders: ["xai"] })
-    expect(JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY)!)).toMatchObject({
-      hiddenProviders: ["xai"],
-    })
-
-    store.set(settingsAtom, RESET)
-    expect(store.get(settingsAtom)).toEqual(DEFAULT_SETTINGS)
-    expect(localStorage.getItem(SETTINGS_STORAGE_KEY)).toBeNull()
+  it("needs no cookie for the defaults, but does for any change", () => {
+    expect(isDefaultSettings(DEFAULT_SETTINGS)).toBe(true)
+    expect(isDefaultSettings({ ...DEFAULT_SETTINGS, hiddenProviders: ["xai"] })).toBe(false)
   })
 
   it("keeps the valid fields of a stored value and defaults the rest", () => {
-    localStorage.setItem(
-      SETTINGS_STORAGE_KEY,
-      JSON.stringify({ hiddenProviders: ["meta"], paretoFrontier: "nope", openingModels: 7 }),
-    )
-
-    expect(mountedStore().get(settingsAtom)).toEqual({
+    expect(
+      parseSettings({ hiddenProviders: ["meta"], paretoFrontier: "nope", openingModels: 7 }),
+    ).toEqual({
       hiddenProviders: ["meta"],
       paretoFrontier: true,
       vendorLogos: true,
@@ -60,9 +37,7 @@ describe("settings", () => {
   })
 
   it("falls back to the defaults when the stored value is not an object", () => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify([]))
-
-    expect(mountedStore().get(settingsAtom)).toEqual(DEFAULT_SETTINGS)
+    expect(parseSettings([])).toEqual(DEFAULT_SETTINGS)
   })
 
   it("drops hidden providers' models and keeps models without a vendor", () => {

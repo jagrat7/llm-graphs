@@ -1,5 +1,5 @@
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
-import type { ProviderName } from "#/ui/lib/orpc-client"
+import type { ProviderName } from "#/server/api"
 
 import { SourceLogo } from "#/ui/components/source-logo"
 

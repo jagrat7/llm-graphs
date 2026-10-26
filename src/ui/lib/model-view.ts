@@ -4,7 +4,7 @@ import type {
   ReasoningMode,
   ModelSnapshot,
   ProvidersInfo,
-} from "#/ui/lib/orpc-client"
+} from "#/server/api"
 
 import { metricProviders, metricRecord } from "#/ui/lib/metrics"
 

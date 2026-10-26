@@ -1,5 +1,5 @@
 import type { AxisScale } from "#/ui/lib/comparison-plot-data"
-import type { MetricKey, ProviderName, ProvidersInfo } from "#/ui/lib/orpc-client"
+import type { MetricKey, ProviderName, ProvidersInfo } from "#/server/api"
 
 export const METRICS = [
   "score",
