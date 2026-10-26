@@ -4,7 +4,8 @@ import { queryOptions, useQuery } from "@tanstack/react-query"
 import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
 import { lazy, Suspense, useMemo, useState } from "react"
-import { z } from "zod"
+// The browser parses search params with this, so it uses zod's tree-shakeable build.
+import { z } from "zod/mini"
 
 import type { AxisKey, AxisSetting } from "#/ui/components/axis-controls"
 import type { MorphPhase } from "#/ui/components/comparison-chart-3d"
@@ -80,21 +81,22 @@ const loadComparison = createIsomorphicFn()
   })
 
 const metricSchema = z.enum(METRICS)
-const sourceSchema = z.string().optional().catch(undefined)
+const sourceSchema = z.catch(z.optional(z.string()), undefined)
 const compareSearchSchema = z.object({
-  x: metricSchema.catch("cost").default("cost"),
+  x: z.catch(metricSchema, "cost"),
   xSource: sourceSchema,
-  y: metricSchema.catch("score").default("score"),
+  y: z.catch(metricSchema, "score"),
   ySource: sourceSchema,
   /** Absent while the chart is two-dimensional; present switches it to the cube. */
-  z: metricSchema.optional().catch(undefined),
+  z: z.catch(z.optional(metricSchema), undefined),
   zSource: sourceSchema,
-  models: z
-    .preprocess(
-      (value) => (typeof value === "string" ? [value] : value),
-      z.array(z.string()).optional(),
-    )
-    .catch(undefined),
+  models: z.catch(
+    z.pipe(
+      z.transform((value: unknown) => (typeof value === "string" ? [value] : value)),
+      z.optional(z.array(z.string())),
+    ),
+    undefined,
+  ),
 })
 
 export const Route = createFileRoute("/")({

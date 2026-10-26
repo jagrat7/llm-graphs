@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react"
-import { z } from "zod"
+// Settings parse in the browser, so they use zod's tree-shakeable build.
+import { z } from "zod/mini"
 
 import type { Model } from "#/ui/lib/model-view"
 import type { ModelSnapshot } from "#/server/api"
@@ -18,18 +19,18 @@ export const OPENING_MODEL_COUNTS = [6, DEFAULT_PICK_COUNT, 12] as const
  */
 const settingsSchema = z.object({
   /** Vendor slugs whose models stay off the picker, the defaults, and the chart. */
-  hiddenProviders: z.array(z.string()).catch([]).default([]),
+  hiddenProviders: z.catch(z.array(z.string()), []),
   /** Whether the scatter opens with its Pareto frontier drawn. */
-  paretoFrontier: z.boolean().catch(true).default(true),
+  paretoFrontier: z.catch(z.boolean(), true),
   /** Logo markers on the chart; off, every point is a plain dot. */
-  vendorLogos: z.boolean().catch(true).default(true),
+  vendorLogos: z.catch(z.boolean(), true),
   /** Every effort level a model ran at, or only its highest. */
-  effortLevels: z.enum(["all", "highest"]).catch("all").default("all"),
+  effortLevels: z.catch(z.enum(["all", "highest"]), "all"),
   /** How many models the chart opens on until the reader picks. */
-  openingModels: z
-    .union(OPENING_MODEL_COUNTS.map((count) => z.literal(count)))
-    .catch(DEFAULT_PICK_COUNT)
-    .default(DEFAULT_PICK_COUNT),
+  openingModels: z.catch(
+    z.union(OPENING_MODEL_COUNTS.map((count) => z.literal(count))),
+    DEFAULT_PICK_COUNT,
+  ),
 })
 
 export type Settings = z.infer<typeof settingsSchema>
