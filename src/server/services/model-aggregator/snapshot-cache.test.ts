@@ -120,4 +120,22 @@ describe("snapshot caching", () => {
     expect(store.payloadReads).toBe(payloads.length)
   })
 
+  it("keeps the snapshot's tag until a source refreshes or the deploy changes", async () => {
+    const store = await seededStore()
+    const clock = { now: start }
+    const aggregator = service(store, clock)
+    const { tag } = await aggregator.getTaggedSnapshot()
+
+    clock.now += 10_000
+    expect((await aggregator.getTaggedSnapshot()).tag).toBe(tag)
+    expect((await service(store, clock, "build-2").getTaggedSnapshot()).tag).not.toBe(tag)
+
+    const { cacheKey } = ProvidersService.metricSources.metr
+    const refreshedAt = new Date(start + 1).toISOString()
+    await store.set(cacheKey, { ...fixtures.metr, fetchedAt: refreshedAt })
+    await store.setHashFields(SOURCE_STAMPS_KEY, { [cacheKey]: refreshedAt })
+
+    clock.now += 10_000
+    expect((await aggregator.getTaggedSnapshot()).tag).not.toBe(tag)
+  })
 })

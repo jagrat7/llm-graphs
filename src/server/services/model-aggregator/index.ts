@@ -70,6 +70,20 @@ export class ModelAggregatorService {
     return (await this.current()).snapshot
   }
 
+  /** The snapshot and a tag naming it, which changes only when a source refreshes or code deploys. */
+  async getTaggedSnapshot(): Promise<{ tag: string; snapshot: ModelSnapshot }> {
+    const { version, snapshot } = await this.current()
+    const digest = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(`${this.buildId}|${version}`),
+    )
+    const tag = Array.from(new Uint8Array(digest).subarray(0, 16), (byte) =>
+      byte.toString(16).padStart(2, "0"),
+    ).join("")
+
+    return { tag, snapshot }
+  }
+
   /** The same result production serves, so it shows what today's rules do with new models. */
   async getDiagnostics() {
     const current = await this.current()
