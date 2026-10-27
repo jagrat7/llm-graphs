@@ -41,7 +41,6 @@ describe("Arena official dataset", () => {
       releaseDate: null,
     })
     expect(payload.rows[0].rank).toBe(2)
-    expect(parseArenaRecords([record({ rank: 3 })]).rows[0].rank).toBe(3)
     expect(provider.readMetrics({ ...payload.rows[0], ratingLower: 1501 }).score).toBeNull()
   })
 

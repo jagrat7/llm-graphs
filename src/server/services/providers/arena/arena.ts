@@ -20,7 +20,7 @@ const recordFields = z.object({
   rating_upper: z.number().positive(),
   vote_count: z.number().int().positive(),
   // Parquet int64 values decode as bigint.
-  rank: z.union([z.bigint(), z.number()]).transform(Number).pipe(z.number().int().positive()),
+  rank: z.bigint().transform(Number).pipe(z.number().int().positive()),
   leaderboard_publish_date: z.iso.date(),
 })
 
@@ -70,14 +70,15 @@ function parseArenaName(name: string) {
   const match = /^(.+?)\s*\(([^()]*)\)$/.exec(name)
   const head = match?.[1] ?? name
   const last = /[-\s]([^-\s]+)$/.exec(head)
-  const marker = last ? qualifier(last[1]) : null
+  const trailing = last ? qualifier(last[1]) : null
+  const trailingMode = trailing?.kind === "mode" ? trailing : null
   // Other sources spell `Command R+` as `command-r-plus`.
-  const base = (marker?.kind === "mode" ? head.slice(0, last?.index) : head).replace(/\+$/, " Plus")
+  const base = (trailingMode ? head.slice(0, last?.index) : head).replace(/\+$/, " Plus")
   const qualifiers = (match?.[2] ?? "")
     .split(/[,\s]+/)
     .filter(Boolean)
     .map(qualifier)
-  return { base, qualifiers: marker?.kind === "mode" ? [marker, ...qualifiers] : qualifiers }
+  return { base, qualifiers: trailingMode ? [trailingMode, ...qualifiers] : qualifiers }
 }
 
 function arenaVariant(name: string) {
