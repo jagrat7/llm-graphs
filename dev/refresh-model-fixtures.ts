@@ -1,8 +1,3 @@
-/**
- * Refetches the real source payloads the aggregator tests run against. Run by hand only:
- * `bun run fixtures:models [source ...]`. Only artificialAnalysis needs AA_API_KEY.
- * Review the snapshot diff afterwards.
- */
 import { writeFile } from "node:fs/promises"
 
 import { ProvidersService } from "../src/server/services/providers"

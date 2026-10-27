@@ -19,7 +19,7 @@ const recordFields = z.object({
   rating_lower: z.number().positive(),
   rating_upper: z.number().positive(),
   vote_count: z.number().int().positive(),
-  // Parquet int64 values decode as bigint; accept numbers in inline records too.
+  // Parquet int64 values decode as bigint.
   rank: z.union([z.bigint(), z.number()]).transform(Number).pipe(z.number().int().positive()),
   leaderboard_publish_date: z.iso.date(),
 })
@@ -51,10 +51,6 @@ type Qualifier =
   | { kind: "budget"; budget: string }
   | { kind: "idWord"; word: string }
 
-/**
- * How each word of a name's trailing `(…)` reads. Any other word (a snapshot date, `Preview`,
- * `FP8`) stays in the model id, as it does in the other sources' ids.
- */
 const QUALIFIER_KINDS: ReadonlyArray<readonly [RegExp, (word: string) => Qualifier]> = [
   [
     new RegExp(`^(?:${KNOWN_LEVELS.join("|")})$`, "i"),
@@ -70,17 +66,12 @@ function qualifier(word: string): Qualifier {
   return kind ? kind[1](word) : { kind: "idWord", word }
 }
 
-/**
- * `Claude Opus 4.5 (High, 32K, 20251101)` is the base `Claude Opus 4.5` qualified by effort,
- * thinking budget and snapshot date. A final `Thinking` in the base itself is a mode
- * (`Trinity Large Thinking`), but a final effort word is part of the name (`Qwen3.8-Max`).
- * Other sources spell `Command R+` as `command-r-plus`.
- */
 function parseArenaName(name: string) {
   const match = /^(.+?)\s*\(([^()]*)\)$/.exec(name)
   const head = match?.[1] ?? name
   const last = /[-\s]([^-\s]+)$/.exec(head)
   const marker = last ? qualifier(last[1]) : null
+  // Other sources spell `Command R+` as `command-r-plus`.
   const base = (marker?.kind === "mode" ? head.slice(0, last?.index) : head).replace(/\+$/, " Plus")
   const qualifiers = (match?.[2] ?? "")
     .split(/[,\s]+/)
