@@ -183,6 +183,33 @@ describe("Arena display names", () => {
   })
 })
 
+describe("models.dev listing", () => {
+  const all = aggregateModels(allFixtureInputs())
+  const listed = (entryId: string) =>
+    all.snapshot.variants.modelsDevListing.find((variant) => variant.entryId === entryId)?.metrics
+
+  it("puts a lab's price and context on the entry its catalog model joins", () => {
+    expect(listed("claude-opus-4-5")).toEqual({
+      inputPricePerMTokens: 5,
+      outputPricePerMTokens: 25,
+      contextTokens: 200_000,
+    })
+  })
+
+  it("keeps the vendor prefix on a clashing id instead of reusing a joined entry's id", () => {
+    const ids = all.provenance
+      .filter((from) =>
+        from.members.some((member) =>
+          ["moonshotai/kimi-k2", "moonshotai/kimi-k2-instruct"].includes(member.id),
+        ),
+      )
+      .map((from) => from.id)
+
+    expect(ids.toSorted()).toEqual(["kimi-k2-instruct", "moonshotai-kimi-k2"])
+    expect(buildDiagnostics(all).failures.duplicateEntryIds).toEqual([])
+  })
+})
+
 /** One line per entry, so a rule change diffs as exactly the entries it touched. */
 function snapshotText({ snapshot: result, provenance: sources }: Derivation) {
   const lines = result.entries.map((modelEntry, index) => {

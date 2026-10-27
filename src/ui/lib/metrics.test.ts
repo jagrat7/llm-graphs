@@ -21,6 +21,8 @@ describe("provider metadata", () => {
     expect(resolveSource("cost", undefined, info, "metr")).toBe("metr")
     expect(metricProviders("cost", info)).not.toContain("metr")
     expect(metricProviders("price", info)).toEqual(["artificialAnalysis"])
+    expect(metricProviders("inputPrice", info)).toEqual(["artificialAnalysis", "modelsDevListing"])
+    expect(metricProviders("context", info)).toEqual(["modelsDevListing"])
     expect(metricAxisTitle("cost", "deepswe", info)).toContain("$/task")
     expect(formatMetric(0.003, "price")).toBe("$0.003")
   })
@@ -70,6 +72,7 @@ describe("axis captions", () => {
 
   it("drops a unit the name already says and shares an existing qualifier", () => {
     expect(metricAxisLabel("votes", "arena", info)).toBe("Vote count")
+    expect(metricAxisLabel("context", "modelsDevListing", info)).toBe("Context length (tokens)")
     expect(metricAxisLabel("score", "metr", info)).toBe("Task horizon (50%, h)")
     expect(metricAxisLabel("horizon80", "metr", info)).toBe("Task horizon (80%, h)")
   })
@@ -115,6 +118,8 @@ describe("native benchmark units", () => {
     expect(formatMetric(0.003, "score", "metr", info)).toBe("0.003 h")
     expect(formatMetric(82.1, "score", "deepswe", info)).toBe("82.1%")
     expect(formatMetric(2.25, "inputPrice", "artificialAnalysis", info)).toBe("$2.25")
+    expect(formatMetric(1_000_000, "context", "modelsDevListing", info)).toBe("1M")
+    expect(formatMetric(131_072, "context", "modelsDevListing", info)).toBe("131.1k")
     expect(formatMetric(12345, "votes", "arena", info)).toBe("12,345")
     expect(formatMetric(2.5, "horizon80", "metr", info)).toBe("2.5 h")
     expect(formatMetric(1.25, "horizon80", "metr", info)).toBe("1.25 h")

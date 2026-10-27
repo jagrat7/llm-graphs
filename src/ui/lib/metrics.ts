@@ -9,6 +9,7 @@ export const METRICS = [
   "duration",
   "inputPrice",
   "outputPrice",
+  "context",
   "votes",
   "horizon80",
   "taskScore",
@@ -27,7 +28,7 @@ export const METRIC_CONFIG: Record<
     shortLabel: string
     unit: string
     dataKey: MetricKey
-    format?: "percent" | "number" | "hours" | "currency" | "integer"
+    format?: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
     /**
      * Which end of the axis a reader wants, for metrics that trade off against Score.
      * Only metrics with a direction take part in the Pareto frontier.
@@ -93,6 +94,14 @@ export const METRIC_CONFIG: Record<
     dataKey: "outputPricePerMTokens",
     ratio: true,
     format: "currency",
+  },
+  context: {
+    label: "Context length",
+    shortLabel: "Context tokens",
+    unit: "tokens",
+    dataKey: "contextTokens",
+    ratio: true,
+    format: "tokens",
   },
   votes: {
     label: "Vote count",
@@ -269,6 +278,13 @@ export function formatMetric(
 
   if (presentation.format === "integer")
     return value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+  if (presentation.format === "tokens")
+    return value >= 1_000_000
+      ? `${(value / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 2 })}M`
+      : value >= 1000
+        ? `${(value / 1000).toLocaleString("en-US", { maximumFractionDigits: 1 })}k`
+        : value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+
   if (Math.abs(value) >= 1000) {
     return `${(value / 1000).toLocaleString("en-US", {
       maximumFractionDigits: 1,

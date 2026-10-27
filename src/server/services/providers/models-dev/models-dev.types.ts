@@ -21,3 +21,14 @@ export type ModelsDevPayload = SourcePayload<ModelsDevModel> & {
   /** What models.dev serves for a lab it doesn't know. A logo equal to this isn't real. */
   genericLogo: string
 }
+
+/** A catalog model with the context window and the prices its own lab's API lists. */
+export type ModelsDevListing = {
+  /** `creator/model`, as in the catalog. */
+  id: string
+  contextTokens: number | null
+  /** $/M tokens on the creator's own API, both or neither. */
+  prices: { input: number; output: number } | null
+}
+
+export type ModelsDevListingPayload = SourcePayload<ModelsDevListing>

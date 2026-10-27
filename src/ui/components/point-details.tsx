@@ -92,6 +92,7 @@ export function PointDetails({
                     ? "/M tokens"
                     : null}
                 {metric === "speed" ? " tokens/s" : null}
+                {presentation.format === "tokens" ? " tokens" : null}
                 {metric === "votes" ? " votes" : null}
                 {metric === "score" && presentation.format === "number"
                   ? ` ${presentation.unit}`
