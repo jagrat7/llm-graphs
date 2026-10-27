@@ -54,7 +54,6 @@ export const METRIC_KEYS = [
   "durationSeconds",
   "inputPricePerMTokens",
   "outputPricePerMTokens",
-  "contextTokens",
   "votes",
   "horizon80Hours",
   "averageTaskScore",
@@ -92,7 +91,7 @@ export type MetricRow = {
 export type MetricPresentation = {
   label: string
   unit: string
-  format: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
+  format: "percent" | "number" | "hours" | "currency" | "integer"
 }
 
 export type MeasurementInfo = {

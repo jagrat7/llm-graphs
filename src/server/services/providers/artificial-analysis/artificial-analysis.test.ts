@@ -43,6 +43,8 @@ describe("ArtificialAnalysisProvider", () => {
       score: null,
       costPerTask: null,
       costPerMTokens: 2,
+      inputPricePerMTokens: 1,
+      outputPricePerMTokens: 5,
       tokensPerSecond: 120,
     })
     for (const value of [null, -1, Infinity, NaN]) {
