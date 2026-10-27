@@ -1,0 +1,231 @@
+#!/usr/bin/env bash
+# Drives a disposable LLM Graphs dev server for verification. See ../SKILL.md.
+#
+#   llmg up [--port N]                 start an isolated server; prints LLMG_RUN=<id>
+#   llmg doctor                        read-only health check of this run's server
+#   llmg page <path?query> [--name N] [--cookie name=<json>]...
+#                                      fetch the server-rendered page as a reader would; saves
+#                                      HTML + facts JSON to evidence and prints the facts
+#   llmg api <path> [--name N] [--header 'K: V']...
+#                                      fetch an API route; saves headers + body to evidence
+#   llmg browse <journey.mjs> [--name N] [--headed]
+#                                      run a Playwright journey (see ../journeys/) in Chromium;
+#                                      saves per-step screenshots, ARIA snapshots, and cookies
+#   llmg log [lines]                   tail this run's server log (upstream fetch failures land here)
+#   llmg evidence                      print this run's evidence directory
+#   llmg down                          stop this run's server and remove its scratch state
+#
+# Every command except `up` needs LLMG_RUN=<id> in its environment, unless exactly one run
+# is active.
+set -euo pipefail
+
+script_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
+repo=$(git -C "$script_dir" rev-parse --show-toplevel)
+state_root=${TMPDIR:-/tmp}/llmg-verify
+evidence_root=$repo/.verify/llm-graphs
+
+die() { echo "llmg: $*" >&2; exit 1; }
+
+resolve_run() {
+  if [ -n "${LLMG_RUN:-}" ]; then
+    [ -d "$state_root/$LLMG_RUN" ] || die "no active run $LLMG_RUN (already torn down?)"
+    run=$LLMG_RUN
+  else
+    local runs=()
+    [ -d "$state_root" ] && mapfile -t runs < <(ls "$state_root")
+    [ "${#runs[@]}" -eq 1 ] || die "set LLMG_RUN=<id> (active runs: ${runs[*]:-none})"
+    run=${runs[0]}
+  fi
+  state=$state_root/$run
+  evidence=$evidence_root/$run
+  port=$(cat "$state/port")
+  pgid=$(cat "$state/pgid")
+  base=http://127.0.0.1:$port
+}
+
+port_free() { ! ss -Htln "sport = :$1" | grep -q .; }
+
+# Pids listening on the port, so doctor can prove the listener belongs to this run.
+listener_pids() { ss -Htlnp "sport = :$1" | grep -oE 'pid=[0-9]+' | cut -d= -f2 | sort -u; }
+
+cmd_up() {
+  local port=""
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --port) port=$2; shift 2 ;;
+      *) die "up: unknown argument $1" ;;
+    esac
+  done
+  if [ -z "$port" ]; then
+    for candidate in $(seq 3417 3437); do
+      if port_free "$candidate"; then port=$candidate; break; fi
+    done
+    [ -n "$port" ] || die "no free port in 3417-3437"
+  fi
+  port_free "$port" || die "port $port is taken; pick another with --port"
+  [ -d "$repo/node_modules" ] || (cd "$repo" && bun install)
+
+  run=$(date +%Y%m%d-%H%M%S)-$$
+  state=$state_root/$run
+  evidence=$evidence_root/$run
+  mkdir -p "$state" "$evidence"
+  echo "$port" > "$state/port"
+  git -C "$repo" rev-parse HEAD > "$state/rev"
+  date -u +%Y-%m-%dT%H:%M:%S.000Z > "$state/started"
+
+  # Blank Redis credentials make the server keep its cache in memory, so this run never reads
+  # or writes the shared Upstash cache that `.env` points at. The session leader's pid is the
+  # process group `down` kills.
+  (
+    cd "$repo"
+    UPSTASH_REDIS_REST_URL= UPSTASH_REDIS_REST_TOKEN= setsid bash -c \
+      'echo $$ > "$0/pgid"; exec bunx --bun vite dev --port "$1" --strictPort --host 127.0.0.1' \
+      "$state" "$port" > "$state/server.log" 2>&1 < /dev/null &
+  )
+  for _ in $(seq 50); do [ -s "$state/pgid" ] && break; sleep 0.1; done
+  pgid=$(cat "$state/pgid")
+  base=http://127.0.0.1:$port
+
+  # Ready means the snapshot has models and the page renders picks, not just that Vite answers.
+  # The first snapshot request fetches every upstream source live.
+  local deadline=$((SECONDS + 180))
+  until curl -sf "$base/api/models/snapshot" 2>/dev/null | jq -e '.entries | length > 0' > /dev/null; do
+    kill -0 "$pgid" 2>/dev/null || { tail -20 "$state/server.log" >&2; die "server exited during startup"; }
+    [ $SECONDS -lt $deadline ] || die "snapshot not ready after 180s; see $state/server.log"
+    sleep 1
+  done
+  curl -sfL "$base/" | grep -q 'Compare language models' || die "page did not render"
+
+  echo "LLMG_RUN=$run"
+  echo "url=$base"
+  echo "evidence=$evidence"
+}
+
+cmd_doctor() {
+  resolve_run
+  local ok=1
+  report() { if [ "$1" = 0 ]; then echo "ok    $2"; else echo "FAIL  $2"; ok=0; fi; }
+
+  kill -0 "$pgid" 2>/dev/null; report $? "process group $pgid alive"
+
+  local listeners owned=0
+  listeners=$(listener_pids "$port" | tr '\n' ' ')
+  for p in $listeners; do
+    [ "$(ps -o pgid= -p "$p" | tr -d ' ')" = "$pgid" ] || owned=1
+  done
+  [ -n "$listeners" ] || owned=1
+  report $owned "port $port listener is ours (pids: ${listeners:-none})"
+
+  [ "$(git -C "$repo" rev-parse HEAD)" = "$(cat "$state/rev")" ]
+  report $? "checkout still at the rev the server started on ($(cut -c1-7 "$state/rev"))"
+
+  local snapshot=$state/doctor-snapshot.json
+  curl -sf "$base/api/models/snapshot" -o "$snapshot" && jq -e '.entries | length > 0' "$snapshot" > /dev/null
+  report $? "snapshot answers with models"
+
+  # Every stamp newer than this run's start proves the in-memory cache: the shared Redis cache
+  # would serve copies fetched before this server existed.
+  local stale missing
+  stale=$(jq -r --arg s "$(cat "$state/started")" \
+    '.fetchedAt // {} | to_entries[] | select(.value != null and .value < $s) | .key' "$snapshot" 2>/dev/null | tr '\n' ' ')
+  missing=$(jq -r '.fetchedAt // {} | to_entries[] | select(.value == null) | .key' "$snapshot" 2>/dev/null | tr '\n' ' ')
+  [ -z "$stale" ]; report $? "sources fetched by this run, not a shared cache${stale:+ (stale: $stale)}"
+  [ -z "$missing" ] || echo "note  sources with no data this run: ${missing}(see llmg log)"
+
+  echo "url=$base run=$run evidence=$evidence"
+  [ $ok = 1 ]
+}
+
+encode_json_cookie() { jq -rn --arg v "$1" '$v | fromjson | tojson | @uri'; }
+
+cmd_page() {
+  resolve_run
+  local path=${1:?page needs a path such as '/?x=cost&y=score'}; shift
+  local name="" cookies=()
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --name) name=$2; shift 2 ;;
+      --cookie) cookies+=("${2%%=*}=$(encode_json_cookie "${2#*=}")"); shift 2 ;;
+      *) die "page: unknown argument $1" ;;
+    esac
+  done
+  name=${name:-page-$(date +%H%M%S)}
+  local jar=""
+  [ ${#cookies[@]} -gt 0 ] && jar=$(IFS=';'; echo "${cookies[*]}")
+
+  {
+    echo "GET $path"
+    [ -n "$jar" ] && echo "Cookie: $jar"
+  } > "$evidence/$name.request.txt"
+  curl -sL ${jar:+-b "$jar"} -D "$evidence/$name.headers.txt" \
+    -w '%{http_code} %{url_effective}\n' -o "$evidence/$name.html" "$base$path" \
+    > "$evidence/$name.status.txt"
+  local status
+  status=$(cat "$evidence/$name.status.txt")
+  bun "$script_dir/page-facts.ts" "$evidence/$name.html" \
+    | jq --arg status "$status" --arg base "$base" \
+      '{status: ($status | split(" ")[0] | tonumber), url: ($status | split(" ")[1] | sub($base; ""))} + .' \
+    > "$evidence/$name.facts.json"
+  cat "$evidence/$name.facts.json"
+}
+
+cmd_api() {
+  resolve_run
+  local path=${1:?api needs a path such as /api/models/snapshot}; shift
+  local name="" headers=()
+  while [ $# -gt 0 ]; do
+    case $1 in
+      --name) name=$2; shift 2 ;;
+      --header) headers+=(-H "$2"); shift 2 ;;
+      *) die "api: unknown argument $1" ;;
+    esac
+  done
+  name=${name:-api-$(date +%H%M%S)}
+  echo "GET $path ${headers[*]}" > "$evidence/$name.request.txt"
+  # curl writes no file for an empty body, and a 304's empty body is itself evidence.
+  : > "$evidence/$name.body"
+  curl -s "${headers[@]}" -D "$evidence/$name.headers.txt" -o "$evidence/$name.body" \
+    -w '%{http_code}\n' "$base$path"
+}
+
+# The repo does not depend on Playwright; use the copy installed on this machine.
+playwright_root() {
+  if [ -n "${PLAYWRIGHT_ROOT:-}" ]; then echo "$PLAYWRIGHT_ROOT"; return; fi
+  local bin
+  bin=$(command -v playwright) || die "browse needs Playwright: none on PATH and PLAYWRIGHT_ROOT unset"
+  bin=$(readlink -f "$bin")
+  # .../node_modules/playwright/cli.js or .../node_modules/.bin/playwright -> .../node_modules/playwright
+  local dir=${bin%/node_modules/*}/node_modules/playwright
+  [ -f "$dir/package.json" ] || die "cannot find the playwright package near $bin; set PLAYWRIGHT_ROOT"
+  echo "$dir"
+}
+
+cmd_browse() {
+  resolve_run
+  local journey=${1:?browse needs a journey file such as journeys/model-picks.mjs}; shift
+  [ -f "$journey" ] || journey=$script_dir/../journeys/$journey
+  [ -f "$journey" ] || die "no journey file $1"
+  PLAYWRIGHT_ROOT=$(playwright_root) node "$script_dir/browse.mjs" "$journey" \
+    --base "$base" --evidence "$evidence" "$@"
+}
+
+cmd_down() {
+  resolve_run
+  if kill -0 "$pgid" 2>/dev/null; then
+    kill -TERM -- "-$pgid" 2>/dev/null || true
+    for _ in $(seq 50); do kill -0 "$pgid" 2>/dev/null || break; sleep 0.1; done
+    kill -0 "$pgid" 2>/dev/null && kill -KILL -- "-$pgid" 2>/dev/null || true
+  fi
+  # The log is evidence too; everything else in the scratch dir is disposable.
+  cp "$state/server.log" "$evidence/server.log"
+  rm -rf "$state"
+  port_free "$port" && echo "stopped run $run; port $port free" || echo "WARN port $port still in use"
+  echo "evidence kept at $evidence"
+}
+
+case ${1:-} in
+  up | doctor | page | api | browse | down) cmd=$1; shift; "cmd_$cmd" "$@" ;;
+  evidence) resolve_run; echo "$evidence" ;;
+  log) resolve_run; tail -n "${2:-40}" "$state/server.log" ;;
+  *) sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+esac
