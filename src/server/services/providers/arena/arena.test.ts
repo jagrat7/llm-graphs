@@ -1,83 +1,106 @@
+import { readFile } from "node:fs/promises"
 import { describe, expect, it, vi, afterEach } from "vitest"
-import board from "./fixtures/leaderboard.json"
-import { ArenaProvider, arenaEffort, parseArenaPage } from "./arena"
+import { ArenaProvider, arenaEffort, parseArenaRecords } from "./arena"
 
-function html(leaderboard: unknown = board) {
-  const record = `1c:${JSON.stringify(["$", "$L3a", null, { leaderboard }])}\n`
-  const chunks = [record.slice(0, 160), record.slice(160)]
-  return chunks
-    .map((chunk) => `<script>self.__next_f.push(${JSON.stringify([1, chunk])})</script>`)
-    .join("")
+function record(overrides: Record<string, unknown> = {}) {
+  return {
+    model_name: "Claude Opus 5.5 (High)",
+    organization: "anthropic",
+    rating: 1500,
+    rating_lower: 1490,
+    rating_upper: 1510,
+    vote_count: 10322,
+    rank: 2n,
+    category: "overall",
+    leaderboard_publish_date: "2026-10-22",
+    ...overrides,
+  }
 }
+
 afterEach(() => vi.unstubAllGlobals())
-describe("Arena first-party leaderboard", () => {
-  it("joins streamed chunks, retains native ratings, intervals and snapshot settings", () => {
+
+describe("Arena official dataset", () => {
+  it("retains ratings, intervals, votes and publication date for the overall board", () => {
     const provider = new ArenaProvider()
-    const payload = parseArenaPage(html())
-    expect(payload.rows).toHaveLength(board.entries.length)
+    const payload = parseArenaRecords([record(), record({ category: "coding", rating: "bad" })])
+    expect(payload.rows).toHaveLength(1)
+    expect(payload.dropped).toEqual([])
     const [row] = provider.toMetricRows(payload)
-    expect(row.metrics.score).toBe(board.entries[0].rating)
-    expect(row.measurements?.score).toMatchObject({
-      updatedAt: board.voteCutoffISOString,
-      preliminary: true,
-      interval: { low: board.entries[0].ratingLower, high: board.entries[0].ratingUpper },
+    expect(row.metrics).toEqual({ score: 1500, votes: 10322 })
+    expect(row.measurements?.score).toEqual({
+      label: "Arena Text · overall · style control",
+      updatedAt: "2026-10-22",
+      detail: "10,322 votes · rank 2",
+      interval: { low: 1490, high: 1510 },
     })
-    expect(row.metrics.costPerTask).toBeUndefined()
-    const [priced] = provider.toMetricRows(
-      parseArenaPage(
-        html({
-          ...board,
-          entries: [
-            {
-              ...board.entries[0],
-              inputPricePerMillion: 0,
-              outputPricePerMillion: 12,
-              contextLength: 200000,
-              rank: 2,
-              rankLower: 3,
-              rankUpper: 1,
-            },
-          ],
-        }),
-      ),
-    )
-    expect(priced.metrics).toMatchObject({
-      costPerMTokens: 3,
-      inputPricePerMTokens: 0,
-      outputPricePerMTokens: 12,
-      contextTokens: 200000,
-      votes: board.entries[0].votes,
+    expect(row.metadata).toEqual({
+      name: "Claude Opus 5.5 (High)",
+      creator: "anthropic",
+      releaseDate: null,
     })
-    expect(priced.measurements?.score?.detail).toContain("rank 2 (1–3)")
+    expect(payload.rows[0].rank).toBe(2)
+    expect(parseArenaRecords([record({ rank: 3 })]).rows[0].rank).toBe(3)
+    expect(provider.readMetrics({ ...payload.rows[0], ratingLower: 1501 }).score).toBeNull()
+  })
+
+  it("keeps absent organizations and records malformed overall rows", () => {
+    const payload = parseArenaRecords([
+      record({ organization: " " }),
+      record({ organization: null }),
+      record({ model_name: "invalid rating", rating: "bad" }),
+      record({ model_name: "fractional votes", vote_count: 0.5 }),
+      record({ model_name: "unsafe rank", rank: 9007199254740993n }),
+      record({ model_name: "invalid date", leaderboard_publish_date: "2026-02-30" }),
+    ])
+    expect(payload.rows.map((row) => row.organization)).toEqual([null, null])
+    expect(payload.dropped.map((row) => row.id)).toEqual([
+      "invalid rating",
+      "fractional votes",
+      "unsafe rank",
+      "invalid date",
+    ])
+  })
+
+  it("rejects an empty, invalid or mixed-date overall snapshot", () => {
+    for (const records of [[], [record({ category: "coding" })], [record({ rating: null })]])
+      expect(() => parseArenaRecords(records)).toThrow("Arena returned no parseable rows")
+    expect(() =>
+      parseArenaRecords([record(), record({ leaderboard_publish_date: "2026-10-21" })]),
+    ).toThrow("Arena latest split mixes publish dates")
+  })
+
+  it("decodes the official parquet through fetch and preserves the leading configuration", async () => {
+    const bytes = await readFile(new URL("./fixtures/latest.parquet", import.meta.url))
+    const fetch = vi.fn(async () => new Response(bytes))
+    vi.stubGlobal("fetch", fetch)
+    const provider = new ArenaProvider()
+    const payload = await provider.fetchPayload()
+    provider.validatePayload(payload)
+    expect(payload.rows).toHaveLength(418)
+    expect(payload.dropped).toEqual([])
+    expect(payload.rows.find((row) => row.rank === 1)).toMatchObject({
+      modelName: "Gemini 4 Argon (High)",
+      rating: 1517.1715740590357,
+      votes: 10083,
+      publishDate: "2026-10-22",
+    })
     expect(
-      provider.readMetrics({ ...payload.rows[0], inputPricePerMillion: null }).costPerMTokens,
-    ).toBeNull()
-    expect(parseArenaPage(html({ ...board, arenaSlug: "image" }) + html()).rows).toHaveLength(
-      board.entries.length,
+      provider.toMetricRows(payload).find((row) => row.rawId === "Gemini 4 Argon (High)"),
+    ).toMatchObject({
+      sourceModelId: "Gemini 4 Argon",
+      mode: "on",
+      level: "high",
+      metrics: { score: 1517.1715740590357, votes: 10083 },
+    })
+    expect(fetch).toHaveBeenCalledOnce()
+    expect(fetch).toHaveBeenCalledWith(
+      "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/main/text_style_control/latest-00000-of-00001.parquet",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
     )
+    expect(provider.href).toBe("https://arena.ai/leaderboard/text")
+    expect(provider.cacheKey).toBe("llm-scores:source:arena:text-overall-style-control:v5")
   })
-  it("fails refresh rather than accidentally import another category or adjustment", () => {
-    expect(() =>
-      parseArenaPage(html({ ...board, params: { ...board.params, category: "coding" } })),
-    ).toThrow()
-    expect(() =>
-      parseArenaPage(html({ ...board, params: { ...board.params, factuality: true } })),
-    ).toThrow()
-    expect(() => parseArenaPage("<html>Challenge page</html>")).toThrow("not found")
-  })
-  it("does not drop a scored model for an absent organization and records malformed rows", () => {
-    const payload = parseArenaPage(
-      html({
-        ...board,
-        entries: [
-          { ...board.entries[0], modelOrganization: "" },
-          { ...board.entries[1], rating: "bad" },
-        ],
-      }),
-    )
-    expect(payload.rows[0].modelOrganization).toBeNull()
-    expect(payload.dropped).toHaveLength(1)
-  })
+
   it("preserves model-name max and budget/date variants rather than borrowing another effort", () => {
     for (const [id, sourceModelId, mode, level] of [
       ["muse-spark-1.2 (xHigh)", "muse-spark-1.2", "on", "xhigh"],
@@ -99,25 +122,36 @@ describe("Arena first-party leaderboard", () => {
     })
     expect(arenaEffort("claude-opus-4-5-20251101-high-32k").sourceModelId).toContain("high-32k")
     const provider = new ArenaProvider()
-    const [raw] = parseArenaPage(html()).rows
+    const [raw] = parseArenaRecords([record()]).rows
     const rows = provider.toMetricRows({
       rows: [
-        { ...raw, modelDisplayName: "qwen3.8-max" },
-        { ...raw, modelDisplayName: "gpt-5.4-high" },
+        { ...raw, modelName: "qwen3.8-max" },
+        { ...raw, modelName: "gpt-5.4-high" },
       ],
       dropped: [],
     })
     expect(rows[0].configurationKnown).toBe(false)
     expect(rows[1].configurationKnown).toBeUndefined()
   })
-  it("rejects a broken interval and reports upstream HTTP failures", async () => {
-    const provider = new ArenaProvider()
-    const [row] = parseArenaPage(html()).rows
-    expect(provider.readMetrics({ ...row, ratingLower: row.rating + 1 }).score).toBeNull()
+
+  it("reports upstream HTTP failures", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response("blocked", { status: 503 })),
+      vi.fn(async () => new Response("unavailable", { status: 503 })),
     )
-    await expect(provider.fetchPayload()).rejects.toThrow("503")
+    await expect(new ArenaProvider().fetchPayload()).rejects.toThrow("Arena Text returned 503")
   })
+
+  it.each(["<html>Challenge page</html>", "PAR1truncated"])(
+    "reports unreadable parquet responses: %s",
+    async (body) => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async () => new Response(body)),
+      )
+      await expect(new ArenaProvider().fetchPayload()).rejects.toThrow(
+        "Arena Text returned an unreadable parquet file",
+      )
+    },
+  )
 })

@@ -1,19 +1,12 @@
 import type { SourcePayload } from "../provider.types"
 export type ArenaRow = {
-  modelKey: string
-  modelDisplayName: string
-  modelOrganization: string | null
+  modelName: string
+  organization: string | null
   rating: number
   ratingLower: number
   ratingUpper: number
   votes: number
-  releaseType: string | null
-  updatedAt: string
-  inputPricePerMillion: number | null
-  outputPricePerMillion: number | null
-  contextLength: number | null
-  rank: number | null
-  rankLower: number | null
-  rankUpper: number | null
+  rank: number
+  publishDate: string
 }
 export type ArenaPayload = SourcePayload<ArenaRow>

@@ -1,122 +1,48 @@
+import { parquetReadObjects } from "hyparquet"
 import { MetricProvider } from "../metric-provider"
 import { z } from "zod"
 import { fetchOk, parseRows, describeMetrics } from "../utils"
 import type { MetricReaders, MetricSource, MetricRow } from "../provider.types"
 import type { ArenaPayload, ArenaRow } from "./arena.types"
 
-const leaderboardSchema = z.object({
-  arenaSlug: z.literal("text"),
-  leaderboardSlug: z.literal("overall"),
-  params: z.object({
-    category: z.literal("overall"),
-    styleControl: z.literal(true),
-    factuality: z.literal(false).optional(),
-  }),
-  voteCutoffISOString: z.iso.datetime(),
-  entries: z.array(z.unknown()).min(1),
-})
-const selectionSchema = leaderboardSchema.pick({
-  arenaSlug: true,
-  leaderboardSlug: true,
-  params: true,
-})
-const rowSchema: z.ZodType<ArenaRow> = z.object({
-  modelKey: z.string().min(1),
-  modelDisplayName: z.string().min(1),
-  modelOrganization: z
+const DATASET_URL =
+  "https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/main/text_style_control/latest-00000-of-00001.parquet"
+const CATEGORY = "overall"
+
+const recordFields = z.object({
+  model_name: z.string().trim().min(1),
+  organization: z
     .string()
     .nullish()
     .transform((value) => value?.trim() || null),
   rating: z.number().positive(),
-  ratingLower: z.number().positive(),
-  ratingUpper: z.number().positive(),
-  votes: z.number().int().positive(),
-  releaseType: z
-    .string()
-    .nullish()
-    .transform((v) => v ?? null),
-  updatedAt: z.iso.datetime(),
-  inputPricePerMillion: z
-    .number()
-    .nonnegative()
-    .nullish()
-    .transform((v) => v ?? null),
-  outputPricePerMillion: z
-    .number()
-    .nonnegative()
-    .nullish()
-    .transform((v) => v ?? null),
-  contextLength: z
-    .number()
-    .int()
-    .positive()
-    .nullish()
-    .transform((v) => v ?? null),
-  rank: z
-    .number()
-    .int()
-    .positive()
-    .nullish()
-    .transform((v) => v ?? null),
-  rankLower: z
-    .number()
-    .int()
-    .positive()
-    .nullish()
-    .transform((v) => v ?? null),
-  rankUpper: z
-    .number()
-    .int()
-    .positive()
-    .nullish()
-    .transform((v) => v ?? null),
+  rating_lower: z.number().positive(),
+  rating_upper: z.number().positive(),
+  vote_count: z.number().int().positive(),
+  // Parquet int64 values decode as bigint; accept numbers in inline records too.
+  rank: z.union([z.bigint(), z.number()]).transform(Number).pipe(z.number().int().positive()),
+  leaderboard_publish_date: z.iso.date(),
 })
 
-function findLeaderboard(value: unknown): unknown {
-  if (value == null || typeof value !== "object") return null
-  if (!Array.isArray(value) && Object.hasOwn(value, "leaderboard")) {
-    const candidate: unknown = Reflect.get(value, "leaderboard")
-    if (selectionSchema.safeParse(candidate).success) return candidate
-  }
-  for (const child of Object.values(value)) {
-    const found = findLeaderboard(child)
-    if (found) return found
-  }
-  return null
-}
+const recordSchema: z.ZodType<ArenaRow> = recordFields.transform((record) => ({
+  modelName: record.model_name,
+  organization: record.organization,
+  rating: record.rating,
+  ratingLower: record.rating_lower,
+  ratingUpper: record.rating_upper,
+  votes: record.vote_count,
+  rank: record.rank,
+  publishDate: record.leaderboard_publish_date,
+}))
+const COLUMNS = [...Object.keys(recordFields.shape), "category"]
 
-/** Decode first-party server data, never evaluate the page's scripts or depend on table markup. */
-export function parseArenaPage(html: string): ArenaPayload {
-  const chunks = [...html.matchAll(/self\.__next_f\.push\((\[1,.*?\])\)<\/script>/gs)]
-    .map((match) => {
-      const chunk: unknown = JSON.parse(match[1])
-      return Array.isArray(chunk) && typeof chunk[1] === "string" ? chunk[1] : ""
-    })
-    .join("")
-  for (const line of chunks.split("\n")) {
-    const record = /^[\da-f]+:([[{].*)$/.exec(line)
-    if (!record) continue
-    let value: unknown
-    try {
-      value = JSON.parse(record[1])
-    } catch {
-      continue
-    }
-    const raw = findLeaderboard(value)
-    if (raw == null) continue
-    // Only the requested category/adjustment qualifies; malformed selected data fails refresh.
-    const board = leaderboardSchema.parse(raw)
-    return parseRows(
-      "Arena",
-      board.entries.map((entry) => ({
-        ...(entry != null && typeof entry === "object" ? entry : {}),
-        updatedAt: board.voteCutoffISOString,
-      })),
-      rowSchema,
-      "modelDisplayName",
-    )
-  }
-  throw new Error("Arena Text structured leaderboard was not found")
+export function parseArenaRecords(records: ReadonlyArray<Record<string, unknown>>): ArenaPayload {
+  const overall = records.filter((record) => record.category === CATEGORY)
+  const payload = parseRows("Arena", overall, recordSchema, "model_name")
+  const dates = new Set(payload.rows.map((row) => row.publishDate))
+  if (dates.size > 1)
+    throw new Error(`Arena latest split mixes publish dates: ${[...dates].join(", ")}`)
+  return payload
 }
 
 /** Only explicit labels identify effort; model names such as qwen3.8-max remain model names. */
@@ -169,53 +95,12 @@ const metrics: MetricReaders<ArenaRow> = {
       row.ratingLower <= row.rating && row.ratingUpper >= row.rating ? row.rating : null,
     presentation: { label: "Preference rating", unit: "points", format: "number" },
     note: "Arena Text overall, style control; blind human preference, not pass rate",
-    describe: (row) => {
-      // Arena's upper rank is the better (numerically smaller) position.
-      const low =
-        row.rankLower != null && row.rankUpper != null
-          ? Math.min(row.rankLower, row.rankUpper)
-          : null
-      const high =
-        row.rankLower != null && row.rankUpper != null
-          ? Math.max(row.rankLower, row.rankUpper)
-          : null
-      const rank =
-        row.rank == null
-          ? ""
-          : ` · rank ${row.rank}${low != null && high != null && low <= row.rank && high >= row.rank ? ` (${low}–${high})` : ""}`
-      return {
-        label: "Arena Text · overall · style control",
-        updatedAt: row.updatedAt,
-        detail: `${row.votes.toLocaleString("en-US")} votes${rank}`,
-        interval: { low: row.ratingLower, high: row.ratingUpper },
-        preliminary: row.releaseType === "pre_release",
-      }
-    },
-  },
-  costPerMTokens: {
-    read: (row) =>
-      row.inputPricePerMillion != null && row.outputPricePerMillion != null
-        ? (3 * row.inputPricePerMillion + row.outputPricePerMillion) / 4
-        : null,
-    scope: "model",
-    presentation: { label: "Token price", unit: "$/M tokens", format: "currency" },
-    note: "Arena listed prices, 3:1 input/output blend; not benchmark task cost",
-  },
-  inputPricePerMTokens: {
-    read: (row) => row.inputPricePerMillion,
-    scope: "model",
-    presentation: { label: "Input token price", unit: "$/M tokens", format: "currency" },
-  },
-  outputPricePerMTokens: {
-    read: (row) => row.outputPricePerMillion,
-    scope: "model",
-    presentation: { label: "Output token price", unit: "$/M tokens", format: "currency" },
-  },
-  contextTokens: {
-    read: (row) => row.contextLength,
-    scope: "model",
-    presentation: { label: "Context length", unit: "tokens", format: "tokens" },
-    note: "Arena listed context window; not an evaluated long-context capability score",
+    describe: (row) => ({
+      label: "Arena Text · overall · style control",
+      updatedAt: row.publishDate,
+      detail: `${row.votes.toLocaleString("en-US")} votes · rank ${row.rank}`,
+      interval: { low: row.ratingLower, high: row.ratingUpper },
+    }),
   },
   votes: {
     read: (row) => row.votes,
@@ -231,27 +116,36 @@ export class ArenaProvider
   readonly displayName = "Arena Text"
   readonly href = "https://arena.ai/leaderboard/text"
   readonly abbreviation = "Arena"
-  readonly cacheKey = "llm-scores:source:arena:text-overall-style-control:v4"
+  readonly cacheKey = "llm-scores:source:arena:text-overall-style-control:v5"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = metrics
   toMetricRows(payload: ArenaPayload): Array<MetricRow> {
     return payload.rows.map((row) => {
-      const effort = arenaEffort(row.modelDisplayName)
+      const effort = arenaEffort(row.modelName)
       return {
         ...effort,
         ...(effort.mode === "unknown" || effort.level === "unknown"
           ? { configurationKnown: false as const }
           : {}),
-        rawId: row.modelDisplayName,
+        rawId: row.modelName,
         effortConflict: null,
         metrics: this.readMetrics(row),
         measurements: describeMetrics(this.metrics, row),
-        metadata: { name: row.modelDisplayName, creator: row.modelOrganization, releaseDate: null },
+        metadata: { name: row.modelName, creator: row.organization, releaseDate: null },
       }
     })
   }
   async fetchPayload(): Promise<ArenaPayload> {
-    const response = await fetchOk(this.displayName, this.href, { timeoutMs: 20_000 })
-    return parseArenaPage(await response.text())
+    const response = await fetchOk(this.displayName, DATASET_URL, { timeoutMs: 20_000 })
+    const file = await response.arrayBuffer()
+    let records: Array<Record<string, unknown>>
+    try {
+      records = await parquetReadObjects({ file, columns: COLUMNS })
+    } catch (cause) {
+      throw new Error(`${this.displayName} returned an unreadable parquet file: ${String(cause)}`, {
+        cause,
+      })
+    }
+    return parseArenaRecords(records)
   }
 }
