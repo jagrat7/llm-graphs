@@ -398,15 +398,21 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
     }),
   )
   const { paired, unresolved } = pairDates(keyed)
-  const clusters = [
-    ...paired,
-    ...isolated
-      .filter((model) => isMetricSource(model.source))
-      .map((model): Cluster => ({ members: [model], joinedBy: "key" })),
-  ]
+  const joined = paired
     .filter((cluster) => cluster.members.some((member) => isMetricSource(member.source)))
     .map((cluster) => ({ id: entryId(cluster), cluster }))
-    .toSorted((left, right) => left.id.localeCompare(right.id))
+  const taken = new Set(joined.map(({ id }) => id))
+  const clusters = [
+    ...joined,
+    ...isolated
+      .filter((model) => isMetricSource(model.source))
+      .map((model) => {
+        const cluster: Cluster = { members: [model], joinedBy: "key" }
+        const id = entryId(cluster)
+        // Without its vendor prefix, a clashing id can land on a joined entry's id.
+        return { id: taken.has(id) ? normalizeId(model.id.replaceAll("/", "-")) : id, cluster }
+      }),
+  ].toSorted((left, right) => left.id.localeCompare(right.id))
   const { vendorByCreator, splitCreators } = resolveCreators(clusters, catalog)
   const entries: Array<ModelEntry> = []
   const provenance: Array<EntryProvenance> = []
