@@ -99,7 +99,6 @@ export type MeasurementInfo = {
   detail?: string
   updatedAt?: string
   interval?: { low: number; high: number }
-  preliminary?: boolean
 }
 
 export type MetricReader<TRow> = {
