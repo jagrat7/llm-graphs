@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest"
 import { aggregateModels, type Derivation } from "./derive"
 import { buildDiagnostics } from "./diagnostics"
 import { ProvidersService } from "../providers"
-import { fixtureInputs, fixtures } from "./fixture-inputs"
+import { allFixtureInputs, fixtureInputs, fixtures } from "./fixture-inputs"
 
 const derivation = aggregateModels(fixtureInputs())
 const { snapshot } = derivation
@@ -155,6 +155,31 @@ describe("model aggregation", () => {
     await expect(`${JSON.stringify(report, null, 2)}\n`).toMatchFileSnapshot(
       "./__snapshots__/diagnostics.json",
     )
+  })
+})
+
+describe("Arena display names", () => {
+  const { snapshot: all, provenance: members } = aggregateModels(allFixtureInputs())
+
+  it.each([
+    ["Claude 3.5 Sonnet (20241022)", "modelsDev", "anthropic/claude-3-5-sonnet-20241022"],
+    ["DeepSeek-V3 (0324)", "artificialAnalysis", "deepseek-v3-0324"],
+    ["Command A (03-2025)", "modelsDev", "cohere/command-a-03-2025"],
+    ["Claude Opus 4.5 (High, 32K, 20251101)", "modelsDev", "anthropic/claude-opus-4-5-20251101"],
+    ["Claude Sonnet 4 (Thinking 32K, 20250514)", "modelsDev", "anthropic/claude-sonnet-4-20250514"],
+    ["Trinity Large Thinking", "artificialAnalysis", "trinity-large"],
+  ])("puts %s's score on the entry holding %s %s", (name, source, id) => {
+    const rating = fixtures.arena.payload.rows.find((row) => row.modelName === name)?.rating
+    const entryId = members.find((candidate) =>
+      candidate.members.some((member) => member.source === source && member.id === id),
+    )?.id
+    const scores = all.variants.arena
+      .filter((variant) => variant.entryId === entryId)
+      .map((variant) => variant.metrics.score)
+
+    expect(rating).toBeDefined()
+    expect(entryId).toBeDefined()
+    expect(scores).toContain(rating)
   })
 })
 

@@ -1,8 +1,8 @@
 import { parquetReadObjects } from "hyparquet"
 import { MetricProvider } from "../metric-provider"
 import { z } from "zod"
-import { fetchOk, parseRows, describeMetrics } from "../utils"
-import type { MetricReaders, MetricSource, MetricRow } from "../provider.types"
+import { fetchOk, parseRows, describeMetrics, KNOWN_LEVELS } from "../utils"
+import type { MetricReaders, MetricSource, MetricRow, ReasoningMode } from "../provider.types"
 import type { ArenaPayload, ArenaRow } from "./arena.types"
 
 const DATASET_URL =
@@ -45,48 +45,68 @@ export function parseArenaRecords(records: ReadonlyArray<Record<string, unknown>
   return payload
 }
 
-/** Only explicit labels identify effort; model names such as qwen3.8-max remain model names. */
-export function arenaEffort(id: string) {
-  const labeled =
-    /\s+\((?:thinking[- ]|reasoning[- ])?(minimal|low|medium|high|xhigh|max)\)$/i.exec(id)
-  if (labeled)
-    return {
-      sourceModelId: id.slice(0, -labeled[0].length),
-      mode: "on" as const,
-      level: labeled[1].toLowerCase(),
-    }
-  const parentheticalMode = /\s+\((thinking|reasoning|non-thinking|non-reasoning)\)$/i.exec(id)
-  if (parentheticalMode)
-    return {
-      sourceModelId: id.slice(0, -parentheticalMode[0].length),
-      mode: parentheticalMode[1].toLowerCase().startsWith("non-")
-        ? ("off" as const)
-        : ("on" as const),
-      level: "unknown",
-    }
-  const suffix = /-(minimal|low|medium|high|xhigh|max)$/i.exec(id)
-  const effortModel = /^(gpt-|claude-|gemini-|muse-spark-)/i.test(id)
-  if (suffix && effortModel)
-    return {
-      sourceModelId: id.slice(0, -suffix[0].length),
-      mode: "on" as const,
-      level: suffix[1].toLowerCase(),
-    }
-  const nonReasoning = /-(no-thinking|non-thinking|non-reasoning)$/i.exec(id)
-  if (nonReasoning)
-    return {
-      sourceModelId: id.slice(0, -nonReasoning[0].length),
-      mode: "off" as const,
-      level: "unknown",
-    }
-  const reasoning = /-(thinking|reasoning)$/.exec(id)
-  if (reasoning)
-    return {
-      sourceModelId: id.slice(0, -reasoning[0].length),
-      mode: "on" as const,
-      level: "unknown",
-    }
-  return { sourceModelId: id, mode: "unknown" as const, level: "unknown" }
+type Qualifier =
+  | { kind: "effort"; level: string }
+  | { kind: "mode"; mode: "on" | "off" }
+  | { kind: "budget"; budget: string }
+  | { kind: "idWord"; word: string }
+
+/**
+ * How each word of a name's trailing `(…)` reads. Any other word (a snapshot date, `Preview`,
+ * `FP8`) stays in the model id, as it does in the other sources' ids.
+ */
+const QUALIFIER_KINDS: ReadonlyArray<readonly [RegExp, (word: string) => Qualifier]> = [
+  [
+    new RegExp(`^(?:${KNOWN_LEVELS.join("|")})$`, "i"),
+    (word) => ({ kind: "effort", level: word.toLowerCase() }),
+  ],
+  [/^(?:thinking|reasoning)$/i, () => ({ kind: "mode", mode: "on" })],
+  [/^non-(?:thinking|reasoning)$/i, () => ({ kind: "mode", mode: "off" })],
+  [/^\d+k$/i, (word) => ({ kind: "budget", budget: word.toUpperCase() })],
+]
+
+function qualifier(word: string): Qualifier {
+  const kind = QUALIFIER_KINDS.find(([pattern]) => pattern.test(word))
+  return kind ? kind[1](word) : { kind: "idWord", word }
+}
+
+/**
+ * `Claude Opus 4.5 (High, 32K, 20251101)` is the base `Claude Opus 4.5` qualified by effort,
+ * thinking budget and snapshot date. A final `Thinking` in the base itself is a mode
+ * (`Trinity Large Thinking`), but a final effort word is part of the name (`Qwen3.8-Max`).
+ * Other sources spell `Command R+` as `command-r-plus`.
+ */
+function parseArenaName(name: string) {
+  const match = /^(.+?)\s*\(([^()]*)\)$/.exec(name)
+  const head = match?.[1] ?? name
+  const last = /[-\s]([^-\s]+)$/.exec(head)
+  const marker = last ? qualifier(last[1]) : null
+  const base = (marker?.kind === "mode" ? head.slice(0, last?.index) : head).replace(/\+$/, " Plus")
+  const qualifiers = (match?.[2] ?? "")
+    .split(/[,\s]+/)
+    .filter(Boolean)
+    .map(qualifier)
+  return { base, qualifiers: marker?.kind === "mode" ? [marker, ...qualifiers] : qualifiers }
+}
+
+function arenaVariant(name: string) {
+  const { base, qualifiers } = parseArenaName(name)
+  let mode: ReasoningMode = "unknown"
+  let level = "unknown"
+  let budget: string | null = null
+  const words = [base]
+  for (const token of qualifiers) {
+    if (token.kind === "effort") [mode, level] = ["on", token.level]
+    else if (token.kind === "mode") mode = token.mode
+    else if (token.kind === "budget") budget = token.budget
+    else words.push(token.word)
+  }
+  return {
+    sourceModelId: words.join(" "),
+    mode,
+    level,
+    ...(budget ? { configuration: `${budget} thinking budget` } : {}),
+  }
 }
 
 const metrics: MetricReaders<ArenaRow> = {
@@ -121,10 +141,10 @@ export class ArenaProvider
   readonly metrics = metrics
   toMetricRows(payload: ArenaPayload): Array<MetricRow> {
     return payload.rows.map((row) => {
-      const effort = arenaEffort(row.modelName)
+      const variant = arenaVariant(row.modelName)
       return {
-        ...effort,
-        ...(effort.mode === "unknown" || effort.level === "unknown"
+        ...variant,
+        ...(variant.mode === "unknown" || variant.level === "unknown"
           ? { configurationKnown: false as const }
           : {}),
         rawId: row.modelName,
