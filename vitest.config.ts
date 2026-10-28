@@ -9,6 +9,7 @@ export default defineConfig({
   },
   define: { "import.meta.env.BUILD_ID": JSON.stringify("test-build") },
   test: {
+    include: ["src/**/*.test.{ts,tsx}", "dev/**/*.test.{ts,tsx}"],
     environment: "node",
   },
 })

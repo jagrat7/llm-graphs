@@ -8,12 +8,12 @@ import { METRIC_KEYS } from "./provider.types"
 const { artificialAnalysis } = ProvidersService.metricSources
 const aaRow = artificialAnalysisFixture.payload.rows[0]
 
-function aaCost(input: number | null, output: number | null) {
+function aaPrices(input: number | null, output: number | null) {
   return artificialAnalysis.readMetrics({
     ...aaRow,
     price_1m_input_tokens: input,
     price_1m_output_tokens: output,
-  }).costPerMTokens
+  })
 }
 
 describe("ProvidersService", () => {
@@ -27,6 +27,10 @@ describe("ProvidersService", () => {
     const inputs = allFixtureInputs().metricSources
     expect(new Set(inputs.map((input) => input.name))).toEqual(new Set(ProvidersService.names))
     for (const metric of METRIC_KEYS) {
+      expect(
+        ProvidersService.providersFor(metric).length,
+        `${metric} has no source`,
+      ).toBeGreaterThan(0)
       const measured = inputs
         .filter((input) => input.rows.some((row) => row.metrics[metric] != null))
         .map((input) => input.name)
@@ -34,13 +38,37 @@ describe("ProvidersService", () => {
     }
   })
 
-  it("blends AA's prices three parts input to one part output", () => {
-    expect(aaCost(1, 5)).toBe(2)
-  })
+  it.each([
+    [1, 5, 2],
+    [0, 12, 3],
+    [4, 0, 3],
+  ])(
+    "shares AA's hosted prices across all three price axes: %s in, %s out",
+    (input, output, blend) => {
+      expect(aaPrices(input, output)).toMatchObject({
+        costPerMTokens: blend,
+        inputPricePerMTokens: input,
+        outputPricePerMTokens: output,
+      })
+    },
+  )
 
-  it("treats AA's $0 listing as no price", () => {
-    expect(aaCost(0, 0)).toBeNull()
-    expect(aaCost(null, 5)).toBeNull()
+  it.each([
+    [0, 0],
+    [null, 5],
+    [1, null],
+    [-1, 5],
+    [1, -5],
+    [Infinity, 5],
+    [1, Infinity],
+    [NaN, 5],
+    [1, NaN],
+  ])("rejects unlisted or invalid AA prices on all three axes: %s in, %s out", (input, output) => {
+    expect(aaPrices(input, output)).toMatchObject({
+      costPerMTokens: null,
+      inputPricePerMTokens: null,
+      outputPricePerMTokens: null,
+    })
   })
 })
 
@@ -58,5 +86,7 @@ describe("ProvidersService.info", () => {
     expect(info.presentation.artificialAnalysis.score?.unit).toBe("points")
     expect(info.presentation.arena.score?.unit).toBe("points")
     expect(info.scopes.artificialAnalysis.costPerMTokens).toBe("model")
+    expect(info.scopes.artificialAnalysis.inputPricePerMTokens).toBe("model")
+    expect(info.scopes.artificialAnalysis.outputPricePerMTokens).toBe("model")
   })
 })

@@ -103,9 +103,6 @@ export function PointDetails({
                     {formatMetric(measurement.interval.high, metric, source, info)})
                   </span>
                 ) : null}
-                {measurement?.preliminary ? (
-                  <span className="text-muted-foreground font-normal">preliminary</span>
-                ) : null}
                 {abbreviation ? (
                   <span className="text-muted-foreground font-normal">{abbreviation}</span>
                 ) : null}

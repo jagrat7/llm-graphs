@@ -20,7 +20,9 @@ describe("provider metadata", () => {
     expect(metricProviders("cost", info)).toContain("artificialAnalysis")
     expect(resolveSource("cost", undefined, info, "metr")).toBe("metr")
     expect(metricProviders("cost", info)).not.toContain("metr")
-    expect(metricProviders("price", info)).toEqual(["artificialAnalysis", "arena"])
+    expect(metricProviders("price", info)).toEqual(["artificialAnalysis"])
+    expect(metricProviders("inputPrice", info)).toEqual(["artificialAnalysis", "modelsDevListing"])
+    expect(metricProviders("context", info)).toEqual(["modelsDevListing"])
     expect(metricAxisTitle("cost", "deepswe", info)).toContain("$/task")
     expect(formatMetric(0.003, "price")).toBe("$0.003")
   })
@@ -40,14 +42,14 @@ describe("provider metadata", () => {
       displayNames: { ...info.displayNames, artificialAnalysis: "Updated source name" },
       metricProviders: {
         ...info.metricProviders,
-        costPerMTokens: info.metricProviders.costPerMTokens.toReversed(),
+        score: info.metricProviders.score.toReversed(),
       },
       notes: { ...info.notes, artificialAnalysis: { costPerMTokens: "Updated calculation" } },
     }
 
     expect(sourceLabel("artificialAnalysis", updated)).toBe("Updated source name")
-    expect(metricProviders("price", updated)).toEqual(["arena", "artificialAnalysis"])
-    expect(resolveSource("price", undefined, updated)).toBe("arena")
+    expect(metricProviders("score", updated)).toEqual(info.metricProviders.score.toReversed())
+    expect(resolveSource("score", undefined, updated)).toBe(info.metricProviders.score.at(-1))
     expect(metricAxisTitle("price", "artificialAnalysis", updated)).toBe(
       "Token price · $/M tokens (Updated calculation)",
     )
@@ -70,7 +72,7 @@ describe("axis captions", () => {
 
   it("drops a unit the name already says and shares an existing qualifier", () => {
     expect(metricAxisLabel("votes", "arena", info)).toBe("Vote count")
-    expect(metricAxisLabel("context", "arena", info)).toBe("Context length (tokens)")
+    expect(metricAxisLabel("context", "modelsDevListing", info)).toBe("Context length (tokens)")
     expect(metricAxisLabel("score", "metr", info)).toBe("Task horizon (50%, h)")
     expect(metricAxisLabel("horizon80", "metr", info)).toBe("Task horizon (80%, h)")
   })
@@ -115,13 +117,14 @@ describe("native benchmark units", () => {
     expect(formatMetric(5.7, "score", "metr", info)).toBe("5.7 h")
     expect(formatMetric(0.003, "score", "metr", info)).toBe("0.003 h")
     expect(formatMetric(82.1, "score", "deepswe", info)).toBe("82.1%")
-    expect(formatMetric(2.25, "inputPrice", "arena", info)).toBe("$2.25")
-    expect(formatMetric(1_000_000, "context", "arena", info)).toBe("1M")
+    expect(formatMetric(2.25, "inputPrice", "artificialAnalysis", info)).toBe("$2.25")
+    expect(formatMetric(1_000_000, "context", "modelsDevListing", info)).toBe("1M")
+    expect(formatMetric(131_072, "context", "modelsDevListing", info)).toBe("131.1k")
     expect(formatMetric(12345, "votes", "arena", info)).toBe("12,345")
     expect(formatMetric(2.5, "horizon80", "metr", info)).toBe("2.5 h")
     expect(formatMetric(1.25, "horizon80", "metr", info)).toBe("1.25 h")
     expect(formatMetric(54.3, "taskScore", "metr", info)).toBe("54.3%")
-    expect(resolveSource("price", undefined, info, "arena")).toBe("arena")
+    expect(resolveSource("price", undefined, info, "arena")).toBe("artificialAnalysis")
     expect(metricAxisTitle("score", "metr", info)).toContain("Task horizon (50%) · h")
   })
   it("ties task runtime to the selected benchmark just like task cost", () => {
