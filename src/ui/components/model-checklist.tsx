@@ -118,7 +118,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
                 <ModelLogo logoUrl={group.logoUrl} className="size-3.5" />
                 <span className="truncate">{group.label}</span>
                 {selectedCount > 0 ? (
-                  <span className="text-foreground ms-auto tabular-nums">
+                  <span className="text-foreground ms-auto font-mono text-[0.68rem] tabular-nums">
                     {selectedCount}
                     <span className="sr-only"> selected</span>
                   </span>

@@ -307,7 +307,7 @@ export default function SettingsMenu() {
                         <span className={shown ? "truncate" : "text-muted-foreground truncate"}>
                           {provider.label}
                         </span>
-                        <span className="text-muted-foreground/70 ms-auto text-xs tabular-nums">
+                        <span className="text-muted-foreground/70 ms-auto font-mono text-[0.68rem] tabular-nums">
                           {provider.modelCount}
                           <span className="sr-only"> models</span>
                         </span>

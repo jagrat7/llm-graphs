@@ -84,7 +84,7 @@ export function PointDetails({
                 <span className="text-foreground font-medium">{axis.toUpperCase()}</span>{" "}
                 {presentation.label}
               </dt>
-              <dd className="flex flex-wrap items-baseline gap-x-1 font-medium tabular-nums">
+              <dd className="flex flex-wrap items-baseline gap-x-1 font-mono text-[0.68rem] font-medium tabular-nums">
                 {formatMetric(point.values[axis], metric, source, info)}
                 {metric === "cost"
                   ? "/task"
