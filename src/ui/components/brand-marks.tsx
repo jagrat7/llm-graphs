@@ -30,21 +30,6 @@ export function TokenWordmark({ className }: { className?: string }) {
 }
 
 /**
- * The "trust me bro" seal, reduced to ring-and-check so it survives 16px. Kept in
- * step with `public/favicon.svg`; the full version with the ring text is the app icon.
- */
-export function TrustSeal({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={cn("size-6 shrink-0", className)}>
-      <g transform="rotate(-12 12 12)" fill="none" stroke="currentColor" strokeLinecap="round">
-        <circle cx="12" cy="12" r="10" strokeWidth="2.4" />
-        <path d="M8 12.3l2.6 2.6 5.4-5.8" strokeWidth="2.6" strokeLinejoin="round" />
-      </g>
-    </svg>
-  )
-}
-
-/**
  * Alternate mark, not used in the product today: the raised-eyebrow face, the
  * site's reaction to every leaderboard. Kept for social cards and one-offs.
  */

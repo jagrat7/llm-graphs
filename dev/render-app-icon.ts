@@ -1,8 +1,10 @@
 /**
- * Renders `dev/app-icon.html` to `public/logo512.png` and `public/logo192.png`
- * with headless Chromium. Needs network access for the Bebas Neue webfont.
+ * Renders `dev/app-icon.html` with headless Chromium, then derives every icon
+ * size from it with ImageMagick: the 512/192 app icons, the 96px PNG favicon,
+ * and a multi-size ICO. The small sizes keep the full seal, ring text included,
+ * on a rounded tile. Needs network access for the Bebas Neue webfont.
  */
-import { spawn } from "node:child_process"
+import { execFileSync, spawn } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
@@ -61,7 +63,36 @@ await send("Emulation.setDeviceMetricsOverride", {
 await send("Page.navigate", { url: `file://${root}/dev/app-icon.html` })
 await sleep(5000)
 const { data } = await send("Page.captureScreenshot", { format: "png" })
-fs.writeFileSync(path.join(root, "public/logo512.png"), Buffer.from(data, "base64"))
+const master = path.join(root, "public/logo512.png")
+fs.writeFileSync(master, Buffer.from(data, "base64"))
 chrome.kill("SIGKILL")
-console.log("wrote public/logo512.png")
+
+const pub = (name: string) => path.join(root, "public", name)
+execFileSync("magick", [master, "-resize", "192x192", pub("logo192.png")])
+// Rounded tile for the favicon sizes, so the cream square does not read as a blank box in a tab.
+const rounded = (size: number, out: string) => {
+  const r = Math.round(size * 0.22)
+  execFileSync("magick", [
+    master,
+    "-resize",
+    `${size}x${size}`,
+    "(",
+    "-size",
+    `${size}x${size}`,
+    "xc:none",
+    "-draw",
+    `roundrectangle 0,0,${size - 1},${size - 1},${r},${r}`,
+    ")",
+    "-compose",
+    "DstIn",
+    "-composite",
+    "PNG32:" + out,
+  ])
+}
+rounded(96, pub("favicon-96.png"))
+const tmp = fs.mkdtempSync("/tmp/favicon-")
+const sizes = [16, 32, 48, 64]
+for (const s of sizes) rounded(s, path.join(tmp, `${s}.png`))
+execFileSync("magick", [...sizes.map((s) => path.join(tmp, `${s}.png`)), pub("favicon.ico")])
+console.log("wrote logo512.png, logo192.png, favicon-96.png, favicon.ico")
 process.exit(0)
