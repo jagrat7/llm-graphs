@@ -1,7 +1,7 @@
 import type { PlotData } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/server/api"
 
-import { CHART_AXIS_TITLE_SIZE, CHART_TICK_SIZE } from "#/ui/lib/chart-styles"
+import { CHART_AXIS_TITLE_SIZE, CHART_MONO_TICK_SIZE } from "#/ui/lib/chart-styles"
 import { metricAxisTitle } from "#/ui/lib/metrics"
 
 /**
@@ -23,7 +23,7 @@ export function axisPresentation<TValue>(
       format,
       line: { stroke: "var(--border)" },
     },
-    tickLabels: { fontSize: CHART_TICK_SIZE, thin: true },
+    tickLabels: { fontSize: CHART_MONO_TICK_SIZE, thin: true },
     label: {
       text: label,
       fontSize: CHART_AXIS_TITLE_SIZE,

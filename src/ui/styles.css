@@ -201,11 +201,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Measurements read in the mono face: the plot's tick values and anything tabular. */
+/* Measurements read in the mono face: the plot's tick values and anything tabular. The
+   chart measures them in the same face (`chart-text.ts`), so the two stay in step. */
 .ts-chart text[data-ts-key*="tick-label"] {
   font-family: var(--font-mono);
-  /* Martian Mono runs wide, so the ticks step down a point to keep their spacing. */
-  font-size: 10.5px;
 }
 
 /* On paper the plot is drawn in ink: its gridlines and axes carry more weight than the
