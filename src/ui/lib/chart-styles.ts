@@ -9,6 +9,14 @@ export const CHART_POINT_LABEL_SIZE = 10.5
 /** Primary grid lines; the 2D chart's cross-axis lines step down to the minor value. */
 export const CHART_GRID_OPACITY = 0.55
 export const CHART_GRID_MINOR_OPACITY = 0.28
+/**
+ * Graph paper: fine rulings between the labelled gridlines, on the SVG plot and the 3D
+ * chart's back walls alike. Fainter than any gridline so they read as the sheet, not
+ * the scale.
+ */
+export const CHART_RULING_OPACITY = 0.09
+/** Class on the SVG plot's rulings, so the stylesheet can address them. */
+export const CHART_RULING_CLASS = "chart-paper-ruling"
 /** How much a point grows when it becomes the active one. */
 export const CHART_ACTIVE_SCALE = 1.4
 export const CHART_TOOLTIP_WIDTH = 200
