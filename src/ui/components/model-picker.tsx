@@ -447,7 +447,10 @@ export function ModelPicker({
               }
             >
               <span>
-                Models <span className="text-muted-foreground tabular-nums">{value.length}</span>
+                Models{" "}
+                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
+                  {value.length}
+                </span>
               </span>
               <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground" />
             </PopoverTrigger>
@@ -462,7 +465,9 @@ export function ModelPicker({
             >
               <div className="border-border flex items-center gap-2 border-b px-3 py-2">
                 <PopoverTitle>Models</PopoverTitle>
-                <span className="text-muted-foreground tabular-nums">{value.length} selected</span>
+                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
+                  {value.length} selected
+                </span>
                 <span className="flex-1" />
                 {onReset ? (
                   <Button variant="ghost" size="sm" className="h-11 sm:h-6" onClick={onReset}>

@@ -143,8 +143,8 @@ describe("Arena official dataset", () => {
       "Claude Sonnet 4 (Thinking 32K, 20250514)",
       "claude-sonnet-4-20250514",
       "on",
-      "unknown",
-      "32K thinking budget",
+      "32k",
+      undefined,
     ],
     [
       "Claude Opus 4.5 (High, 32K, 20251101)",

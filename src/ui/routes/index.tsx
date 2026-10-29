@@ -130,11 +130,11 @@ function ComparePage() {
   // Starts once the page has hydrated: the server never fetches it, so it stays out of the HTML.
   const { data: snapshot, isError } = useQuery(snapshotQuery)
   const [settings, setSettings] = useSettings()
-  const { hiddenProviders, vendorLogos, effortLevels, openingModels } = settings
+  const { hiddenProviders, vendorLogos, effortLevels } = settings
   // Changing an axis source re-filters the whole snapshot; nothing is refetched. Until it
   // arrives, the server's slice draws the opening chart with the picks it worked out.
   const data = useMemo(() => {
-    const comparisonSettings = { hiddenProviders, openingModels }
+    const comparisonSettings = { hiddenProviders }
 
     if (snapshot) return comparisonModels(snapshot, info, search, comparisonSettings)
     if (!slice) return undefined
@@ -143,7 +143,7 @@ function ComparePage() {
       models: comparisonModels(slice.snapshot, info, search, comparisonSettings).models,
       defaultModels: slice.defaultModels,
     }
-  }, [snapshot, slice, info, search, hiddenProviders, openingModels])
+  }, [snapshot, slice, info, search, hiddenProviders])
   const isPending = !data && !isError
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")

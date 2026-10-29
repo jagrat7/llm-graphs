@@ -5,6 +5,7 @@ import { describeMetrics, fetchOk, isKnownLevel, normalizeLevel, parseRows } fro
 
 const VERSION = "1.0.6"
 const PAGE_URL = "https://zapier.com/benchmarks"
+const HARNESS = "API, 50-step limit"
 const rowSchema = z.object({
   rank: z.number().int().positive(),
   label: z.string().min(1),
@@ -30,13 +31,9 @@ function configuration(label: string) {
     sourceModelId: modelId.toLowerCase().replaceAll(/[\s.]+/g, "-"),
     mode: effort === "none" ? ("off" as const) : known ? ("on" as const) : ("unknown" as const),
     level: effort === "betweentools" ? "between tools" : isKnownLevel(effort) ? effort : "unknown",
-    configuration: [
-      "API, 50-step limit",
-      policy,
-      effort === "betweentools" ? "between tools reasoning" : "",
-    ]
-      .filter(Boolean)
-      .join("; "),
+    // "Between tools" is already the level, so only a fallback policy sets one run of a
+    // model apart from another.
+    policy,
     known,
   }
 }
@@ -107,7 +104,7 @@ export class AutomationBenchProvider
   private describe(row: AutomationBenchRow) {
     return {
       label: this.displayName,
-      detail: [configuration(row.label).configuration, row.costNote].filter(Boolean).join("; "),
+      detail: [HARNESS, configuration(row.label).policy, row.costNote].filter(Boolean).join("; "),
     }
   }
 
@@ -136,9 +133,10 @@ export class AutomationBenchProvider
       return {
         sourceModelId: run.sourceModelId,
         rawId: row.label,
+        harness: HARNESS,
         mode: run.mode,
         level: run.level,
-        configuration: run.configuration,
+        ...(run.policy ? { configuration: run.policy } : {}),
         ...(!run.known ? { configurationKnown: false as const } : {}),
         metrics: this.readMetrics(row),
         measurements: describeMetrics(this.metrics, row),

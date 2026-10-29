@@ -81,7 +81,9 @@ function renderScoreCell({
 
   return (
     <div className="ml-auto flex min-w-40 items-center justify-end gap-3">
-      <span className="w-12 text-right">{formatMetric(score, "score")}</span>
+      <span className="w-12 text-right font-mono text-[0.68rem]">
+        {formatMetric(score, "score")}
+      </span>
       <Progress
         value={Math.max(0, Math.min(100, score ?? 0))}
         aria-label={`Score ${formatMetric(score, "score")}`}

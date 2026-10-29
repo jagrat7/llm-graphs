@@ -73,7 +73,7 @@ function flatten(nodes: ReadonlyArray<SceneNode>): Array<SceneNode> {
 /** Each interactive point's pixel position, keyed by its plot id. */
 function chartPoints(chartScene: ChartScene) {
   return new Map(
-    chartScene.points.map((point) => [point.key.replace(/^model-runs-2:/, ""), [point.x, point.y]]),
+    chartScene.points.map((point) => [point.key.replace(/^model-runs-3:/, ""), [point.x, point.y]]),
   )
 }
 
@@ -86,9 +86,9 @@ describe("scatter definition", () => {
     const { scene: chartScene } = scene()
 
     expect(chartScene.points.map((point) => point.key).toSorted()).toEqual([
-      "model-runs-2:alpha-on-high",
-      "model-runs-2:alpha-on-low",
-      "model-runs-2:beta-unknown-unknown",
+      "model-runs-3:alpha-on-high",
+      "model-runs-3:alpha-on-low",
+      "model-runs-3:beta-unknown-unknown",
     ])
     expect(new Set(chartScene.points.map((point) => point.group))).toEqual(
       new Set(["alpha", "beta"]),
@@ -97,8 +97,8 @@ describe("scatter definition", () => {
 
   it("paints a logo as a masked rect and a logo-less model as a dot", () => {
     const nodes = flatten(scene().scene.nodes)
-    const beta = nodes.find((node) => node.key === "model-runs-2:beta-unknown-unknown")
-    const alpha = nodes.find((node) => node.key === "model-runs-2:alpha-on-high")
+    const beta = nodes.find((node) => node.key === "model-runs-3:beta-unknown-unknown")
+    const alpha = nodes.find((node) => node.key === "model-runs-3:alpha-on-high")
 
     expect(beta).toMatchObject({ kind: "rect", className: "logo-beta", width: 16, height: 16 })
     expect(alpha).toMatchObject({ kind: "dot" })
@@ -115,8 +115,8 @@ describe("scatter definition", () => {
 
   it("dims every other model while one is highlighted", () => {
     const nodes = flatten(scene("beta").scene.nodes)
-    const alphaDot = nodes.find((node) => node.key === "model-runs-2:alpha-on-high")
-    const betaLogo = nodes.find((node) => node.key === "model-runs-2:beta-unknown-unknown")
+    const alphaDot = nodes.find((node) => node.key === "model-runs-3:alpha-on-high")
+    const betaLogo = nodes.find((node) => node.key === "model-runs-3:beta-unknown-unknown")
 
     expect(alphaDot?.style?.opacity).toBeLessThan(1)
     expect(betaLogo?.style?.opacity).toBe(1)
@@ -159,12 +159,12 @@ describe("scatter definition", () => {
 
   it("draws the Pareto frontier as a dashed line under the runs", () => {
     const nodes = flatten(scene().scene.nodes)
-    const pareto = nodes.filter((node) => node.key.startsWith("pareto-frontier-1:"))
-    const firstRun = nodes.findIndex((node) => node.key.startsWith("model-runs-2:"))
+    const pareto = nodes.filter((node) => node.key.startsWith("pareto-frontier-2:"))
+    const firstRun = nodes.findIndex((node) => node.key.startsWith("model-runs-3:"))
 
     const runs = chartPoints(scene().scene)
 
-    expect(pareto.map((node) => node.key)).toEqual(["pareto-frontier-1:line"])
+    expect(pareto.map((node) => node.key)).toEqual(["pareto-frontier-2:line"])
     // Straight segments through alpha's two efforts, the variants nothing beats.
     expect(pareto[0]).toMatchObject({
       kind: "polyline",
@@ -182,10 +182,10 @@ describe("scatter definition", () => {
       nodes.find((node) => node.kind === "label" && node.text === text)?.style?.opacity
 
     // Beta costs more than alpha high and scores less, so only alpha's two efforts remain.
-    expect(opacity("model-runs-2:alpha-on-low")).toBe(1)
-    expect(opacity("model-runs-2:alpha-on-high")).toBe(1)
-    expect(opacity("model-runs-2:beta-unknown-unknown")).toBeLessThan(1)
-    expect(opacity("model-runs-2:line:alpha")).toBeLessThan(1)
+    expect(opacity("model-runs-3:alpha-on-low")).toBe(1)
+    expect(opacity("model-runs-3:alpha-on-high")).toBe(1)
+    expect(opacity("model-runs-3:beta-unknown-unknown")).toBeLessThan(1)
+    expect(opacity("model-runs-3:line:alpha")).toBeLessThan(1)
     expect(label("alpha")).toBe(1)
     expect(label("beta")).toBeLessThan(1)
   })
@@ -194,8 +194,8 @@ describe("scatter definition", () => {
     const nodes = flatten(scene("beta").scene.nodes)
     const opacity = (key: string) => nodes.find((node) => node.key === key)?.style?.opacity
 
-    expect(opacity("model-runs-2:beta-unknown-unknown")).toBe(1)
-    expect(opacity("model-runs-2:alpha-on-high")).toBeLessThan(1)
+    expect(opacity("model-runs-3:beta-unknown-unknown")).toBe(1)
+    expect(opacity("model-runs-3:alpha-on-high")).toBeLessThan(1)
   })
 
   it("draws nothing for a hidden frontier, keeping the runs' keys", () => {
@@ -214,9 +214,9 @@ describe("scatter definition", () => {
     const nodes = flatten(chartScene.nodes)
 
     expect(nodes.some((node) => node.key.startsWith("pareto"))).toBe(false)
-    expect(chartScene.points[0]?.key.startsWith("model-runs-2:")).toBe(true)
+    expect(chartScene.points[0]?.key.startsWith("model-runs-3:")).toBe(true)
     expect(
-      nodes.find((node) => node.key === "model-runs-2:beta-unknown-unknown")?.style?.opacity,
+      nodes.find((node) => node.key === "model-runs-3:beta-unknown-unknown")?.style?.opacity,
     ).toBe(1)
   })
 
@@ -234,7 +234,7 @@ describe("scatter definition", () => {
     )
 
     expect(flatten(chartScene.nodes).some((node) => node.key.startsWith("pareto"))).toBe(false)
-    expect(chartScene.points[0]?.key.startsWith("model-runs-2:")).toBe(true)
+    expect(chartScene.points[0]?.key.startsWith("model-runs-3:")).toBe(true)
   })
 
   it("puts a crowded cost axis on a log scale with decade ticks", () => {
