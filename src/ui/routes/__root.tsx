@@ -11,6 +11,9 @@ import { DEFAULT_SETTINGS, readSettings, SavedSettingsContext } from "#/ui/lib/s
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
 import TanStackQueryDevtools from "../components/integrations/tanstack-query/devtools"
+import instrumentSansLatin from "@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url"
+import martianMonoLatin from "@fontsource-variable/martian-mono/files/martian-mono-latin-wght-normal.woff2?url"
+
 import appCss from "../styles.css?url"
 
 interface MyRouterContext {
@@ -49,23 +52,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: "stylesheet",
         href: appCss,
       },
-      // The two faces the first paint needs; the other subsets and weights load on demand.
+      // The two faces the first paint needs; the other subsets and styles load on demand.
       {
         rel: "preload",
-        href: "/fonts/instrument-sans-400-700-normal-latin.woff2",
+        href: instrumentSansLatin,
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",
       },
       {
         rel: "preload",
-        href: "/fonts/martian-mono-400-700-normal-latin.woff2",
+        href: martianMonoLatin,
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",
       },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+      { rel: "icon", href: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64" },
+      { rel: "icon", href: "/favicon-96.png", type: "image/png", sizes: "96x96" },
       { rel: "apple-touch-icon", href: "/logo192.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],

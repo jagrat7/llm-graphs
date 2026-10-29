@@ -1,0 +1,97 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>LLM Graphs — logo candidates</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--fg:#1f2126;--muted:#6b7080;--primary:#2f6fe4;--border:#dcdde2}
+body{margin:0;background:#eceef2;font-family:Inter,system-ui,sans-serif;color:var(--fg);padding:28px}
+h1{font-size:20px;margin:0 0 4px}
+p.sub{margin:0 0 24px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.card h2{font-size:14px;margin:0 0 2px;display:flex;gap:8px;align-items:center}
+.card h2 span{font-size:11px;font-weight:600;color:#fff;background:var(--fg);border-radius:999px;padding:2px 8px}
+.card h2 span.cur{background:#b33}
+.card p{margin:0 0 12px;font-size:12px;color:var(--muted);line-height:1.45}
+.row{display:flex;gap:12px;align-items:stretch}
+.hdr{flex:1;display:flex;align-items:center;gap:8px;height:44px;padding:0 12px;border-radius:8px;border:1px solid var(--border);font-weight:600;font-size:14px}
+.hdr.light{background:#fafafa;color:#1f2126;--primary:#2f6fe4}
+.hdr.dark{background:#1b1c20;color:#eef0f3;border-color:#33353b;--primary:#6ea2f5}
+.hdr svg{width:24px;height:24px;color:currentColor}
+.tile{width:64px;height:64px;border-radius:15px;background:#121417;display:grid;place-items:center;--primary:#4ba3f7;color:#f4f5f6}
+.tile svg{width:44px;height:44px}
+.tile.lt{background:#fff;border:1px solid var(--border);color:#1f2126;--primary:#2f6fe4}
+.big{width:64px;height:64px;color:#1f2126;--primary:#2f6fe4;display:grid;place-items:center}
+.big svg{width:56px;height:56px}
+.p{stroke:var(--primary)} .pf{fill:var(--primary)}
+.c{stroke:currentColor} .cf{fill:currentColor}
+</style></head><body>
+<h1>LLM Graphs — mark candidates</h1>
+<p class="sub">Each row: header at 24px (light / dark), 56px mark, app tile dark / light. All marks are 24×24 viewBox, stroke-only or flat fill, two colors max (foreground + primary blue).</p>
+
+<svg width="0" height="0" style="position:absolute">
+ <defs>
+  <symbol id="cur" viewBox="0 0 24 24">
+   <circle cx="13.5" cy="16.5" r="1.9" class="cf" opacity=".3"/><circle cx="19" cy="12.5" r="1.9" class="cf" opacity=".3"/>
+   <path d="M3.5 19.5 C5 11.5 10.5 6 20.5 4.5" fill="none" stroke-width="2" stroke-linecap="round" class="p"/>
+   <circle cx="3.5" cy="19.5" r="2.2" class="cf"/><circle cx="7.25" cy="11.2" r="2.2" class="cf"/><circle cx="20.5" cy="4.5" r="2.2" class="cf"/>
+  </symbol>
+  <!-- A: Leaderboard — three horizontal ranked bars, leader in blue -->
+  <symbol id="a" viewBox="0 0 24 24">
+   <path d="M4 6H20" stroke-width="3.6" stroke-linecap="round" class="p"/>
+   <path d="M4 12H14.5" stroke-width="3.6" stroke-linecap="round" class="c"/>
+   <path d="M4 18H9.5" stroke-width="3.6" stroke-linecap="round" class="c"/>
+  </symbol>
+  <!-- B: Steps — Pareto frontier is literally a staircase -->
+  <symbol id="b" viewBox="0 0 24 24">
+   <path d="M3.5 20.5H9.5V13.5H15.5V6.5H21" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="c"/>
+   <circle cx="21" cy="6.5" r="2.7" class="pf"/>
+  </symbol>
+  <!-- C: Axes + scatter — the L of the axes doubles as the "L" in LLM -->
+  <symbol id="c" viewBox="0 0 24 24">
+   <path d="M5 3.5V19H20.5" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" class="c"/>
+   <circle cx="9.5" cy="14.5" r="2.1" class="pf"/><circle cx="13.5" cy="10" r="2.1" class="pf"/><circle cx="18" cy="6" r="2.1" class="pf"/>
+  </symbol>
+  <!-- D: Bars — three rising columns, best in blue -->
+  <symbol id="d" viewBox="0 0 24 24">
+   <rect x="3.5" y="13" width="4.5" height="8" rx="1.6" class="cf"/>
+   <rect x="9.75" y="8.5" width="4.5" height="12.5" rx="1.6" class="cf"/>
+   <rect x="16" y="3" width="4.5" height="18" rx="1.6" class="pf"/>
+  </symbol>
+  <!-- E: Bubble sparkline — LLM (chat) + graph -->
+  <symbol id="e" viewBox="0 0 24 24">
+   <path d="M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 4v-4H4A1.5 1.5 0 0 1 2.5 15V6A1.5 1.5 0 0 1 4 4.5z" fill="none" stroke-width="2" stroke-linejoin="round" class="c"/>
+   <path d="M6.5 12.5l3.5-3.5 2.5 2.5 5-5" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="p"/>
+  </symbol>
+  <!-- F: Bold frontier — the current idea, simplified to one curve and two endpoints -->
+  <symbol id="f" viewBox="0 0 24 24">
+   <path d="M4.5 19.5C6 9.5 11.5 5.5 19.5 4.5" fill="none" stroke-width="3" stroke-linecap="round" class="p"/>
+   <circle cx="4.5" cy="19.5" r="2.8" class="cf"/><circle cx="19.5" cy="4.5" r="2.8" class="cf"/>
+  </symbol>
+ </defs>
+</svg>
+
+<div class="grid">
+<script>
+const items=[
+ ["cur","Current","Thin curve, two dot sizes, two opacities. Five shapes at 24px turn into a smudge. The faded dots read as rendering artefacts.",true],
+ ["a","A · Leaderboard","Three ranked bars, the leader in blue. Says “ranking” instantly. Survives 16px. Risk: looks like a hamburger menu if the lengths are equalised, so keep them clearly uneven."],
+ ["b","B · Steps","The Pareto frontier is actually a step function. One bold staircase, one blue dot for the best model. Distinctive silhouette, strong in a tile."],
+ ["c","C · Axes + scatter","An L-shaped axis with three ascending points. The axis doubles as the L in LLM. Most literal to what the site is."],
+ ["d","D · Bars","Three rising columns, tallest in blue. Safe, very legible, slightly generic (every analytics app)."],
+ ["e","E · Bubble sparkline","Speech bubble (language model) holding a rising line (graph). Most ‘storytelling’, but the busiest at 24px."],
+ ["f","F · Bold frontier","Keeps the current concept but strips it to one 3px curve and two solid endpoints. Lowest-risk upgrade."],
+];
+for(const [id,name,blurb,cur] of items){
+ const u=`<svg><use href="#${id}"/></svg>`;
+ document.write(`<div class="card"><h2>${name}${cur?' <span class="cur">now</span>':''}</h2><p>${blurb}</p>
+ <div class="row">
+  <div class="hdr light">${u}LLM Graphs</div>
+  <div class="hdr dark">${u}LLM Graphs</div>
+  <div class="big">${u}</div>
+  <div class="tile">${u}</div>
+  <div class="tile lt">${u}</div>
+ </div></div>`);
+}
+</script>
+</div>
+</body></html>
