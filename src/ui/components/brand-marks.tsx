@@ -1,14 +1,16 @@
 import { cn } from "#/ui/lib/utils"
 
 /**
- * The name the way a tokenizer would split it: "LL", "M", " Graph", "s", each
- * on its own highlight. This is the header wordmark.
+ * The name the way a tokenizer would split it: "LL", "M", " Graph", "s", each span
+ * underlined, as a tokenizer debug view marks them. The rules are drawn from the
+ * theme's own inks, stepping from the primary down to a hairline, so the mark
+ * follows whichever palette is on and adds no colour of its own.
  */
 const TOKENS = [
-  { text: "LL", className: "bg-[#ffd166] dark:bg-[#ffd166]/30" },
-  { text: "M", className: "bg-[#9ee7b4] dark:bg-[#9ee7b4]/30" },
-  { text: " Graph", className: "bg-[#ffb3c7] dark:bg-[#ffb3c7]/30" },
-  { text: "s", className: "bg-[#cdb8ff] dark:bg-[#cdb8ff]/30" },
+  { text: "LL", className: "border-primary/70" },
+  { text: "M", className: "border-accent-foreground/60" },
+  { text: " Graph", className: "border-muted-foreground/50" },
+  { text: "s", className: "border-border" },
 ] as const
 
 export function TokenWordmark({ className }: { className?: string }) {
@@ -16,12 +18,12 @@ export function TokenWordmark({ className }: { className?: string }) {
     <span
       aria-hidden="true"
       className={cn(
-        "font-brand inline-flex items-center text-[15px] leading-none font-bold tracking-[-0.02em] whitespace-nowrap",
+        "font-brand inline-flex items-center gap-px text-[15px] leading-none font-bold tracking-[-0.02em] whitespace-pre",
         className,
       )}
     >
       {TOKENS.map((token) => (
-        <span key={token.text} className={cn("rounded-[3px] px-px py-[3px]", token.className)}>
+        <span key={token.text} className={cn("border-b-[3px] px-px pb-[3px]", token.className)}>
           {token.text}
         </span>
       ))}
