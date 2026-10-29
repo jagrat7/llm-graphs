@@ -255,9 +255,12 @@ textarea {
   caret-color: var(--primary);
 }
 
-* {
-  scrollbar-color: color-mix(in oklch, var(--foreground) 28%, transparent) transparent;
-  scrollbar-width: thin;
+/* In the base layer so the `no-scrollbar` utility can still hide a list's scrollbar. */
+@layer base {
+  * {
+    scrollbar-color: color-mix(in oklch, var(--foreground) 28%, transparent) transparent;
+    scrollbar-width: thin;
+  }
 }
 
 .skeleton-shimmer {
