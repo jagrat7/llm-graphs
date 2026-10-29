@@ -10,6 +10,7 @@ import path from "node:path"
 
 const root = path.resolve(import.meta.dirname, "../..")
 const port = 9345
+const profile = fs.mkdtempSync("/tmp/app-icon-")
 const chrome = spawn(
   "chromium",
   [
@@ -19,55 +20,67 @@ const chrome = spawn(
     "--hide-scrollbars",
     "--no-first-run",
     "--disable-extensions",
-    `--user-data-dir=${fs.mkdtempSync("/tmp/app-icon-")}`,
+    `--user-data-dir=${profile}`,
     `--remote-debugging-port=${port}`,
     "--window-size=512,512",
   ],
   { stdio: "ignore" },
 )
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-let page: { webSocketDebuggerUrl: string } | undefined
-for (let i = 0; i < 60 && !page; i++) {
-  try {
-    const targets: unknown = await (await fetch(`http://127.0.0.1:${port}/json`)).json()
-    if (Array.isArray(targets)) page = targets.find((t) => t.type === "page")
-  } catch {
-    await sleep(250)
-  }
-}
-if (!page) throw new Error("Chromium did not expose a page target")
-const ws = new WebSocket(page.webSocketDebuggerUrl)
-await new Promise((r) => ws.addEventListener("open", r))
-let id = 0
-const pending = new Map<number, (v: any) => void>()
-ws.addEventListener("message", (e) => {
-  const m = JSON.parse(String(e.data))
-  if (m.id && pending.has(m.id)) {
-    pending.get(m.id)!(m.result)
-    pending.delete(m.id)
-  }
-})
-const send = (method: string, params: object = {}) =>
-  new Promise<any>((r) => {
-    const i = ++id
-    pending.set(i, r)
-    ws.send(JSON.stringify({ id: i, method, params }))
-  })
-
-await send("Emulation.setDeviceMetricsOverride", {
-  width: 512,
-  height: 512,
-  deviceScaleFactor: 1,
-  mobile: false,
-})
-// Transparent page background so the PNGs carry alpha instead of Chromium's white.
-await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } })
-await send("Page.navigate", { url: `file://${root}/scripts/app-icon/app-icon.html` })
-await sleep(5000)
-const { data } = await send("Page.captureScreenshot", { format: "png" })
 const master = path.join(root, "public/logo512.png")
-fs.writeFileSync(master, Buffer.from(data, "base64"))
-chrome.kill("SIGKILL")
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+try {
+  let page: { webSocketDebuggerUrl: string } | undefined
+  for (let i = 0; i < 60 && !page; i++) {
+    try {
+      const targets: unknown = await (await fetch(`http://127.0.0.1:${port}/json`)).json()
+      if (Array.isArray(targets)) page = targets.find((t) => t.type === "page")
+    } catch {
+      await sleep(250)
+    }
+  }
+  if (!page) throw new Error("Chromium did not expose a page target")
+  const ws = new WebSocket(page.webSocketDebuggerUrl)
+  await new Promise((r) => ws.addEventListener("open", r))
+  let id = 0
+  const pending = new Map<number, (v: any) => void>()
+  ws.addEventListener("message", (e) => {
+    const m = JSON.parse(String(e.data))
+    if (m.id && pending.has(m.id)) {
+      pending.get(m.id)!(m.result)
+      pending.delete(m.id)
+    }
+  })
+  const send = (method: string, params: object = {}) =>
+    new Promise<any>((r) => {
+      const i = ++id
+      pending.set(i, r)
+      ws.send(JSON.stringify({ id: i, method, params }))
+    })
+
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 512,
+    height: 512,
+    deviceScaleFactor: 1,
+    mobile: false,
+  })
+  // Transparent page background so the PNGs carry alpha instead of Chromium's white.
+  await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } })
+  await send("Page.navigate", { url: `file://${root}/scripts/app-icon/app-icon.html` })
+  // The ring text is set in a webfont; a screenshot taken before it arrives would
+  // silently bake fallback lettering into every icon, so wait for it and then verify.
+  const fontReady = await send("Runtime.evaluate", {
+    expression: `document.fonts.ready.then(() => document.fonts.check('16px "Bebas Neue"'))`,
+    awaitPromise: true,
+    returnByValue: true,
+  })
+  if (fontReady.result?.value !== true)
+    throw new Error("Bebas Neue did not load; check network access")
+  const { data } = await send("Page.captureScreenshot", { format: "png" })
+  fs.writeFileSync(master, Buffer.from(data, "base64"))
+} finally {
+  chrome.kill("SIGKILL")
+  fs.rmSync(profile, { recursive: true, force: true })
+}
 
 const pub = (name: string) => path.join(root, "public", name)
 const resize = (size: number, out: string) =>
