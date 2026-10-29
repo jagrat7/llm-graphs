@@ -16,7 +16,7 @@ function run(score: number, cost: number | null = 1.5) {
   }
 }
 
-function feed(models = ["Claude Opus 5.5", "GPT-6.1 Sol", "SWE-1.7", "Kimi K3"]) {
+function feed(models = ["Claude Opus 5.5", "GPT-6.1 Sol", "SWE-1.7", "Kimi K3", "Grok 4.7"]) {
   return {
     models,
     harness: { "Claude Opus 5.5": "claude-code", "GPT-6.1 Sol": "codex", "SWE-1.7": "devin-cli" },
@@ -38,7 +38,8 @@ function feed(models = ["Claude Opus 5.5", "GPT-6.1 Sol", "SWE-1.7", "Kimi K3"])
 
 it("reads the published score and rollout cost per model, effort and harness", () => {
   const payload = parseFrontierCodeFeed(feed())
-  // GPT-6.1 Sol xhigh is out of range, its max run is missing and Kimi K3 has no harness.
+  // GPT-6.1 Sol xhigh is out of range, its max run is missing, Kimi K3 has no harness and
+  // Grok 4.7 lists no efforts.
   expect(payload.rows.map((row) => row.id)).toEqual([
     "Claude Opus 5.5 / high",
     "Claude Opus 5.5 / max",
@@ -48,6 +49,7 @@ it("reads the published score and rollout cost per model, effort and harness", (
     "GPT-6.1 Sol / xhigh",
     "GPT-6.1 Sol / max",
     "Kimi K3 / high",
+    "Grok 4.7",
   ])
   const rows = new FrontierCodeProvider().toMetricRows(payload)
   expect(rows[1]).toMatchObject({

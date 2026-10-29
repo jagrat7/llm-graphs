@@ -82,7 +82,12 @@ export function parseFrontierCodeFeed(raw: unknown): FrontierCodePayload {
   // Validate identities before malformed measurements can hide a conflicting run.
   if (new Set(runs.map((run) => run.id)).size !== runs.length)
     throw new Error("FrontierCode duplicate run identity")
-  return parseRows("FrontierCode", runs, rowSchema, "id")
+  const payload = parseRows("FrontierCode", runs, rowSchema, "id")
+  // A listed model without efforts has no runs; keep it visible in diagnostics.
+  const unlisted = feed.models
+    .filter((model) => !feed.efforts[model]?.length)
+    .map((model) => ({ id: model, reason: "efforts: none listed" }))
+  return { rows: payload.rows, dropped: [...payload.dropped, ...unlisted] }
 }
 
 function percent(fraction: number) {
