@@ -1,5 +1,5 @@
 /**
- * Renders `dev/app-icon.html` with headless Chromium, then derives every icon
+ * Renders `scripts/app-icon/app-icon.html` with headless Chromium, then derives every icon
  * size from it with ImageMagick: the 512/192 app icons, the 96px PNG favicon,
  * and a multi-size ICO. Every size keeps the full seal, ring text included, on a
  * transparent background. Needs network access for the Bebas Neue webfont.
@@ -8,7 +8,7 @@ import { execFileSync, spawn } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
-const root = path.resolve(import.meta.dirname, "..")
+const root = path.resolve(import.meta.dirname, "../..")
 const port = 9345
 const chrome = spawn(
   "chromium",
@@ -62,7 +62,7 @@ await send("Emulation.setDeviceMetricsOverride", {
 })
 // Transparent page background so the PNGs carry alpha instead of Chromium's white.
 await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } })
-await send("Page.navigate", { url: `file://${root}/dev/app-icon.html` })
+await send("Page.navigate", { url: `file://${root}/scripts/app-icon/app-icon.html` })
 await sleep(5000)
 const { data } = await send("Page.captureScreenshot", { format: "png" })
 const master = path.join(root, "public/logo512.png")
