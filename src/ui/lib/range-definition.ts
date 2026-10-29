@@ -3,13 +3,16 @@ import { scaleLinear } from "@tanstack/charts/scales/linear"
 import { scalePoint } from "@tanstack/charts/scales/point"
 import { scaleLog } from "d3-scale"
 
-import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
+import type { PlotData } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/server/api"
 import type { PlotEncoding } from "#/ui/lib/chart-marks"
 
 import { effortLabelsMark, modelRunsMark } from "#/ui/lib/chart-marks"
-import { CHART_GRID_MINOR_OPACITY, CHART_TICK_SIZE } from "#/ui/lib/chart-styles"
-import { LABEL_WIDTH_RATIO } from "#/ui/lib/plot-labels"
+import {
+  CHART_GRID_MINOR_OPACITY,
+  CHART_MONO_TICK_SIZE,
+  CHART_MONO_WIDTH_RATIO,
+} from "#/ui/lib/chart-styles"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
 import { metricTicks, padDomain } from "#/ui/lib/comparison-plot-data"
@@ -45,13 +48,6 @@ function shorten(text: string, maxChars: number) {
   return text.length <= maxChars ? text : `${text.slice(0, Math.max(1, maxChars - 1)).trimEnd()}…`
 }
 
-/** "Claude Sonnet 5.5 (between tools)": two configurations of a model share a name. */
-function rowName(point: PlotPoint) {
-  const { configuration } = point.model
-
-  return configuration ? `${point.model.displayName} (${configuration})` : point.model.displayName
-}
-
 /**
  * The comparison when one metric is fixed per model (see `stackedAxis`): one row per
  * model ordered by that fixed value, which each row's caption carries, and the model's
@@ -85,7 +81,7 @@ export function rangeDefinition(
     rows.map(({ series, fixed }) => [
       series.key,
       {
-        name: rowName(series.points[0]),
+        name: series.label,
         value:
           fixed.min === fixed.max
             ? formatFlat(fixed.min)
@@ -106,7 +102,7 @@ export function rangeDefinition(
   return defineChart({
     chart: ({ width }) => {
       const maxChars = Math.floor(
-        (width * CAPTION_WIDTH_SHARE) / (CHART_TICK_SIZE * LABEL_WIDTH_RATIO),
+        (width * CAPTION_WIDTH_SHARE) / (CHART_MONO_TICK_SIZE * CHART_MONO_WIDTH_RATIO),
       )
       // The rows are models, not a scale of the flat metric; its values live in the captions.
       const rowAxis = axisPresentation(
@@ -164,7 +160,7 @@ export function rangeDefinition(
               line: false,
               ticks: { ...rowAxis.ticks, line: false },
               // Every row needs its name, so labels are never thinned away.
-              tickLabels: { fontSize: CHART_TICK_SIZE, fontWeight: 500, thin: false },
+              tickLabels: { fontSize: CHART_MONO_TICK_SIZE, fontWeight: 500, thin: false },
             },
           },
         },

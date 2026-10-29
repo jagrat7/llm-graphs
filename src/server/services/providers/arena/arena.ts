@@ -1,7 +1,7 @@
 import { parquetReadObjects } from "hyparquet"
 import { MetricProvider } from "../metric-provider"
 import { z } from "zod"
-import { fetchOk, parseRows, describeMetrics, KNOWN_LEVELS } from "../utils"
+import { fetchOk, parseRows, describeMetrics, KNOWN_LEVELS, normalizeLevel } from "../utils"
 import type { MetricReaders, MetricSource, MetricRow, ReasoningMode } from "../provider.types"
 import type { ArenaPayload, ArenaRow } from "./arena.types"
 
@@ -93,6 +93,9 @@ function arenaVariant(name: string) {
     else if (token.kind === "budget") budget = token.budget
     else words.push(token.word)
   }
+  // A budget with no effort word is the effort; beside one, it sets this run apart.
+  if (budget && level === "unknown")
+    return { sourceModelId: words.join(" "), mode: "on" as const, level: normalizeLevel(budget) }
   return {
     sourceModelId: words.join(" "),
     mode,

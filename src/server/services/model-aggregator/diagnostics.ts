@@ -224,7 +224,7 @@ export function buildDiagnostics(derivation: Derivation): DiagnosticsReport {
       .filter((variant) => variant.entryId === id && !variant.refused)
       .map(
         (variant) =>
-          `${variant.mode}/${variant.level}${variant.configuration ? `/${variant.configuration}` : ""}`,
+          `${variant.mode}/${variant.level}${variant.harness ? `/${variant.harness}` : ""}${variant.configuration ? `/${variant.configuration}` : ""}`,
       )
   const noSharedVariant = provenance.flatMap((from) => {
     const listed = METRIC_SOURCE_NAMES.filter((source) =>

@@ -161,6 +161,20 @@ describe("range definition", () => {
     expect(svg).toContain("Models, sorted by token price ($/M)")
   })
 
+  it("leaves a configuration out of a row whose name no other row shares", () => {
+    const harness = "Cursor agent · CursorBench 4.0"
+    const svg = renderChartSvg(
+      rangeScene([
+        makeModel({ model: "astra", effort: "low", configuration: harness }),
+        makeModel({ model: "sonnet", effort: "low", configuration: harness }),
+      ]),
+      { ariaLabel: "Ranges" },
+    )
+
+    expect(svg).toContain(">astra · $4<")
+    expect(svg).toContain(">sonnet · $4<")
+  })
+
   it("dims every other row while one model is highlighted", () => {
     const chartScene = build("x", "astra")
 

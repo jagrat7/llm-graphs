@@ -109,11 +109,15 @@ export function effortLabel(mode: ReasoningMode, level: string) {
     return mode === "on" ? "effort unknown" : mode === "off" ? "non-reasoning" : "reasoning unknown"
   }
 
-  return mode === "off" ? `${level} non-reasoning` : level
+  // A thinking-token budget reads as one, "16K", rather than as a level word.
+  const shown = /^\d+k$/.test(level) ? level.toUpperCase() : level
+
+  return mode === "off" ? `${shown} non-reasoning` : shown
 }
 
-function variantKey(entryId: string, mode: ReasoningMode, level: string, configuration?: string) {
-  return `${entryId}\u0000${mode}/${level}/${configuration ?? ""}`
+/** A variant's identity across sources: the same model, effort, harness, and configuration. */
+function variantKey({ entryId, mode, level, harness, configuration }: ModelVariant) {
+  return `${entryId}\u0000${mode}/${level}/${harness ?? ""}/${configuration ?? ""}`
 }
 
 function indexVariants(variants: ReadonlyArray<ModelVariant>, excludeRefused: boolean) {
@@ -121,10 +125,7 @@ function indexVariants(variants: ReadonlyArray<ModelVariant>, excludeRefused: bo
 
   for (const variant of variants) {
     if (excludeRefused && (variant.refused || variant.configurationKnown === false)) continue
-    index.set(
-      variantKey(variant.entryId, variant.mode, variant.level, variant.configuration),
-      variant,
-    )
+    index.set(variantKey(variant), variant)
   }
 
   return index
@@ -179,7 +180,7 @@ export function offeredVariants(
   for (const variant of snapshot.variants[base]) {
     if (joined && (variant.refused || variant.configurationKnown === false)) continue
 
-    const key = variantKey(variant.entryId, variant.mode, variant.level, variant.configuration)
+    const key = variantKey(variant)
     if (others.some((source) => !indexes.get(source)?.has(key))) continue
 
     const entry = entries.get(variant.entryId)
@@ -213,7 +214,7 @@ function toModel(
 ): Model {
   const values: Record<MetricKey, number | null> = { ...emptyMetrics }
   const sources: Record<MetricKey, ProviderName | null> = { ...emptyMetrics }
-  const key = variantKey(variant.entryId, variant.mode, variant.level, variant.configuration)
+  const key = variantKey(variant)
   const measurements: NonNullable<ModelVariant["measurements"]> = {}
 
   for (const binding of bindings) {

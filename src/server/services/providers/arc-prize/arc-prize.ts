@@ -5,6 +5,7 @@ import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../p
 
 const DATASET = "v2_Semi_Private"
 const DATA_URL = "https://arcprize.org/media/data/leaderboard/v2.json"
+const HARNESS = "ARC Prize standard harness · ARC-AGI-2 semi-private"
 const feedSchema = z.object({
   version: z.literal("v2"),
   generatedAt: z.iso.datetime(),
@@ -77,11 +78,20 @@ function configuration(row: ARCRow) {
     .replace(/^opus-/, "claude-opus-")
     .replace(/^claude-3-7$/, "claude-sonnet-3-7")
     .replace(/^r1$/, "deepseek-r1")
+  const setting = budget
+    ? `${budget.toUpperCase()} token budget`
+    : parameters.includes("Thinking")
+      ? "thinking, budget unspecified"
+      : null
   return {
     sourceModelId,
     mode,
     level,
-    configuration: `ARC Prize standard harness · ARC-AGI-2 semi-private${budget ? ` · ${budget.toUpperCase()} token budget` : parameters.includes("Thinking") ? " · thinking enabled (budget unspecified)" : ""}`,
+    harness: HARNESS,
+    setting,
+    // A budget that is the effort is already the level; only a budget beside a level word,
+    // or an unstated one, sets a run apart.
+    ...(setting && (budget == null || effort !== budget) ? { configuration: setting } : {}),
     known: effort != null || !row.reasoning,
   } as const
 }
@@ -116,7 +126,8 @@ export class ARCPrizeProvider
       label: this.displayName,
       updatedAt: row.updatedAt,
       detail: [
-        run.configuration,
+        HARNESS,
+        run.setting,
         !run.known ? "Reasoning level not reported" : null,
         row.modelDisplayName.includes("²") ? "Provisional pricing; task cost unavailable" : null,
         row.costPerTask == null ? "Task cost not reported" : null,
@@ -130,7 +141,7 @@ export class ARCPrizeProvider
   }
   toMetricRows(payload: ARCPayload): Array<MetricRow> {
     return payload.rows.map((row) => {
-      const { known, ...run } = configuration(row)
+      const { known, setting: _setting, ...run } = configuration(row)
       return {
         ...run,
         ...(!known ? { configurationKnown: false as const } : {}),

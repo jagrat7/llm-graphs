@@ -5,6 +5,14 @@
  */
 export const CHART_AXIS_TITLE_SIZE = 12.5
 export const CHART_TICK_SIZE = 12
+/**
+ * The 2D chart's tick labels, drawn in the mono face. Martian Mono runs wide, so they
+ * step down from `CHART_TICK_SIZE`. No other chart text uses this size, which is how the
+ * chart's text measurer finds them (see `chart-text.ts`).
+ */
+export const CHART_MONO_TICK_SIZE = 10.5
+/** Martian Mono's advance as a share of the font size: every glyph is this wide. */
+export const CHART_MONO_WIDTH_RATIO = 0.7
 export const CHART_POINT_LABEL_SIZE = 10.5
 /** Primary grid lines; the 2D chart's cross-axis lines step down to the minor value. */
 export const CHART_GRID_OPACITY = 0.55
