@@ -80,7 +80,7 @@ $V page '/' --name six --cookie 'settings={"openingModels":6}'
 $V page '/' --name picks --cookie 'picked-models=["claude-opus-5","grok-4-6"]'
 ```
 
-Metric keys: `score cost price speed duration inputPrice outputPrice context votes horizon80 taskScore`. Source keys are the snapshot's `variants` keys: `artificialAnalysis deepswe metr arena automationBench terminalBench terminalBenchScience arcPrize cursorBench sweBench liveCodeBench`. Entry ids come from `jq -r '.entries[].id' <evidence>/<name>.body` after an `api` snapshot fetch.
+Metric keys: `score cost price speed duration inputPrice outputPrice context votes horizon80 taskScore`. Source keys are the snapshot's `variants` keys: `artificialAnalysis deepswe metr arena automationBench terminalBench terminalBenchScience arcPrize cursorBench frontierCode sweBench liveCodeBench`. Entry ids come from `jq -r '.entries[].id' <evidence>/<name>.body` after an `api` snapshot fetch.
 
 ### API
 

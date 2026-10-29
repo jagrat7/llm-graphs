@@ -13,6 +13,7 @@ Every registered benchmark has an official source mark in `SourceLogo`. Images a
 | Terminal-Bench Science | [Site favicon](https://www.terminal-bench-science.ai/favicon.svg?v=7)   | Inline atom strokes, removes black background and outer padding; central circle expressed as an equivalent path             |
 | ARC Prize              | [Site favicon](https://arcprize.org/media/images/favicon.png)           | Original two-square PNG; avoids the verified-results badge                                                                  |
 | CursorBench            | [Cursor favicon](https://cursor.com/marketing-static/favicon-light.svg) | Inline Cursor cube path, removes app tile and crops to the existing clip bounds                                             |
+| FrontierCode           | [Cognition favicon](https://cognition.com/icon.svg)                     | Inline Cognition mark paths, drops the inner-shadow filter and crops to the filter bounds; black/white theme variants       |
 | SWE-bench Verified     | [SWE-bench logo](https://www.swebench.com/img/swe-llama.svg)            | Original llama SVG                                                                                                          |
 | LiveCodeBench          | [Site favicon](https://livecodebench.github.io/images/favicon.svg)      | Original blue/green SVG                                                                                                     |
 

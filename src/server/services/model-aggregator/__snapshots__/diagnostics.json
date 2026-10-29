@@ -9,6 +9,7 @@
     "terminalBenchScience": null,
     "arcPrize": null,
     "cursorBench": null,
+    "frontierCode": null,
     "sweBench": null,
     "liveCodeBench": null,
     "modelsDevListing": null,
@@ -48,6 +49,9 @@
     "cursorBench.keyClashes": 0,
     "cursorBench.unmatched": 0,
     "cursorBench.nearMisses": 0,
+    "frontierCode.keyClashes": 0,
+    "frontierCode.unmatched": 0,
+    "frontierCode.nearMisses": 0,
     "sweBench.keyClashes": 0,
     "sweBench.unmatched": 0,
     "sweBench.nearMisses": 0,
@@ -3397,6 +3401,10 @@
       "unmatched": []
     },
     "cursorBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "frontierCode": {
       "keyClashes": [],
       "unmatched": []
     },
