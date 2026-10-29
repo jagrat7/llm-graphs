@@ -12,8 +12,11 @@ it("keeps effort/fallback configurations and declines incomparable costs", () =>
     level: "max",
     metrics: { score: 44.75, costPerTask: 1.14 },
   })
-  expect(rows[0]?.configuration).toContain("default fallbacks")
-  expect(rows[1]?.configuration).toContain("between tools reasoning")
+  // "Between tools" is the level, so it joins the other efforts under the same policy.
+  expect(rows[0]?.configuration).toBe("default fallbacks")
+  expect(rows[1]).toMatchObject({ level: "between tools", configuration: "default fallbacks" })
+  expect(rows[0]?.measurements?.score?.detail).toContain("API, 50-step limit")
+  expect(rows[5]?.configuration).toBeUndefined()
   expect(rows[2]?.sourceModelId).toContain("with-opus-5-fallback")
   expect(rows[2]?.metrics.costPerTask).toBeNull()
   expect(rows[3]?.metrics.costPerTask).toBeNull()

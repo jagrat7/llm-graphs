@@ -39,10 +39,21 @@ it("pairs published score and fully covered cost in one pinned agent run", () =>
     sourceModelId: "gpt-5-2",
     mode: "on",
     level: "high",
-    configuration: "mini-SWE-agent 2.0.0 · SWE-bench Verified · 20260217_mini-v2.0.0_gpt-5-2-high",
     metrics: { score: 72.8, costPerTask: 0.5 },
   })
+  // The agent is the harness, so a lone run of a model and effort carries no configuration.
+  expect(provider.toMetricRows(payload)[0]?.configuration).toBeUndefined()
   expect(payload.rows[0]).not.toHaveProperty("per_instance_details")
+})
+
+it("names a rerun of one model and effort by its folder so neither is folded away", () => {
+  const rows = new SWEBenchProvider().toMetricRows(
+    parseSWEBenchFeed(feed([run(), { ...run(), folder: "20260301_mini-v2.0.0_gpt-5-2-high" }])),
+  )
+  expect(rows.map((row) => row.configuration)).toEqual([
+    "20260217_mini-v2.0.0_gpt-5-2-high",
+    "20260301_mini-v2.0.0_gpt-5-2-high",
+  ])
 })
 
 it("keeps score while refusing incomplete, inconsistent, zero or warned spending", () => {

@@ -7,7 +7,7 @@ const AGENT_VERSION = "2.0.0"
 const TASK_COUNT = 500
 const DATA_URL =
   "https://raw.githubusercontent.com/SWE-bench/swe-bench.github.io/master/data/leaderboards.json"
-const CONFIGURATION = `mini-SWE-agent ${AGENT_VERSION} · SWE-bench Verified`
+const HARNESS = `mini-SWE-agent ${AGENT_VERSION} · SWE-bench Verified`
 const rowSchema = z.object({
   folder: z.string().min(1),
   name: z.string().min(1),
@@ -57,6 +57,10 @@ function coveredCost(row: z.infer<typeof rowSchema>) {
   return agrees(total, row.cost) && agrees(total / TASK_COUNT, row.instance_cost)
     ? row.instance_cost
     : null
+}
+
+function runKey(run: Pick<MetricRow, "sourceModelId" | "mode" | "level">) {
+  return `${run.sourceModelId}/${run.mode}/${run.level}`
 }
 
 export function parseSWEBenchFeed(raw: unknown): SWEBenchPayload {
@@ -113,7 +117,7 @@ export class SWEBenchProvider
       label: this.displayName,
       updatedAt: row.date,
       detail: [
-        CONFIGURATION,
+        HARNESS,
         `Run: ${row.folder}`,
         row.warning,
         row.reasoning_effort == null
@@ -128,18 +132,34 @@ export class SWEBenchProvider
     }
   }
   toMetricRows(payload: SWEBenchPayload): Array<MetricRow> {
-    return payload.rows.map((row) => {
+    const runs = payload.rows.map((row) => {
       const effort = row.reasoning_effort == null ? null : normalizeLevel(row.reasoning_effort)
       const off = effort === "none"
       return {
+        row,
+        effort,
+        off,
         sourceModelId: row.tags
           .find((tag) => tag.startsWith("Model: "))!
           .slice(7)
           .trim(),
-        rawId: row.folder,
         mode: effort == null ? "unknown" : off ? "off" : "on",
         level: effort == null || off ? "unknown" : effort,
-        configuration: `${CONFIGURATION} · ${row.folder}`,
+      } as const
+    })
+    const keys = runs.map(runKey)
+    // Only a rerun of one model and effort needs its folder to stay apart.
+    const reruns = new Set(keys.filter((key, index) => keys.indexOf(key) !== index))
+
+    return runs.map((run) => {
+      const { row, effort, off, sourceModelId, mode, level } = run
+      return {
+        sourceModelId,
+        rawId: row.folder,
+        harness: HARNESS,
+        mode,
+        level,
+        ...(reruns.has(runKey(run)) ? { configuration: row.folder } : {}),
         ...(effort == null || (!off && !isKnownLevel(effort))
           ? { configurationKnown: false as const }
           : {}),

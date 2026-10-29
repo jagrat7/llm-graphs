@@ -3,7 +3,7 @@ import { scaleLinear } from "@tanstack/charts/scales/linear"
 import { scalePoint } from "@tanstack/charts/scales/point"
 import { scaleLog } from "d3-scale"
 
-import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
+import type { PlotData } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/server/api"
 import type { PlotEncoding } from "#/ui/lib/chart-marks"
 
@@ -45,13 +45,6 @@ function shorten(text: string, maxChars: number) {
   return text.length <= maxChars ? text : `${text.slice(0, Math.max(1, maxChars - 1)).trimEnd()}…`
 }
 
-/** "Claude Sonnet 5.5 (between tools)": two configurations of a model share a name. */
-function rowName(point: PlotPoint) {
-  const { configuration } = point.model
-
-  return configuration ? `${point.model.displayName} (${configuration})` : point.model.displayName
-}
-
 /**
  * The comparison when one metric is fixed per model (see `stackedAxis`): one row per
  * model ordered by that fixed value, which each row's caption carries, and the model's
@@ -85,7 +78,7 @@ export function rangeDefinition(
     rows.map(({ series, fixed }) => [
       series.key,
       {
-        name: rowName(series.points[0]),
+        name: series.label,
         value:
           fixed.min === fixed.max
             ? formatFlat(fixed.min)

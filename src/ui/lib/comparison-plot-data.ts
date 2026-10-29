@@ -457,6 +457,16 @@ export function buildPlotData(
 
     return modelSeries
   })
+  const names = series.map((modelSeries) => modelSeries.label)
+  const shared = new Set(names.filter((name, index) => names.indexOf(name) !== index))
+
+  // "Claude Sonnet 5.5 (default fallbacks)", only when two runs would otherwise share a name.
+  for (const modelSeries of series) {
+    const { configuration } = modelSeries.points[0].model
+
+    if (configuration && shared.has(modelSeries.label))
+      modelSeries.label = `${modelSeries.label} (${configuration})`
+  }
 
   return {
     axes,

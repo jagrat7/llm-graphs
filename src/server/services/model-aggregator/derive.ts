@@ -87,7 +87,7 @@ function sourceModel(
 }
 
 function variantKey(row: MetricRow) {
-  return `${row.mode}/${row.level}/${row.configuration ?? ""}`
+  return `${row.mode}/${row.level}/${row.harness ?? ""}/${row.configuration ?? ""}`
 }
 
 function groupBy<T>(items: Iterable<T>, keyOf: (item: T) => string) {
@@ -456,6 +456,7 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
           level: row.level,
           effortOrder: effortOrder(row.mode, row.level),
           metrics: row.metrics,
+          ...(row.harness ? { harness: row.harness } : {}),
           ...(row.configuration ? { configuration: row.configuration } : {}),
           ...(row.configurationKnown === false ? { configurationKnown: false as const } : {}),
           ...(row.measurements ? { measurements: row.measurements } : {}),
