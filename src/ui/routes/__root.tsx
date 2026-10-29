@@ -49,6 +49,21 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: "stylesheet",
         href: appCss,
       },
+      // The two faces the first paint needs; the other subsets and weights load on demand.
+      {
+        rel: "preload",
+        href: "/fonts/instrument-sans-400-700-normal-latin.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/martian-mono-400-700-normal-latin.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "icon", href: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64" },
       { rel: "icon", href: "/favicon-96.png", type: "image/png", sizes: "96x96" },
       { rel: "apple-touch-icon", href: "/logo192.png" },

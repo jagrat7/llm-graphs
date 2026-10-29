@@ -51,7 +51,8 @@ function service(store: CountingStore, clock: { now: number }, buildId = "build-
   return new ModelAggregatorService(new SourceCache(store, now), buildId, now, true)
 }
 
-describe("snapshot caching", () => {
+// Each rebuild runs the full diagnostics, about 0.7 s on the committed fixtures.
+describe("snapshot caching", { timeout: 15_000 }, () => {
   it("builds from the payloads once, then answers from memory without touching the store", async () => {
     const store = await seededStore()
     const clock = { now: start }

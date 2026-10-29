@@ -75,6 +75,7 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   },
   sweBench: { src: "/benchmarks/swe-bench.svg" },
   liveCodeBench: { src: "/benchmarks/live-code-bench.svg" },
+  modelsDevListing: { src: "/benchmarks/models-dev.svg" },
 }
 
 export function SourceLogo({

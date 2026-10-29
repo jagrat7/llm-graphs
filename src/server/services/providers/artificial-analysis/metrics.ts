@@ -1,8 +1,8 @@
 import type { MetricReaders } from "../provider.types"
 import type { ArtificialAnalysisRow } from "./artificial-analysis.types"
 
-/** AA's usual blend: three input tokens for every output token. */
-function blendedPrice(input: number | null, output: number | null) {
+function listedPrices(row: ArtificialAnalysisRow): { input: number; output: number } | null {
+  const { price_1m_input_tokens: input, price_1m_output_tokens: output } = row
   if (
     input == null ||
     output == null ||
@@ -13,9 +13,8 @@ function blendedPrice(input: number | null, output: number | null) {
   )
     return null
 
-  const blended = (3 * input + output) / 4
   // AA lists a model it has no hosted price for at $0 in and out.
-  return Number.isFinite(blended) && blended > 0 ? blended : null
+  return input === 0 && output === 0 ? null : { input, output }
 }
 
 export const artificialAnalysisMetrics: MetricReaders<ArtificialAnalysisRow> = {
@@ -36,8 +35,21 @@ export const artificialAnalysisMetrics: MetricReaders<ArtificialAnalysisRow> = {
   },
   costPerMTokens: {
     scope: "model",
-    read: (row) => blendedPrice(row.price_1m_input_tokens, row.price_1m_output_tokens),
+    read: (row) => {
+      const prices = listedPrices(row)
+      return prices && (3 * prices.input + prices.output) / 4
+    },
     note: "3:1 input/output blend",
+  },
+  inputPricePerMTokens: {
+    scope: "model",
+    read: (row) => listedPrices(row)?.input ?? null,
+    presentation: { label: "Input token price", unit: "$/M tokens", format: "currency" },
+  },
+  outputPricePerMTokens: {
+    scope: "model",
+    read: (row) => listedPrices(row)?.output ?? null,
+    presentation: { label: "Output token price", unit: "$/M tokens", format: "currency" },
   },
   tokensPerSecond: {
     read: (row) =>

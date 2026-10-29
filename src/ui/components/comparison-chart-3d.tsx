@@ -1348,7 +1348,7 @@ export function ComparisonChart3D({
                       ? "font-semibold"
                       : item.kind === "axis"
                         ? "text-muted-foreground pointer-events-auto font-medium"
-                        : "text-muted-foreground tabular-nums"
+                        : "text-muted-foreground font-mono tabular-nums"
                   }`}
                   style={{
                     color: item.color,

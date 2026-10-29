@@ -11,7 +11,8 @@
     "cursorBench": null,
     "sweBench": null,
     "liveCodeBench": null,
-    "modelsDev": "2026-09-30T21:00:17.221Z"
+    "modelsDevListing": null,
+    "modelsDev": "2026-10-27T08:36:54.701Z"
   },
   "counts": {
     "failures": 0,
@@ -22,7 +23,7 @@
     "droppedRows": 0,
     "artificialAnalysis.keyClashes": 0,
     "artificialAnalysis.unmatched": 464,
-    "artificialAnalysis.nearMisses": 90,
+    "artificialAnalysis.nearMisses": 93,
     "deepswe.keyClashes": 0,
     "deepswe.unmatched": 0,
     "deepswe.nearMisses": 0,
@@ -53,13 +54,16 @@
     "liveCodeBench.keyClashes": 0,
     "liveCodeBench.unmatched": 0,
     "liveCodeBench.nearMisses": 0,
-    "modelsDev.keyClashes": 0,
-    "unresolvedDateGroups": 26,
+    "modelsDevListing.keyClashes": 0,
+    "modelsDevListing.unmatched": 0,
+    "modelsDevListing.nearMisses": 0,
+    "modelsDev.keyClashes": 5,
+    "unresolvedDateGroups": 31,
     "effortConflicts": 0,
     "noSharedVariant": 4,
     "derivedNames": 0,
     "unknownVendors": 0,
-    "nonCatalogVendors": 26,
+    "nonCatalogVendors": 20,
     "splitCreators": 0,
     "undated": 0
   },
@@ -74,6 +78,17 @@
     "artificialAnalysis": {
       "keyClashes": [],
       "unmatched": [
+        {
+          "id": "apodex-1-1",
+          "entryId": "apodex-1-1",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "apodex/apodex-1.1-mini",
+              "why": "prefix"
+            }
+          ]
+        },
         {
           "id": "claude-fable-5-1",
           "entryId": "claude-fable-5-1",
@@ -170,6 +185,53 @@
               "source": "modelsDev",
               "id": "deepseek/deepseek-r1",
               "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-r1-0528-qwen3-8b",
+              "why": "same name"
+            }
+          ]
+        },
+        {
+          "id": "deepseek-v3-0324",
+          "entryId": "deepseek-v3-0324",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-v3",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-v3-0324",
+              "why": "edit distance"
+            },
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-chat-v3-0324",
+              "why": "same name"
+            }
+          ]
+        },
+        {
+          "id": "deepseek-v3-1",
+          "entryId": "deepseek-v3-1",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-v3",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-v3.1",
+              "why": "edit distance"
+            },
+            {
+              "source": "modelsDev",
+              "id": "deepseek/deepseek-chat-v3.1",
+              "why": "same name"
             }
           ]
         },
@@ -389,22 +451,6 @@
           ]
         },
         {
-          "id": "gemini-2-5-flash-lite-preview-09-2025",
-          "entryId": "gemini-2-5-flash-lite-preview-09-2025",
-          "nearMisses": [
-            {
-              "source": "modelsDev",
-              "id": "google/gemini-2.5-flash",
-              "why": "prefix"
-            },
-            {
-              "source": "modelsDev",
-              "id": "google/gemini-2.5-flash-lite",
-              "why": "prefix"
-            }
-          ]
-        },
-        {
           "id": "gemini-2-5-flash-preview-09-2025",
           "entryId": "gemini-2-5-flash-preview-09-2025",
           "nearMisses": [
@@ -465,7 +511,7 @@
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "google/gemini-3-pro-preview",
+              "id": "google/gemini-3-pro-image",
               "why": "prefix"
             },
             {
@@ -475,7 +521,7 @@
             },
             {
               "source": "modelsDev",
-              "id": "google/gemini-3-pro-image",
+              "id": "google/gemini-3-pro-preview",
               "why": "prefix"
             }
           ]
@@ -756,17 +802,27 @@
             },
             {
               "source": "modelsDev",
-              "id": "xai/grok-4.1-fast-reasoning",
-              "why": "prefix"
-            },
-            {
-              "source": "modelsDev",
               "id": "xai/grok-4.20-0309-reasoning",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
+              "id": "xai/grok-4.1-fast-reasoning",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "xai/grok-4-fast-non-reasoning",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
               "id": "xai/grok-4.20-0309-non-reasoning",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "xai/grok-4-fast-reasoning",
               "why": "prefix"
             }
           ]
@@ -804,9 +860,30 @@
           ]
         },
         {
+          "id": "grok-4-fast",
+          "entryId": "grok-4-fast",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "xai/grok-4-fast-non-reasoning",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "xai/grok-4-fast-reasoning",
+              "why": "prefix"
+            }
+          ]
+        },
+        {
           "id": "kimi-k2",
           "entryId": "kimi-k2",
           "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "moonshotai/kimi-k2-0905",
+              "why": "prefix"
+            },
             {
               "source": "modelsDev",
               "id": "moonshotai/kimi-k2.5",
@@ -829,7 +906,7 @@
             },
             {
               "source": "modelsDev",
-              "id": "moonshotai/kimi-k2.7-code-highspeed",
+              "id": "moonshotai/kimi-k2-instruct",
               "why": "prefix"
             },
             {
@@ -839,24 +916,23 @@
             },
             {
               "source": "modelsDev",
+              "id": "moonshotai/kimi-k2.8-preview",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "moonshotai/kimi-k2.7-code-highspeed",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
               "id": "moonshotai/kimi-k2-thinking-turbo",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
-              "id": "moonshotai/kimi-k2.8-preview",
-              "why": "prefix"
-            }
-          ]
-        },
-        {
-          "id": "ling-3-0-flash",
-          "entryId": "ling-3-0-flash",
-          "nearMisses": [
-            {
-              "source": "modelsDev",
-              "id": "inclusionai/ling-3.0-flash-fin",
-              "why": "prefix"
+              "id": "moonshotai/kimi-k2",
+              "why": "edit distance"
             }
           ]
         },
@@ -877,12 +953,12 @@
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "nvidia/llama-3.3-nemotron-super-49b-v1",
+              "id": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
-              "id": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+              "id": "nvidia/llama-3.3-nemotron-super-49b-v1",
               "why": "prefix"
             }
           ]
@@ -959,22 +1035,34 @@
           ]
         },
         {
-          "id": "mistral-large",
-          "entryId": "mistral-large",
+          "id": "mistral-7b-instruct",
+          "entryId": "mistral-7b-instruct",
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-large-2411",
+              "id": "mistral/mistral-7b-instruct-v0.3",
               "why": "prefix"
-            },
+            }
+          ]
+        },
+        {
+          "id": "mistral-8x22b-instruct",
+          "entryId": "mistral-8x22b-instruct",
+          "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-large-latest",
-              "why": "prefix"
-            },
+              "id": "mistral/mixtral-8x22b-instruct",
+              "why": "edit distance"
+            }
+          ]
+        },
+        {
+          "id": "mistral-large-2",
+          "entryId": "mistral-large-2",
+          "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-large-2512",
+              "id": "mistral/mistral-large",
               "why": "prefix"
             }
           ]
@@ -983,6 +1071,11 @@
           "id": "mistral-large-3",
           "entryId": "mistral-large-3",
           "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-large",
+              "why": "prefix"
+            },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-large-2512",
@@ -996,40 +1089,33 @@
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-medium-2505",
+              "id": "mistral/mistral-medium-3",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-medium-2604",
+              "id": "mistral/mistral-medium-3.1",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-medium-3-5",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-medium-latest",
               "why": "prefix"
-            }
-          ]
-        },
-        {
-          "id": "mistral-medium-3",
-          "entryId": "mistral-medium-3",
-          "nearMisses": [
+            },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-medium-2505",
-              "why": "same name"
-            }
-          ]
-        },
-        {
-          "id": "mistral-medium-3-5",
-          "entryId": "mistral-medium-3-5",
-          "nearMisses": [
+              "why": "prefix"
+            },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-medium-2604",
-              "why": "same name"
+              "why": "prefix"
             }
           ]
         },
@@ -1039,7 +1125,27 @@
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-small-latest",
+              "id": "mistral/mistral-small-2603",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-3.2-24b-instruct",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-3.1-24b-instruct",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-2506",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-24b-instruct-2501",
               "why": "prefix"
             },
             {
@@ -1049,12 +1155,7 @@
             },
             {
               "source": "modelsDev",
-              "id": "mistral/mistral-small-2603",
-              "why": "prefix"
-            },
-            {
-              "source": "modelsDev",
-              "id": "mistral/mistral-small-2506",
+              "id": "mistral/mistral-small-latest",
               "why": "prefix"
             }
           ]
@@ -1063,6 +1164,21 @@
           "id": "mistral-small-3",
           "entryId": "mistral-small-3",
           "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-3.2-24b-instruct",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-3.1-24b-instruct",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-24b-instruct-2501",
+              "why": "same name"
+            },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-small-3-1-24b-instruct-2503",
@@ -1076,6 +1192,11 @@
           "nearMisses": [
             {
               "source": "modelsDev",
+              "id": "mistral/mistral-small-3.1-24b-instruct",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
               "id": "mistral/mistral-small-3-1-24b-instruct-2503",
               "why": "prefix"
             }
@@ -1085,6 +1206,11 @@
           "id": "mistral-small-3-2",
           "entryId": "mistral-small-3-2",
           "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "mistral/mistral-small-3.2-24b-instruct",
+              "why": "prefix"
+            },
             {
               "source": "modelsDev",
               "id": "mistral/mistral-small-2506",
@@ -1100,6 +1226,17 @@
               "source": "modelsDev",
               "id": "mistral/mistral-small-2603",
               "why": "same name"
+            }
+          ]
+        },
+        {
+          "id": "mixtral-8x7b-instruct",
+          "entryId": "mixtral-8x7b-instruct",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "mistral/mixtral-8x7b-instruct-v0.1",
+              "why": "prefix"
             }
           ]
         },
@@ -1152,6 +1289,11 @@
             {
               "source": "modelsDev",
               "id": "meta/muse-spark-1.3",
+              "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "meta/muse-spark-open",
               "why": "prefix"
             }
           ]
@@ -1208,6 +1350,11 @@
               "source": "modelsDev",
               "id": "microsoft/phi-4-mini",
               "why": "prefix"
+            },
+            {
+              "source": "modelsDev",
+              "id": "microsoft/phi-4-multimodal-instruct",
+              "why": "prefix"
             }
           ]
         },
@@ -1219,17 +1366,6 @@
               "source": "modelsDev",
               "id": "mistral/mistral-large-2411",
               "why": "edit distance"
-            }
-          ]
-        },
-        {
-          "id": "qwen3-30b-a3b-2507",
-          "entryId": "qwen3-30b-a3b-2507",
-          "nearMisses": [
-            {
-              "source": "modelsDev",
-              "id": "alibaba/qwen3-30b-a3b",
-              "why": "prefix"
             }
           ]
         },
@@ -1261,17 +1397,6 @@
           ]
         },
         {
-          "id": "qwen3-max-preview",
-          "entryId": "qwen3-max-preview",
-          "nearMisses": [
-            {
-              "source": "modelsDev",
-              "id": "alibaba/qwen3-max",
-              "why": "prefix"
-            }
-          ]
-        },
-        {
           "id": "qwen3-max-thinking-preview",
           "entryId": "qwen3-max-thinking-preview",
           "nearMisses": [
@@ -1283,12 +1408,34 @@
           ]
         },
         {
+          "id": "qwen3-omni-30b-a3b",
+          "entryId": "qwen3-omni-30b-a3b",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "alibaba/qwen3-omni-30b-a3b-thinking",
+              "why": "prefix"
+            }
+          ]
+        },
+        {
           "id": "qwq-32b-preview",
           "entryId": "qwq-32b-preview",
           "nearMisses": [
             {
               "source": "modelsDev",
               "id": "alibaba/qwq-32b",
+              "why": "prefix"
+            }
+          ]
+        },
+        {
+          "id": "reka-flash",
+          "entryId": "reka-flash",
+          "nearMisses": [
+            {
+              "source": "modelsDev",
+              "id": "rekaai/reka-flash-3",
               "why": "prefix"
             }
           ]
@@ -1354,12 +1501,12 @@
           "nearMisses": [
             {
               "source": "modelsDev",
-              "id": "arcee-ai/trinity-large-preview",
+              "id": "arcee-ai/trinity-large-thinking",
               "why": "prefix"
             },
             {
               "source": "modelsDev",
-              "id": "arcee-ai/trinity-large-thinking",
+              "id": "arcee-ai/trinity-large-preview",
               "why": "prefix"
             }
           ]
@@ -1377,11 +1524,6 @@
         {
           "id": "apertus-8b-instruct",
           "entryId": "apertus-8b",
-          "nearMisses": []
-        },
-        {
-          "id": "apodex-1-1",
-          "entryId": "apodex-1-1",
           "nearMisses": []
         },
         {
@@ -1501,7 +1643,7 @@
         },
         {
           "id": "command-a",
-          "entryId": "command-a-03-2025",
+          "entryId": "command-a",
           "nearMisses": []
         },
         {
@@ -1580,16 +1722,6 @@
           "nearMisses": []
         },
         {
-          "id": "deepseek-v3-0324",
-          "entryId": "deepseek-v3-0324",
-          "nearMisses": []
-        },
-        {
-          "id": "deepseek-v3-1",
-          "entryId": "deepseek-v3-1",
-          "nearMisses": []
-        },
-        {
           "id": "deepseek-v3-2",
           "entryId": "deepseek-v3-2",
           "nearMisses": []
@@ -1611,7 +1743,7 @@
         },
         {
           "id": "diffusiongemma-26b-a4b",
-          "entryId": "diffusiongemma-26b-a4b",
+          "entryId": "diffusiongemma-26b-a4b-it",
           "nearMisses": []
         },
         {
@@ -1715,6 +1847,11 @@
           "nearMisses": []
         },
         {
+          "id": "gemini-2-5-flash-lite-preview-09-2025",
+          "entryId": "gemini-2-5-flash-lite-preview-09-2025",
+          "nearMisses": []
+        },
+        {
           "id": "gemini-2-5-pro",
           "entryId": "gemini-2-5-pro",
           "nearMisses": []
@@ -1761,12 +1898,12 @@
         },
         {
           "id": "gemma-3n-e2b",
-          "entryId": "gemma-3n-e2b",
+          "entryId": "gemma-3n-e2b-it",
           "nearMisses": []
         },
         {
           "id": "gemma-3n-e4b",
-          "entryId": "gemma-3n-e4b",
+          "entryId": "gemma-3n-e4b-it",
           "nearMisses": []
         },
         {
@@ -2070,11 +2207,6 @@
           "nearMisses": []
         },
         {
-          "id": "grok-4-fast",
-          "entryId": "grok-4-fast",
-          "nearMisses": []
-        },
-        {
           "id": "grok-beta",
           "entryId": "grok-beta",
           "nearMisses": []
@@ -2335,6 +2467,11 @@
           "nearMisses": []
         },
         {
+          "id": "ling-3-0-flash",
+          "entryId": "ling-3-0-flash",
+          "nearMisses": []
+        },
+        {
           "id": "ling-3-0-flash-fin",
           "entryId": "ling-3-0-flash-fin",
           "nearMisses": []
@@ -2406,17 +2543,17 @@
         },
         {
           "id": "llama-3-2-instruct-1b",
-          "entryId": "llama-3-2-1b",
+          "entryId": "llama-3-2-instruct-1b",
           "nearMisses": []
         },
         {
           "id": "llama-3-2-instruct-3b",
-          "entryId": "llama-3-2-3b",
+          "entryId": "llama-3-2-instruct-3b",
           "nearMisses": []
         },
         {
           "id": "llama-3-2-instruct-90b-vision",
-          "entryId": "llama-3-2-instruct-90b-vision",
+          "entryId": "llama-3-2-90b-vision-instruct",
           "nearMisses": []
         },
         {
@@ -2585,18 +2722,8 @@
           "nearMisses": []
         },
         {
-          "id": "mistral-7b-instruct",
-          "entryId": "mistral-7b-instruct",
-          "nearMisses": []
-        },
-        {
-          "id": "mistral-8x22b-instruct",
-          "entryId": "mistral-8x22b-instruct",
-          "nearMisses": []
-        },
-        {
-          "id": "mistral-large-2",
-          "entryId": "mistral-large-2",
+          "id": "mistral-large",
+          "entryId": "mistral-large",
           "nearMisses": []
         },
         {
@@ -2605,8 +2732,18 @@
           "nearMisses": []
         },
         {
+          "id": "mistral-medium-3",
+          "entryId": "mistral-medium-3",
+          "nearMisses": []
+        },
+        {
           "id": "mistral-medium-3-1",
           "entryId": "mistral-medium-3-1",
+          "nearMisses": []
+        },
+        {
+          "id": "mistral-medium-3-5",
+          "entryId": "mistral-medium-3-5",
           "nearMisses": []
         },
         {
@@ -2617,11 +2754,6 @@
         {
           "id": "mistral-small-2402",
           "entryId": "mistral-small-2402",
-          "nearMisses": []
-        },
-        {
-          "id": "mixtral-8x7b-instruct",
-          "entryId": "mixtral-8x7b-instruct",
           "nearMisses": []
         },
         {
@@ -2821,7 +2953,7 @@
         },
         {
           "id": "phi-4-multimodal",
-          "entryId": "phi-4-multimodal",
+          "entryId": "phi-4-multimodal-instruct",
           "nearMisses": []
         },
         {
@@ -2902,6 +3034,11 @@
         {
           "id": "qwen3-235b-a22b-instruct-2507",
           "entryId": "qwen3-235b-a22b-instruct-2507",
+          "nearMisses": []
+        },
+        {
+          "id": "qwen3-30b-a3b-2507",
+          "entryId": "qwen3-30b-a3b-instruct-2507",
           "nearMisses": []
         },
         {
@@ -3016,7 +3153,7 @@
         },
         {
           "id": "qwen3-8b-instruct",
-          "entryId": "qwen3-8b-instruct",
+          "entryId": "qwen3-8b",
           "nearMisses": []
         },
         {
@@ -3040,6 +3177,11 @@
           "nearMisses": []
         },
         {
+          "id": "qwen3-max-preview",
+          "entryId": "qwen3-max-preview",
+          "nearMisses": []
+        },
+        {
           "id": "qwen3-next-80b-a3b",
           "entryId": "qwen3-next-80b-a3b-instruct",
           "nearMisses": []
@@ -3047,11 +3189,6 @@
         {
           "id": "qwen3-next-80b-a3b-instruct",
           "entryId": "qwen3-next-80b-a3b-instruct",
-          "nearMisses": []
-        },
-        {
-          "id": "qwen3-omni-30b-a3b",
-          "entryId": "qwen3-omni-30b-a3b",
           "nearMisses": []
         },
         {
@@ -3071,12 +3208,12 @@
         },
         {
           "id": "qwen3-vl-30b-a3b",
-          "entryId": "qwen3-vl-30b-a3b",
+          "entryId": "qwen3-vl-30b-a3b-instruct",
           "nearMisses": []
         },
         {
           "id": "qwen3-vl-30b-a3b-instruct",
-          "entryId": "qwen3-vl-30b-a3b",
+          "entryId": "qwen3-vl-30b-a3b-instruct",
           "nearMisses": []
         },
         {
@@ -3117,11 +3254,6 @@
         {
           "id": "r1-1776",
           "entryId": "r1-1776",
-          "nearMisses": []
-        },
-        {
-          "id": "reka-flash",
-          "entryId": "reka-flash",
           "nearMisses": []
         },
         {
@@ -3276,8 +3408,53 @@
       "keyClashes": [],
       "unmatched": []
     },
-    "modelsDev": {
+    "modelsDevListing": {
       "keyClashes": [],
+      "unmatched": []
+    },
+    "modelsDev": {
+      "keyClashes": [
+        {
+          "source": "modelsDev",
+          "key": "deepseek|v3-0324",
+          "ids": [
+            "deepseek/deepseek-chat-v3-0324",
+            "deepseek/deepseek-v3-0324"
+          ]
+        },
+        {
+          "source": "modelsDev",
+          "key": "deepseek|v3-1",
+          "ids": [
+            "deepseek/deepseek-chat-v3.1",
+            "deepseek/deepseek-v3.1"
+          ]
+        },
+        {
+          "source": "modelsDev",
+          "key": "llama|3-2-1b",
+          "ids": [
+            "meta/llama-3.2-1b",
+            "meta/llama-3.2-1b-instruct"
+          ]
+        },
+        {
+          "source": "modelsDev",
+          "key": "llama|3-2-3b",
+          "ids": [
+            "meta/llama-3.2-3b",
+            "meta/llama-3.2-3b-instruct"
+          ]
+        },
+        {
+          "source": "modelsDev",
+          "key": "kimi|k2",
+          "ids": [
+            "moonshotai/kimi-k2",
+            "moonshotai/kimi-k2-instruct"
+          ]
+        }
+      ],
       "unmatched": []
     }
   },
@@ -3334,6 +3511,10 @@
         {
           "source": "modelsDev",
           "id": "deepseek/deepseek-r1"
+        },
+        {
+          "source": "modelsDev",
+          "id": "deepseek/deepseek-r1-0528"
         }
       ]
     },
@@ -3389,6 +3570,14 @@
         {
           "source": "artificialAnalysis",
           "id": "mistral-large-2407"
+        },
+        {
+          "source": "modelsDev",
+          "id": "mistral/mistral-large"
+        },
+        {
+          "source": "modelsDev",
+          "id": "mistral/mistral-large-2407"
         },
         {
           "source": "modelsDev",
@@ -3511,11 +3700,32 @@
       ]
     },
     {
+      "key": "a-command|",
+      "ids": [
+        {
+          "source": "modelsDev",
+          "id": "cohere/command-a"
+        },
+        {
+          "source": "modelsDev",
+          "id": "cohere/command-a-03-2025"
+        },
+        {
+          "source": "artificialAnalysis",
+          "id": "command-a"
+        }
+      ]
+    },
+    {
       "key": "|qwen3-30b-a3b",
       "ids": [
         {
           "source": "modelsDev",
           "id": "alibaba/qwen3-30b-a3b"
+        },
+        {
+          "source": "modelsDev",
+          "id": "alibaba/qwen3-30b-a3b-instruct-2507"
         },
         {
           "source": "artificialAnalysis",
@@ -3541,10 +3751,23 @@
         {
           "source": "modelsDev",
           "id": "deepseek/deepseek-v3"
+        }
+      ]
+    },
+    {
+      "key": "kimi|k2",
+      "ids": [
+        {
+          "source": "artificialAnalysis",
+          "id": "kimi-k2"
+        },
+        {
+          "source": "artificialAnalysis",
+          "id": "kimi-k2-0905"
         },
         {
           "source": "modelsDev",
-          "id": "deepseek/deepseek-v3-0324"
+          "id": "moonshotai/kimi-k2-0905"
         }
       ]
     },
@@ -3603,6 +3826,40 @@
       ]
     },
     {
+      "key": "flash-gemini-lite-preview|2-5",
+      "ids": [
+        {
+          "source": "artificialAnalysis",
+          "id": "gemini-2-5-flash-lite-preview-09-2025"
+        },
+        {
+          "source": "modelsDev",
+          "id": "google/gemini-2.5-flash-lite-preview-06-17"
+        },
+        {
+          "source": "modelsDev",
+          "id": "google/gemini-2.5-flash-lite-preview-09-2025"
+        }
+      ]
+    },
+    {
+      "key": "deepseek-flash|v4-1",
+      "ids": [
+        {
+          "source": "artificialAnalysis",
+          "id": "deepseek-v4-1-flash"
+        },
+        {
+          "source": "modelsDev",
+          "id": "deepseek/deepseek-v4.1-flash"
+        },
+        {
+          "source": "modelsDev",
+          "id": "deepseek/deepseek-v4.1-flash-1017"
+        }
+      ]
+    },
+    {
       "key": "command-plus-r|",
       "ids": [
         {
@@ -3612,6 +3869,19 @@
         {
           "source": "artificialAnalysis",
           "id": "command-r-plus-04-2024"
+        }
+      ]
+    },
+    {
+      "key": "flash-gemini-preview|2-5",
+      "ids": [
+        {
+          "source": "artificialAnalysis",
+          "id": "gemini-2-5-flash-preview-09-2025"
+        },
+        {
+          "source": "modelsDev",
+          "id": "google/gemini-2.5-flash-preview-05-20"
         }
       ]
     },
@@ -3842,14 +4112,14 @@
   },
   "metadata": {
     "metadataFrom": {
-      "artificialAnalysis": 283,
-      "modelsDev": 201
+      "artificialAnalysis": 252,
+      "modelsDev": 232
     },
     "vendorRule": {
-      "creator slug": 69,
-      "models.dev": 201,
-      "creator vote": 191,
-      "first-word vote": 23
+      "creator slug": 48,
+      "models.dev": 232,
+      "first-word vote": 9,
+      "creator vote": 195
     },
     "derivedNames": [],
     "unknownVendors": [],
@@ -3861,14 +4131,6 @@
       {
         "creator": "Allen Institute for AI",
         "vendor": "allen-institute-for-ai"
-      },
-      {
-        "creator": "Apodex",
-        "vendor": "apodex"
-      },
-      {
-        "creator": "Baidu",
-        "vendor": "baidu"
       },
       {
         "creator": "Celeris",
@@ -3887,10 +4149,6 @@
         "vendor": "deep-cogito"
       },
       {
-        "creator": "Inception",
-        "vendor": "inception"
-      },
-      {
         "creator": "Institute of Foundation Models",
         "vendor": "institute-of-foundation-models"
       },
@@ -3907,10 +4165,6 @@
         "vendor": "lg-ai-research"
       },
       {
-        "creator": "Liquid AI",
-        "vendor": "liquid-ai"
-      },
-      {
         "creator": "Multiverse Computing",
         "vendor": "multiverse-computing"
       },
@@ -3923,20 +4177,12 @@
         "vendor": "naver"
       },
       {
-        "creator": "Nous Research",
-        "vendor": "nous-research"
-      },
-      {
         "creator": "OpenChat",
         "vendor": "openchat"
       },
       {
         "creator": "Prime Intellect",
         "vendor": "prime-intellect"
-      },
-      {
-        "creator": "Reka AI",
-        "vendor": "reka-ai"
       },
       {
         "creator": "ServiceNow",

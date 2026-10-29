@@ -10,6 +10,7 @@ import { LiveCodeBenchProvider } from "./live-code-bench/live-code-bench"
 import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
 import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
+import { ModelsDevListingProvider } from "./models-dev/listing"
 import {
   METRIC_KEYS,
   type MetricKey,
@@ -31,6 +32,7 @@ const metricSources = {
   cursorBench: new CursorBenchProvider(),
   sweBench: new SWEBenchProvider(),
   liveCodeBench: new LiveCodeBenchProvider(),
+  modelsDevListing: new ModelsDevListingProvider(),
 }
 
 export type RegisteredProviderName = keyof typeof metricSources

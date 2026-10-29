@@ -11,6 +11,7 @@ import automationBenchFixture from "./fixtures/automation-bench.json"
 import terminalBenchFixture from "./fixtures/terminal-bench.json"
 import terminalBenchScienceFixture from "./fixtures/terminal-bench-science.json"
 import modelsDevFixture from "./fixtures/models-dev.json"
+import modelsDevListingFixture from "./fixtures/models-dev-listing.json"
 import arcPrizeFixture from "./fixtures/arc-prize.json"
 import cursorBenchFixture from "./fixtures/cursor-bench.json"
 import sweBenchFixture from "./fixtures/swe-bench.json"
@@ -30,6 +31,7 @@ export const fixtures = {
   deepswe: deepsweFixture satisfies CachedPayload<DeepSWEPayload>,
   artificialAnalysis: artificialAnalysisFixture satisfies CachedPayload<ArtificialAnalysisPayload>,
   modelsDev: modelsDevFixture satisfies CachedPayload<ModelsDevPayload>,
+  modelsDevListing: modelsDevListingFixture,
 }
 
 /** The aggregator's inputs built from the committed fixtures, for tests. */
@@ -60,6 +62,7 @@ export function allFixtureInputs(): AggregatorInputs {
       ProvidersService.metricSources.terminalBenchScience,
       fixtures.terminalBenchScience,
     ),
+    metricSourceInput(ProvidersService.metricSources.modelsDevListing, fixtures.modelsDevListing),
   )
   return inputs
 }
