@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@import "./fonts.css";
+@import "@fontsource-variable/instrument-sans/wght.css";
+@import "@fontsource-variable/instrument-sans/wght-italic.css";
+@import "@fontsource-variable/martian-mono/wght.css";
+@import "@fontsource/space-mono/700.css";
 @import "./typeset.css";
 @plugin '@tailwindcss/typography';
 @import "tw-animate-css";
@@ -97,8 +100,8 @@
 }
 
 @theme inline {
-  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Martian Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-heading: var(--font-sans);
   --font-brand: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-background: var(--background);
