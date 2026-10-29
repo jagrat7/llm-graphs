@@ -8,7 +8,7 @@ import { defaultPicks, offeredVariants } from "#/ui/lib/model-view"
 import { withoutHiddenProviders } from "#/ui/lib/settings"
 
 /** The settings that change which models a comparison offers and opens on. */
-export type ComparisonSettings = Pick<Settings, "hiddenProviders" | "openingModels">
+export type ComparisonSettings = Pick<Settings, "hiddenProviders">
 
 /** The models the axes can draw, and the ones the chart opens on before the reader picks. */
 export function comparisonModels(
@@ -33,7 +33,6 @@ export function comparisonModels(
       scoreSourceOf(axes),
       info,
       bindings.map((binding) => binding.metric),
-      settings.openingModels,
     ),
   }
 }
