@@ -6,12 +6,9 @@ import type { Model } from "#/ui/lib/model-view"
 import type { ModelSnapshot } from "#/server/api"
 
 import { createCookieStore, parseJsonCookie } from "#/ui/lib/cookie-store"
-import { DEFAULT_PICK_COUNT, logoDataUrl, pinRank, vendorLabel } from "#/ui/lib/model-view"
+import { logoDataUrl, pinRank, vendorLabel } from "#/ui/lib/model-view"
 
 export const SETTINGS_COOKIE = "settings"
-
-/** How many models the chart may open on, before the reader picks their own. */
-export const OPENING_MODEL_COUNTS = [6, DEFAULT_PICK_COUNT, 12] as const
 
 /**
  * Each field falls back on its own, so a stored value from an older build, or one
@@ -26,11 +23,6 @@ const settingsSchema = z.object({
   vendorLogos: z.catch(z.boolean(), true),
   /** Every effort level a model ran at, or only its highest. */
   effortLevels: z.catch(z.enum(["all", "highest"]), "all"),
-  /** How many models the chart opens on until the reader picks. */
-  openingModels: z.catch(
-    z.union(OPENING_MODEL_COUNTS.map((count) => z.literal(count))),
-    DEFAULT_PICK_COUNT,
-  ),
 })
 
 export type Settings = z.infer<typeof settingsSchema>
@@ -42,8 +34,7 @@ export function isDefaultSettings(settings: Settings) {
     settings.hiddenProviders.length === 0 &&
     settings.paretoFrontier === DEFAULT_SETTINGS.paretoFrontier &&
     settings.vendorLogos === DEFAULT_SETTINGS.vendorLogos &&
-    settings.effortLevels === DEFAULT_SETTINGS.effortLevels &&
-    settings.openingModels === DEFAULT_SETTINGS.openingModels
+    settings.effortLevels === DEFAULT_SETTINGS.effortLevels
   )
 }
 
@@ -56,7 +47,7 @@ export function parseSettings(value: unknown): Settings {
 
 /**
  * This browser's settings, kept in a cookie so the server renders the chart with them: hidden
- * providers and the opening count decide which models the first HTML carries.
+ * providers decide which models the first HTML carries.
  */
 const settingsCookie = createCookieStore<Settings>({
   name: SETTINGS_COOKIE,
