@@ -67,9 +67,16 @@ try {
   await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } })
   await send("Page.navigate", { url: `file://${root}/scripts/app-icon/app-icon.html` })
   // The ring text is set in a webfont; a screenshot taken before it arrives would
-  // silently bake fallback lettering into every icon, so wait for it and then verify.
+  // silently bake fallback lettering into every icon. Wait for the page to load, then
+  // for its fonts, then confirm the face itself is loaded: `fonts.check` alone says yes
+  // for a family the page never defined.
   const fontReady = await send("Runtime.evaluate", {
-    expression: `document.fonts.ready.then(() => document.fonts.check('16px "Bebas Neue"'))`,
+    expression: `(document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise((resolve) => addEventListener("load", resolve, { once: true })))
+      .then(() => document.fonts.ready)
+      .then(() => [...document.fonts].some((face) =>
+        face.family.replaceAll('"', "") === "Bebas Neue" && face.status === "loaded"))`,
     awaitPromise: true,
     returnByValue: true,
   })
