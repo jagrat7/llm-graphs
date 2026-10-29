@@ -21,10 +21,13 @@ set -euo pipefail
 
 script_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 repo=$(git -C "$script_dir" rev-parse --show-toplevel)
-state_root=${TMPDIR:-/tmp}/llmg-verify
+# Per-user and private: `down` signals the pgid stored here, so nobody else may write it.
+state_root=${TMPDIR:-/tmp}/llmg-verify-$(id -u)
 evidence_root=$repo/.verify/llm-graphs
 
 die() { echo "llmg: $*" >&2; exit 1; }
+
+[ ! -e "$state_root" ] || [ -O "$state_root" ] || die "$state_root is not owned by you; refusing to trust it"
 
 resolve_run() {
   if [ -n "${LLMG_RUN:-}" ]; then
@@ -68,6 +71,7 @@ cmd_up() {
   run=$(date +%Y%m%d-%H%M%S)-$$
   state=$state_root/$run
   evidence=$evidence_root/$run
+  mkdir -p -m 700 "$state_root"
   mkdir -p "$state" "$evidence"
   echo "$port" > "$state/port"
   git -C "$repo" rev-parse HEAD > "$state/rev"
@@ -103,6 +107,8 @@ cmd_up() {
 
 cmd_doctor() {
   resolve_run
+  # Every check reports, so a failing one must not end the doctor early.
+  set +e
   local ok=1
   report() { if [ "$1" = 0 ]; then echo "ok    $2"; else echo "FAIL  $2"; ok=0; fi; }
 

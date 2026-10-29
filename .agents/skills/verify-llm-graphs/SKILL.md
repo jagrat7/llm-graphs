@@ -31,7 +31,7 @@ It returns only when ready: `/api/models/snapshot` answers with at least one ent
 
 Every later command needs the run id: prefix it as `LLMG_RUN=<id> $V doctor`. Shell state does not persist between tool calls. With exactly one active run, the id may be omitted.
 
-Several runs can live side by side; each gets its own port, scratch dir (`$TMPDIR/llmg-verify/<id>/`), and evidence dir. Never drive a server you did not start with `up`. The user's own `bun run dev` on :3000 shares the production Redis cache.
+Several runs can live side by side; each gets its own port, scratch dir (`$TMPDIR/llmg-verify-$UID/<id>/`), and evidence dir. Never drive a server you did not start with `up`. The user's own `bun run dev` on :3000 shares the production Redis cache.
 
 ## Doctor
 
@@ -135,7 +135,7 @@ Everything lands in `.verify/llm-graphs/<run-id>/`, which is gitignored and surv
 LLMG_RUN=<id> $V down
 ```
 
-`down` kills only the process group `up` recorded (TERM, then KILL after 5s), copies the log into evidence, deletes `$TMPDIR/llmg-verify/<id>/`, and confirms the port is free. It never kills by process name, never touches other runs, and never deletes `.verify/`. After a failed attempt, still run `down` for every run id you started. To remove old proof deliberately, delete the specific `.verify/llm-graphs/<id>/` yourself.
+`down` kills only the process group `up` recorded (TERM, then KILL after 5s), copies the log into evidence, deletes `$TMPDIR/llmg-verify-$UID/<id>/`, and confirms the port is free. It never kills by process name, never touches other runs, and never deletes `.verify/`. After a failed attempt, still run `down` for every run id you started. To remove old proof deliberately, delete the specific `.verify/llm-graphs/<id>/` yourself.
 
 ## Features
 
