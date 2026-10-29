@@ -18,6 +18,7 @@ import {
   CHART_ACTIVE_SCALE,
   CHART_AXIS_TITLE_SIZE,
   CHART_GRID_OPACITY,
+  CHART_RULING_OPACITY,
   CHART_TICK_SIZE,
   CHART_TOOLTIP_CLASS,
   CHART_TOOLTIP_GAP,
@@ -25,6 +26,7 @@ import {
   chartFontRem,
 } from "#/ui/lib/chart-styles"
 import { glPlotImage } from "#/ui/lib/chart-image"
+import { minorRulings } from "#/ui/lib/paper-rulings"
 import {
   buildPlotData,
   describePlot,
@@ -226,10 +228,11 @@ const WALL_PLANE: Record<PlotAxis, [PlotAxis, PlotAxis]> = {
 const WALL_SIDES = [-1, 1] as const
 
 /**
- * One wall's grid, ruled at the same tick values the axis labels use so every line
- * lands on a labelled value.
+ * One wall's lines at the given unit fractions along each in-plane axis: the grid, ruled
+ * at the same tick values the axis labels use so every line lands on a labelled value,
+ * or the finer rulings between them.
  */
-function wallGridPositions(
+function wallLinePositions(
   normal: PlotAxis,
   side: number,
   fractions: Record<PlotAxis, Array<number>>,
@@ -259,40 +262,67 @@ function wallGridPositions(
   return new Float32Array(positions)
 }
 
+function lineGeometry(positions: Float32Array) {
+  const geometry = new THREE.BufferGeometry()
+
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3))
+
+  return geometry
+}
+
+/** The sheet's minor rulings between the ticks, on every axis, in unit fractions. */
+function rulingFractions(gridFractions: Record<PlotAxis, Array<number>>) {
+  const fractions: Record<PlotAxis, Array<number>> = { x: [], y: [], z: [] }
+
+  for (const axis of AXES) fractions[axis] = minorRulings(gridFractions[axis], 0, 1)
+
+  return fractions
+}
+
+/**
+ * The cube's edges and the three walls behind the data: each wall carries the grid at the
+ * labelled ticks and the finer rulings between them, so the walls read as three sheets
+ * of graph paper folded into a corner.
+ */
 function PlotFrame({
   borderColor,
+  gridColor,
+  rulingColor,
   gridFractions,
   scene,
 }: {
   borderColor: string
+  gridColor: string
+  rulingColor: string
   gridFractions: Record<PlotAxis, Array<number>>
   scene: React.RefObject<SceneRefs>
 }) {
   const groupRef = useRef<THREE.Group>(null)
   const wallRefs = useRef<Array<THREE.LineSegments | null>>([])
+  const rulingRefs = useRef<Array<THREE.LineSegments | null>>([])
   const appliedDepth = useRef(-1)
   const box = useMemo(() => new THREE.BoxGeometry(2 * CUBE_HALF, 2 * CUBE_HALF, 2 * CUBE_HALF), [])
-  const walls = useMemo(
-    () =>
-      AXES.flatMap((normal) =>
-        WALL_SIDES.map((side) => {
-          const geometry = new THREE.BufferGeometry()
+  const walls = useMemo(() => {
+    const minor = rulingFractions(gridFractions)
 
-          geometry.setAttribute(
-            "position",
-            new THREE.BufferAttribute(wallGridPositions(normal, side, gridFractions), 3),
-          )
-
-          return { key: `${normal}${side}`, normal, side, geometry }
-        }),
-      ),
-    [gridFractions],
-  )
+    return AXES.flatMap((normal) =>
+      WALL_SIDES.map((side) => ({
+        key: `${normal}${side}`,
+        normal,
+        side,
+        geometry: lineGeometry(wallLinePositions(normal, side, gridFractions)),
+        rulings: lineGeometry(wallLinePositions(normal, side, minor)),
+      })),
+    )
+  }, [gridFractions])
 
   useEffect(
     () => () => {
       box.dispose()
-      for (const wall of walls) wall.geometry.dispose()
+      for (const wall of walls) {
+        wall.geometry.dispose()
+        wall.rulings.dispose()
+      }
     },
     [box, walls],
   )
@@ -308,9 +338,12 @@ function PlotFrame({
     // Only the walls the camera looks at from behind stay ruled, so the grid always
     // sits as a backdrop rather than crossing in front of the data.
     for (const [index, wall] of walls.entries()) {
+      const behind = state.camera.position[wall.normal] * wall.side < 0
       const node = wallRefs.current[index]
+      const ruled = rulingRefs.current[index]
 
-      if (node) node.visible = state.camera.position[wall.normal] * wall.side < 0
+      if (node) node.visible = behind
+      if (ruled) ruled.visible = behind
     }
   })
 
@@ -321,16 +354,26 @@ function PlotFrame({
         <lineBasicMaterial color={borderColor} />
       </lineSegments>
       {walls.map((wall, index) => (
-        <lineSegments
-          key={wall.key}
-          ref={(node) => {
-            wallRefs.current[index] = node
-          }}
-          geometry={wall.geometry}
-          visible={false}
-        >
-          <lineBasicMaterial color={borderColor} transparent opacity={CHART_GRID_OPACITY} />
-        </lineSegments>
+        <group key={wall.key}>
+          <lineSegments
+            ref={(node) => {
+              rulingRefs.current[index] = node
+            }}
+            geometry={wall.rulings}
+            visible={false}
+          >
+            <lineBasicMaterial color={rulingColor} transparent opacity={CHART_RULING_OPACITY} />
+          </lineSegments>
+          <lineSegments
+            ref={(node) => {
+              wallRefs.current[index] = node
+            }}
+            geometry={wall.geometry}
+            visible={false}
+          >
+            <lineBasicMaterial color={gridColor} transparent opacity={CHART_GRID_OPACITY} />
+          </lineSegments>
+        </group>
       ))}
     </group>
   )
@@ -1289,6 +1332,8 @@ export function ComparisonChart3D({
             >
               <PlotFrame
                 borderColor={colors.border}
+                gridColor={colors.border}
+                rulingColor={colors.mutedForeground}
                 gridFractions={axisTickFractions}
                 scene={sceneRef}
               />
