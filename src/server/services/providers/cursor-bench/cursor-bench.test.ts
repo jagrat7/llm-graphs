@@ -33,7 +33,10 @@ it("pins the coding revision, preserves effort/cost pairs and refuses changed ta
     level: "max",
     metrics: { costPerTask: 9.67 },
   })
-  expect(rows[0]?.configuration).toBe("Cursor agent · CursorBench 4.0")
+  // Every run shares the agent: it keeps the run apart from other harnesses but isn't shown.
+  expect(rows[0]).toMatchObject({ harness: "Cursor agent · CursorBench 4.0" })
+  expect(rows[0]?.configuration).toBeUndefined()
+  expect(rows[0]?.measurements?.score?.detail).toContain("Cursor agent · CursorBench 4.0")
   expect(rows[0]?.measurements?.score?.detail).toContain("output tokens/task: 218,363")
   expect(rows[0]?.measurements?.costPerTask?.detail).toContain("cache-write")
   expect(rows[2]).toMatchObject({

@@ -106,11 +106,25 @@ export function isKnownLevel(level: string) {
 const LEVEL_ORDER: ReadonlyArray<string> = KNOWN_LEVELS
 const MODE_ORDER: Record<ReasoningMode, number> = { off: 0, on: 1, unknown: 2 }
 
-/** Sort rank: known levels low to high, then new level words, then `unknown`; non-reasoning first. */
+/** A thinking-token budget standing in for an effort level, such as `16k`. */
+const BUDGET_LEVEL = /^(\d+)k$/
+
+/**
+ * Sort rank: known levels low to high, then token budgets smallest first, then new level
+ * words, then `unknown`; non-reasoning first. A budget ranks between two whole steps, so
+ * budgets order among themselves without passing a level word.
+ */
 export function effortOrder(mode: ReasoningMode, level: string) {
   const known = LEVEL_ORDER.indexOf(level)
+  const budget = BUDGET_LEVEL.exec(level)
   const levelRank =
-    known >= 0 ? known : level === "unknown" ? LEVEL_ORDER.length + 1 : LEVEL_ORDER.length
+    known >= 0
+      ? known
+      : budget
+        ? LEVEL_ORDER.length + Number(budget[1]) / (Number(budget[1]) + 1000)
+        : level === "unknown"
+          ? LEVEL_ORDER.length + 2
+          : LEVEL_ORDER.length + 1
 
   return levelRank * 3 + MODE_ORDER[mode]
 }

@@ -81,7 +81,17 @@ export type MetricRow = {
   level: string
   metrics: MetricValues
   measurements?: Partial<Record<MetricKey, MeasurementInfo>>
-  /** Agent harness or fallback policy; different configurations never share an effort curve. */
+  /**
+   * The evaluation setup every run of this source shares, such as its agent and split. Part
+   * of the run's identity, so it never joins another harness's effort, but never displayed:
+   * it says nothing about one run that the others don't.
+   */
+  harness?: string
+  /**
+   * What sets this run apart from the source's other runs of the model: a per-run agent, a
+   * fallback policy, a budget beside an effort word. Shown beside the model's name, and
+   * different configurations never share an effort curve.
+   */
   configuration?: string
   configurationKnown?: false
   metadata: { name: string | null; creator: string | null; releaseDate: string | null } | null

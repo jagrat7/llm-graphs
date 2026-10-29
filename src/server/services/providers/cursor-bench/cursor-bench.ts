@@ -5,7 +5,7 @@ import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../p
 
 const VERSION = "4.0"
 const PAGE = "https://cursor.com/evals"
-const CONFIGURATION = `Cursor agent · CursorBench ${VERSION}`
+const HARNESS = `Cursor agent · CursorBench ${VERSION}`
 const rowSchema = z.object({
   name: z.string().min(1),
   score: z.number().min(0).max(100),
@@ -114,7 +114,7 @@ export class CursorBenchProvider
     return {
       label: this.displayName,
       detail: [
-        CONFIGURATION,
+        HARNESS,
         "Cost uses published input/cache-read/cache-write/output pricing applied to each task's actual usage",
         row.cost == null ? "Task cost not reported" : null,
         row.tokens != null
@@ -148,7 +148,7 @@ export class CursorBenchProvider
       return {
         ...run,
         rawId: row.name,
-        configuration: CONFIGURATION,
+        harness: HARNESS,
         ...(run.mode === "unknown" ? { configurationKnown: false as const } : {}),
         metrics: this.readMetrics(row),
         measurements: describeMetrics(this.metrics, row),
