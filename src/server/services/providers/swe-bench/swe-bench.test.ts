@@ -48,7 +48,17 @@ it("pairs published score and fully covered cost in one pinned agent run", () =>
 
 it("names a rerun of one model and effort by its folder so neither is folded away", () => {
   const rows = new SWEBenchProvider().toMetricRows(
-    parseSWEBenchFeed(feed([run(), { ...run(), folder: "20260301_mini-v2.0.0_gpt-5-2-high" }])),
+    parseSWEBenchFeed(
+      feed([
+        run(),
+        // Spelled differently, but the aggregator matches it to the same model.
+        {
+          ...run(),
+          folder: "20260301_mini-v2.0.0_gpt-5-2-high",
+          tags: ["Model: gpt-5.2", "System: Attempts - 1"],
+        },
+      ]),
+    ),
   )
   expect(rows.map((row) => row.configuration)).toEqual([
     "20260217_mini-v2.0.0_gpt-5-2-high",

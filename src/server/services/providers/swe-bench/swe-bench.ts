@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { keyOfWords, matchWords } from "../../model-aggregator/match-key"
 import { MetricProvider } from "../metric-provider"
 import { describeMetrics, fetchOk, isKnownLevel, normalizeLevel, parseRows } from "../utils"
 import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
@@ -59,8 +60,9 @@ function coveredCost(row: z.infer<typeof rowSchema>) {
     : null
 }
 
+/** Spelled the aggregator's way, so `gpt-5.2` and `gpt-5-2` count as one model's rerun. */
 function runKey(run: Pick<MetricRow, "sourceModelId" | "mode" | "level">) {
-  return `${run.sourceModelId}/${run.mode}/${run.level}`
+  return `${keyOfWords(matchWords(run.sourceModelId, { hostPrefixes: [] }))}/${run.mode}/${run.level}`
 }
 
 export function parseSWEBenchFeed(raw: unknown): SWEBenchPayload {
