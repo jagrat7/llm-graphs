@@ -22,7 +22,6 @@ import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import {
   DEFAULT_SETTINGS,
   isDefaultSettings,
-  OPENING_MODEL_COUNTS,
   providerOptions,
   useSettings,
 } from "#/ui/lib/settings"
@@ -32,8 +31,6 @@ const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
   { value: "highest", label: "Highest only" },
 ] as const satisfies ReadonlyArray<{ value: Settings["effortLevels"]; label: string }>
-
-const OPENING_OPTIONS = OPENING_MODEL_COUNTS.map((count) => ({ value: count, label: `${count}` }))
 
 function SettingsSection({
   title,
@@ -188,18 +185,6 @@ export default function SettingsMenu() {
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">
           <SettingsSection title="Chart">
             <div className="divide-border/60 divide-y">
-              <SettingRow
-                id="settings-starting-models"
-                label="Starting models"
-                description="How many top models the chart opens on, until you pick your own"
-              >
-                <Segmented
-                  labelId="settings-starting-models-label"
-                  value={settings.openingModels}
-                  options={OPENING_OPTIONS}
-                  onChange={(openingModels) => update({ openingModels })}
-                />
-              </SettingRow>
               <SettingRow
                 id="settings-effort-levels"
                 label="Effort levels"
