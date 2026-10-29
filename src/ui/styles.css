@@ -1,5 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
+@import "@fontsource-variable/instrument-sans/wght.css";
+@import "@fontsource-variable/instrument-sans/wght-italic.css";
+@import "@fontsource-variable/martian-mono/wght.css";
+@import "@fontsource/space-mono/700.css";
 @import "./typeset.css";
 @plugin '@tailwindcss/typography';
 @import "tw-animate-css";
@@ -16,37 +19,46 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.19 0.006 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.19 0.006 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.19 0.006 260);
-  --primary: oklch(0.56 0.18 255);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.955 0.003 260);
-  --secondary-foreground: oklch(0.25 0.007 260);
-  --muted: oklch(0.955 0.003 260);
-  --muted-foreground: oklch(0.43 0.012 260);
-  --accent: oklch(0.94 0.025 255);
-  --accent-foreground: oklch(0.32 0.09 255);
-  --destructive: oklch(0.57 0.22 28);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.885 0.006 260);
-  --input: oklch(0.885 0.006 260);
-  --ring: oklch(0.56 0.18 255);
+  /* Light: the palette of an engineer's graph pad. Cream stock, blue-black drafting ink,
+     and hairlines in the pale green-blue of the pad's rulings. Surfaces are a fresh sheet
+     laid on the paper. */
+  --paper: oklch(0.962 0.014 88);
+  --paper-sheet: oklch(0.982 0.009 88);
+  --paper-ink: oklch(0.23 0.022 262);
+  --background: var(--paper);
+  --foreground: var(--paper-ink);
+  --card: var(--paper-sheet);
+  --card-foreground: var(--paper-ink);
+  --popover: var(--paper-sheet);
+  --popover-foreground: var(--paper-ink);
+  /* Fountain-pen blue: the one colour the engineer plots with. */
+  --primary: oklch(0.47 0.15 258);
+  --primary-foreground: oklch(0.985 0.009 88);
+  --secondary: oklch(0.925 0.018 88);
+  --secondary-foreground: oklch(0.28 0.022 262);
+  --muted: oklch(0.928 0.016 88);
+  --muted-foreground: oklch(0.45 0.028 250);
+  --accent: oklch(0.905 0.038 195);
+  --accent-foreground: oklch(0.3 0.06 228);
+  --destructive: oklch(0.55 0.2 28);
+  --destructive-foreground: oklch(0.985 0.009 88);
+  /* Opaque on purpose: the 3D chart reads this through a canvas and would drop any alpha. */
+  --border: oklch(0.8 0.04 188);
+  --input: oklch(0.8 0.04 188);
+  --ring: var(--primary);
   /* Vendor colours: the hue comes from the vendor's brand or slug, lightness and chroma from the
      theme. A black-and-white brand draws in ink instead, its models stepping toward grey, faintly
      tinted toward the brand's tint hue. The ink steps are lightnesses. */
-  --vendor-l: 0.62;
-  --vendor-c: 0.15;
-  --vendor-ink-0: 0.2;
-  --vendor-ink-1: 0.32;
-  --vendor-ink-2: 0.42;
+  --vendor-l: 0.58;
+  --vendor-c: 0.145;
+  --vendor-ink-0: 0.22;
+  --vendor-ink-1: 0.34;
+  --vendor-ink-2: 0.44;
   --vendor-tint-c: 0.045;
-  --vendor-unknown: oklch(0.52 0.01 260);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.97 0.002 260);
+  --vendor-unknown: oklch(0.5 0.015 250);
+  /* Drafted corners: tighter than the dark theme, which keeps its own below. */
+  --radius: 0.3rem;
+  --sidebar: oklch(0.945 0.015 88);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
@@ -57,37 +69,45 @@
 }
 
 .dark {
-  --background: oklch(0.16 0.005 260);
-  --foreground: oklch(0.94 0.003 260);
-  --card: oklch(0.19 0.006 260);
-  --card-foreground: oklch(0.94 0.003 260);
-  --popover: oklch(0.19 0.006 260);
-  --popover-foreground: oklch(0.94 0.003 260);
-  --primary: oklch(0.7 0.15 250);
-  --primary-foreground: oklch(0.16 0.005 260);
-  --secondary: oklch(0.23 0.007 260);
-  --secondary-foreground: oklch(0.92 0.003 260);
-  --muted: oklch(0.23 0.007 260);
-  --muted-foreground: oklch(0.72 0.012 260);
-  --accent: oklch(0.29 0.055 255);
-  --accent-foreground: oklch(0.9 0.04 250);
+  /* Dark: black graph paper. A flat near-black sheet, white ink for text and the one
+     accent, grey ink for secondary text, and rulings a few shades up from the sheet.
+     Nothing blue, nothing green; the only colour is the data's. */
+  --background: oklch(0.13 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.17 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.17 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.13 0 0);
+  --secondary: oklch(0.22 0 0);
+  --secondary-foreground: oklch(0.94 0 0);
+  --muted: oklch(0.22 0 0);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.24 0 0);
+  --accent-foreground: oklch(0.96 0 0);
   --destructive: oklch(0.66 0.2 28);
-  --destructive-foreground: oklch(0.16 0.005 260);
-  --border: oklch(0.31 0.009 260);
-  --input: oklch(0.31 0.009 260);
-  --ring: oklch(0.7 0.15 250);
-  --vendor-l: 0.74;
+  --destructive-foreground: oklch(0.13 0 0);
+  /* Opaque on purpose: the 3D chart reads it through a canvas that drops alpha. */
+  --border: oklch(0.32 0 0);
+  --input: oklch(0.32 0 0);
+  --ring: oklch(0.96 0 0);
+  --vendor-l: 0.76;
   --vendor-c: 0.13;
   --vendor-ink-0: 0.95;
   --vendor-ink-1: 0.87;
   --vendor-ink-2: 0.79;
   --vendor-tint-c: 0.035;
-  --vendor-unknown: oklch(0.7 0.01 260);
-  --sidebar: oklch(0.19 0.006 260);
+  --vendor-unknown: oklch(0.7 0 0);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.17 0 0);
 }
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Martian Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-heading: var(--font-sans);
+  --font-brand: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -185,6 +205,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Measurements read in the mono face: the plot's tick values and anything tabular. The
+   chart measures them in the same face (`chart-text.ts`), so the two stay in step. */
+.ts-chart text[data-ts-key*="tick-label"] {
+  font-family: var(--font-mono);
+}
+
+/* On either paper the axes are drawn in ink, so they carry more weight than the hairlines
+   the controls use; the gridlines stay in the border tone, behind the data's lines. */
+.ts-chart__axes line {
+  stroke: var(--muted-foreground);
+}
+
+/* On the black sheet the frontier is a tight white dash, the one line drawn in full ink. */
+.dark .ts-chart polyline[data-ts-key^="pareto-frontier-"] {
+  stroke: var(--foreground);
+  stroke-dasharray: 3 3;
+}
+
 button,
 input,
 select,
@@ -210,6 +248,19 @@ a {
 
 ::selection {
   background: color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+input,
+textarea {
+  caret-color: var(--primary);
+}
+
+/* In the base layer so the `no-scrollbar` utility can still hide a list's scrollbar. */
+@layer base {
+  * {
+    scrollbar-color: color-mix(in oklch, var(--foreground) 28%, transparent) transparent;
+    scrollbar-width: thin;
+  }
 }
 
 .skeleton-shimmer {

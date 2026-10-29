@@ -98,7 +98,7 @@ async function settle() {
 }
 
 function marker(container: HTMLElement, id: string) {
-  const node = container.querySelector(`[data-ts-key="model-runs-2:${id}"]`)
+  const node = container.querySelector(`[data-ts-key="model-runs-3:${id}"]`)
 
   expect(node).not.toBeNull()
 
@@ -153,7 +153,7 @@ describe("comparison chart", () => {
     const [x, y] = [Number(point.getAttribute("cx")), Number(point.getAttribute("cy"))]
     // Every point's pair is pre-rendered; focus only flips which pair is visible.
     const guides = [
-      ...container.querySelectorAll('line[data-ts-key^="point-guides-0:"][visibility="visible"]'),
+      ...container.querySelectorAll('line[data-ts-key^="point-guides-1:"][visibility="visible"]'),
     ]
     const toYAxis = guides.find((line) => line.getAttribute("data-ts-key")?.endsWith("to-y-axis"))
     const toXAxis = guides.find((line) => line.getAttribute("data-ts-key")?.endsWith("to-x-axis"))
@@ -244,8 +244,8 @@ describe("comparison chart", () => {
     expect(Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))).toBeLessThan(
       1,
     )
-    expect(opacity('[data-ts-key="model-labels-3:alpha:name"]')).toBe(1)
-    expect(opacity('[data-ts-key="model-labels-3:beta:name"]')).toBeLessThan(1)
+    expect(opacity('[data-ts-key="model-labels-4:alpha:name"]')).toBe(1)
+    expect(opacity('[data-ts-key="model-labels-4:beta:name"]')).toBeLessThan(1)
   })
 
   it("keeps the full axis notes in the chart's accessible description", () => {
@@ -261,7 +261,7 @@ describe("comparison chart", () => {
   it("shows the Pareto frontier until the reader toggles it off, and back on", async () => {
     const { container } = renderChart()
     const toggle = screen.getByRole("button", { name: "Pareto frontier" })
-    const curve = () => container.querySelector('[data-ts-key="pareto-frontier-1:line"]')
+    const curve = () => container.querySelector('[data-ts-key="pareto-frontier-2:line"]')
     const description = () => container.querySelector("svg.ts-chart desc")?.textContent ?? ""
     // Beta sits off the frontier, so it is muted while the frontier shows.
     const beta = () => Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))

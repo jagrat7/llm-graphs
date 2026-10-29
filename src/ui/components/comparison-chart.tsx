@@ -14,6 +14,7 @@ import { isRatioMetric, metricPresentation } from "#/ui/lib/metrics"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_EXPORT_DEFS_ATTRIBUTE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
+import { useChartTextMeasurer } from "#/ui/lib/chart-text"
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
 import {
   buildPlotData,
@@ -235,6 +236,7 @@ export function ComparisonChart({
 }) {
   const info = useProvidersInfo()
   const frameRef = useRef<HTMLDivElement>(null)
+  const measureText = useChartTextMeasurer()
   const logoPrefix = `chart-logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
   const { x: xSource, y: ySource } = sources
   // A reader's linear or log choice follows the metric, whichever axis it moves to; a
@@ -371,6 +373,7 @@ export function ComparisonChart({
                   .join(" ")
           }
           initialWidth={1200}
+          measureText={measureText}
           style={{ height: "100%" }}
           // A custom body drops the library's card chrome, so the card brings its own.
           renderTooltipBody={({ points, primaryPoint }) => {

@@ -15,7 +15,6 @@ describe("settings", () => {
       paretoFrontier: true,
       vendorLogos: true,
       effortLevels: "all",
-      openingModels: 9,
     })
   })
 
@@ -25,14 +24,11 @@ describe("settings", () => {
   })
 
   it("keeps the valid fields of a stored value and defaults the rest", () => {
-    expect(
-      parseSettings({ hiddenProviders: ["meta"], paretoFrontier: "nope", openingModels: 7 }),
-    ).toEqual({
+    expect(parseSettings({ hiddenProviders: ["meta"], paretoFrontier: "nope" })).toEqual({
       hiddenProviders: ["meta"],
       paretoFrontier: true,
       vendorLogos: true,
       effortLevels: "all",
-      openingModels: 9,
     })
   })
 

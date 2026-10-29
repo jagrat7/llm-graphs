@@ -56,6 +56,10 @@ it("pins ARC-AGI-2 and preserves effort, budget, missing cost and run identity",
     level: "8k",
     metrics: { costPerTask: null },
   })
+  // A budget that is the effort joins the model's other efforts rather than starting a run.
+  expect(rows[1]?.configuration).toBeUndefined()
+  expect(rows[1]?.measurements?.score?.detail).toContain("8K token budget")
+  expect(rows[2]?.configuration).toBeUndefined()
   expect(rows[2]).toMatchObject({
     sourceModelId: "gpt-6-1-sol",
     mode: "off",

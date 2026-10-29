@@ -8,6 +8,7 @@ import type { ProviderName, ProvidersInfo } from "#/server/api"
 import {
   modelLabelsMark,
   modelRunsMark,
+  paperRulingsMark,
   paretoFrontierMark,
   pointGuidesMark,
 } from "#/ui/lib/chart-marks"
@@ -76,6 +77,7 @@ export function scatterDefinition(
 
   return defineChart({
     marks: [
+      paperRulingsMark(),
       pointGuidesMark(data),
       // Always present, empty when hidden or when the metrics do not trade off, so the
       // marks after it keep their keys and animate across either change.

@@ -1,0 +1,102 @@
+/**
+ * Renders `scripts/app-icon/app-icon.html` with headless Chromium, then derives every icon
+ * size from it with ImageMagick: the 512/192 app icons, the 96px PNG favicon,
+ * and a multi-size ICO. Every size keeps the full seal, ring text included, on a
+ * transparent background. Needs network access for the Bebas Neue webfont.
+ */
+import { execFileSync, spawn } from "node:child_process"
+import fs from "node:fs"
+import path from "node:path"
+
+const root = path.resolve(import.meta.dirname, "../..")
+const port = 9345
+const profile = fs.mkdtempSync("/tmp/app-icon-")
+const chrome = spawn(
+  "chromium",
+  [
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--hide-scrollbars",
+    "--no-first-run",
+    "--disable-extensions",
+    `--user-data-dir=${profile}`,
+    `--remote-debugging-port=${port}`,
+    "--window-size=512,512",
+  ],
+  { stdio: "ignore" },
+)
+const master = path.join(root, "public/logo512.png")
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+try {
+  let page: { webSocketDebuggerUrl: string } | undefined
+  for (let i = 0; i < 60 && !page; i++) {
+    try {
+      const targets: unknown = await (await fetch(`http://127.0.0.1:${port}/json`)).json()
+      if (Array.isArray(targets)) page = targets.find((t) => t.type === "page")
+    } catch {
+      await sleep(250)
+    }
+  }
+  if (!page) throw new Error("Chromium did not expose a page target")
+  const ws = new WebSocket(page.webSocketDebuggerUrl)
+  await new Promise((r) => ws.addEventListener("open", r))
+  let id = 0
+  const pending = new Map<number, (v: any) => void>()
+  ws.addEventListener("message", (e) => {
+    const m = JSON.parse(String(e.data))
+    if (m.id && pending.has(m.id)) {
+      pending.get(m.id)!(m.result)
+      pending.delete(m.id)
+    }
+  })
+  const send = (method: string, params: object = {}) =>
+    new Promise<any>((r) => {
+      const i = ++id
+      pending.set(i, r)
+      ws.send(JSON.stringify({ id: i, method, params }))
+    })
+
+  await send("Emulation.setDeviceMetricsOverride", {
+    width: 512,
+    height: 512,
+    deviceScaleFactor: 1,
+    mobile: false,
+  })
+  // Transparent page background so the PNGs carry alpha instead of Chromium's white.
+  await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } })
+  await send("Page.navigate", { url: `file://${root}/scripts/app-icon/app-icon.html` })
+  // The ring text is set in a webfont; a screenshot taken before it arrives would
+  // silently bake fallback lettering into every icon. Wait for the page to load, then
+  // for its fonts, then confirm the face itself is loaded: `fonts.check` alone says yes
+  // for a family the page never defined.
+  const fontReady = await send("Runtime.evaluate", {
+    expression: `(document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise((resolve) => addEventListener("load", resolve, { once: true })))
+      .then(() => document.fonts.ready)
+      .then(() => [...document.fonts].some((face) =>
+        face.family.replaceAll('"', "") === "Bebas Neue" && face.status === "loaded"))`,
+    awaitPromise: true,
+    returnByValue: true,
+  })
+  if (fontReady.result?.value !== true)
+    throw new Error("Bebas Neue did not load; check network access")
+  const { data } = await send("Page.captureScreenshot", { format: "png" })
+  fs.writeFileSync(master, Buffer.from(data, "base64"))
+} finally {
+  chrome.kill("SIGKILL")
+  fs.rmSync(profile, { recursive: true, force: true })
+}
+
+const pub = (name: string) => path.join(root, "public", name)
+const resize = (size: number, out: string) =>
+  execFileSync("magick", [master, "-resize", `${size}x${size}`, "PNG32:" + out])
+resize(192, pub("logo192.png"))
+resize(96, pub("favicon-96.png"))
+const tmp = fs.mkdtempSync("/tmp/favicon-")
+const sizes = [16, 32, 48, 64]
+for (const s of sizes) resize(s, path.join(tmp, `${s}.png`))
+execFileSync("magick", [...sizes.map((s) => path.join(tmp, `${s}.png`)), pub("favicon.ico")])
+console.log("wrote logo512.png, logo192.png, favicon-96.png, favicon.ico")
+process.exit(0)

@@ -9,7 +9,7 @@ const START = Date.parse("2024-08-01T00:00:00Z")
 const END = Date.parse("2025-05-01T00:00:00Z")
 const QUESTION_COUNT = 454
 const WINDOW = "2024-08-01–2025-05-01"
-const CONFIGURATION = `LiveCodeBench code generation · ${WINDOW} · pass@1`
+const HARNESS = `LiveCodeBench code generation · ${WINDOW} · pass@1`
 const modelSchema = z.object({ model_name: z.string().min(1), model_repr: z.string().min(1) })
 const problemSchema = z.object({
   model: z.string().min(1),
@@ -137,7 +137,7 @@ export class LiveCodeBenchProvider
       note: `${WINDOW}; 454 shared problems; published code-generation pass@1`,
       describe: (row) => ({
         label: this.displayName,
-        detail: `${CONFIGURATION}; ${row.questions} identical problems per model; task cost not published; reasoning level ${modelConfiguration(row).level === "unknown" ? "not reported" : modelConfiguration(row).level}`,
+        detail: `${HARNESS}; ${row.questions} identical problems per model; task cost not published; reasoning level ${modelConfiguration(row).level === "unknown" ? "not reported" : modelConfiguration(row).level}`,
       }),
     },
   }
@@ -147,7 +147,7 @@ export class LiveCodeBenchProvider
       return {
         ...run,
         rawId: row.model_name,
-        configuration: CONFIGURATION,
+        harness: HARNESS,
         ...(run.mode === "unknown" || run.level === "unknown" || effortConflict != null
           ? { configurationKnown: false as const }
           : {}),

@@ -12,7 +12,13 @@ import { createMark, whenFocused } from "@tanstack/charts"
 
 import type { PlotData, PlotPoint, PlotSeries } from "#/ui/lib/comparison-plot-data"
 
-import { CHART_ACTIVE_SCALE, CHART_TRANSITION_MS } from "#/ui/lib/chart-styles"
+import {
+  CHART_ACTIVE_SCALE,
+  CHART_RULING_CLASS,
+  CHART_RULING_OPACITY,
+  CHART_TRANSITION_MS,
+} from "#/ui/lib/chart-styles"
+import { minorRulings } from "#/ui/lib/paper-rulings"
 import {
   LABEL_COLLISION_GAP,
   LABEL_EFFORT_SIZE,
@@ -430,6 +436,71 @@ export function pointGuidesMark(data: PlotData) {
 }
 
 /** Dashed, so the frontier never reads as one more model's solid run. */
+const RULING_STYLE = {
+  stroke: "var(--muted-foreground)",
+  strokeOpacity: CHART_RULING_OPACITY,
+  strokeWidth: 1,
+} as const
+
+/**
+ * The sheet's minor rulings, drawn first so everything else sits on top of them: a
+ * hairline at each subdivision between the gridlines, out to the plot's edges, so the
+ * plot reads as graph paper on either theme.
+ */
+export function paperRulingsMark() {
+  return createMark<PlotPoint, number, number>(({ markIndex }) => {
+    const id = `paper-rulings-${markIndex}`
+
+    return {
+      id,
+      channels: {
+        x: { scale: "x", values: [] },
+        y: { scale: "y", values: [] },
+      },
+      render({ chart, scales }) {
+        const positions = (axis: "x" | "y") => scales[axis].ticks.map((tick) => tick.position)
+        const columns = minorRulings(positions("x"), chart.x, chart.x + chart.width)
+        const rows = minorRulings(positions("y"), chart.y, chart.y + chart.height)
+        const rules: Array<SceneNode> = [
+          ...columns.map(
+            (x): SceneNode => ({
+              kind: "rule",
+              key: `${id}:x:${x.toFixed(2)}`,
+              x1: x,
+              y1: chart.y,
+              x2: x,
+              y2: chart.y + chart.height,
+            }),
+          ),
+          ...rows.map(
+            (y): SceneNode => ({
+              kind: "rule",
+              key: `${id}:y:${y.toFixed(2)}`,
+              x1: chart.x,
+              y1: y,
+              x2: chart.x + chart.width,
+              y2: y,
+            }),
+          ),
+        ]
+
+        return {
+          nodes: [
+            {
+              kind: "group",
+              key: id,
+              className: CHART_RULING_CLASS,
+              ariaHidden: true,
+              style: RULING_STYLE,
+              children: rules,
+            },
+          ],
+        }
+      },
+    }
+  })
+}
+
 export const PARETO_STYLE = {
   stroke: "var(--muted-foreground)",
   strokeOpacity: 0.75,

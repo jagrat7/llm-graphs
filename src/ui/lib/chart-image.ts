@@ -237,9 +237,10 @@ export async function standaloneChartSvg(host: Element, scale: number) {
     clone.prepend(node.cloneNode(true))
   }
 
+  // Every face the chart sets, not just the root's: the tick values read in the mono face.
   const families = new Set(
-    getComputedStyle(svg)
-      .fontFamily.split(",")
+    [svg, ...Array.from(svg.querySelectorAll("text, tspan"))]
+      .flatMap((node) => getComputedStyle(node).fontFamily.split(","))
       .map(unquote)
       .filter((family) => family !== ""),
   )
