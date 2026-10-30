@@ -1,6 +1,9 @@
+import { createChartRuntime } from "@tanstack/charts"
+import { renderChartSvg } from "@tanstack/charts/svg"
 import { Chart } from "@tanstack/charts/react/tooltip"
 import { useId, useMemo, useRef, useState } from "react"
 
+import type { ChartDefinition, ChartSize, ChartTextMeasurer } from "@tanstack/charts"
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
@@ -12,7 +15,7 @@ import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { isRatioMetric, metricPresentation } from "#/ui/lib/metrics"
 import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
-import { CHART_EXPORT_DEFS_ATTRIBUTE, svgPlotImage } from "#/ui/lib/chart-image"
+import { CHART_EXPORT_DEFS_ATTRIBUTE, SHARE_PLOT_SIZE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { useChartTextMeasurer } from "#/ui/lib/chart-text"
 import { focusedPoint } from "#/ui/lib/chart-tooltip"
@@ -77,6 +80,43 @@ function LogoMasks({ logoClass }: { logoClass: Map<string, string> }) {
 }
 
 type ChartView = "ranges" | "scatter"
+
+/**
+ * The plot laid out afresh at the shared image's size rather than the screen's. It is
+ * mounted out of sight inside the frame for the moment it takes to draw, so the page's
+ * styles, fonts and logo masks reach it as they reach the chart on screen.
+ */
+async function sharePlotImage(
+  frame: HTMLElement,
+  definition: ChartDefinition<PlotPoint>,
+  size: ChartSize,
+  measureText: ChartTextMeasurer | undefined,
+  scale: number,
+) {
+  const scene = createChartRuntime().render(definition, size, {
+    measureText,
+    typography: { fontFamily: getComputedStyle(frame).fontFamily },
+  })
+  const stage = document.createElement("div")
+
+  stage.setAttribute("aria-hidden", "true")
+  Object.assign(stage.style, {
+    position: "fixed",
+    left: "-100000px",
+    top: "0",
+    width: `${size.width}px`,
+    height: `${size.height}px`,
+    pointerEvents: "none",
+  })
+  stage.innerHTML = renderChartSvg(scene, { ariaLabel: "", tabIndex: -1 })
+  frame.append(stage)
+
+  try {
+    return await svgPlotImage(frame, scale, stage.querySelector("svg"))
+  } finally {
+    stage.remove()
+  }
+}
 
 function describeRanges(data: PlotData) {
   const modelNoun = data.modelCount === 1 ? "model" : "models"
@@ -356,7 +396,19 @@ export function ComparisonChart({
             renderPlot={(scale) => {
               if (!frameRef.current) throw new Error("Chart is not mounted")
 
-              return svgPlotImage(frameRef.current, scale)
+              // Rows keep the height they need to stay apart, as they do on screen.
+              const height =
+                view === "ranges"
+                  ? Math.max(SHARE_PLOT_SIZE.height, rangeMinHeight(data.series.length))
+                  : SHARE_PLOT_SIZE.height
+
+              return sharePlotImage(
+                frameRef.current,
+                definition,
+                { width: SHARE_PLOT_SIZE.width, height },
+                measureText,
+                scale,
+              )
             }}
           />
         </div>

@@ -157,7 +157,7 @@ type ModelPickerProps = {
   onHighlightChange?: (model: string | null) => void
   className?: string
   disabled?: boolean
-  /** Opens the search on `/`. Only one picker on a page should claim the key. */
+  /** Focuses the search on `/`. Only one picker on a page should claim the key. */
   shortcut?: boolean
 }
 
@@ -174,16 +174,10 @@ export function ModelPicker({
   const inputId = useId()
   const anchor = useComboboxAnchor()
   const listTriggerRef = useRef<HTMLButtonElement>(null)
-  const searchButtonRef = useRef<HTMLButtonElement>(null)
   const checklistRef = useRef<HTMLDivElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
   const [listOpen, setListOpen] = useState(false)
-  // Search is the quick route for a model you can name; the checklist is the main
-  // one, so the search bar folds down to a button until it is asked for.
-  const [searchOpen, setSearchOpen] = useState(false)
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
-  // Where focus lands when the search folds or unfolds; null leaves it alone.
-  const focusAfterSearchToggle = useRef<"input" | "button" | null>(null)
   const ghostRef = useRef<HTMLDivElement>(null)
   const [visibleCount, setVisibleCount] = useState(Number.POSITIVE_INFINITY)
   const options = useMemo(
@@ -288,35 +282,6 @@ export function ModelPicker({
     onChange(selectedSet.has(model) ? selected.filter((id) => id !== model) : [...selected, model])
   }
 
-  function openSearch() {
-    focusAfterSearchToggle.current = "input"
-    setSearchOpen(true)
-  }
-
-  function closeSearch(returnFocus: boolean) {
-    focusAfterSearchToggle.current = returnFocus ? "button" : null
-    setSearchOpen(false)
-  }
-
-  // The field and its button swap places, so focus can only move once the new one is mounted.
-  useEffect(() => {
-    const target = focusAfterSearchToggle.current
-    focusAfterSearchToggle.current = null
-
-    if (target === "input") document.getElementById(inputId)?.focus()
-    if (target === "button") searchButtonRef.current?.focus()
-  }, [searchOpen, inputId])
-
-  // Folds the search away once nothing is using it. Runs a frame late because
-  // picking a suggestion briefly moves focus before handing it back to the field.
-  function closeSearchIfIdle() {
-    requestAnimationFrame(() => {
-      if (document.activeElement?.id === inputId) return
-
-      closeSearch(false)
-    })
-  }
-
   useEffect(() => {
     if (!shortcut || disabled) return undefined
 
@@ -332,12 +297,12 @@ export function ModelPicker({
       }
 
       event.preventDefault()
-      openSearch()
+      document.getElementById(inputId)?.focus()
     }
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [shortcut, disabled])
+  }, [shortcut, disabled, inputId])
 
   return (
     <div className={cn("flex w-full flex-col gap-1", className)}>
@@ -372,57 +337,35 @@ export function ModelPicker({
           if (open) return
 
           setListModel(null)
-          closeSearchIfIdle()
         }}
         disabled={disabled}
       >
         <div className="flex w-full items-center gap-2">
-          {searchOpen ? (
-            /* The popup anchors to whatever it is told to; left alone it takes the
-               `input`, which the leading icon insets from the bar's own edge. */
-            <div ref={anchor} className="min-w-0 flex-1">
-              <ComboboxInput
-                id={inputId}
-                placeholder="Search models"
-                showTrigger={false}
-                disabled={disabled}
-                // The field step, as the axis selects opposite are.
-                className="h-control-xl w-full"
-                onBlur={() => {
-                  if (!suggestionsOpen) closeSearchIfIdle()
-                }}
-                onKeyDown={(event) => {
-                  // The first Escape closes the suggestions; the next folds the search.
-                  // Base UI would spend that second press clearing every selected
-                  // model, which is never what leaving a search box means.
-                  if (event.key !== "Escape" || suggestionsOpen) return
-
-                  event.preventBaseUIHandler()
-                  closeSearch(true)
-                }}
-              >
-                <InputGroupAddon align="inline-start">
-                  <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
-                </InputGroupAddon>
-              </ComboboxInput>
-            </div>
-          ) : (
-            <Button
-              ref={searchButtonRef}
-              variant="ghost"
-              size="icon-xl"
-              aria-label="Search models"
+          {/* The popup anchors to whatever it is told to; left alone it takes the
+               `input`, which the leading icon insets from the bar's own edge. */}
+          <div ref={anchor} className="min-w-0 flex-1">
+            <ComboboxInput
+              id={inputId}
+              placeholder="Search models"
               aria-keyshortcuts={shortcut ? "/" : undefined}
               title={shortcut ? "Search models (/)" : "Search models"}
+              showTrigger={false}
               disabled={disabled}
-              onClick={openSearch}
+              // The field step, as the axis selects opposite are.
+              className="h-control-xl w-full"
+              onKeyDown={(event) => {
+                // Escape dismisses suggestions, but must never clear the selection.
+                if (event.key !== "Escape" || suggestionsOpen) return
+
+                event.preventBaseUIHandler()
+              }}
             >
-              <RiSearchLine aria-hidden="true" />
-            </Button>
-          )}
+              <InputGroupAddon align="inline-start">
+                <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
+              </InputGroupAddon>
+            </ComboboxInput>
+          </div>
           <Popover open={listOpen} onOpenChange={handleListOpenChange}>
-            {/* The checklist is the picker's main surface, so its button takes the
-                row; it gives the room back while the search is open. */}
             <PopoverTrigger
               render={
                 <Button
@@ -430,7 +373,7 @@ export function ModelPicker({
                   variant="outline"
                   size="xl"
                   disabled={disabled}
-                  className={cn("justify-between gap-2", searchOpen ? "shrink-0" : "flex-1")}
+                  className="shrink-0 justify-between gap-2"
                 />
               }
             >

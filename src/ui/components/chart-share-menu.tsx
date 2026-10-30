@@ -23,7 +23,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "#/ui/components/ui/dropdown-menu"
-import { APP_NAME } from "#/ui/lib/app-meta"
 import { downloadBlob, shareCardBlob } from "#/ui/lib/chart-image"
 import { plotCsv, shareFilename, shareSubtitle, shareTitle } from "#/ui/lib/chart-share"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
@@ -100,7 +99,6 @@ export function ChartShareMenu({
       {
         title: shareTitle(data),
         subtitle: shareSubtitle(data, sources, info),
-        credit: `${APP_NAME} · ${window.location.host}`,
       },
       EXPORT_SCALE,
     )

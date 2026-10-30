@@ -60,7 +60,9 @@ export function resolveCssColor(value: string, fallback = "#888888") {
   if (typeof document === "undefined") return fallback
 
   const key = `${themeVersion}:${value}`
-  const cached = cache.get(key)
+  // Only an observed theme bumps the version, so with no one watching the cache would
+  // hand back the previous theme's colours.
+  const cached = observer ? cache.get(key) : undefined
 
   if (cached != null) return cached
 
@@ -71,7 +73,7 @@ export function resolveCssColor(value: string, fallback = "#888888") {
     .replaceAll(VARIABLE_PATTERN, (_, name: string) => styles.getPropertyValue(name).trim())
   const resolved = (raw === "" ? null : paintToHex(raw)) ?? fallback
 
-  cache.set(key, resolved)
+  if (observer) cache.set(key, resolved)
 
   return resolved
 }
