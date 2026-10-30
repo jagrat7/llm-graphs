@@ -106,7 +106,78 @@
   --sidebar: oklch(0.17 0 0);
 }
 
+/* Density: one height per control size and one step per text role, so a field, a list row
+   and an inline action keep their ratio wherever they appear. The primitives draw from these
+   (`h-control-md`, `text-control`), so a call site picks a size rather than restating one.
+   A coarse pointer lifts every step for a finger while keeping the ladder: fields and menu
+   items reach the 44px touch target, rows and default buttons 40px, and compact actions 36px,
+   all well over WCAG 2.5.8's 24px. It goes by the pointer, not the width: a tablet gets touch
+   targets, and a narrow desktop window keeps the dense steps. A field that leads its row takes
+   `xl` (the axis selects, the model search); a field inside a panel, such as a dialog's filter,
+   keeps the `lg` default. */
+:root {
+  --control-sm: 1.5rem;
+  --control-md: 1.75rem;
+  --control-lg: 2rem;
+  --control-xl: 2.25rem;
+  /* A model chip is a label, not a target; its remove button widens its hit area on touch. */
+  --chip: 1.5rem;
+  /* The annotation step: buttons, toggles, list rows and menus, and the labels, captions
+     and messages that sit beside them. */
+  --control-font-size: 0.75rem;
+  /* Tight, for labels; prose on this step (a dialog's or an alert's body) uses `/relaxed`. */
+  --control-line-height: 1rem;
+  /* Fields and the menus they open, and the titles over them: what the reader typed or
+     picked, and what a surface is about. */
+  --field-font-size: 0.875rem;
+  --field-line-height: 1.25rem;
+  /* The sticky app bar, with air around its touch-size controls. A page that fills the
+     viewport measures itself against it. */
+  --header-height: max(3rem, calc(var(--control-lg) + 0.75rem));
+  /* What a surface is: a dialog's or an empty state's title. */
+  --title-font-size: 1rem;
+  --title-line-height: 1.5rem;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --control-sm: 2.25rem;
+    --control-md: 2.5rem;
+    --control-lg: 2.75rem;
+    --control-xl: 2.75rem;
+    --chip: 2rem;
+    --control-font-size: 0.875rem;
+    --control-line-height: 1.25rem;
+    /* Under 16px, iOS zooms the page in to show an input. */
+    --field-font-size: 1rem;
+    --field-line-height: 1.5rem;
+    --title-font-size: 1.125rem;
+    --title-line-height: 1.75rem;
+  }
+}
+
 @theme inline {
+  --spacing-control-sm: var(--control-sm);
+  --spacing-control-md: var(--control-md);
+  --spacing-control-lg: var(--control-lg);
+  --spacing-control-xl: var(--control-xl);
+  --spacing-chip: var(--chip);
+  /* The sticky app bar; anything else that sticks starts below it (`top-header`). */
+  --spacing-header: var(--header-height);
+  --text-control: var(--control-font-size);
+  --text-control--line-height: var(--control-line-height);
+  --text-field: var(--field-font-size);
+  --text-field--line-height: var(--field-line-height);
+  --text-title: var(--title-font-size);
+  --text-title--line-height: var(--title-line-height);
+  /* A count or mark beside a label (a mono count, a menu shortcut). Martian Mono runs wide,
+     so a count sits a fixed ratio under whatever text holds it and still reads as the same
+     size, on any step and either pointer. It keeps the line height it inherits. */
+  --text-count: calc(11em / 12);
+  /* The registry's smallest step, raised from 10px to 11px, for marks nested inside a
+     control (keys, badges, the smallest buttons). */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
   --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Martian Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-heading: var(--font-sans);
@@ -160,6 +231,29 @@
     0.9915 68.74%,
     1 100%
   );
+}
+
+/**
+ * Keeps a control's hit area at a density step even where its box can't grow: a chip's remove
+ * button and the chips' "more" can't outgrow their row, and a switch draws small. A
+ * pseudo-element widens the target to `--hit-area` (the compact step unless set) while the
+ * box, and the row around it, keep their size; it follows the pointer with the steps.
+ * `--hit-area-inline` narrows it across, for a control packed between neighbours; a
+ * percentage there is of the control's own width. It owns the element's positioning
+ * context: a positioned element can't carry it, or the hit area lands on an ancestor.
+ */
+@utility hit-area {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc(50% - var(--hit-area, var(--control-sm)) / 2));
+    inset-inline: min(
+      0px,
+      calc(50% - var(--hit-area-inline, var(--hit-area, var(--control-sm))) / 2)
+    );
+  }
 }
 
 /**

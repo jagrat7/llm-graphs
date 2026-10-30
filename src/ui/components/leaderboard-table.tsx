@@ -26,7 +26,8 @@ import {
   TableRow,
 } from "#/ui/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "#/ui/components/ui/tooltip"
-import { BELOW_HEADER_OFFSET_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
+import { TABLE_CELL_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
+import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { formatMetric, METRIC_CONFIG } from "#/ui/lib/metrics"
 import { sourceLabel as providerLabel } from "#/ui/lib/sources"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
@@ -56,7 +57,11 @@ function renderModelCell({ row, getValue }: { row: { original: Model }; getValue
   return (
     <Tooltip>
       <TooltipTrigger render={<div className="flex w-48 max-w-48 items-center gap-2 text-left" />}>
-        <ModelLogo logoUrl={row.original.logoUrl} className="text-muted-foreground size-3.5" />
+        <ModelLogo
+          logoUrl={row.original.logoUrl}
+          color={row.original.chartColor}
+          className="size-3.5"
+        />
         <div className="truncate">
           <span className="text-foreground font-medium">{getValue()}</span>
           {effortLabel ? (
@@ -81,7 +86,7 @@ function renderScoreCell({
 
   return (
     <div className="ml-auto flex min-w-40 items-center justify-end gap-3">
-      <span className="w-12 text-right font-mono text-[0.68rem]">
+      <span className={cn(COUNT_TEXT_CLASS, "w-12 text-right")}>
         {formatMetric(score, "score")}
       </span>
       <Progress
@@ -174,9 +179,9 @@ export function LeaderboardTable({ models }: { models: Array<Model> }) {
     <Table
       data-table-frame="loaded"
       containerClassName="border-border border-y lg:overflow-x-visible"
-      className={`${TABLE_WIDTH_CLASS} border-collapse text-left text-sm tabular-nums sm:text-xs`}
+      className={`${TABLE_WIDTH_CLASS} text-control border-collapse text-left`}
     >
-      <TableHeader className={`bg-background ${BELOW_HEADER_OFFSET_CLASS} lg:sticky lg:z-20`}>
+      <TableHeader className="bg-background top-header lg:sticky lg:z-20">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} className="hover:bg-transparent">
             {headerGroup.headers.map((header, index) => {
@@ -204,7 +209,8 @@ export function LeaderboardTable({ models }: { models: Array<Model> }) {
                           : undefined
                   }
                   className={cn(
-                    "text-muted-foreground h-11 px-3 sm:h-10",
+                    TABLE_CELL_CLASS,
+                    "text-muted-foreground",
                     rightAligned ? "text-right" : null,
                     index === 0 ? cn(STICKY_COLUMN_CLASS, "z-30") : null,
                   )}
@@ -212,10 +218,10 @@ export function LeaderboardTable({ models }: { models: Array<Model> }) {
                   {canSort ? (
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="lg"
                       onClick={header.column.getToggleSortingHandler()}
                       className={cn(
-                        "min-h-11 sm:min-h-8 -mx-2 px-2 font-medium",
+                        "-mx-2.5 font-medium",
                         rightAligned ? "ml-auto" : null,
                         sorted ? "text-foreground" : "text-muted-foreground",
                       )}
@@ -239,7 +245,8 @@ export function LeaderboardTable({ models }: { models: Array<Model> }) {
               <TableCell
                 key={cell.id}
                 className={cn(
-                  "text-foreground h-11 px-3",
+                  TABLE_CELL_CLASS,
+                  "text-foreground",
                   RIGHT_ALIGNED_COLUMN_IDS.has(cell.column.id) ? "text-right" : null,
                   index === 0
                     ? cn(

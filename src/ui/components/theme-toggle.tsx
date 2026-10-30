@@ -74,11 +74,11 @@ export default function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="icon-sm"
+      size="icon-lg"
       onClick={toggle}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
       aria-keyshortcuts={TOGGLE_KEY}
-      className="text-muted-foreground min-h-11 w-11 sm:min-h-8 sm:w-8"
+      className="text-muted-foreground"
     >
       <Icon aria-hidden="true" />
     </Button>

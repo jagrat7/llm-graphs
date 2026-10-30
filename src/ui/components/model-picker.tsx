@@ -19,16 +19,18 @@ import {
   ComboboxItem,
   ComboboxList,
   ComboboxValue,
+  comboboxChipClass,
+  comboboxChipRemoveClass,
+  comboboxChipSizeClass,
   useComboboxAnchor,
 } from "#/ui/components/ui/combobox"
 import { InputGroupAddon } from "#/ui/components/ui/input-group"
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "#/ui/components/ui/popover"
 import { Skeleton } from "#/ui/components/ui/skeleton"
+import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { cn } from "#/ui/lib/utils"
 
 type DotStyle = CSSProperties & { "--dot": string }
-
-const CHIP_SIZE_CLASS = "h-8 text-sm sm:h-6 sm:text-xs"
 
 /**
  * The chips are loose badges below the search bar, not a field of their own. The
@@ -53,14 +55,6 @@ const SKELETON_CHIP_WIDTHS = [
   "w-28",
   "w-16",
 ]
-
-/**
- * Mirrors `ComboboxChip`'s surface. The overflow list is portalled outside
- * `ComboboxChips`, so those badges can't be real chips — they only have to look
- * like them.
- */
-const CHIP_SURFACE_CLASS =
-  "bg-muted-foreground/10 text-foreground flex w-fit items-center gap-1 rounded-[calc(var(--radius-sm)-2px)] px-1.5 font-medium whitespace-nowrap"
 
 type ChipFit = {
   /** Width of the row the chips wrap in. */
@@ -166,9 +160,6 @@ type ModelPickerProps = {
   /** Opens the search on `/`. Only one picker on a page should claim the key. */
   shortcut?: boolean
 }
-
-/** Matches the axis selects opposite: roomy on touch, compact once a pointer is likely. */
-const CONTROL_HEIGHT_CLASS = "h-11 sm:h-9"
 
 export function ModelPicker({
   models,
@@ -395,7 +386,8 @@ export function ModelPicker({
                 placeholder="Search models"
                 showTrigger={false}
                 disabled={disabled}
-                className={cn("w-full", CONTROL_HEIGHT_CLASS)}
+                // The field step, as the axis selects opposite are.
+                className="h-control-xl w-full"
                 onBlur={() => {
                   if (!suggestionsOpen) closeSearchIfIdle()
                 }}
@@ -418,12 +410,11 @@ export function ModelPicker({
             <Button
               ref={searchButtonRef}
               variant="ghost"
-              size="icon"
+              size="icon-xl"
               aria-label="Search models"
               aria-keyshortcuts={shortcut ? "/" : undefined}
               title={shortcut ? "Search models (/)" : "Search models"}
               disabled={disabled}
-              className={cn("aspect-square w-auto", CONTROL_HEIGHT_CLASS)}
               onClick={openSearch}
             >
               <RiSearchLine aria-hidden="true" />
@@ -437,22 +428,19 @@ export function ModelPicker({
                 <Button
                   ref={listTriggerRef}
                   variant="outline"
+                  size="xl"
                   disabled={disabled}
-                  className={cn(
-                    "justify-between gap-2 px-3 text-sm sm:text-xs",
-                    CONTROL_HEIGHT_CLASS,
-                    searchOpen ? "shrink-0" : "flex-1",
-                  )}
+                  className={cn("justify-between gap-2", searchOpen ? "shrink-0" : "flex-1")}
                 />
               }
             >
               <span>
                 Models{" "}
-                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
+                <span className={cn(COUNT_TEXT_CLASS, "text-muted-foreground")}>
                   {value.length}
                 </span>
               </span>
-              <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground" />
+              <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground size-3.5" />
             </PopoverTrigger>
             <PopoverContent
               align="end"
@@ -463,21 +451,20 @@ export function ModelPicker({
               }
               className="max-h-[min(32rem,var(--available-height))] w-[min(42rem,var(--available-width))] gap-0 p-0"
             >
-              <div className="border-border flex items-center gap-2 border-b px-3 py-2">
+              <div className="border-border text-field flex items-center gap-2 border-b px-3 py-2">
                 <PopoverTitle>Models</PopoverTitle>
-                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
-                  {value.length} selected
+                <span className="text-muted-foreground">
+                  <span className={COUNT_TEXT_CLASS}>{value.length}</span> selected
                 </span>
                 <span className="flex-1" />
                 {onReset ? (
-                  <Button variant="ghost" size="sm" className="h-11 sm:h-6" onClick={onReset}>
+                  <Button variant="ghost" size="sm" onClick={onReset}>
                     Reset
                   </Button>
                 ) : null}
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-11 sm:h-6"
                   // Ids a benchmark lacks still count: an old shared link can carry them.
                   disabled={selected.length === 0}
                   onClick={() => onChange([])}
@@ -500,8 +487,9 @@ export function ModelPicker({
           /* Takes whatever height the picker is given past its controls, and three chip rows
              when it's given none. Size containment keeps the chips themselves out of the
              picker's height, so a long selection folds into the count instead of growing it.
-             Three rows plus the controls is exactly the axes' height opposite. */
-          <div className="relative min-h-26 flex-1 overflow-hidden contain-size sm:min-h-20">
+             Three rows and the two `gap-1`s between them, plus the controls, is exactly the
+             axes' height opposite on a fine pointer. */
+          <div className="relative min-h-[calc(3*var(--chip)+2*--spacing(1))] flex-1 overflow-hidden contain-size">
             {/* Every chip laid out unwrapped, out of sight, so the real row knows how many
               it can hold. Covers the area and is clipped to it, so it measures the space too. */}
             <div
@@ -512,14 +500,16 @@ export function ModelPicker({
             >
               <div className="flex w-max gap-1">
                 {value.map((model) => (
-                  <span
-                    key={model.model}
-                    className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS, "pr-0")}
-                  >
+                  <span key={model.model} className={cn(comboboxChipClass, "pr-0")}>
                     <ModelDot model={model} />
                     {model.displayName}
-                    {/* The remove button's footprint, overlap included. */}
-                    <span className="-ml-1 size-5" />
+                    {/* The remove button's footprint, overlap included, from its own recipe. */}
+                    <span
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "icon-xs" }),
+                        comboboxChipRemoveClass,
+                      )}
+                    />
                   </span>
                 ))}
                 {/* Digits are tabular, so the trigger's width only turns on how many the
@@ -528,11 +518,14 @@ export function ModelPicker({
                   <span
                     key={index}
                     data-more=""
-                    className={buttonVariants({
-                      variant: "secondary",
-                      size: "sm",
-                      className: CHIP_SIZE_CLASS,
-                    })}
+                    // Merged as `Button` merges it: cva only appends, which would leave the
+                    // button's own height fighting the chip's.
+                    className={cn(
+                      buttonVariants({ variant: "secondary", size: "sm" }),
+                      comboboxChipSizeClass,
+                      // Measured, so it must never be caught mid-transition.
+                      "transition-none",
+                    )}
                   >
                     {"0".repeat(index + 1)} more
                     <RiArrowDownSLine />
@@ -545,7 +538,11 @@ export function ModelPicker({
                 {SKELETON_CHIP_WIDTHS.map((width, index) => (
                   <Skeleton
                     key={`${width}-${index}`}
-                    className={cn(CHIP_SIZE_CLASS, "rounded-[calc(var(--radius-sm)-2px)]", width)}
+                    className={cn(
+                      comboboxChipSizeClass,
+                      "rounded-[calc(var(--radius-sm)-2px)]",
+                      width,
+                    )}
                   />
                 ))}
               </div>
@@ -557,11 +554,7 @@ export function ModelPicker({
                       {/* Chips remove by render index, so they have to stay in value order —
                       taking the head keeps every visible chip pointing at its own model. */}
                       {shown.slice(0, visibleCount).map((model) => (
-                        <ComboboxChip
-                          key={model.model}
-                          className={CHIP_SIZE_CLASS}
-                          {...highlightHandlers(model.model)}
-                        >
+                        <ComboboxChip key={model.model} {...highlightHandlers(model.model)}>
                           <ModelDot model={model} />
                           {model.displayName}
                         </ComboboxChip>
@@ -584,7 +577,7 @@ export function ModelPicker({
                           variant="secondary"
                           size="sm"
                           aria-label={`Show ${hidden.length} more selected models`}
-                          className={CHIP_SIZE_CLASS}
+                          className={cn(comboboxChipSizeClass, "hit-area")}
                         />
                       }
                     >
@@ -596,7 +589,9 @@ export function ModelPicker({
                         {hidden.map((model) => (
                           <li
                             key={model.model}
-                            className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS)}
+                            // The overflow list is portalled outside `ComboboxChips`, so these can't be
+                            // real chips; they share the chip's recipe instead.
+                            className={cn(comboboxChipClass, "pr-0")}
                             {...highlightHandlers(model.model)}
                           >
                             <ModelDot model={model} />
@@ -605,7 +600,7 @@ export function ModelPicker({
                               variant="ghost"
                               size="icon-xs"
                               aria-label={`Remove ${model.displayName}`}
-                              className="-mr-1 opacity-50 hover:opacity-100"
+                              className={comboboxChipRemoveClass}
                               onClick={() => onChange(selected.filter((id) => id !== model.model))}
                             >
                               <RiCloseLine aria-hidden="true" />
@@ -620,17 +615,17 @@ export function ModelPicker({
             )}
           </div>
         ) : null}
-        <ComboboxContent anchor={anchor}>
+        <ComboboxContent anchor={anchor} className="text-field">
           <ComboboxEmpty>No models found.</ComboboxEmpty>
           <ComboboxList className="max-h-48">
             <ComboboxCollection>
               {(model: Model) => (
-                <ComboboxItem
-                  key={model.model}
-                  value={model}
-                  className="group/mark min-h-11 text-sm sm:min-h-8"
-                >
-                  <ModelLogo logoUrl={model.logoUrl} className="text-muted-foreground size-3.5" />
+                <ComboboxItem key={model.model} value={model} className="group/mark">
+                  <ModelLogo
+                    logoUrl={model.logoUrl}
+                    color={model.chartColor}
+                    className="size-3.5"
+                  />
                   <span className="truncate">{model.displayName}</span>
                 </ComboboxItem>
               )}

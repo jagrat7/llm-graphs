@@ -9,7 +9,7 @@ function Progress({ className, children, value, ...props }: ProgressPrimitive.Ro
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex flex-wrap gap-3", className)}
+      className={cn("text-control flex flex-wrap gap-3", className)}
       {...props}
     >
       {children}
@@ -46,7 +46,7 @@ function ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.
 function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
   return (
     <ProgressPrimitive.Label
-      className={cn("text-xs/relaxed font-medium", className)}
+      className={cn("leading-relaxed font-medium", className)}
       data-slot="progress-label"
       {...props}
     />
@@ -56,10 +56,7 @@ function ProgressLabel({ className, ...props }: ProgressPrimitive.Label.Props) {
 function ProgressValue({ className, ...props }: ProgressPrimitive.Value.Props) {
   return (
     <ProgressPrimitive.Value
-      className={cn(
-        "ml-auto font-mono text-[0.68rem]/relaxed text-muted-foreground tabular-nums",
-        className,
-      )}
+      className={cn("ml-auto font-mono text-count text-muted-foreground", className)}
       data-slot="progress-value"
       {...props}
     />

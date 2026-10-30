@@ -158,7 +158,7 @@ export function ChartShareMenu({
               size="sm"
               aria-busy={status.kind === "busy"}
               className={cn(
-                "text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground gap-1.5 px-2 text-[0.625rem]",
+                "text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground gap-1.5",
                 className,
               )}
             />

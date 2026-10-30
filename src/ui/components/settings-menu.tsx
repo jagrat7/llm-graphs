@@ -1,12 +1,9 @@
-import { RiEqualizer2Line, RiSearchLine } from "@remixicon/react"
-import { queryOptions, useQuery } from "@tanstack/react-query"
-import { useMemo, useState } from "react"
+import { RiEqualizer2Line } from "@remixicon/react"
+import { lazy, Suspense } from "react"
 
 import type { Settings } from "#/ui/lib/settings"
 
-import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"
-import { Checkbox } from "#/ui/components/ui/checkbox"
 import {
   Dialog,
   DialogClose,
@@ -16,49 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#/ui/components/ui/dialog"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "#/ui/components/ui/input-group"
 import { Switch } from "#/ui/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
-import {
-  DEFAULT_SETTINGS,
-  isDefaultSettings,
-  providerOptions,
-  useSettings,
-} from "#/ui/lib/settings"
-import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
+import { SettingsSection } from "#/ui/components/settings-section"
+import { DEFAULT_SETTINGS, isDefaultSettings, useSettings } from "#/ui/lib/settings"
+
+const SettingsProviders = lazy(() => import("#/ui/components/settings-providers"))
 
 const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
   { value: "highest", label: "Highest only" },
 ] as const satisfies ReadonlyArray<{ value: Settings["effortLevels"]; label: string }>
-
-function SettingsSection({
-  title,
-  description,
-  action,
-  children,
-}: {
-  /** Names the section for assistive tech; the rows' own labels carry it on screen. */
-  title: string
-  description?: string
-  /** Section-wide controls, set against the description's right edge. */
-  action?: React.ReactNode
-  children: React.ReactNode
-}) {
-  return (
-    <section aria-label={title} className="border-border/60 border-b py-4 last:border-b-0">
-      {description || action ? (
-        <div className="mb-3 flex items-center justify-between gap-4 pt-2">
-          {description ? (
-            <p className="text-muted-foreground min-w-0 text-xs">{description}</p>
-          ) : null}
-          {action}
-        </div>
-      ) : null}
-      {children}
-    </section>
-  )
-}
 
 /**
  * Label, and any description, on the left, the control on the right, as one row of a form.
@@ -78,10 +43,12 @@ function SettingRow({
   return (
     <div className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
       <div className="min-w-0">
-        <label id={`${id}-label`} htmlFor={id} className="text-foreground block text-sm">
+        <label id={`${id}-label`} htmlFor={id} className="text-foreground text-field block">
           {label}
         </label>
-        {description ? <p className="text-muted-foreground mt-0.5 text-xs">{description}</p> : null}
+        {description ? (
+          <p className="text-muted-foreground text-control mt-0.5">{description}</p>
+        ) : null}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -111,11 +78,7 @@ function Segmented<T extends string | number>({
       }}
     >
       {options.map((option) => (
-        <ToggleGroupItem
-          key={option.value}
-          value={String(option.value)}
-          className="h-11 px-3 sm:h-7"
-        >
+        <ToggleGroupItem key={option.value} value={String(option.value)} className="px-3">
           {option.label}
         </ToggleGroupItem>
       ))}
@@ -123,54 +86,24 @@ function Segmented<T extends string | number>({
   )
 }
 
-/**
- * Preferences that outlive one comparison. Turning a provider off takes its models out of
- * the picker, the opening selection, and the chart; turning it back on restores any picks.
- */
+/** Preferences that outlive one comparison: how the chart draws, and which providers it shows. */
 export default function SettingsMenu() {
   const [settings, setSettings] = useSettings()
-  // Never stale, like the compare route's copy, so this reads that cache entry instead of refetching.
-  const { data: snapshot } = useQuery(
-    queryOptions({
-      queryKey: ["models", "snapshot"],
-      queryFn: () => fetchModelSnapshot(),
-      staleTime: Infinity,
-      gcTime: Infinity,
-    }),
-  )
-  const providers = useMemo(() => (snapshot ? providerOptions(snapshot) : []), [snapshot])
-  const [query, setQuery] = useState("")
-
-  const hidden = new Set(settings.hiddenProviders)
-  const shownCount = providers.filter((provider) => !hidden.has(provider.vendor)).length
-  const needle = query.trim().toLowerCase()
-  const matching = needle
-    ? providers.filter((provider) => provider.label.toLowerCase().includes(needle))
-    : providers
   const isDefault = isDefaultSettings(settings)
 
   function update(change: Partial<Settings>) {
     setSettings((current) => ({ ...current, ...change }))
   }
 
-  function toggleProvider(vendor: string, shown: boolean) {
-    setSettings((current) => ({
-      ...current,
-      hiddenProviders: shown
-        ? current.hiddenProviders.filter((each) => each !== vendor)
-        : [...new Set([...current.hiddenProviders, vendor])],
-    }))
-  }
-
   return (
-    <Dialog onOpenChange={(open) => !open && setQuery("")}>
+    <Dialog>
       <DialogTrigger
         render={
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon-lg"
             aria-label="Settings"
-            className="text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground min-h-11 w-11 sm:min-h-8 sm:w-8"
+            className="text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground"
           >
             <RiEqualizer2Line aria-hidden="true" />
           </Button>
@@ -178,8 +111,8 @@ export default function SettingsMenu() {
       />
       {/* The body scrolls between a fixed header and footer, never the page behind. */}
       <DialogContent className="flex max-h-[min(52rem,calc(100dvh-2rem))] flex-col gap-0 p-0 sm:max-w-3xl">
-        <DialogHeader className="border-border/60 border-b px-6 pe-14 pt-5 pb-4">
-          <DialogTitle className="text-base">Settings</DialogTitle>
+        <DialogHeader className="border-border/60 border-b px-6 py-3.5">
+          <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">
@@ -222,98 +155,31 @@ export default function SettingsMenu() {
             </div>
           </SettingsSection>
 
-          <SettingsSection
-            title="Providers"
-            description={providers.length > 0 ? `${shownCount} of ${providers.length}` : undefined}
-            action={
-              providers.length > 0 ? (
-                <div className="flex shrink-0 items-center">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={shownCount === providers.length}
-                    onClick={() => update({ hiddenProviders: [] })}
-                    className="text-muted-foreground h-11 px-2 sm:h-7"
-                  >
-                    Select all
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={shownCount === 0}
-                    onClick={() =>
-                      update({ hiddenProviders: providers.map((provider) => provider.vendor) })
-                    }
-                    className="text-muted-foreground h-11 px-2 sm:h-7"
-                  >
-                    Deselect all
-                  </Button>
-                </div>
-              ) : null
+          {/* Loaded when the dialog first opens: the list derives from the whole model snapshot,
+              which a closed dialog in the app bar has no reason to read. */}
+          <Suspense
+            fallback={
+              <SettingsSection title="Providers">
+                <p className="text-muted-foreground text-control py-2">Loading providers…</p>
+              </SettingsSection>
             }
           >
-            <InputGroup className="h-11 sm:h-8">
-              <InputGroupAddon>
-                <RiSearchLine aria-hidden="true" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search providers"
-                aria-label="Search providers"
-              />
-            </InputGroup>
-
-            <ul className="-mx-1.5 mt-3 grid grid-cols-1 gap-x-4 sm:grid-cols-3">
-              {snapshot == null ? (
-                <li className="text-muted-foreground col-span-full px-1.5 py-2 text-xs">
-                  Loading providers…
-                </li>
-              ) : matching.length === 0 ? (
-                <li className="text-muted-foreground col-span-full px-1.5 py-2 text-xs">
-                  No providers match
-                </li>
-              ) : (
-                matching.map((provider) => {
-                  const shown = !hidden.has(provider.vendor)
-
-                  return (
-                    <li key={provider.vendor}>
-                      <label className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2.5 rounded-md px-1.5 text-sm sm:min-h-8">
-                        <Checkbox
-                          checked={shown}
-                          onCheckedChange={(next) => toggleProvider(provider.vendor, next)}
-                        />
-                        <ModelLogo
-                          logoUrl={provider.logoUrl}
-                          className={shown ? "size-3.5" : "size-3.5 opacity-40"}
-                        />
-                        <span className={shown ? "truncate" : "text-muted-foreground truncate"}>
-                          {provider.label}
-                        </span>
-                        <span className="text-muted-foreground/70 ms-auto font-mono text-[0.68rem] tabular-nums">
-                          {provider.modelCount}
-                          <span className="sr-only"> models</span>
-                        </span>
-                      </label>
-                    </li>
-                  )
-                })
-              )}
-            </ul>
-          </SettingsSection>
+            <SettingsProviders />
+          </Suspense>
         </div>
 
         <DialogFooter className="border-border/60 border-t px-6 py-4 sm:justify-between">
+          {/* Meets the column's edge once the footer is a row, as the provider actions do. */}
           <Button
             variant="ghost"
+            size="lg"
             disabled={isDefault}
             onClick={() => setSettings(DEFAULT_SETTINGS)}
+            className="sm:-ms-2.5"
           >
             Reset to defaults
           </Button>
-          <DialogClose render={<Button className="px-4" />}>Done</DialogClose>
+          <DialogClose render={<Button size="lg" className="px-4" />}>Done</DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

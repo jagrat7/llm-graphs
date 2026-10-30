@@ -20,7 +20,7 @@ import { cn } from "#/ui/lib/utils"
  * inset belongs to what follows it, matching the select trigger's own `px-2`
  * so the marks line up whether the row is a control or plain attribution.
  */
-const VIA_ROW_CLASS = "text-muted-foreground text-sm sm:text-xs flex items-center gap-1.5"
+const VIA_ROW_CLASS = "text-muted-foreground text-control flex items-center gap-1.5"
 
 /**
  * A metric published by a single provider has no choice to offer, so it reads as
@@ -49,7 +49,7 @@ export function SourceSelect({
       <p className={cn(VIA_ROW_CLASS, className)}>
         <span aria-hidden="true">via</span>
         {/* The transparent border matches the trigger's, so marks line up across rows. */}
-        <span className="flex min-h-11 items-center gap-1.5 truncate border border-transparent px-2 sm:min-h-8">
+        <span className="min-h-control-lg flex items-center gap-1.5 truncate border border-transparent px-2">
           <SourceLogo source={value} className="size-3" />
           <span className="truncate">{sourceLabel(value, info)}</span>
         </span>
@@ -68,9 +68,9 @@ export function SourceSelect({
         disabled={disabled}
       >
         <SelectTrigger
-          size="sm"
+          size="lg"
           aria-label={`${axis}-axis data source`}
-          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground dark:hover:bg-muted min-h-11 min-w-0 gap-1.5 border-transparent bg-transparent px-2 text-sm shadow-none sm:min-h-8 sm:text-xs dark:bg-transparent"
+          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground dark:hover:bg-muted min-w-0 gap-1.5 border-transparent bg-transparent px-2 shadow-none dark:bg-transparent"
         >
           {/* Base UI resolves the label from the raw value, so the mark is rendered here. */}
           {/* The trigger lays the value out as a flex row, which kills the registry's
@@ -93,11 +93,7 @@ export function SourceSelect({
               hierarchy, so the items ride the same annotation step. */}
           <SelectGroup>
             {sources.map((source) => (
-              <SelectItem
-                key={source}
-                value={source}
-                className="min-h-11 pr-7 text-sm sm:min-h-8 sm:text-xs"
-              >
+              <SelectItem key={source} value={source} className="pr-7">
                 <SourceLogo source={source} className="size-3" />
                 {sourceLabel(source, info)}
               </SelectItem>

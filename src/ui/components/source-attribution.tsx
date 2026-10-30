@@ -5,14 +5,14 @@ import { SourceLogo } from "#/ui/components/source-logo"
 
 /** A credit line, so it sits on the annotation step rather than competing with the data. */
 const SOURCE_LINK_CLASS =
-  "group/mark decoration-border hover:text-foreground active:text-foreground min-h-11 inline-flex items-center gap-1.5 underline underline-offset-2 sm:min-h-6"
+  "group/mark decoration-border hover:text-foreground active:text-foreground min-h-control-sm inline-flex items-center gap-1.5 underline underline-offset-2"
 
 export function SourceAttribution() {
   const info = useProvidersInfo()
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- response keys are provider names
   const sources = Object.keys(info.displayNames) as Array<ProviderName>
   return (
-    <p className="text-muted-foreground flex min-h-6 flex-wrap items-center gap-x-1.5 text-sm sm:text-xs">
+    <p className="text-muted-foreground min-h-control-sm text-control flex flex-wrap items-center gap-x-1.5">
       {sources.map((source, index) => (
         <span key={source} className="contents">
           {index > 0 ? <span aria-hidden="true">·</span> : null}

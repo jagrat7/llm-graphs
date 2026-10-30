@@ -23,7 +23,7 @@ export type AxisSetting = { metric: Metric | null; source: ProviderName | null }
 export type AxisState = Record<AxisKey, AxisSetting>
 
 /** Ink and weight make the axis letters a structural spine; size keeps them under the metric. */
-const AXIS_LABEL_CLASS = "text-foreground text-sm sm:text-xs font-semibold"
+const AXIS_LABEL_CLASS = "text-foreground text-control font-semibold"
 
 /**
  * A swap is a hinge between two adjacent rows, so each button spans both and
@@ -65,10 +65,12 @@ export function AxisControls({
   )
 
   return (
-    // Side by side, the row stretches the right-hand side to the axes' height, so neither
-    // pushes the chart down on its own. That side has to contain its own height for this
-    // to hold, as the picker's chips do.
-    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:max-w-4xl min-[56rem]:flex-row min-[56rem]:justify-center min-[56rem]:gap-4">
+    // Side by side, the two halves are equal columns either side of the divider. The grid
+    // fits its content, so both columns take the wider side's width (the axes': the picker's
+    // chips contain their own size and ask for none) and the strip stays symmetric about the
+    // divider, centred over the chart. The row stretches the picker to the axes' height, so
+    // neither pushes the chart down on its own.
+    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:grid min-[56rem]:w-fit min-[56rem]:max-w-none min-[56rem]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[56rem]:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
           column, not the metric one: metric names are short and fixed, provider
@@ -79,8 +81,8 @@ export function AxisControls({
           phone the source beside it can't squeeze out the label. The metric ceiling
           fits the longest metric plus the Z row's remove button, so that row never
           spills into "via". The source column hugs its widest name, so the divider
-          follows the labels instead of leaving a hole before the picker; slack
-          splits evenly around the strip, so it stays centred over the chart. */}
+          follows the labels instead of leaving a hole before the picker, and the
+          picker's column matches it. */}
       <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center gap-x-2 gap-y-1.5 min-[56rem]:min-w-0 min-[56rem]:flex-initial">
         {AXIS_KEYS.map((key, index) => {
           const { metric, source } = axes[key]
@@ -153,10 +155,10 @@ function SwapAxesButton({
             onClick={onSwap}
             aria-label={`Swap the ${first} and ${second} axes`}
             disabled={disabled}
+            // The rail is a fixed column, so the hinge keeps its width and takes a row's height.
             className={cn(
-              "text-muted-foreground col-start-1 row-span-2 justify-self-end",
+              "text-muted-foreground h-control-lg col-start-1 row-span-2 w-6 justify-self-end",
               rowStartClass,
-              "min-h-11 sm:min-h-8",
             )}
           >
             <RiArrowUpDownLine aria-hidden="true" />

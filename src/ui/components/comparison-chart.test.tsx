@@ -9,6 +9,7 @@ import { ProvidersService } from "#/server/services/providers"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
 import { standaloneChartSvg } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
+import { CHART_MIN_HEIGHT_VAR } from "#/ui/lib/layout-styles"
 import { metricRecord } from "#/ui/lib/metrics"
 import { rangeMinHeight } from "#/ui/lib/range-definition"
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
@@ -472,8 +473,9 @@ describe("stacked runs", () => {
       </QueryClientProvider>,
     )
     const frame = container.querySelector<HTMLElement>('[data-chart-frame="loaded"]')!
-    expect(Number.parseFloat(frame.style.minHeight)).toBeGreaterThan(rangeMinHeight(20))
-    expect(frame.style.maxHeight).toBe("none")
+    expect(Number.parseFloat(frame.style.getPropertyValue(CHART_MIN_HEIGHT_VAR))).toBeGreaterThan(
+      rangeMinHeight(20),
+    )
   })
 
   it("keeps spans noninteractive while markers expose their original values", async () => {
