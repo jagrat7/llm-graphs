@@ -134,9 +134,6 @@ describe("model picker highlight", () => {
 
   it("highlights the model under keyboard navigation in the list", async () => {
     const { highlighted } = renderPicker()
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Search models" }))
-    })
     const input = screen.getByRole("combobox")
     const activeModel = () => {
       const id = input.getAttribute("aria-activedescendant")
@@ -237,32 +234,64 @@ describe("model picker highlight", () => {
 })
 
 describe("model picker search", () => {
-  it("starts folded and unfolds into a focused search field", async () => {
+  it("shows the search field immediately without taking focus", () => {
     renderPicker()
 
-    expect(screen.queryByRole("combobox")).toBeNull()
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Search models" }))
-    })
-
-    expect(document.activeElement).toBe(screen.getByRole("combobox"))
+    expect(screen.getByRole("combobox")).not.toBeNull()
+    expect(document.activeElement).not.toBe(screen.getByRole("combobox"))
   })
 
-  it("folds on Escape without clearing the selected models", async () => {
+  it("stays expanded on Escape without clearing the selected models", async () => {
     const { onChange } = renderPicker()
 
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Search models" }))
+      screen.getByRole("combobox").focus()
     })
     await act(async () => {
       fireEvent.keyDown(screen.getByRole("combobox"), { key: "Escape" })
     })
 
-    expect(screen.queryByRole("combobox")).toBeNull()
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Search models" }))
+    expect(document.activeElement).toBe(screen.getByRole("combobox"))
     expect(onChange).not.toHaveBeenCalled()
     expect(pill("Alpha")).not.toBeNull()
+  })
+
+  it("keeps the search field and query after clicking outside or opening Models", async () => {
+    renderPicker()
+    render(<button>Outside</button>)
+
+    const input = screen.getByRole("combobox")
+
+    await act(async () => {
+      input.focus()
+      fireEvent.change(input, { target: { value: "alp" } })
+    })
+    await act(async () => {
+      const outside = screen.getByRole("button", { name: "Outside" })
+      outside.focus()
+      fireEvent.click(outside)
+      await new Promise(requestAnimationFrame)
+    })
+
+    expect(screen.getByRole("combobox")).toBe(input)
+    expect(screen.getByDisplayValue("alp")).toBe(input)
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Outside" }))
+
+    await openChecklist()
+
+    expect(screen.getByRole("combobox")).toBe(input)
+    expect(screen.getByDisplayValue("alp")).toBe(input)
+    expect(screen.getByRole("checkbox", { name: "Alpha" })).not.toBeNull()
+  })
+
+  it("focuses the visible search with the slash shortcut", async () => {
+    render(<ModelPicker models={models} selected={[]} onChange={() => {}} shortcut />)
+
+    await act(async () => {
+      fireEvent.keyDown(document.body, { key: "/" })
+    })
+
+    expect(document.activeElement).toBe(screen.getByRole("combobox"))
   })
 })
 
