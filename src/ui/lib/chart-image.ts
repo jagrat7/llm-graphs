@@ -429,31 +429,26 @@ function fitText(context: CanvasRenderingContext2D, text: string, width: number)
 const CARD_PADDING = 32
 const TITLE_SIZE = 24
 const SUBTITLE_SIZE = 15
-const FOOTER_SIZE = 13
 const HEADER_GAP = 20
-const FOOTER_GAP = 16
 
 export type ShareCardText = {
   title: string
   subtitle: string
-  /** Bottom-left credit; the date the image was made sits opposite it. */
-  credit: string
 }
 
 /**
- * The plot framed for sharing: a title and its sources above, credit and date below,
- * on the page's own background so the image matches what the reader was looking at.
+ * The plot framed for sharing: a title and its sources above, on the page's own
+ * background so the image matches what the reader was looking at.
  */
 export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale: number) {
   await document.fonts.ready
 
   const width = Math.round(plot.width + CARD_PADDING * 2)
   const top = CARD_PADDING + TITLE_SIZE + 8 + SUBTITLE_SIZE + HEADER_GAP
-  const height = Math.round(top + plot.height + FOOTER_GAP + FOOTER_SIZE + CARD_PADDING)
+  const height = Math.round(top + plot.height + CARD_PADDING)
   const { canvas, context } = scaledCanvas(width, height, scale)
   const fontFamily = getComputedStyle(document.body).fontFamily
   const textWidth = width - CARD_PADDING * 2
-  const muted = resolveCssColor("var(--muted-foreground)")
 
   context.fillStyle = resolveCssColor("var(--background)", "#ffffff")
   context.fillRect(0, 0, width, height)
@@ -464,7 +459,7 @@ export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale:
   context.fillText(fitText(context, text.title, textWidth), CARD_PADDING, CARD_PADDING)
 
   context.font = `400 ${SUBTITLE_SIZE}px ${fontFamily}`
-  context.fillStyle = muted
+  context.fillStyle = resolveCssColor("var(--muted-foreground)")
   context.fillText(
     fitText(context, text.subtitle, textWidth),
     CARD_PADDING,
@@ -472,18 +467,6 @@ export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale:
   )
 
   context.drawImage(plot.image, CARD_PADDING, top, plot.width, plot.height)
-
-  const footerTop = top + plot.height + FOOTER_GAP
-  const date = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
-
-  context.font = `400 ${FOOTER_SIZE}px ${fontFamily}`
-  context.fillText(text.credit, CARD_PADDING, footerTop)
-  context.textAlign = "right"
-  context.fillText(date, width - CARD_PADDING, footerTop)
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
