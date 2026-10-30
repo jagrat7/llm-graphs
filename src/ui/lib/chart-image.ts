@@ -3,6 +3,13 @@ import { resolveCssColor } from "#/ui/lib/theme-colors"
 /** A plot drawn at `scale` device pixels per CSS pixel; `width` and `height` are CSS pixels. */
 export type PlotImage = { image: CanvasImageSource; width: number; height: number }
 
+/**
+ * The 2D plot's layout in a shared image, whatever screen it was shared from. A feed
+ * shows an image about 500px wide, where a plot laid out across a desktop window shrinks
+ * until its labels stop reading, so the image is laid out at this size and drawn dense.
+ */
+export const SHARE_PLOT_SIZE = { width: 760, height: 440 }
+
 /** Marks the element whose `<defs>` and `<style>` a chart's SVG resolves masks against. */
 export const CHART_EXPORT_DEFS_ATTRIBUTE = "data-chart-export-defs"
 
@@ -206,13 +213,16 @@ function scaledCanvas(width: number, height: number, scale: number) {
 }
 
 /**
- * The mounted TanStack chart under `host` as standalone SVG markup: resolved paint,
- * the logo masks it borrows from a sibling SVG, and the fonts its labels were laid out
- * in. Focus rings and guides are left out, as the library's own exporter does.
+ * A mounted TanStack chart as standalone SVG markup: resolved paint, the logo masks it
+ * borrows from a sibling SVG under `host`, and the fonts its labels were laid out in.
+ * Focus rings and guides are left out, as the library's own exporter does. The chart is
+ * the one under `host` unless another mounted copy is given.
  */
-export async function standaloneChartSvg(host: Element, scale: number) {
-  const svg = host.querySelector<SVGSVGElement>("svg.ts-chart")
-
+export async function standaloneChartSvg(
+  host: Element,
+  scale: number,
+  svg = host.querySelector<SVGSVGElement>("svg.ts-chart"),
+) {
   if (!svg) throw new Error("No chart to export")
 
   // The scene is laid out in viewBox units; the box on screen can lag it mid-resize.
@@ -262,8 +272,12 @@ export async function standaloneChartSvg(host: Element, scale: number) {
   return { markup: new XMLSerializer().serializeToString(clone), width, height }
 }
 
-export async function svgPlotImage(host: Element, scale: number): Promise<PlotImage> {
-  const { markup, width, height } = await standaloneChartSvg(host, scale)
+export async function svgPlotImage(
+  host: Element,
+  scale: number,
+  svg?: SVGSVGElement | null,
+): Promise<PlotImage> {
+  const { markup, width, height } = await standaloneChartSvg(host, scale, svg)
   const url = URL.createObjectURL(new Blob([markup], { type: "image/svg+xml;charset=utf-8" }))
 
   try {
@@ -412,34 +426,29 @@ function fitText(context: CanvasRenderingContext2D, text: string, width: number)
   return `${fitted.trimEnd()}…`
 }
 
-const CARD_PADDING = 28
-const TITLE_SIZE = 18
-const SUBTITLE_SIZE = 13
-const FOOTER_SIZE = 12
+const CARD_PADDING = 32
+const TITLE_SIZE = 24
+const SUBTITLE_SIZE = 15
 const HEADER_GAP = 20
-const FOOTER_GAP = 16
 
 export type ShareCardText = {
   title: string
   subtitle: string
-  /** Bottom-left credit; the date the image was made sits opposite it. */
-  credit: string
 }
 
 /**
- * The plot framed for sharing: a title and its sources above, credit and date below,
- * on the page's own background so the image matches what the reader was looking at.
+ * The plot framed for sharing: a title and its sources above, on the page's own
+ * background so the image matches what the reader was looking at.
  */
 export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale: number) {
   await document.fonts.ready
 
   const width = Math.round(plot.width + CARD_PADDING * 2)
   const top = CARD_PADDING + TITLE_SIZE + 8 + SUBTITLE_SIZE + HEADER_GAP
-  const height = Math.round(top + plot.height + FOOTER_GAP + FOOTER_SIZE + CARD_PADDING)
+  const height = Math.round(top + plot.height + CARD_PADDING)
   const { canvas, context } = scaledCanvas(width, height, scale)
   const fontFamily = getComputedStyle(document.body).fontFamily
   const textWidth = width - CARD_PADDING * 2
-  const muted = resolveCssColor("var(--muted-foreground)")
 
   context.fillStyle = resolveCssColor("var(--background)", "#ffffff")
   context.fillRect(0, 0, width, height)
@@ -450,7 +459,7 @@ export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale:
   context.fillText(fitText(context, text.title, textWidth), CARD_PADDING, CARD_PADDING)
 
   context.font = `400 ${SUBTITLE_SIZE}px ${fontFamily}`
-  context.fillStyle = muted
+  context.fillStyle = resolveCssColor("var(--muted-foreground)")
   context.fillText(
     fitText(context, text.subtitle, textWidth),
     CARD_PADDING,
@@ -458,18 +467,6 @@ export async function shareCardBlob(plot: PlotImage, text: ShareCardText, scale:
   )
 
   context.drawImage(plot.image, CARD_PADDING, top, plot.width, plot.height)
-
-  const footerTop = top + plot.height + FOOTER_GAP
-  const date = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
-
-  context.font = `400 ${FOOTER_SIZE}px ${fontFamily}`
-  context.fillText(text.credit, CARD_PADDING, footerTop)
-  context.textAlign = "right"
-  context.fillText(date, width - CARD_PADDING, footerTop)
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
