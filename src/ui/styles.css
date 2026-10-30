@@ -31,8 +31,11 @@
   --card-foreground: var(--paper-ink);
   --popover: var(--paper-sheet);
   --popover-foreground: var(--paper-ink);
-  /* Fountain-pen blue: the one colour the engineer plots with. */
-  --primary: oklch(0.47 0.15 258);
+  /* Drafting ink: the pad's own green-blue rulings, deepened into the pen that marks it up.
+     The hue sits between the rulings and the blue-black ink, where the accent text already
+     lives, so the one colour that acts reads as part of the sheet rather than a UI blue laid
+     on top of it. Dark enough to hold about 7:1 against the paper and its own label. */
+  --primary: oklch(0.44 0.085 222);
   --primary-foreground: oklch(0.985 0.009 88);
   --secondary: oklch(0.925 0.018 88);
   --secondary-foreground: oklch(0.28 0.022 262);
