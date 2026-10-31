@@ -59,9 +59,10 @@ export function MetricSelect({
         disabled={disabled}
       >
         <SelectTrigger
+          size="xl"
           aria-label={label}
           className={cn(
-            "text-muted-foreground w-full min-w-0 justify-between gap-2 px-3 text-sm shadow-none hover:bg-muted hover:text-foreground min-h-11 sm:min-h-9",
+            "text-muted-foreground hover:bg-muted hover:text-foreground w-full min-w-0 justify-between gap-2 px-3 shadow-none",
             isEmpty ? EMPTY_CHIP_CLASS : null,
           )}
         >
@@ -69,7 +70,7 @@ export function MetricSelect({
           {isEmpty ? (
             <span aria-hidden="true" className="flex items-center gap-2 font-semibold">
               <RiAddLine className="text-primary size-4" />
-              Add {axis} axis
+              Add
             </span>
           ) : (
             // The trigger's flex row defeats `line-clamp`, so the label truncates itself.
@@ -81,7 +82,7 @@ export function MetricSelect({
         <SelectContent
           alignItemWithTrigger={false}
           align="start"
-          className="w-max max-w-(--available-width) min-w-(--anchor-width) duration-200 ease-out motion-reduce:animate-none"
+          className="text-field w-max max-w-(--available-width) min-w-(--anchor-width) duration-200 ease-out motion-reduce:animate-none"
         >
           <SelectGroup>
             {METRICS.map((metric) => (
@@ -89,7 +90,7 @@ export function MetricSelect({
                 key={metric}
                 value={metric}
                 disabled={unavailable.includes(metric)}
-                className="min-h-11 pr-7 text-sm sm:min-h-8"
+                className="pr-7"
               >
                 {METRIC_CONFIG[metric].shortLabel}
                 {/* Which providers publish the metric, so a choice can be weighed before it is
@@ -109,18 +110,17 @@ export function MetricSelect({
       </Select>
       {onRemove ? (
         <Tooltip>
-          {/* Shares the select's height, so it has to share its footprint too — at
-              `icon-sm` the button reads as a sliver welded to the side of the field
-              rather than the other half of one control. */}
+          {/* Shares the select's size step, so it reads as the other half of one control
+              rather than a sliver welded to the side of the field. */}
           <TooltipTrigger
             render={
               <Button
                 variant="outline"
-                size="icon-lg"
+                size="icon-xl"
                 onClick={onRemove}
                 disabled={disabled}
                 aria-label={`Remove ${axis} axis and return to the 2D chart`}
-                className="text-muted-foreground min-h-11 sm:min-h-9"
+                className="text-muted-foreground"
               >
                 <RiCloseLine aria-hidden="true" />
               </Button>

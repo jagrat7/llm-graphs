@@ -1,3 +1,19 @@
+import ai2Logo from "./logos/ai2.svg?raw"
+import amazonLogo from "./logos/amazon.svg?raw"
+import antGroupLogo from "./logos/ant-group.svg?raw"
+import baaiLogo from "./logos/baai.svg?raw"
+import baiduLogo from "./logos/baidu.svg?raw"
+import blackForestLabsLogo from "./logos/black-forest-labs.svg?raw"
+import bytedanceLogo from "./logos/bytedance.svg?raw"
+import ibmLogo from "./logos/ibm.svg?raw"
+import inceptionLogo from "./logos/inception.svg?raw"
+import lgLogo from "./logos/lg.svg?raw"
+import liquidLogo from "./logos/liquid.svg?raw"
+import meituanLogo from "./logos/meituan.svg?raw"
+import microsoftLogo from "./logos/microsoft.svg?raw"
+import servicenowLogo from "./logos/servicenow.svg?raw"
+import stepfunLogo from "./logos/stepfun.svg?raw"
+import upstageLogo from "./logos/upstage.svg?raw"
 import claudeLogo from "./logos/claude.svg?raw"
 
 export type VendorStyle = {
@@ -19,7 +35,8 @@ export type VendorStyle = {
 
 /**
  * Brand colours and logos, keyed by vendor slug. Colours are the brands' own, from svgl and
- * theSVG; Anthropic and Alibaba take their model's colour (Claude, Qwen). The white brands' tints
+ * theSVG; logos are theSVG's marks where models.dev has none (Amazon's smile and LG's face are
+ * cropped out of their lockups, inclusionAI takes its parent Ant Group's mark); Anthropic and Alibaba take their model's colour (Claude, Qwen). The white brands' tints
  * are OpenAI's old ChatGPT green, a warm gold for xAI and Kimi's blue for Moonshot. A vendor left out
  * keeps the hue hashed from its slug and its models.dev logo.
  */
@@ -35,19 +52,27 @@ export const VENDOR_STYLES: Readonly<Record<string, VendorStyle>> = {
   meta: { color: "#0467DF" },
   nvidia: { color: "#76B900" },
   zhipuai: { color: "#3859FF" },
-  ibm: { color: "#1F70C1" },
-  amazon: { color: "#FF9900" },
+  ibm: { color: "#1F70C1", logo: ibmLogo },
+  amazon: { color: "#FF9900", logo: amazonLogo },
   cohere: { color: "#39594D" },
   tencent: { color: "#0052D9" },
-  microsoft: { color: "#00A4EF" },
-  "allen-institute-for-ai": { color: "#F0529C" },
+  microsoft: { color: "#00A4EF", logo: microsoftLogo },
+  "allen-institute-for-ai": { color: "#F0529C", logo: ai2Logo },
+  allenai: { color: "#F0529C", logo: ai2Logo },
   ai2: { color: "#F0529C" },
   xiaomi: { color: "#FF6900" },
   minimax: { color: "#E73562" },
-  upstage: { color: "#908AF9" },
-  stepfun: { color: "#005AFF" },
-  baidu: { color: "#2932E1" },
-  "lg-ai-research": { color: "#A50034" },
+  upstage: { color: "#908AF9", logo: upstageLogo },
+  stepfun: { color: "#005AFF", logo: stepfunLogo },
+  baidu: { color: "#2932E1", logo: baiduLogo },
+  "lg-ai-research": { color: "#A50034", logo: lgLogo },
   perplexity: { color: "#20808D" },
-  "bytedance-seed": { color: "#3C8CFF" },
+  "bytedance-seed": { color: "#3C8CFF", logo: bytedanceLogo },
+  liquid: { logo: liquidLogo },
+  meituan: { logo: meituanLogo },
+  inception: { logo: inceptionLogo },
+  inclusionai: { logo: antGroupLogo },
+  baai: { logo: baaiLogo },
+  servicenow: { logo: servicenowLogo },
+  "black-forest-labs": { logo: blackForestLabsLogo },
 }

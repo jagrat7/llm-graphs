@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "#/ui/components/ui/table"
-import { CHART_HEIGHT_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
+import { CHART_FRAME_CLASS, TABLE_CELL_CLASS, TABLE_WIDTH_CLASS } from "#/ui/lib/layout-styles"
 
 const CHART_GRID_LINES = 4
 const TABLE_SKELETON_ROWS = 10
@@ -17,7 +17,7 @@ export function ChartSkeleton() {
   return (
     <div
       data-chart-frame="loading"
-      className={`relative w-full ${CHART_HEIGHT_CLASS}`}
+      className={`relative w-full ${CHART_FRAME_CLASS}`}
       aria-label="Loading comparison chart"
       role="status"
     >
@@ -49,7 +49,7 @@ export function TableSkeleton() {
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             {HEADER_WIDTHS.map((width, index) => (
-              <TableHead key={index} className="h-11 px-3 sm:h-10">
+              <TableHead key={index} className={TABLE_CELL_CLASS}>
                 <Skeleton className={`h-3 rounded-sm opacity-70 ${width}`} />
               </TableHead>
             ))}
@@ -58,17 +58,17 @@ export function TableSkeleton() {
         <TableBody>
           {Array.from({ length: TABLE_SKELETON_ROWS }, (_, rowIndex) => (
             <TableRow key={rowIndex} className="hover:bg-transparent">
-              <TableCell className="h-11 px-3">
+              <TableCell className={TABLE_CELL_CLASS}>
                 <Skeleton className="h-3 w-40 rounded-sm opacity-70" />
               </TableCell>
-              <TableCell className="h-11 px-3">
+              <TableCell className={TABLE_CELL_CLASS}>
                 <div className="ml-auto flex w-40 items-center gap-3">
                   <Skeleton className="h-3 w-12 rounded-sm opacity-70" />
                   <Skeleton className="h-1.5 flex-1 rounded-full opacity-70" />
                 </div>
               </TableCell>
               {Array.from({ length: 4 }, (_unused, cellIndex) => (
-                <TableCell key={cellIndex} className="h-11 px-3">
+                <TableCell key={cellIndex} className={TABLE_CELL_CLASS}>
                   <Skeleton className="ml-auto h-3 w-16 rounded-sm opacity-70" />
                 </TableCell>
               ))}

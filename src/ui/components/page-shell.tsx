@@ -1,4 +1,4 @@
-import { CONTENT_WIDTH_CLASS } from "#/ui/lib/layout-styles"
+import { PAGE_COLUMN_CLASS } from "#/ui/lib/layout-styles"
 import { cn } from "#/ui/lib/utils"
 
 export function PageShell({
@@ -8,7 +8,5 @@ export function PageShell({
   children: React.ReactNode
   className?: string
 }) {
-  return (
-    <main className={cn(`mx-auto px-4 sm:px-6 ${CONTENT_WIDTH_CLASS}`, className)}>{children}</main>
-  )
+  return <main className={cn(PAGE_COLUMN_CLASS, className)}>{children}</main>
 }

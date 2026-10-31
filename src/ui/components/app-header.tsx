@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 
 import { APP_NAME } from "#/ui/lib/app-meta"
-import { CONTENT_WIDTH_CLASS, HEADER_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import { PAGE_COLUMN_CLASS } from "#/ui/lib/layout-styles"
 import { cn } from "#/ui/lib/utils"
 
 import { TokenWordmark } from "./brand-marks"
@@ -14,25 +14,13 @@ import ThemeToggle from "./theme-toggle"
  */
 export default function AppHeader() {
   return (
-    <header
-      className={cn(
-        "border-border/60 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-md",
-        HEADER_HEIGHT_CLASS,
-      )}
-    >
-      <div
-        className={cn(
-          // Matches `PageShell`, so the mark's left edge lines up with the
-          // content below it at every width.
-          "mx-auto flex h-full items-center justify-between gap-2 px-4 sm:px-6",
-          CONTENT_WIDTH_CLASS,
-        )}
-      >
+    <header className="border-border/60 bg-background/85 h-header sticky top-0 z-40 border-b backdrop-blur-md">
+      <div className={cn(PAGE_COLUMN_CLASS, "flex h-full items-center justify-between gap-2")}>
         <Link
           to="/"
           search={{ x: "cost", y: "score" }}
           aria-label={`${APP_NAME} home`}
-          className="text-foreground -ml-1 flex min-h-11 items-center rounded-md px-1 sm:min-h-8"
+          className="text-foreground min-h-control-lg -ml-1 flex items-center rounded-md px-1"
         >
           <TokenWordmark />
         </Link>

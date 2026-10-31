@@ -21,7 +21,7 @@ import { ComparisonChart } from "#/ui/components/comparison-chart"
 import { DataError, DataState } from "#/ui/components/data-state"
 import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
-import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import { CHART_FRAME_CLASS, PAGE_FILL_CLASS } from "#/ui/lib/layout-styles"
 import { METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
 import {
   axisSettings,
@@ -44,6 +44,7 @@ import { providersInfoQueryOptions, useProvidersInfo } from "#/ui/lib/use-provid
 import { api } from "#/server/api"
 import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
+import { cn } from "#/ui/lib/utils"
 
 // three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand.
 const ComparisonChart3D = lazy(() =>
@@ -316,7 +317,6 @@ function ComparePage() {
       onHighlightChange={setHighlightedModel}
       disabled={controlsDisabled}
       shortcut
-      className="min-[56rem]:w-80"
     />
   )
 
@@ -379,7 +379,7 @@ function ComparePage() {
   const empty = emptyState()
 
   return (
-    <PageShell className="pt-8 pb-6">
+    <PageShell className={cn(PAGE_FILL_CLASS, "pt-8 pb-6")}>
       <h1 className="sr-only">Compare language models</h1>
       <AxisControls
         axes={axes}
@@ -396,14 +396,14 @@ function ComparePage() {
 
       {isPending ? <ChartSkeleton /> : null}
       {isError && !data ? (
-        <DataError className={CHART_HEIGHT_CLASS}>Unable to load model data</DataError>
+        <DataError className={CHART_FRAME_CLASS}>Unable to load model data</DataError>
       ) : null}
       {empty ? (
-        <DataState className={CHART_HEIGHT_CLASS} title={empty.title}>
+        <DataState className={CHART_FRAME_CLASS} title={empty.title}>
           {empty.hint ? (
-            <p className="text-muted-foreground mx-auto mb-3 max-w-sm text-sm">{empty.hint}</p>
+            <p className="text-muted-foreground text-field mx-auto mb-3 max-w-sm">{empty.hint}</p>
           ) : null}
-          <Button variant="outline" onClick={empty.onAction}>
+          <Button variant="outline" size="xl" onClick={empty.onAction}>
             {empty.action}
           </Button>
           {data && data.models.length > 0 ? (

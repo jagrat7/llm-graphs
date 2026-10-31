@@ -2,8 +2,10 @@ import type { Metric } from "#/ui/lib/metrics"
 import type { PlotAxis, PlotPoint } from "#/ui/lib/comparison-plot-data"
 
 import { ModelLogo } from "#/ui/components/model-logo"
+import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { formatMetric, metricPresentation, METRIC_CONFIG } from "#/ui/lib/metrics"
+import { cn } from "#/ui/lib/utils"
 
 /**
  * The active-point readout shared by both charts' floating popovers, so the 2D and
@@ -37,24 +39,24 @@ export function PointDetails({
   const sharedUpdate =
     rowDates[0] != null && rowDates.every((date) => date === rowDates[0]) ? rowDates[0] : null
 
+  // The readout sits on the annotation step; the model's name leads it on the field step.
   return (
-    <div className={className}>
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-sm font-medium">
+    <div className={cn("text-control", className)}>
+      <div className="text-field flex min-w-0 flex-wrap items-center gap-1.5 font-medium">
         <ModelLogo
           logoUrl={point.model.logoUrl}
-          className="text-muted-foreground size-3.5 shrink-0"
+          color={point.model.chartColor}
+          className="size-3.5 shrink-0"
         />
         <span className="min-w-0 flex-1 truncate">{point.model.displayName}</span>
         {effort ? (
-          <span className="text-muted-foreground basis-full pl-5 text-xs font-normal">
+          <span className="text-muted-foreground text-control basis-full pl-5 font-normal">
             {effort}
           </span>
         ) : null}
       </div>
       {point.model.configuration ? (
-        <p className="text-muted-foreground mt-1 text-xs wrap-anywhere">
-          {point.model.configuration}
-        </p>
+        <p className="text-muted-foreground mt-1 wrap-anywhere">{point.model.configuration}</p>
       ) : null}
       <dl className="mt-2 flex flex-col gap-1">
         {axes.map((axis) => {
@@ -78,13 +80,18 @@ export function PointDetails({
                   ? `${measurement.label}${measurement.detail ? ` · ${measurement.detail}` : ""}${measurement.updatedAt ? ` · ${measurement.updatedAt.slice(0, 10)}` : ""}`
                   : undefined
               }
-              className="flex flex-col gap-0.5 text-xs"
+              className="flex flex-col gap-0.5"
             >
               <dt className="text-muted-foreground min-w-0 truncate">
                 <span className="text-foreground font-medium">{axis.toUpperCase()}</span>{" "}
                 {presentation.label}
               </dt>
-              <dd className="flex flex-wrap items-baseline gap-x-1 font-mono text-[0.68rem] font-medium tabular-nums">
+              <dd
+                className={cn(
+                  COUNT_TEXT_CLASS,
+                  "flex flex-wrap items-baseline gap-x-1 font-medium",
+                )}
+              >
                 {formatMetric(point.values[axis], metric, source, info)}
                 {metric === "cost"
                   ? "/task"
@@ -108,10 +115,10 @@ export function PointDetails({
                 ) : null}
               </dd>
               {showDetail ? (
-                <dd className="text-muted-foreground text-xs wrap-anywhere">{detail}</dd>
+                <dd className="text-muted-foreground wrap-anywhere">{detail}</dd>
               ) : null}
               {measurement?.updatedAt && sharedUpdate == null ? (
-                <dd className="text-muted-foreground text-xs">
+                <dd className="text-muted-foreground">
                   Updated {measurement.updatedAt.slice(0, 10)}
                 </dd>
               ) : null}
@@ -119,9 +126,7 @@ export function PointDetails({
           )
         })}
       </dl>
-      {sharedUpdate ? (
-        <p className="text-muted-foreground mt-2 text-xs">Updated {sharedUpdate}</p>
-      ) : null}
+      {sharedUpdate ? <p className="text-muted-foreground mt-2">Updated {sharedUpdate}</p> : null}
     </div>
   )
 }

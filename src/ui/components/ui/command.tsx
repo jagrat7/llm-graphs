@@ -41,13 +41,13 @@ function CommandDialog({
 }) {
   return (
     <Dialog {...props}>
-      <DialogHeader className="sr-only">
+      <DialogHeader className="sr-only" showCloseButton={false}>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <DialogContent
         className={cn("top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0", className)}
-        showCloseButton={showCloseButton}
+        showCornerCloseButton={showCloseButton}
       >
         {children}
       </DialogContent>
@@ -158,7 +158,7 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
     <span
       data-slot="command-shortcut"
       className={cn(
-        "ml-auto text-[0.625rem] tracking-widest text-muted-foreground group-data-selected/command-item:text-foreground",
+        "ml-auto text-2xs tracking-widest text-muted-foreground group-data-selected/command-item:text-foreground",
         className,
       )}
       {...props}

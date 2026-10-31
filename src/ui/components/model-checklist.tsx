@@ -7,7 +7,10 @@ import type { Model } from "#/ui/lib/model-view"
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"
 import { Checkbox } from "#/ui/components/ui/checkbox"
+import { CHECK_ROW_CLASS } from "#/ui/lib/layout-styles"
+import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { pinRank, vendorLabel } from "#/ui/lib/model-view"
+import { cn } from "#/ui/lib/utils"
 
 type DotStyle = CSSProperties & { "--dot": string }
 
@@ -113,12 +116,16 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
             <section key={group.key} aria-labelledby={headingId}>
               <h3
                 id={headingId}
-                className="text-muted-foreground flex items-center gap-1.5 px-1.5 py-1 text-xs font-medium"
+                className="text-muted-foreground text-control flex items-center gap-1.5 px-1.5 py-1 font-medium"
               >
-                <ModelLogo logoUrl={group.logoUrl} className="size-3.5" />
+                <ModelLogo
+                  logoUrl={group.logoUrl}
+                  color={group.models[0].chartColor}
+                  className="size-3.5"
+                />
                 <span className="truncate">{group.label}</span>
                 {selectedCount > 0 ? (
-                  <span className="text-foreground ms-auto font-mono text-[0.68rem] tabular-nums">
+                  <span className={cn(COUNT_TEXT_CLASS, "text-foreground ms-auto")}>
                     {selectedCount}
                     <span className="sr-only"> selected</span>
                   </span>
@@ -130,10 +137,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
 
                   return (
                     <li key={model.model}>
-                      <label
-                        className="hover:bg-muted flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-1.5 text-sm sm:min-h-7 sm:text-xs"
-                        {...rowProps?.(model.model)}
-                      >
+                      <label className={CHECK_ROW_CLASS} {...rowProps?.(model.model)}>
                         {/* The box takes the series colour once checked, so the list
                           keys the chart the same way the chips do. */}
                         <Checkbox
@@ -153,7 +157,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
                   variant="ghost"
                   size="sm"
                   aria-expanded={isExpanded}
-                  className="text-muted-foreground mt-0.5 h-11 w-full justify-start px-1.5 sm:h-6"
+                  className="text-muted-foreground mt-0.5 w-full justify-start px-1.5"
                   onClick={() =>
                     setExpanded((current) => {
                       const next = new Set(current)
@@ -173,9 +177,8 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
       {hiddenProviderCount > 0 || allProviders ? (
         <Button
           variant="ghost"
-          size="sm"
           aria-expanded={allProviders}
-          className="text-muted-foreground h-11 w-full sm:h-7"
+          className="text-muted-foreground w-full"
           onClick={() => setAllProviders((current) => !current)}
         >
           {allProviders

@@ -30,7 +30,7 @@ export function SourceLogos({
               aria-label={group.map((source) => sourceLabel(source, info)).join(" · ")}
               className={cn(
                 "pointer-events-auto inline-flex items-center gap-[inherit]",
-                index === 1 ? "rounded-sm px-0.5 text-xs tabular-nums" : null,
+                index === 1 ? "text-control rounded-sm px-0.5" : null,
               )}
             >
               {index === 0 ? (

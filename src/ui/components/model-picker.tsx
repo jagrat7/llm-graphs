@@ -1,157 +1,54 @@
-import type { CSSProperties, FocusEvent } from "react"
+import type { FocusEvent, HTMLAttributes } from "react"
 
-import { RiArrowDownSLine, RiCloseLine, RiSearchLine } from "@remixicon/react"
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { RiArrowDownSLine, RiCloseLine, RiListCheck, RiSearchLine } from "@remixicon/react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 
 import type { Model } from "#/ui/lib/model-view"
 
 import { groupByVendor, ModelChecklist } from "#/ui/components/model-checklist"
 import { ModelLogo } from "#/ui/components/model-logo"
-import { Button, buttonVariants } from "#/ui/components/ui/button"
+import { Button } from "#/ui/components/ui/button"
 import {
   Combobox,
-  ComboboxChip,
-  ComboboxChips,
   ComboboxCollection,
   ComboboxContent,
   ComboboxEmpty,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-  ComboboxValue,
   useComboboxAnchor,
 } from "#/ui/components/ui/combobox"
-import { InputGroupAddon } from "#/ui/components/ui/input-group"
+import { InputGroupAddon, InputGroupButton } from "#/ui/components/ui/input-group"
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from "#/ui/components/ui/popover"
 import { Skeleton } from "#/ui/components/ui/skeleton"
+import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { cn } from "#/ui/lib/utils"
 
-type DotStyle = CSSProperties & { "--dot": string }
-
-const CHIP_SIZE_CLASS = "h-8 text-sm sm:h-6 sm:text-xs"
+/**
+ * The picks are a key, three columns by three rows: fixed cells line up the way the axes'
+ * fields opposite do, and three chip rows under the search are exactly their height.
+ */
+const LEGEND_SLOTS = 9
 
 /**
- * The chips are loose badges below the search bar, not a field of their own. The
- * registry dresses `ComboboxChips` as an input surface, so the box comes off and
- * only the wrapping row survives.
+ * Touch has no hover, so every entry carries its remove button in line; on a narrow picker
+ * that leaves a third of the width too little for a name, so the key drops to two columns.
  */
-const CHIPS_RESET_CLASS =
-  "min-h-0 rounded-none border-0 bg-transparent p-0 focus-within:border-transparent focus-within:ring-0 has-data-[slot=combobox-chip]:px-0 dark:bg-transparent"
+const LEGEND_GRID_CLASS =
+  "grid auto-rows-(--chip) grid-cols-3 gap-1 pointer-coarse:@max-md:grid-cols-2"
 
 /**
- * Uneven on purpose: model names differ in length, so equal blocks read as fake.
- * More than the chip area holds at any width; it clips the rest, as it does chips.
+ * A short ruling in the gap after each pick, so the open cells still read as columns. None
+ * after a row's last cell or the key's last pick; the row length is the grid's column count.
+ * Touch goes without: every pick there already ends in its remove button.
  */
-const SKELETON_CHIP_WIDTHS = [
-  "w-24",
-  "w-32",
-  "w-20",
-  "w-28",
-  "w-16",
-  "w-24",
-  "w-20",
-  "w-28",
-  "w-16",
-]
+const COLUMN_RULE_CLASS =
+  "*:relative *:after:absolute *:after:inset-y-1 *:after:-end-[2.5px] *:after:w-px *:after:bg-border *:last:after:hidden pointer-coarse:*:after:hidden"
+const LEGEND_RULE_CLASS = cn(COLUMN_RULE_CLASS, "*:nth-[3n]:after:hidden")
+const OVERFLOW_RULE_CLASS = cn(COLUMN_RULE_CLASS, "*:nth-[2n]:after:hidden")
 
-/**
- * Mirrors `ComboboxChip`'s surface. The overflow list is portalled outside
- * `ComboboxChips`, so those badges can't be real chips — they only have to look
- * like them.
- */
-const CHIP_SURFACE_CLASS =
-  "bg-muted-foreground/10 text-foreground flex w-fit items-center gap-1 rounded-[calc(var(--radius-sm)-2px)] px-1.5 font-medium whitespace-nowrap"
-
-type ChipFit = {
-  /** Width of the row the chips wrap in. */
-  available: number
-  gap: number
-  rows: number
-  /** Width of the trigger that stands in for however many chips don't fit. */
-  moreWidth: (hiddenCount: number) => number
-}
-
-/**
- * Pack the rows with chips before collapsing the rest into a count — empty space
- * on the last row is worse than one more badge. Replays `flex-wrap` over measured
- * widths; once anything is left out, the count trigger has to fit on the rows too.
- */
-export function countFittingChips(
-  widths: ReadonlyArray<number>,
-  { available, gap, rows, moreWidth }: ChipFit,
-) {
-  const fits = (items: ReadonlyArray<number>) => {
-    let row = 1
-    let used: number | null = null
-
-    for (const width of items) {
-      const next: number = used == null ? width : used + gap + width
-
-      // A chip wider than the row still takes a row of its own, as flex does.
-      if (used == null || next <= available) {
-        used = next
-        continue
-      }
-
-      row += 1
-      used = width
-      if (row > rows) return false
-    }
-
-    return true
-  }
-
-  if (fits(widths)) return widths.length
-
-  let count = widths.length - 1
-
-  while (count > 0 && !fits([...widths.slice(0, count), moreWidth(widths.length - count)]))
-    count -= 1
-
-  return count
-}
-
-const roundedWidth = (element: Element) => Math.ceil(element.getBoundingClientRect().width)
-
-/**
- * Reads the ghost, which covers the chip area: its box is the space to fill, and its
- * row holds every selected chip at its natural width, then one count trigger per digit
- * length. Widths round up so a sub-pixel miss can only drop a chip, never wrap one
- * past the last row that fits.
- */
-function measureFittingChips(ghost: HTMLElement) {
-  const row = ghost.firstElementChild
-
-  if (!(row instanceof HTMLElement)) return 0
-
-  const children = Array.from(row.children)
-  const widths = children.filter((child) => !child.hasAttribute("data-more")).map(roundedWidth)
-  const moreWidths = children.filter((child) => child.hasAttribute("data-more")).map(roundedWidth)
-  const area = ghost.getBoundingClientRect()
-  const gap = Number.parseFloat(getComputedStyle(row).columnGap) || 0
-  const rows = Math.floor((area.height + gap) / (row.getBoundingClientRect().height + gap))
-
-  return countFittingChips(widths, {
-    available: area.width,
-    gap,
-    // The area is never shorter than a row, so a short count only means it hasn't laid out.
-    rows: rows >= 1 ? rows : 1,
-    moreWidth: (hiddenCount) => moreWidths[String(hiddenCount).length - 1] ?? 0,
-  })
-}
-
-/** The chart keys its series by family colour, so these dots are its legend. */
-function ModelDot({ model }: { model: Model }) {
-  const dotStyle: DotStyle = { "--dot": model.chartColor }
-
-  return (
-    <span
-      aria-hidden="true"
-      className="size-1.5 shrink-0 rounded-full bg-(--dot)"
-      style={dotStyle}
-    />
-  )
-}
+/** Uneven on purpose: model names differ in length, so equal blocks read as fake. */
+const SKELETON_WIDTHS = ["w-20", "w-16", "w-24", "w-14", "w-20", "w-16", "w-24", "w-12", "w-20"]
 
 type ModelPickerProps = {
   models: Array<Model>
@@ -159,16 +56,13 @@ type ModelPickerProps = {
   onChange: (models: Array<string>) => void
   /** Restores the default comparison; the list offers a reset only when this is given. */
   onReset?: () => void
-  /** Reports the model whose pill is hovered or focused, so the chart can emphasise it. */
+  /** Reports the model whose entry is hovered or focused, so the chart can emphasise it. */
   onHighlightChange?: (model: string | null) => void
   className?: string
   disabled?: boolean
   /** Focuses the search on `/`. Only one picker on a page should claim the key. */
   shortcut?: boolean
 }
-
-/** Matches the axis selects opposite: roomy on touch, compact once a pointer is likely. */
-const CONTROL_HEIGHT_CLASS = "h-11 sm:h-9"
 
 export function ModelPicker({
   models,
@@ -182,13 +76,10 @@ export function ModelPicker({
 }: ModelPickerProps) {
   const inputId = useId()
   const anchor = useComboboxAnchor()
-  const listTriggerRef = useRef<HTMLButtonElement>(null)
   const checklistRef = useRef<HTMLDivElement>(null)
   const [moreOpen, setMoreOpen] = useState(false)
   const [listOpen, setListOpen] = useState(false)
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
-  const ghostRef = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(Number.POSITIVE_INFINITY)
   const options = useMemo(
     () =>
       Array.from(new Map(models.map((model) => [model.model, model])).values()).toSorted(
@@ -199,15 +90,11 @@ export function ModelPicker({
   const groups = useMemo(() => groupByVendor(options), [options])
   const selectedSet = new Set(selected)
   const value = options.filter((option) => selectedSet.has(option.model))
-  const hidden = value.slice(visibleCount)
-  const hasChips = value.length > 0
-  const valueKey = value.map((model) => model.model).join("\n")
+  // A full key shows every pick; one more than fits gives its last cell to the count.
+  const shown = value.length > LEGEND_SLOTS ? value.slice(0, LEGEND_SLOTS - 1) : value
+  const hidden = value.slice(shown.length)
   // No models yet and the controls are locked: the request is still in flight.
   const isLoading = disabled && models.length === 0
-  const hasChipArea = isLoading || hasChips
-  // The server can't measure, so chips wait for the browser's first count; until then the
-  // skeleton holds their place rather than every chip showing and then folding away.
-  const isMeasured = Number.isFinite(visibleCount)
   // Pointer, list and focus highlights are tracked apart so ending one gesture never
   // clears a highlight another still holds; the pointer wins, then the list, then focus.
   const [hoveredModel, setHoveredModel] = useState<string | null>(null)
@@ -219,20 +106,18 @@ export function ModelPicker({
     onPointerLeave: () => setHoveredModel((current) => (current === model ? null : current)),
     onFocus: () => setFocusedModel(model),
     onBlur: (event: FocusEvent<HTMLElement>) => {
-      // Moving between a pill and its own remove button is still the same pill.
+      // Moving between an entry and its own remove button is still the same entry.
       if (event.currentTarget.contains(event.relatedTarget)) return
 
       setFocusedModel((current) => (current === model ? null : current))
     },
   })
 
-  // An unmounted pill never reports leaving or blurring — whether it was deselected,
-  // squeezed into the overflow list, or shut away with it — so forget it once it goes;
-  // otherwise its highlight would linger, or come back with it, with nobody holding it.
-  // The open checklist has a row for every selected model, so all of them count.
-  const mountedKey = (moreOpen || listOpen ? value : value.slice(0, visibleCount))
-    .map((model) => model.model)
-    .join("\n")
+  // An unmounted entry never reports leaving or blurring — whether it was deselected or
+  // shut away with its list — so forget it once it goes; otherwise its highlight would
+  // linger, or come back with it, with nobody holding it. The open checklist has a row
+  // for every selected model, so all of them count.
+  const mountedKey = (moreOpen || listOpen ? value : shown).map((model) => model.model).join("\n")
 
   useEffect(() => {
     const mounted = new Set(mountedKey.split("\n"))
@@ -247,35 +132,13 @@ export function ModelPicker({
     onHighlightChange?.(highlightedModel)
   }, [highlightedModel, onHighlightChange])
 
-  // Measured before paint, so a new selection never flashes past the row limit.
-  useLayoutEffect(() => {
-    if (ghostRef.current) setVisibleCount(measureFittingChips(ghostRef.current))
-  }, [valueKey])
-
-  // The area follows the viewport and the axes opposite, and chips widen once the web
-  // font lands.
-  useEffect(() => {
-    const ghost = ghostRef.current
-
-    if (!hasChipArea || !ghost?.firstElementChild || typeof ResizeObserver === "undefined")
-      return undefined
-
-    const observer = new ResizeObserver(() => setVisibleCount(measureFittingChips(ghost)))
-
-    observer.observe(ghost)
-    observer.observe(ghost.firstElementChild)
-
-    return () => observer.disconnect()
-  }, [hasChipArea])
-
-  // Emptying the list from inside the popover unmounts its own trigger, so hand
-  // focus to the model list's button rather than dropping it on the document.
+  // Emptying the overflow from inside its popover unmounts the popover's own trigger.
   useEffect(() => {
     if (hidden.length > 0 || !moreOpen) return
 
     setMoreOpen(false)
-    listTriggerRef.current?.focus()
-  }, [hidden.length, moreOpen])
+    document.getElementById(inputId)?.focus()
+  }, [hidden.length, moreOpen, inputId])
 
   // Closing the checklist unmounts its rows before they can report leaving.
   function handleListOpenChange(open: boolean) {
@@ -289,6 +152,12 @@ export function ModelPicker({
 
   function toggleModel(model: string) {
     onChange(selectedSet.has(model) ? selected.filter((id) => id !== model) : [...selected, model])
+  }
+
+  // The remove button goes with its entry, so focus moves to the search rather than the page.
+  function removeModel(model: string) {
+    onChange(selected.filter((id) => id !== model))
+    document.getElementById(inputId)?.focus()
   }
 
   useEffect(() => {
@@ -314,7 +183,7 @@ export function ModelPicker({
   }, [shortcut, disabled, inputId])
 
   return (
-    <div className={cn("flex w-full flex-col gap-1", className)}>
+    <div className={cn("@container flex w-full flex-col gap-1", className)}>
       <label htmlFor={inputId} className="sr-only">
         Models
       </label>
@@ -336,8 +205,8 @@ export function ModelPicker({
            Highlighting the first item instead keeps the list where it starts. */
         autoHighlight
         // Arrowing (or pointing) through the list is the keyboard route to the same
-        // emphasis a hovered pill gives; Base UI keeps the chips themselves out of tab order.
-        // The automatic first-item highlight on open is not a gesture, so it is ignored.
+        // emphasis a hovered entry gives. The automatic first-item highlight on open is
+        // not a gesture, so it is ignored.
         onItemHighlighted={(model: Model | undefined, { reason }: { reason: string }) =>
           setListModel(reason === "none" ? null : (model?.model ?? null))
         }
@@ -349,230 +218,181 @@ export function ModelPicker({
         }}
         disabled={disabled}
       >
-        <div className="flex w-full items-center gap-2">
-          {/* The popup anchors to whatever it is told to; left alone it takes the
-               `input`, which the leading icon insets from the bar's own edge. */}
-          <div ref={anchor} className="min-w-0 flex-1">
-            <ComboboxInput
-              id={inputId}
-              placeholder="Search models"
-              aria-keyshortcuts={shortcut ? "/" : undefined}
-              title={shortcut ? "Search models (/)" : "Search models"}
-              showTrigger={false}
-              disabled={disabled}
-              className={cn("w-full", CONTROL_HEIGHT_CLASS)}
-              onKeyDown={(event) => {
-                // Escape dismisses suggestions, but must never clear the selection.
-                if (event.key !== "Escape" || suggestionsOpen) return
+        {/* The popup anchors to whatever it is told to; left alone it takes the
+            `input`, which the leading icon insets from the bar's own edge. */}
+        <div ref={anchor}>
+          <ComboboxInput
+            id={inputId}
+            placeholder="Search or browse models"
+            aria-keyshortcuts={shortcut ? "/" : undefined}
+            title={shortcut ? "Search models (/)" : "Search models"}
+            showTrigger={false}
+            disabled={disabled}
+            // The field step, as the axis selects opposite are.
+            className="h-control-xl w-full"
+            onKeyDown={(event) => {
+              // Escape dismisses suggestions, but must never clear the selection.
+              if (event.key !== "Escape" || suggestionsOpen) return
 
-                event.preventBaseUIHandler()
-              }}
-            >
-              <InputGroupAddon align="inline-start">
-                <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
-              </InputGroupAddon>
-            </ComboboxInput>
-          </div>
-          <Popover open={listOpen} onOpenChange={handleListOpenChange}>
-            <PopoverTrigger
-              render={
-                <Button
-                  ref={listTriggerRef}
-                  variant="outline"
-                  disabled={disabled}
-                  className={cn(
-                    "shrink-0 justify-between gap-2 px-3 text-sm sm:text-xs",
-                    CONTROL_HEIGHT_CLASS,
-                  )}
-                />
-              }
-            >
-              <span>
-                Models{" "}
-                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
-                  {value.length}
-                </span>
-              </span>
-              <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground" />
-            </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              // Opening the list is for checking models, so start on the first box
-              // rather than on Reset or Clear, which sit first in tab order.
-              initialFocus={() =>
-                checklistRef.current?.querySelector<HTMLElement>("[role=checkbox]")
-              }
-              className="max-h-[min(32rem,var(--available-height))] w-[min(42rem,var(--available-width))] gap-0 p-0"
-            >
-              <div className="border-border flex items-center gap-2 border-b px-3 py-2">
-                <PopoverTitle>Models</PopoverTitle>
-                <span className="text-muted-foreground font-mono text-[0.68rem] tabular-nums">
-                  {value.length} selected
-                </span>
-                <span className="flex-1" />
-                {onReset ? (
-                  <Button variant="ghost" size="sm" className="h-11 sm:h-6" onClick={onReset}>
-                    Reset
-                  </Button>
-                ) : null}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-11 sm:h-6"
-                  // Ids a benchmark lacks still count: an old shared link can carry them.
-                  disabled={selected.length === 0}
-                  onClick={() => onChange([])}
+              event.preventBaseUIHandler()
+            }}
+          >
+            <InputGroupAddon align="inline-start">
+              <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end" className="pe-1">
+              {/* The shortcut's hint, until the field is in use and "/" would type; touch has no
+                  key for it. Only the field counts: the list button shares the bar and takes
+                  focus back when its list closes, and "/" still works from there. */}
+              {shortcut ? (
+                <kbd
+                  data-slot="kbd"
+                  aria-hidden="true"
+                  className="me-1 inline-flex h-5 min-w-5 items-center justify-center font-mono group-has-[input:focus]/input-group:hidden group-has-[input:not(:placeholder-shown)]/input-group:hidden pointer-coarse:hidden"
                 >
-                  Clear
-                </Button>
-              </div>
-              <div ref={checklistRef} className="min-h-0 overflow-y-auto overscroll-contain p-2">
-                <ModelChecklist
-                  groups={groups}
-                  selected={selectedSet}
-                  onToggle={toggleModel}
-                  rowProps={highlightHandlers}
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-        {hasChipArea ? (
-          /* Takes whatever height the picker is given past its controls, and three chip rows
-             when it's given none. Size containment keeps the chips themselves out of the
-             picker's height, so a long selection folds into the count instead of growing it.
-             Three rows plus the controls is exactly the axes' height opposite. */
-          <div className="relative min-h-26 flex-1 overflow-hidden contain-size sm:min-h-20">
-            {/* Every chip laid out unwrapped, out of sight, so the real row knows how many
-              it can hold. Covers the area and is clipped to it, so it measures the space too. */}
-            <div
-              ref={ghostRef}
-              data-slot="model-picker-ghost"
-              aria-hidden="true"
-              className="pointer-events-none invisible absolute inset-0 overflow-hidden"
-            >
-              <div className="flex w-max gap-1">
-                {value.map((model) => (
-                  <span
-                    key={model.model}
-                    className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS, "pr-0")}
-                  >
-                    <ModelDot model={model} />
-                    {model.displayName}
-                    {/* The remove button's footprint, overlap included. */}
-                    <span className="-ml-1 size-5" />
-                  </span>
-                ))}
-                {/* Digits are tabular, so the trigger's width only turns on how many the
-                  hidden count has — one stand-in per length covers every count. */}
-                {Array.from({ length: String(value.length).length }, (_, index) => (
-                  <span
-                    key={index}
-                    data-more=""
-                    className={buttonVariants({
-                      variant: "secondary",
-                      size: "sm",
-                      className: CHIP_SIZE_CLASS,
-                    })}
-                  >
-                    {"0".repeat(index + 1)} more
-                    <RiArrowDownSLine />
-                  </span>
-                ))}
-              </div>
-            </div>
-            {isLoading || !isMeasured ? (
-              <div aria-hidden="true" className="flex flex-wrap gap-1">
-                {SKELETON_CHIP_WIDTHS.map((width, index) => (
-                  <Skeleton
-                    key={`${width}-${index}`}
-                    className={cn(CHIP_SIZE_CLASS, "rounded-[calc(var(--radius-sm)-2px)]", width)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <ComboboxChips className={CHIPS_RESET_CLASS}>
-                <ComboboxValue>
-                  {(shown: Array<Model>) => (
-                    <>
-                      {/* Chips remove by render index, so they have to stay in value order —
-                      taking the head keeps every visible chip pointing at its own model. */}
-                      {shown.slice(0, visibleCount).map((model) => (
-                        <ComboboxChip
-                          key={model.model}
-                          className={CHIP_SIZE_CLASS}
-                          {...highlightHandlers(model.model)}
-                        >
-                          <ModelDot model={model} />
-                          {model.displayName}
-                        </ComboboxChip>
-                      ))}
-                    </>
-                  )}
-                </ComboboxValue>
-                {hidden.length > 0 ? (
-                  <Popover open={moreOpen} onOpenChange={setMoreOpen}>
-                    {/* Carries the chips' fill so it reads as a control among them
-                    rather than as a caption sitting at the end of the row. */}
-                    {/* Opens on hover so the rest can be skimmed in passing; a click still
-                    toggles it for touch and keyboard. */}
-                    <PopoverTrigger
-                      openOnHover
-                      delay={100}
-                      closeDelay={150}
-                      render={
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          aria-label={`Show ${hidden.length} more selected models`}
-                          className={CHIP_SIZE_CLASS}
-                        />
-                      }
+                  /
+                </kbd>
+              ) : null}
+              <Popover open={listOpen} onOpenChange={handleListOpenChange}>
+                {/* The full list opens from the count, so the bar stays one control. */}
+                <PopoverTrigger
+                  render={
+                    <InputGroupButton
+                      variant="secondary"
+                      size="sm"
+                      disabled={disabled}
+                      aria-label={`Models, ${value.length} selected`}
+                      className="text-foreground h-control-md gap-1 px-2"
+                    />
+                  }
+                >
+                  <RiListCheck aria-hidden="true" className="size-3.5" />
+                  <span className={COUNT_TEXT_CLASS}>{value.length}</span>
+                  <RiArrowDownSLine aria-hidden="true" className="text-muted-foreground size-3.5" />
+                </PopoverTrigger>
+                <PopoverContent
+                  align="end"
+                  // Opening the list is for checking models, so start on the first box
+                  // rather than on Reset or Clear, which sit first in tab order.
+                  initialFocus={() =>
+                    checklistRef.current?.querySelector<HTMLElement>("[role=checkbox]")
+                  }
+                  className="max-h-[min(32rem,var(--available-height))] w-[min(42rem,var(--available-width))] gap-0 p-0"
+                >
+                  <div className="border-border text-field flex items-center gap-2 border-b px-3 py-2">
+                    <PopoverTitle>Models</PopoverTitle>
+                    <span className="text-muted-foreground">
+                      <span className={COUNT_TEXT_CLASS}>{value.length}</span> selected
+                    </span>
+                    <span className="flex-1" />
+                    {onReset ? (
+                      <Button variant="ghost" size="sm" onClick={onReset}>
+                        Reset
+                      </Button>
+                    ) : null}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      // Ids a benchmark lacks still count: an old shared link can carry them.
+                      disabled={selected.length === 0}
+                      onClick={() => onChange([])}
                     >
-                      {hidden.length} more
-                      <RiArrowDownSLine aria-hidden="true" />
-                    </PopoverTrigger>
-                    <PopoverContent align="start" className="w-80 p-2">
-                      <ul className="flex max-h-64 flex-wrap gap-1 overflow-y-auto">
-                        {hidden.map((model) => (
-                          <li
-                            key={model.model}
-                            className={cn(CHIP_SURFACE_CLASS, CHIP_SIZE_CLASS)}
-                            {...highlightHandlers(model.model)}
-                          >
-                            <ModelDot model={model} />
-                            {model.displayName}
-                            <Button
-                              variant="ghost"
-                              size="icon-xs"
-                              aria-label={`Remove ${model.displayName}`}
-                              className="-mr-1 opacity-50 hover:opacity-100"
-                              onClick={() => onChange(selected.filter((id) => id !== model.model))}
-                            >
-                              <RiCloseLine aria-hidden="true" />
-                            </Button>
-                          </li>
-                        ))}
-                      </ul>
-                    </PopoverContent>
-                  </Popover>
-                ) : null}
-              </ComboboxChips>
-            )}
+                      Clear
+                    </Button>
+                  </div>
+                  <div
+                    ref={checklistRef}
+                    className="min-h-0 overflow-y-auto overscroll-contain p-2"
+                  >
+                    <ModelChecklist
+                      groups={groups}
+                      selected={selectedSet}
+                      onToggle={toggleModel}
+                      rowProps={highlightHandlers}
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </InputGroupAddon>
+          </ComboboxInput>
+        </div>
+        {isLoading ? (
+          <div aria-hidden="true" className={LEGEND_GRID_CLASS}>
+            {SKELETON_WIDTHS.map((width, index) => (
+              <Skeleton key={index} className={cn("my-auto h-3 rounded-sm", width)} />
+            ))}
           </div>
+        ) : value.length > 0 ? (
+          <ul aria-label="Selected models" className={cn(LEGEND_GRID_CLASS, LEGEND_RULE_CLASS)}>
+            {shown.map((model) => (
+              <LegendEntry
+                key={model.model}
+                model={model}
+                onRemove={() => removeModel(model.model)}
+                {...highlightHandlers(model.model)}
+              />
+            ))}
+            {hidden.length > 0 ? (
+              <li>
+                <Popover open={moreOpen} onOpenChange={setMoreOpen}>
+                  {/* Opens on hover so the rest can be skimmed in passing; a click still
+                      toggles it for touch and keyboard. */}
+                  <PopoverTrigger
+                    openOnHover
+                    delay={100}
+                    closeDelay={150}
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        aria-label={`Show ${hidden.length} more selected models`}
+                        className="text-muted-foreground h-chip w-full justify-start px-1.5"
+                      />
+                    }
+                  >
+                    <span className={COUNT_TEXT_CLASS}>+{hidden.length}</span> more
+                    <RiArrowDownSLine aria-hidden="true" />
+                  </PopoverTrigger>
+                  <PopoverContent align="start" className="w-80 p-2">
+                    <ul
+                      className={cn(
+                        "grid max-h-64 auto-rows-(--chip) grid-cols-2 gap-1 overflow-y-auto",
+                        OVERFLOW_RULE_CLASS,
+                      )}
+                    >
+                      {hidden.map((model) => (
+                        <LegendEntry
+                          key={model.model}
+                          model={model}
+                          onRemove={() => onChange(selected.filter((id) => id !== model.model))}
+                          {...highlightHandlers(model.model)}
+                        />
+                      ))}
+                    </ul>
+                  </PopoverContent>
+                </Popover>
+              </li>
+            ) : null}
+          </ul>
         ) : null}
-        <ComboboxContent anchor={anchor}>
+        <ComboboxContent anchor={anchor} className="text-field">
           <ComboboxEmpty>No models found.</ComboboxEmpty>
-          <ComboboxList className="max-h-48">
+          <ComboboxList className="max-h-56">
             <ComboboxCollection>
               {(model: Model) => (
-                <ComboboxItem
-                  key={model.model}
-                  value={model}
-                  className="group/mark min-h-11 text-sm sm:min-h-8"
-                >
-                  <ModelLogo logoUrl={model.logoUrl} className="text-muted-foreground size-3.5" />
-                  <span className="truncate">{model.displayName}</span>
+                // Says what a click will do, so the row needs no check of its own.
+                <ComboboxItem key={model.model} value={model} showIndicator={false}>
+                  <ModelLogo
+                    logoUrl={model.logoUrl}
+                    color={model.chartColor}
+                    className="size-3.5"
+                  />
+                  <span data-slot="model-picker-option-name" className="min-w-0 flex-1 truncate">
+                    {model.displayName}
+                  </span>
+                  <span className="text-muted-foreground text-control">
+                    {selectedSet.has(model.model) ? "Remove" : "Add"}
+                  </span>
                 </ComboboxItem>
               )}
             </ComboboxCollection>
@@ -580,5 +400,42 @@ export function ModelPicker({
         </ComboboxContent>
       </Combobox>
     </div>
+  )
+}
+
+/** One pick in the key: the chart's mark for it, its name, and a way to drop it. */
+function LegendEntry({
+  model,
+  onRemove,
+  ...props
+}: { model: Model; onRemove: () => void } & HTMLAttributes<HTMLLIElement>) {
+  return (
+    <li
+      data-slot="model-picker-entry"
+      title={model.displayName}
+      className="group/entry text-control hover:bg-muted focus-within:bg-muted relative flex min-w-0 items-center gap-1.5 rounded-sm ps-1.5 font-medium transition-colors"
+      {...props}
+    >
+      {/* Grey at rest so the key doesn't compete with the chart; a hover or focus brings
+          back the vendor's colour. Touch has no hover, so there it keeps its colour. */}
+      <ModelLogo
+        logoUrl={model.logoUrl}
+        color={model.chartColor}
+        className="size-3 grayscale transition-[filter] group-focus-within/entry:grayscale-0 group-hover/entry:grayscale-0 pointer-coarse:grayscale-0"
+      />
+      <span className="min-w-0 flex-1 truncate">{model.displayName}</span>
+      {/* Laid over the name's tail rather than beside it, so showing it never re-truncates
+          the name. Touch has no hover to reveal it, so there it always shows, in line. */}
+      <span className="from-muted via-muted absolute inset-y-0 end-0 flex items-center rounded-e-sm bg-linear-to-l via-70% to-transparent ps-3 pe-0.5 opacity-0 group-focus-within/entry:opacity-100 group-hover/entry:opacity-100 pointer-coarse:static pointer-coarse:bg-none pointer-coarse:ps-0 pointer-coarse:opacity-100">
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          aria-label={`Remove ${model.displayName}`}
+          onClick={onRemove}
+        >
+          <RiCloseLine aria-hidden="true" />
+        </Button>
+      </span>
+    </li>
   )
 }

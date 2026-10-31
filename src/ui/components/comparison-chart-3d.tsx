@@ -33,7 +33,7 @@ import {
   metricTicks,
   unitPosition,
 } from "#/ui/lib/comparison-plot-data"
-import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import { CHART_FRAME_CLASS } from "#/ui/lib/layout-styles"
 import {
   formatMetric,
   metricAxisLabel,
@@ -1245,14 +1245,18 @@ export function ComparisonChart3D({
   if (data.points.length === 0) {
     return (
       <DataState
-        className={CHART_HEIGHT_CLASS}
+        className={CHART_FRAME_CLASS}
         title="No models have values for all three selected metrics"
       />
     )
   }
 
   return (
-    <div ref={containerRef} className="relative" data-chart-frame="loaded">
+    <div
+      ref={containerRef}
+      className={`relative flex flex-col ${CHART_FRAME_CLASS}`}
+      data-chart-frame="loaded"
+    >
       {/* One quiet track with only the current view filled, so the control recedes
           behind the plot instead of reading as three separate buttons. */}
       <div className="absolute top-3 left-3 z-20 flex items-center gap-0.5">
@@ -1283,7 +1287,7 @@ export function ComparisonChart3D({
           return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
         }}
       />
-      <p className="text-muted-foreground pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 text-xs lg:flex">
+      <p className="text-muted-foreground text-control pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 lg:flex">
         <RiDragMove2Line aria-hidden="true" className="size-3.5" />
         Drag to rotate · scroll to zoom
       </p>
@@ -1291,12 +1295,12 @@ export function ComparisonChart3D({
         ref={plotRef}
         role="img"
         aria-label={describePlot(data)}
-        className={`relative w-full touch-none select-none ${CHART_HEIGHT_CLASS}`}
+        className="relative min-h-0 w-full flex-1 touch-none select-none"
       >
         {webgl === false ? (
-          <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-4 px-6 text-center text-sm">
+          <div className="text-muted-foreground text-field absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
             <p>3D rendering is unavailable on this device.</p>
-            <dl className="max-h-64 w-full max-w-md overflow-y-auto text-left text-xs">
+            <dl className="text-control max-h-64 w-full max-w-md overflow-y-auto text-left">
               {data.points.map((point) => (
                 <div
                   key={point.id}
@@ -1327,6 +1331,9 @@ export function ComparisonChart3D({
                 far: 60,
                 position: viewPosition(startsFlat ? MORPH_VIEW : ORBIT_VIEW).toArray(),
               }}
+              // Laid over the plot box rather than sized by percentage: the box's height
+              // comes from the page's flex column, which a percentage can't resolve against.
+              style={{ position: "absolute", inset: 0 }}
               className="cursor-grab active:cursor-grabbing"
               onPointerMissed={() => setActiveId(null)}
             >

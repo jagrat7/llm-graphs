@@ -23,7 +23,7 @@ export function DataState({
   return (
     <Empty className={cn(FRAME_CLASS, "rounded-none", className)}>
       <EmptyHeader>
-        <EmptyTitle className="text-base font-normal">{title}</EmptyTitle>
+        <EmptyTitle className="font-normal">{title}</EmptyTitle>
       </EmptyHeader>
       {children ? <EmptyContent>{children}</EmptyContent> : null}
     </Empty>

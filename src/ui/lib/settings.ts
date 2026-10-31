@@ -6,7 +6,7 @@ import type { Model } from "#/ui/lib/model-view"
 import type { ModelSnapshot } from "#/server/api"
 
 import { createCookieStore, parseJsonCookie } from "#/ui/lib/cookie-store"
-import { logoDataUrl, pinRank, vendorLabel } from "#/ui/lib/model-view"
+import { logoDataUrl, pinRank, vendorColor, vendorLabel } from "#/ui/lib/model-view"
 
 export const SETTINGS_COOKIE = "settings"
 
@@ -103,21 +103,29 @@ export type ProviderOption = {
   vendor: string
   label: string
   logoUrl: string | null
+  /** The vendor's colour on the chart, from its first listed model. */
+  color: string
   modelCount: number
 }
 
 /** Every vendor in the snapshot, in the model picker's order: pinned labs, then the busiest. */
 export function providerOptions(snapshot: ModelSnapshot): Array<ProviderOption> {
-  const counts = new Map<string, number>()
+  const vendors = new Map<string, { color: string; modelCount: number }>()
   for (const entry of snapshot.entries) {
-    if (entry.vendor != null) counts.set(entry.vendor, (counts.get(entry.vendor) ?? 0) + 1)
+    if (entry.vendor == null) continue
+    const seen = vendors.get(entry.vendor)
+    vendors.set(entry.vendor, {
+      color: seen?.color ?? vendorColor(entry),
+      modelCount: (seen?.modelCount ?? 0) + 1,
+    })
   }
 
-  return [...counts]
-    .map(([vendor, modelCount]) => ({
+  return [...vendors]
+    .map(([vendor, { color, modelCount }]) => ({
       vendor,
       label: vendorLabel(vendor),
       logoUrl: logoDataUrl(snapshot.logos[vendor]),
+      color,
       modelCount,
     }))
     .toSorted(

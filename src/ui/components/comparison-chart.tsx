@@ -26,7 +26,12 @@ import {
   type PlotData,
   type PlotPoint,
 } from "#/ui/lib/comparison-plot-data"
-import { CHART_HEIGHT_CLASS } from "#/ui/lib/layout-styles"
+import {
+  CHART_FRAME_CLASS,
+  CHART_MIN_HEIGHT_VAR,
+  CHART_TOOLBAR_HEIGHT_PX,
+  type ChartFrameStyle,
+} from "#/ui/lib/layout-styles"
 import { PARETO_STYLE } from "#/ui/lib/chart-marks"
 import { drawnFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
@@ -340,20 +345,24 @@ export function ComparisonChart({
       : scatterDefinition(data, { ...options, frontier: frontierOn })
   }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn])
 
+  // The range view grows with its rows; the scatter fits whatever height the page gives it.
+  const frameStyle: ChartFrameStyle | undefined =
+    view === "ranges"
+      ? {
+          [CHART_MIN_HEIGHT_VAR]: `${rangeMinHeight(data.series.length) + CHART_TOOLBAR_HEIGHT_PX}px`,
+        }
+      : undefined
+
   if (data.points.length === 0) {
-    return <DataState className={CHART_HEIGHT_CLASS} title="No models have both selected metrics" />
+    return <DataState className={CHART_FRAME_CLASS} title="No models have both selected metrics" />
   }
 
   return (
     <div
       ref={frameRef}
-      className={`relative flex w-full flex-col ${CHART_HEIGHT_CLASS}`}
+      className={`relative flex w-full flex-col ${CHART_FRAME_CLASS}`}
       data-chart-frame="loaded"
-      style={
-        view === "ranges"
-          ? { minHeight: Math.max(512, rangeMinHeight(data.series.length) + 40), maxHeight: "none" }
-          : undefined
-      }
+      style={frameStyle}
     >
       <LogoMasks logoClass={logoClass} />
       {/* A row of its own rather than an overlay: the plot's top-right corner is where
@@ -404,40 +413,44 @@ export function ComparisonChart({
           />
         </div>
       </div>
-      <div className="min-h-0 flex-1">
-        <Chart
-          key={view}
-          definition={definition}
-          ariaLabel={view === "ranges" ? describeRanges(data) : describePlot(data)}
-          ariaDescription={
-            view === "ranges" && flat != null
-              ? rangeAxisDescription(data, flat, sources, info)
-              : [
-                  axisDescription(data, sources, info),
-                  showFrontier &&
-                    describeFrontier(
-                      frontier,
-                      data.series.find((series) => series.points[0]?.model.model === lit)?.label ??
-                        null,
-                    ),
-                ]
-                  .filter(Boolean)
-                  .join(" ")
-          }
-          initialWidth={1200}
-          measureText={measureText}
-          style={{ height: "100%" }}
-          // A custom body drops the library's card chrome, so the card brings its own.
-          renderTooltipBody={({ points, primaryPoint }) => {
-            const point = focusedPoint(points, primaryPoint)
+      {/* The plot fills a layer over its box rather than sizing by percentage: the box's
+          height comes from the page's flex column, which a percentage can't resolve against. */}
+      <div className="relative min-h-0 flex-1">
+        <div className="absolute inset-0">
+          <Chart
+            key={view}
+            definition={definition}
+            ariaLabel={view === "ranges" ? describeRanges(data) : describePlot(data)}
+            ariaDescription={
+              view === "ranges" && flat != null
+                ? rangeAxisDescription(data, flat, sources, info)
+                : [
+                    axisDescription(data, sources, info),
+                    showFrontier &&
+                      describeFrontier(
+                        frontier,
+                        data.series.find((series) => series.points[0]?.model.model === lit)
+                          ?.label ?? null,
+                      ),
+                  ]
+                    .filter(Boolean)
+                    .join(" ")
+            }
+            initialWidth={1200}
+            measureText={measureText}
+            style={{ height: "100%" }}
+            // A custom body drops the library's card chrome, so the card brings its own.
+            renderTooltipBody={({ points, primaryPoint }) => {
+              const point = focusedPoint(points, primaryPoint)
 
-            return point ? (
-              <div className={CHART_TOOLTIP_CARD_CLASS} style={{ width: CHART_TOOLTIP_WIDTH }}>
-                <PointDetails axes={data.axes} metrics={data.metrics} point={point} />
-              </div>
-            ) : null
-          }}
-        />
+              return point ? (
+                <div className={CHART_TOOLTIP_CARD_CLASS} style={{ width: CHART_TOOLTIP_WIDTH }}>
+                  <PointDetails axes={data.axes} metrics={data.metrics} point={point} />
+                </div>
+              ) : null
+            }}
+          />
+        </div>
       </div>
     </div>
   )
