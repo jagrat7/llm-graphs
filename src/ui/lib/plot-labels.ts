@@ -14,6 +14,7 @@ export type SeriesLabel = {
   name: string
   /** Effort tier shown beneath the name; null when the model exposes no efforts. */
   effort: string | null
+  /** The run's colour at the one lightness every name shares, so no name outweighs another. */
   color: string
   /** Every point of the run, so hovering any of them keeps the label lit. */
   ids: Set<string>
@@ -36,7 +37,7 @@ function seriesLabelAt(series: PlotSeries, anchor: PlotPoint): SeriesLabel {
     pointId: anchor.id,
     name: series.label,
     effort: anchor.model.effort === "default" ? null : anchor.model.effort.toUpperCase(),
-    color: series.color,
+    color: `oklch(from ${series.color} var(--vendor-label-l) c h)`,
     ids: new Set(series.points.map((point) => point.id)),
   }
 }

@@ -59,6 +59,9 @@
   --vendor-ink-2: 0.44;
   --vendor-tint-c: 0.045;
   --vendor-unknown: oklch(0.5 0.015 250);
+  /* A model's name on the chart keeps its vendor's hue but not its lightness: marks range from
+     near-black ink to mid-tone colour, and at one size a darker name reads as a larger one. */
+  --vendor-label-l: 0.42;
   /* Drafted corners: tighter than the dark theme, which keeps its own below. */
   --radius: 0.3rem;
   --sidebar: oklch(0.945 0.015 88);
@@ -102,6 +105,7 @@
   --vendor-ink-2: 0.79;
   --vendor-tint-c: 0.035;
   --vendor-unknown: oklch(0.7 0 0);
+  --vendor-label-l: 0.84;
   --radius: 0.5rem;
   --sidebar: oklch(0.17 0 0);
 }
