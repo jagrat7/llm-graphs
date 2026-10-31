@@ -70,7 +70,7 @@ export function MetricSelect({
           {isEmpty ? (
             <span aria-hidden="true" className="flex items-center gap-2 font-semibold">
               <RiAddLine className="text-primary size-4" />
-              Add {axis} axis
+              Add
             </span>
           ) : (
             // The trigger's flex row defeats `line-clamp`, so the label truncates itself.
