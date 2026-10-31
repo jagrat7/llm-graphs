@@ -339,6 +339,12 @@ a {
   outline-offset: 2px;
 }
 
+/* The ring is for the keyboard. Chrome still rings a focused SVG on any focus, a click or a
+   tap included (the chart's plot is one), so focus that isn't keyboard focus drops it. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /**
  * An input group already draws a focus ring around the whole control, so the
  * app-wide outline would sit inside it as a second box.
