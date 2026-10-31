@@ -12,6 +12,7 @@ Leaderboards each publish their own slice of the picture: one has coding scores,
 - **Log scales**, chosen automatically for ratio metrics or set by hand.
 - **Model picker** grouped by vendor. Your picks are kept across visits and benchmarks.
 - **Share links, PNG export, and CSV download** for the current chart.
+- **A guide for AI agents** at `/llms.txt`: how a chart's link is built, with every metric, source, and model id it accepts, so a reader's agent can choose the options and hand back a link.
 - **Visible sources.** Every axis and tooltip names the benchmark and links to it, with its version, harness, and caveats.
 
 ## Data sources
