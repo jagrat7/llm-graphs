@@ -241,12 +241,14 @@ export function ModelPicker({
               <RiSearchLine aria-hidden="true" className="text-muted-foreground size-3.5" />
             </InputGroupAddon>
             <InputGroupAddon align="inline-end" className="pe-1">
-              {/* The shortcut's hint, until the field is in use and "/" would type; touch has no key for it. */}
+              {/* The shortcut's hint, until the field is in use and "/" would type; touch has no
+                  key for it. Only the field counts: the list button shares the bar and takes
+                  focus back when its list closes, and "/" still works from there. */}
               {shortcut ? (
                 <kbd
                   data-slot="kbd"
                   aria-hidden="true"
-                  className="me-1 inline-flex h-5 min-w-5 items-center justify-center font-mono group-focus-within/input-group:hidden group-has-[input:not(:placeholder-shown)]/input-group:hidden pointer-coarse:hidden"
+                  className="me-1 inline-flex h-5 min-w-5 items-center justify-center font-mono group-has-[input:focus]/input-group:hidden group-has-[input:not(:placeholder-shown)]/input-group:hidden pointer-coarse:hidden"
                 >
                   /
                 </kbd>
