@@ -150,13 +150,15 @@ export function ChartShareMenu({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            // Styled as the Pareto toggle beside it, with "open" standing in for "on".
+            // Grey and bare at rest, as a toolbar toggle is when off; hover and an open menu take
+            // the fill and full ink a toggle has when on. A toggle has no border, so neither does
+            // this, and its icon is the height of their swatches.
             <Button
               variant="ghost"
               size="sm"
               aria-busy={status.kind === "busy"}
               className={cn(
-                "text-muted-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground gap-1.5",
+                "text-muted-foreground hover:bg-foreground/12 hover:text-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground dark:hover:bg-foreground/12 gap-1.5 border-0 [&_svg]:size-3.5!",
                 className,
               )}
             />
