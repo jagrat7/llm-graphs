@@ -5,6 +5,7 @@ import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/reac
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
 import AppHeader from "#/ui/components/app-header"
+import { VariantBar } from "#/ui/dev/variants"
 import { TooltipProvider } from "#/ui/components/ui/tooltip"
 import { APP_DESCRIPTION, APP_NAME } from "#/ui/lib/app-meta"
 import { DEFAULT_SETTINGS, readSettings, SavedSettingsContext } from "#/ui/lib/settings"
@@ -106,6 +107,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             TanStackQueryDevtools,
           ]}
         />
+        {import.meta.env.DEV ? <VariantBar /> : null}
         <Scripts />
       </body>
     </html>
