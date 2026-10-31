@@ -24,6 +24,8 @@ describe("prefersMarkdown", () => {
     ["a browser", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", false],
     ["HTML ranked above markdown", "text/html, text/markdown;q=0.5", false],
     ["markdown refused", "text/markdown;q=0", false],
+    ["HTML ranked above markdown through text/*", "text/markdown;q=0.5, text/*", false],
+    ["HTML ranked above markdown through */*", "text/markdown;q=0.5, */*", false],
     ["no header", null, false],
   ])("%s", (_agent, accept, expected) => {
     expect(prefersMarkdown(accept)).toBe(expected)

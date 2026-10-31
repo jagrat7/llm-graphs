@@ -11,7 +11,8 @@ const AXIS_NAMES = { x: "Horizontal axis", y: "Vertical axis", z: "Depth axis" }
 
 /**
  * Whether a request would rather read markdown than HTML. Agents that want it list
- * `text/markdown` at least as high as `text/html` (Claude Code ties them); browsers never list it.
+ * `text/markdown` at least as high as HTML (Claude Code ties them); browsers never list it.
+ * HTML takes its weight from a wildcard range when not named, as HTTP ranks them.
  */
 export function prefersMarkdown(accept: string | null) {
   const weights = new Map<string, number>()
@@ -21,8 +22,9 @@ export function prefersMarkdown(accept: string | null) {
     weights.set(type, quality == null ? 1 : Number(quality.slice(2)))
   }
   const markdown = weights.get("text/markdown") ?? 0
+  const html = weights.get("text/html") ?? weights.get("text/*") ?? weights.get("*/*") ?? 0
 
-  return markdown > 0 && markdown >= (weights.get("text/html") ?? 0)
+  return markdown > 0 && markdown >= html
 }
 
 /**
@@ -52,7 +54,7 @@ export function chartMarkdown(
     const sourceKey = AXIS_SOURCE_KEY[axis]
     const rawSource = params.get(sourceKey)
     const followsScore = metric === "cost" || metric === "duration"
-    if (rawSource != null && rawSource !== source)
+    if (rawSource != null && (followsScore || rawSource !== source))
       notes.push(
         followsScore
           ? `\`${sourceKey}\` is ignored: ${metric} always reads the Score axis's benchmark.`
@@ -98,7 +100,9 @@ export function chartMarkdown(
     `A ${search.z == null ? "2D" : "3D"} chart:`,
     "",
     ...axisLines,
-    `- Models, ${search.models == null ? "the site's default picks since the link names none" : "picked by the link"}: ${drawn.map(label).join(", ") || "none"}`,
+    search.models == null
+      ? `- Models, the site's default picks since the link names none: ${drawn.map(label).join(", ") || "none"}. A reader with saved picks sees those instead, so add \`models\` to pin what the link shows.`
+      : `- Models, picked by the link: ${drawn.map(label).join(", ") || "none"}`,
     "",
     quality.meaningful
       ? "The chart compares these models. To change it, edit the link as described below."
