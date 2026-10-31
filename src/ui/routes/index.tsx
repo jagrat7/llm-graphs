@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router"
+import { ClientOnly, createFileRoute, defaultParseSearch, useRouter } from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
 import { lazy, Suspense, useMemo, useState } from "react"
 // The browser parses search params with this, so it uses zod's tree-shakeable build.
@@ -34,6 +34,7 @@ import {
   upgradeLegacySearch,
 } from "#/ui/lib/graph-state"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
+import { chartMarkdown, prefersMarkdown } from "#/ui/lib/chart-markdown"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { comparisonModels, comparisonSlice } from "#/ui/lib/comparison-view"
@@ -99,8 +100,28 @@ const compareSearchSchema = z.object({
   ),
 })
 
+function parseCompareSearch(search: Record<string, unknown>) {
+  return upgradeLegacySearch(compareSearchSchema.parse(search))
+}
+
 export const Route = createFileRoute("/")({
-  validateSearch: (search) => upgradeLegacySearch(compareSearchSchema.parse(search)),
+  validateSearch: parseCompareSearch,
+  server: {
+    handlers: {
+      // An agent asking for markdown gets this link's chart in words, with the guide to changing
+      // it; everyone else falls through to the page.
+      GET: async ({ request, next }) => {
+        if (!prefersMarkdown(request.headers.get("Accept"))) return next()
+        const url = new URL(request.url)
+        const [info, snapshot] = await Promise.all([api.providers.info(), api.models.snapshot()])
+        const search = parseCompareSearch(defaultParseSearch(url.search))
+
+        return new Response(chartMarkdown(info, snapshot, search, url.searchParams, url.origin), {
+          headers: { "Content-Type": "text/markdown; charset=utf-8", Vary: "Accept" },
+        })
+      },
+    },
+  },
   loaderDeps: ({ search }) => ({ search }),
   // The picks and settings come from the request's cookies, so the first HTML already shows
   // this reader's own comparison. A failure is left to the page's own error state.

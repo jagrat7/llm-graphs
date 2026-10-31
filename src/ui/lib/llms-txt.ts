@@ -103,14 +103,21 @@ function modelLines(snapshot: ModelSnapshot) {
 /**
  * The site described for AI agents, per https://llmstxt.org: how a chart's URL is built, every
  * metric and source the axes accept, and every model id a link can pick. Built from the live
- * registry and snapshot, so it names exactly what the chart reads.
+ * registry and snapshot, so it names exactly what the chart reads. `lead` goes right after the
+ * summary, for a page that first says what its own link shows.
  */
-export function llmsTxt(info: ProvidersInfo, snapshot: ModelSnapshot, origin: string) {
+export function llmsTxt(
+  info: ProvidersInfo,
+  snapshot: ModelSnapshot,
+  origin: string,
+  lead: Array<string> = [],
+) {
   return [
     `# ${APP_NAME}`,
     "",
     `> ${APP_NAME} lets people ${APP_DESCRIPTION}. Each chart plots models against two or three metrics, such as benchmark score against cost per task. The whole chart is set by the page URL, so an agent picks the options by building a link and handing it to the user. There is no API to call and no account.`,
     "",
+    ...lead,
     "## Building a chart link",
     "",
     "```",
