@@ -1,6 +1,6 @@
 # LLM Graphs
 
-Compare language models across benchmarks, live at [llm-graphs.vercel.app](https://llm-graphs.vercel.app).
+Compare language models across benchmarks, live at [llm-graphs.jr7.dev](https://llm-graphs.jr7.dev).
 
 Leaderboards each publish their own slice of the picture: one has coding scores, another task cost, another speed or human preference. LLM Graphs pulls those sources into one place and plots them against each other, so you can see tradeoffs like score against cost per task, or speed against price, for the models you care about.
 
@@ -17,22 +17,22 @@ Leaderboards each publish their own slice of the picture: one has coding scores,
 
 ## Data sources
 
-| Source | What it adds |
-| --- | --- |
-| [Artificial Analysis](https://artificialanalysis.ai/) | Intelligence Index, task cost, token prices, output speed |
-| [DeepSWE](https://deepswe.datacurve.ai/) | Agentic coding scores, task cost, task duration |
-| [SWE-bench Verified](https://www.swebench.com/) | Coding scores, task cost |
-| [Terminal-Bench 4.0](https://www.tbench.ai/leaderboard/terminal-bench/4.0) and [Terminal-Bench Science](https://www.terminal-bench-science.ai/) | Terminal task scores, task cost, task duration |
-| [CursorBench](https://cursor.com/evals) | Coding scores in Cursor, task cost |
-| [FrontierCode](https://cognition.com/frontiercode) | Coding scores, task cost |
-| [LiveCodeBench](https://livecodebench.github.io/leaderboard.html) | Competitive programming scores |
-| [METR](https://metr.org/time-horizons/) | Task horizon, average task score |
-| [ARC Prize · ARC-AGI-2](https://arcprize.org/leaderboard) | Reasoning scores, task cost |
-| [AutomationBench](https://zapier.com/benchmarks) | Workflow automation scores, task cost |
-| [Arena Text](https://arena.ai/leaderboard/text) | Human preference ratings, vote counts |
-| [models.dev](https://models.dev/) | Model catalog, context length, the lab's own token prices |
+| Source                                                                                                                                          | What it adds                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [Artificial Analysis](https://artificialanalysis.ai/)                                                                                           | Intelligence Index, task cost, token prices, output speed |
+| [DeepSWE](https://deepswe.datacurve.ai/)                                                                                                        | Agentic coding scores, task cost, task duration           |
+| [SWE-bench Verified](https://www.swebench.com/)                                                                                                 | Coding scores, task cost                                  |
+| [Terminal-Bench 4.0](https://www.tbench.ai/leaderboard/terminal-bench/4.0) and [Terminal-Bench Science](https://www.terminal-bench-science.ai/) | Terminal task scores, task cost, task duration            |
+| [CursorBench](https://cursor.com/evals)                                                                                                         | Coding scores in Cursor, task cost                        |
+| [FrontierCode](https://cognition.com/frontiercode)                                                                                              | Coding scores, task cost                                  |
+| [LiveCodeBench](https://livecodebench.github.io/leaderboard.html)                                                                               | Competitive programming scores                            |
+| [METR](https://metr.org/time-horizons/)                                                                                                         | Task horizon, average task score                          |
+| [ARC Prize · ARC-AGI-2](https://arcprize.org/leaderboard)                                                                                       | Reasoning scores, task cost                               |
+| [AutomationBench](https://zapier.com/benchmarks)                                                                                                | Workflow automation scores, task cost                     |
+| [Arena Text](https://arena.ai/leaderboard/text)                                                                                                 | Human preference ratings, vote counts                     |
+| [models.dev](https://models.dev/)                                                                                                               | Model catalog, context length, the lab's own token prices |
 
-Each source keeps its own meaning. A score from one benchmark is never mixed with another's, task cost is never derived from token price, and unknown reasoning settings stay unknown. [CONTEXT.md](../CONTEXT.md) defines the terms, and the audits in this folder record each source's details and limits.
+Each source keeps its own meaning. A score from one benchmark is never mixed with another's, task cost is never derived from token price, and unknown reasoning settings stay unknown. [CONTEXT.md](../CONTEXT.md) defines the terms.
 
 ## Running locally
 
@@ -46,22 +46,22 @@ bun run dev   # http://localhost:3000
 
 Environment variables, all optional:
 
-| Variable | Purpose |
-| --- | --- |
-| `AA_API_KEY` | [Artificial Analysis API](https://artificialanalysis.ai/documentation) key. Without it, that source is unavailable. |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shares the source cache across server instances. Without them, each server caches in memory. |
+| Variable                                             | Purpose                                                                                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `AA_API_KEY`                                         | [Artificial Analysis API](https://artificialanalysis.ai/documentation) key. Without it, that source is unavailable. |
+| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shares the source cache across server instances. Without them, each server caches in memory.                        |
 
 Sources are fetched on the server, cached, and refreshed in the background once stale. A failed refresh keeps the last good copy.
 
 ## Development
 
-| Command | What it runs |
-| --- | --- |
-| `bun run test` | Vitest. Tests use committed fixtures and make no upstream requests. |
-| `bun run typecheck` | Bun's TypeScript checker |
-| `bun run lint` | oxlint (type-aware), with custom rules in `dev/oxlint/` |
-| `bun run fmt` | oxfmt |
-| `bun run build` | Production build (Nitro server, deployed on Vercel) |
+| Command                   | What it runs                                                                |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `bun run test`            | Vitest. Tests use committed fixtures and make no upstream requests.         |
+| `bun run typecheck`       | Bun's TypeScript checker                                                    |
+| `bun run lint`            | oxlint (type-aware), with custom rules in `dev/oxlint/`                     |
+| `bun run fmt`             | oxfmt                                                                       |
+| `bun run build`           | Production build (Nitro server, deployed on Vercel)                         |
 | `bun run fixtures:models` | Refreshes the first-party data snapshots used by tests (needs `AA_API_KEY`) |
 
 Code layout:
