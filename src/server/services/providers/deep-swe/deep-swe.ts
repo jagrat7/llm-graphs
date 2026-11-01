@@ -39,6 +39,10 @@ export class DeepSWEProvider
   readonly displayName = "DeepSWE"
   readonly href = "https://deepswe.datacurve.ai/"
   readonly abbreviation = "DSWE"
+  readonly publisher = "Datacurve"
+  readonly category = "coding"
+  readonly summary =
+    "Software-engineering tasks run by an agent, with the pass rate, cost and wall time of each task."
   readonly cacheKey = CACHE_KEY
   /** Refetched once its cached copy is an hour old. */
   readonly refreshWindowMs = 60 * 60 * 1000

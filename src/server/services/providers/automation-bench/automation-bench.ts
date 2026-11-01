@@ -85,6 +85,10 @@ export class AutomationBenchProvider
   readonly displayName = `AutomationBench ${VERSION}`
   readonly href = PAGE_URL
   readonly abbreviation = "AB"
+  readonly publisher = "Zapier"
+  readonly category = "agents"
+  readonly summary =
+    "Business workflows completed through app APIs, graded on the final state of each environment."
   readonly cacheKey = `llm-scores:source:automationBench:${VERSION}:v1`
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<AutomationBenchRow> = {

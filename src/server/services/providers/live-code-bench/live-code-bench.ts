@@ -128,6 +128,10 @@ export class LiveCodeBenchProvider
   readonly displayName = "LiveCodeBench"
   readonly href = "https://livecodebench.github.io/leaderboard.html"
   readonly abbreviation = "LCB"
+  readonly publisher = "LiveCodeBench team"
+  readonly category = "coding"
+  readonly summary =
+    "Contest problems collected over time, so a model is scored on problems published after its training."
   readonly cacheKey = "llm-scores:source:liveCodeBench:codegen:2024-08_2025-05:v1"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics: MetricReaders<LiveCodeBenchRow> = {

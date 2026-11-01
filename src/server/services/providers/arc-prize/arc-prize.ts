@@ -104,6 +104,10 @@ export class ARCPrizeProvider
   readonly displayName = "ARC Prize · ARC-AGI-2"
   readonly href = "https://arcprize.org/leaderboard"
   readonly abbreviation = "ARC"
+  readonly publisher = "ARC Prize Foundation"
+  readonly category = "reasoning"
+  readonly summary =
+    "ARC-AGI-2: abstract reasoning puzzles that are easy for people and hard for models."
   readonly cacheKey = "llm-scores:source:arcPrize:arc-agi-2:semi-private:v2"
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<ARCRow> = {

@@ -66,6 +66,9 @@ export const ProvidersService = {
       sources: record((name) => ({
         href: metricSources[name].href,
         abbreviation: metricSources[name].abbreviation,
+        publisher: metricSources[name].publisher,
+        category: metricSources[name].category,
+        summary: metricSources[name].summary,
       })),
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- all metric keys are populated
       metricProviders: Object.fromEntries(

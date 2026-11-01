@@ -95,6 +95,10 @@ export class CursorBenchProvider
   readonly displayName = `CursorBench ${VERSION}`
   readonly href = PAGE
   readonly abbreviation = "CB"
+  readonly publisher = "Cursor"
+  readonly category = "coding"
+  readonly summary =
+    "Coding tasks drawn from real developer sessions, graded on whether the agent got them right."
   readonly cacheKey = `llm-scores:source:cursorBench:${VERSION}:v1`
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<CursorBenchRow> = {

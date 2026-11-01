@@ -68,6 +68,10 @@ export class ArtificialAnalysisProvider
   readonly displayName = "Artificial Analysis"
   readonly href = "https://artificialanalysis.ai/"
   readonly abbreviation = "AA"
+  readonly publisher = "Artificial Analysis"
+  readonly category = "market"
+  readonly summary =
+    "Independent testing of models and API providers: an intelligence index, token prices and output speed."
   readonly cacheKey = CACHE_KEY
   /** Refetched once its cached copy is six hours old. */
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
