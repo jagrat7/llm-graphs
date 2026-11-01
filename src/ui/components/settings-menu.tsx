@@ -152,6 +152,17 @@ export default function SettingsMenu() {
                   onCheckedChange={(vendorLogos) => update({ vendorLogos })}
                 />
               </SettingRow>
+              <SettingRow
+                id="settings-paper-grid"
+                label="Gridlines detail"
+                description="Control the labelled gridlines look, low or graph paper like"
+              >
+                <Switch
+                  id="settings-paper-grid"
+                  checked={settings.paperGrid}
+                  onCheckedChange={(paperGrid) => update({ paperGrid })}
+                />
+              </SettingRow>
             </div>
           </SettingsSection>
 

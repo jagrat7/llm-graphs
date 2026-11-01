@@ -342,8 +342,8 @@ export function ComparisonChart({
 
     return view === "ranges" && flat != null
       ? rangeDefinition(data, { ...options, flat })
-      : scatterDefinition(data, { ...options, frontier: frontierOn })
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn])
+      : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid: settings.paperGrid })
+  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, settings.paperGrid])
 
   // The range view grows with its rows; the scatter fits whatever height the page gives it.
   const frameStyle: ChartFrameStyle | undefined =

@@ -42,6 +42,7 @@ export function scatterDefinition(
     logoClass,
     sources,
     frontier = true,
+    paperGrid = true,
   }: {
     highlight: string | null
     info: ProvidersInfo
@@ -49,6 +50,8 @@ export function scatterDefinition(
     sources: Record<"x" | "y", ProviderName | null>
     /** Whether to draw the Pareto frontier, where the metrics have one. */
     frontier?: boolean
+    /** Whether to rule graph paper between the gridlines. */
+    paperGrid?: boolean
   },
 ) {
   const xMetric = data.metrics.x!
@@ -77,7 +80,7 @@ export function scatterDefinition(
 
   return defineChart({
     marks: [
-      paperRulingsMark(),
+      paperRulingsMark(paperGrid),
       pointGuidesMark(data),
       // Always present, empty when hidden or when the metrics do not trade off, so the
       // marks after it keep their keys and animate across either change.

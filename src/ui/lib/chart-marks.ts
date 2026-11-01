@@ -445,9 +445,10 @@ const RULING_STYLE = {
 /**
  * The sheet's minor rulings, drawn first so everything else sits on top of them: a
  * hairline at each subdivision between the gridlines, out to the plot's edges, so the
- * plot reads as graph paper on either theme.
+ * plot reads as graph paper on either theme. Off, the mark stays but draws nothing, so the
+ * marks after it keep their keys.
  */
-export function paperRulingsMark() {
+export function paperRulingsMark(shown = true) {
   return createMark<PlotPoint, number, number>(({ markIndex }) => {
     const id = `paper-rulings-${markIndex}`
 
@@ -458,6 +459,8 @@ export function paperRulingsMark() {
         y: { scale: "y", values: [] },
       },
       render({ chart, scales }) {
+        if (!shown) return { nodes: [] }
+
         const positions = (axis: "x" | "y") => scales[axis].ticks.map((tick) => tick.position)
         const columns = minorRulings(positions("x"), chart.x, chart.x + chart.width)
         const rows = minorRulings(positions("y"), chart.y, chart.y + chart.height)
