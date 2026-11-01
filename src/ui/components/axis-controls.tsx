@@ -82,8 +82,9 @@ export function AxisControls({
           fits the longest metric plus the Z row's remove button, so that row never
           spills into "via". The source column hugs its widest name, so the divider
           follows the labels instead of leaving a hole before the picker, and the
-          picker's column matches it. */}
-      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center gap-x-2 gap-y-1.5 min-[56rem]:min-w-0 min-[56rem]:flex-initial">
+          picker's column matches it. Stacked, the strip is wider than the rows, so
+          they centre in it rather than leaving the spare width on the right. */}
+      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center justify-center gap-x-2 gap-y-1.5 min-[56rem]:min-w-0 min-[56rem]:flex-initial min-[56rem]:justify-start">
         {AXIS_KEYS.map((key, index) => {
           const { metric, source } = axes[key]
           const swap = SWAP_PAIRS.find((pair) => pair.from === key)
