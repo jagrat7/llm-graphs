@@ -24,7 +24,7 @@ def ebur(path):
     return " ".join(line.strip() for line in s.splitlines() if line.strip().startswith(("I:", "LRA:", "Peak:")))
 
 
-L = [f"# Review artifacts (round {round_no})", "", "All paths are relative to /home/jagrat/.t3/worktrees/llm-graphs/t3-b8896b96/launch-video-remotion/.", ""]
+L = [f"# Review artifacts (round {round_no})", "", "All paths are relative to the project folder, launch-video-remotion/.", ""]
 for name, video, qa, sheet in [("Light master", "out/launch.mp4", "out/qa", "out/contact-sheet.png"), ("Dark master (same timeline, dark theme)", "out/launch-dark.mp4", "out/qa-dark", "out/contact-sheet-dark.png")]:
     r = json.load(open(f"{qa}/report.json"))
     L += [f"## {name}", "", f"- Video: {video}", f"- Contact sheet, 1 frame/s at 640 px: {sheet}", f"- Contact sheet at 360 px (phone width): {qa}/contact-sheet-360.png",
