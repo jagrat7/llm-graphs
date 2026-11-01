@@ -6,11 +6,13 @@ import { cn } from "#/ui/lib/utils"
 
 import { TokenWordmark } from "./brand-marks"
 import SettingsMenu from "./settings-menu"
+import SourcesDialog from "./sources-dialog"
 import ThemeToggle from "./theme-toggle"
 
 /**
  * One destination, so there is nothing to navigate between — the bar carries the
- * wordmark, the settings, and the theme control, and stays out of the chart's way.
+ * wordmark, the sources, the settings, and the theme control, and stays out of the
+ * chart's way.
  */
 export default function AppHeader() {
   return (
@@ -26,6 +28,7 @@ export default function AppHeader() {
         </Link>
 
         <div className="flex items-center gap-1">
+          <SourcesDialog />
           <SettingsMenu />
           <ThemeToggle />
         </div>
