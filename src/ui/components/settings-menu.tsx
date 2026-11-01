@@ -12,15 +12,9 @@ import {
   DialogTrigger,
 } from "#/ui/components/ui/dialog"
 import { Switch } from "#/ui/components/ui/switch"
-import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import SettingsProviders from "#/ui/components/settings-providers"
 import { SettingsSection } from "#/ui/components/settings-section"
 import { DEFAULT_SETTINGS, isDefaultSettings, useSetting, useSettings } from "#/ui/lib/settings"
-
-const EFFORT_OPTIONS = [
-  { value: "all", label: "All" },
-  { value: "highest", label: "Highest only" },
-] as const satisfies ReadonlyArray<{ value: Settings["effortLevels"]; label: string }>
 
 /**
  * Label, and any description, on the left, the control on the right, as one row of a form.
@@ -52,37 +46,6 @@ function SettingRow({
   )
 }
 
-function Segmented<T extends string | number>({
-  labelId,
-  value,
-  options,
-  onChange,
-}: {
-  labelId: string
-  value: T
-  options: ReadonlyArray<{ value: T; label: string }>
-  onChange: (value: T) => void
-}) {
-  return (
-    <ToggleGroup
-      aria-labelledby={labelId}
-      variant="outline"
-      spacing={0}
-      value={[String(value)]}
-      onValueChange={(values) => {
-        const next = options.find((option) => String(option.value) === values[0])
-        if (next) onChange(next.value)
-      }}
-    >
-      {options.map((option) => (
-        <ToggleGroupItem key={option.value} value={String(option.value)} className="px-3">
-          {option.label}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
-  )
-}
-
 type SwitchSetting = {
   [K in keyof Settings]: Settings[K] extends boolean ? K : never
 }[keyof Settings]
@@ -110,7 +73,6 @@ function SettingSwitch({
 /** Preferences that outlive one comparison: how the chart draws, and which providers it shows. */
 export default function SettingsMenu() {
   const [settings, setSettings] = useSettings()
-  const [effortLevels, setEffortLevels] = useSetting("effortLevels")
   const isDefault = isDefaultSettings(settings)
 
   return (
@@ -136,18 +98,6 @@ export default function SettingsMenu() {
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">
           <SettingsSection title="Chart">
             <div className="divide-border/60 divide-y">
-              <SettingRow
-                id="settings-effort-levels"
-                label="Effort levels"
-                description="Plot every reasoning effort a model ran at, or only its highest"
-              >
-                <Segmented
-                  labelId="settings-effort-levels-label"
-                  value={effortLevels}
-                  options={EFFORT_OPTIONS}
-                  onChange={setEffortLevels}
-                />
-              </SettingRow>
               <SettingSwitch
                 setting="paretoFrontier"
                 label="Pareto frontier"

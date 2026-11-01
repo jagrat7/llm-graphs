@@ -132,7 +132,7 @@ export function llmsTxt(
     "- `log` puts a metric on a log scale, on whichever axis it sits. Repeat it once per metric. It only affects metrics a log scale fits, such as `cost`, `price` and `speed`; others stay linear. Every axis is linear by default.",
     "- Each model is drawn once per reasoning level it was measured at, joined into a curve.",
     "- A chart needs at least two of the picked models to have values on every axis. Check a model's sources in the Models list before picking it.",
-    "- Hidden vendors, the Pareto frontier toggle, vendor logos, and showing only each model's highest effort level are reader settings. A link can't set them.",
+    "- Hidden vendors, the Pareto frontier toggle and vendor logos are reader settings. A link can't set them.",
     "",
     "## Examples",
     "",

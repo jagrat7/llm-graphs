@@ -45,7 +45,7 @@ import { Alert, AlertTitle } from "#/ui/components/ui/alert"
 import { Button } from "#/ui/components/ui/button"
 import { comparisonModels, comparisonSlice } from "#/ui/lib/comparison-view"
 import { readPickedModels, savePickedModels, usePickedModels } from "#/ui/lib/picked-models"
-import { highestEffortOnly, useSettings } from "#/ui/lib/settings"
+import { useSettings } from "#/ui/lib/settings"
 import { providersInfoQueryOptions, useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { api } from "#/server/api"
 import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
@@ -171,7 +171,7 @@ function ComparePage() {
   // Starts once the page has hydrated: the server never fetches it, so it stays out of the HTML.
   const { data: snapshot, isError } = useQuery(snapshotQuery)
   const [settings, setSettings] = useSettings()
-  const { hiddenProviders, vendorLogos, effortLevels } = settings
+  const { hiddenProviders, vendorLogos } = settings
   // Changing an axis source re-filters the whole snapshot; nothing is refetched. Until it
   // arrives, the server's slice draws the opening chart with the picks it worked out.
   const data = useMemo(() => {
@@ -310,10 +310,8 @@ function ComparePage() {
   const selectedModels = useMemo(() => {
     const ids = new Set(selected)
 
-    const picked = data?.models.filter((model) => ids.has(model.model)) ?? []
-
-    return effortLevels === "highest" ? highestEffortOnly(picked) : picked
-  }, [data, selected, effortLevels])
+    return data?.models.filter((model) => ids.has(model.model)) ?? []
+  }, [data, selected])
   // Without logos, every point falls back to the plain dot the chart draws for a logoless vendor.
   const chartModels = useMemo(
     () =>

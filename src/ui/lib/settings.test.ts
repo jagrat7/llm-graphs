@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest"
 import {
   changedSettings,
   DEFAULT_SETTINGS,
-  highestEffortOnly,
   isDefaultSettings,
   parseSettings,
   withoutHiddenProviders,
@@ -16,7 +15,6 @@ describe("settings", () => {
       paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
-      effortLevels: "all",
     })
   })
 
@@ -25,7 +23,7 @@ describe("settings", () => {
     expect(isDefaultSettings({ ...DEFAULT_SETTINGS, hiddenProviders: ["xai"] })).toBe(false)
     // Every field counts, not only the ones someone remembered to list.
     for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
-      const changed = typeof value === "boolean" ? !value : typeof value === "string" ? "x" : ["x"]
+      const changed = typeof value === "boolean" ? !value : ["x"]
 
       expect(isDefaultSettings({ ...DEFAULT_SETTINGS, [key]: changed })).toBe(false)
     }
@@ -49,7 +47,6 @@ describe("settings", () => {
       paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
-      effortLevels: "all",
     })
   })
 
@@ -65,18 +62,5 @@ describe("settings", () => {
     ]
 
     expect(withoutHiddenProviders(models, ["xai"]).map((model) => model.id)).toEqual(["a", "c"])
-  })
-})
-
-describe("highest effort only", () => {
-  it("keeps each run's highest effort, separately per configuration", () => {
-    const models = [
-      { model: "a", effortOrder: 1, id: "a-low" },
-      { model: "a", effortOrder: 3, id: "a-high" },
-      { model: "a", configuration: "agent", effortOrder: 2, id: "a-agent" },
-      { model: "b", effortOrder: 0, id: "b" },
-    ]
-
-    expect(highestEffortOnly(models).map((model) => model.id)).toEqual(["a-high", "a-agent", "b"])
   })
 })

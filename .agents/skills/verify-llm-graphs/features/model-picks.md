@@ -49,6 +49,5 @@ Preconditions:
 - A single `models=<id>` redirects to the JSON form `models=%5B%22<id>%22%5D`. Both forms are valid; compare `models.chips`, not the URL.
 - Picks are entry ids such as `claude-fable-5`, not display names. A pick the current benchmark lacks is kept but not shown, so a valid id can still produce `picks-unknown`.
 - In server HTML, `picks-unknown` reads `No models have all selected metrics`: the server only ships the picked models' rows. After hydration the browser shows `No selected models are available`. Assert the exact title only in a browser.
-- `effortLevels: "highest"` in the settings cookie can hide a picked run's lower-effort points. Keep the settings cookie out of pick journeys.
 - The visible chips' remove buttons have no accessible name (an app accessibility bug), so `getByRole('button', { name: 'Remove …' })` only finds chips in the overflow popover. Use `[data-slot="combobox-chip"] [data-slot="combobox-chip-remove"]`.
 - Default picks depend on live upstream data, so a different day can give different default names. Never hard-code them across runs.
