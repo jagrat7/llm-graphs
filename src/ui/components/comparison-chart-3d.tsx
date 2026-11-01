@@ -10,6 +10,7 @@ import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
 import type { AxisScale, PlotAxis, PlotData } from "#/ui/lib/comparison-plot-data"
 
+import { ChartImportButton } from "#/ui/components/chart-import-button"
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
@@ -1292,17 +1293,19 @@ export function ComparisonChart3D({
           </Button>
         ))}
       </div>
-      <ChartShareMenu
-        className="absolute top-3 right-3 z-20"
-        data={data}
-        sources={sources}
-        getLink={getShareLink}
-        renderPlot={(scale) => {
-          if (!plotRef.current || !frameReader.current) throw new Error("3D chart is not ready")
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+        <ChartImportButton />
+        <ChartShareMenu
+          data={data}
+          sources={sources}
+          getLink={getShareLink}
+          renderPlot={(scale) => {
+            if (!plotRef.current || !frameReader.current) throw new Error("3D chart is not ready")
 
-          return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
-        }}
-      />
+            return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
+          }}
+        />
+      </div>
       <p className="text-muted-foreground text-control pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 lg:flex">
         <RiDragMove2Line aria-hidden="true" className="size-3.5" />
         Drag to rotate · scroll to zoom

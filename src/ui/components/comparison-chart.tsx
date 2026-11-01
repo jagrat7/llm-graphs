@@ -8,6 +8,7 @@ import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
 
+import { ChartImportButton } from "#/ui/components/chart-import-button"
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
 import { PointDetails } from "#/ui/components/point-details"
@@ -384,6 +385,7 @@ export function ComparisonChart({
               onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
             />
           )}
+          <ChartImportButton />
           <ChartShareMenu
             data={data}
             sources={sources}
