@@ -1,10 +1,10 @@
 # LLM Graphs launch video
 
-A 40.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
+A 42.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
 [Remotion](https://www.remotion.dev/) with one [remocn](https://remocn.dev) component. One sheet
 of graph paper carries the whole film: ten real leaderboards land on it, fold into one chart, the
 chart switches benchmarks, draws its Pareto frontier, punches in on one model's reasoning levels
-and source, turns into a cube, opens its share menu, and closes on the wordmark. The last frame matches
+and source, turns into a cube, opens its share menu, saves the chart as an image, and closes on the wordmark. The last frame matches
 the first, so it loops. The published copies are `docs/launch.mp4` and `docs/launch-dark.mp4`;
 everything in `out/` is a local build product and is not committed.
 
@@ -49,7 +49,10 @@ and muxes it onto both pictures without re-encoding them.
 - `src/Headline.tsx`, `src/Tooltip.tsx`, `src/EndCard.tsx`, `src/Pad.tsx`.
 - `src/ShareMenu.tsx`: the chart's share menu (`src/ui/components/chart-share-menu.tsx`) at three
   times its CSS size: it opens, the highlight moves from "Copy link" to "Download image", and the
-  trigger reports "Image saved".
+  trigger reports "Image saved"; then the PNG that the app's "Download image" really saved lands
+  where the cube was. `public/share/score-vs-cost-{light,dark}.png` are those files, unedited:
+  the default 2D chart (`/?x=cost&y=score&log=cost`, DeepSWE, the nine default picks) exported
+  from a local run of the app on 2026-11-01 by `scripts/capture/share-image.mjs`.
 - remocn: `rolodex-flip` (the benchmark name in the headline; its easing changed to the film's
   curves).
 - Fonts are the app's own: Instrument Sans, Martian Mono and Space Mono (wordmark only), copied

@@ -6,6 +6,7 @@ import type { Point, SourceKey } from "./data"
 import { DATA, FOCUS, MODELS } from "./data"
 import { PLOT, PLOT_CX, PLOT_CY } from "./layout"
 import { LogoGlyph } from "./marks"
+import { SHARE_CUES } from "./ShareMenu"
 import { useTheme } from "./theme-context"
 import { Tooltip } from "./Tooltip"
 import { at, BAR, easeInOutSoft, easeOut, FONT, lerp, progress, vendorColor, vendorLabelColor } from "./theme"
@@ -158,16 +159,15 @@ const TITLE_SIZE = 36
 export function Chart() {
   const frame = useCurrentFrame()
   const T = useTheme()
-  if (frame < at(4) + 20 || frame > at(19)) return null
+  if (frame < at(4) + 20 || frame > SHARE_CUES.card + 12) return null
 
   const blend = sourceBlend(frame)
   const A = DATA.sources[blend.from]
   const B = DATA.sources[blend.to]
   const domain = blendDomain(DOMAINS[blend.from], DOMAINS[blend.to], blend.t)
   const view = viewAt(frame)
-  // The chart clears as the seal lands (EndCard.tsx), so the sheet is never empty.
-  // The chart clears into the seal, which lands on the bar-18 downbeat (EndCard.tsx).
-  const exit = progress(frame, at(18) - 10, 16, easeInOutSoft)
+  // The chart clears as the shared image lands in its place (ShareMenu.tsx).
+  const exit = progress(frame, SHARE_CUES.card - 4, 14, easeInOutSoft)
   const chartOpacity = 1 - exit
 
   const u = (cost: number) => (Math.log(cost) - Math.log(domain.x[0])) / (Math.log(domain.x[1]) - Math.log(domain.x[0]))

@@ -6,8 +6,8 @@ import { at, easeInOutSoft, easeOut, FONT, lerp, progress } from "./theme"
 /** brand-marks.tsx: the name as a tokenizer splits it, each token underlined in a theme ink. */
 const TOKENS = ["LL", "M", " Graph", "s"]
 
-/** The seal lands on the bar-18 downbeat (with its stamp), then the name is ruled in after it. */
-export const END_START = at(18)
+/** The seal lands on the bar-19 downbeat (with its stamp), then the name is ruled in after it. */
+export const END_START = at(19)
 
 /**
  * The close: seal, wordmark and address. It is also the video's first frame, so the loop on

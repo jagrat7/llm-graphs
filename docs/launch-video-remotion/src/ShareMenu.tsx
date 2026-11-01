@@ -1,4 +1,4 @@
-import { useCurrentFrame } from "remotion"
+import { Img, staticFile, useCurrentFrame } from "remotion"
 
 import { HEADLINE } from "./layout"
 import { useTheme } from "./theme-context"
@@ -45,26 +45,37 @@ const ROWS = GROUPS.flatMap((group, g) =>
 )
 const DOWNLOAD_IMAGE = ROWS.findIndex((row) => row.label === "Download image")
 
-// Bar 16: the trigger on the downbeat, the menu on beat 2, the highlight on "Copy link" on beat 3,
-// then down to "Download image" on bar 17. Beat 2 of bar 17 picks it: the menu closes and the
-// trigger reports "Image saved", as the app's does.
+// Bar 16: the trigger on the downbeat, the menu on beat 2, the highlight on "Copy link" on beat 3
+// and down to "Download image" on beat 4. The bar-17 downbeat picks it: the menu closes, the
+// trigger reports "Image saved" as the app's does, and the saved image lands where the chart was.
 export const SHARE_CUES = {
   trigger: at(16),
   open: at(16, 1),
   firstRow: at(16, 2),
-  moveRow: at(17),
-  pick: at(17, 1),
+  moveRow: at(16, 3),
+  pick: at(17),
+  card: at(17) + 6,
 } as const
+
+/** The beat ends as the seal lands (EndCard.tsx). */
+const SHARE_END = at(19)
+
+/**
+ * The PNG the app's "Download image" saved for the default 2D chart (DeepSWE score against task
+ * cost, log scale), 1648×1142 at 2× scale, on each pad. Shown at its own aspect, right of the trigger.
+ */
+const CARD = { width: 1097, height: 760, right: 56, top: 206 }
 
 export function ShareMenu() {
   const frame = useCurrentFrame()
   const T = useTheme()
-  if (frame < SHARE_CUES.trigger || frame > at(18)) return null
+  if (frame < SHARE_CUES.trigger || frame > SHARE_END) return null
 
-  const leave = progress(frame, at(18) - 10, 10, easeOut)
+  const leave = progress(frame, SHARE_END - 10, 10, easeOut)
   const triggerOn = progress(frame, SHARE_CUES.trigger, 14, easeOut) * (1 - leave)
   const open = progress(frame, SHARE_CUES.open, 9, easeOut)
   const close = progress(frame, SHARE_CUES.pick + 3, 7, easeOut)
+  const card = progress(frame, SHARE_CUES.card, 18, easeOut) * (1 - leave)
   const menu = open * (1 - close)
   const highlightOn = progress(frame, SHARE_CUES.firstRow, 6, easeOut)
   const highlightY = lerp(ROWS[0].y, ROWS[DOWNLOAD_IMAGE].y, progress(frame, SHARE_CUES.moveRow, 12, easeInOut))
@@ -73,6 +84,24 @@ export function ShareMenu() {
 
   return (
     <>
+      {card > 0 && (
+        <Img
+          src={staticFile(T.dark ? "share/score-vs-cost-dark.png" : "share/score-vs-cost-light.png")}
+          style={{
+            position: "absolute",
+            right: CARD.right,
+            top: CARD.top,
+            width: CARD.width,
+            height: CARD.height,
+            borderRadius: (T.dark ? 8 : 5) * 2,
+            boxShadow: T.float,
+            opacity: card,
+            // It comes from the trigger's side, as a saved file would.
+            transformOrigin: "0 0",
+            transform: `translate(${lerp(-28, 0, card)}px, ${lerp(10, 0, card)}px) scale(${lerp(0.96, 1, card)})`,
+          }}
+        />
+      )}
       <div
         style={{
           position: "absolute",

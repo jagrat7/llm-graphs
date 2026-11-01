@@ -144,3 +144,11 @@ eases right, the menu opens under its trigger, the highlight moves from "Copy li
 ticks on the menu's moves. This edit was not reviewed by the reviewer agents. QA gates pass on
 both masters: no dropouts, at most 1 flash a second, -14.9 LUFS, -2.3 dBTP, last frame matches
 the first.
+
+## After review: the shared image (author's request)
+
+The share beat now ends on the real thing: after "Image saved", the PNG that the app's "Download
+image" exported for the 2D DeepSWE chart lands where the cube was, on graph paper, and holds for
+about 3 s. The film grew one bar (20 to 21, 42.7 s) to give it that time; the end card moved to
+bar 19. Not reviewed by the reviewer agents. QA gates pass on both masters: no dropouts, at most
+1 flash a second, -14.8 LUFS, -2.3 dBTP, last frame matches the first.

@@ -1,5 +1,6 @@
 import { useCurrentFrame } from "remotion"
 
+import { SHARE_CUES } from "./ShareMenu"
 import { useTheme } from "./theme-context"
 import { at, easeOut, progress } from "./theme"
 
@@ -15,7 +16,7 @@ export function Pad() {
   const frame = useCurrentFrame()
   const T = useTheme()
   const away = progress(frame, at(4) + 30, 30, easeOut)
-  const back = progress(frame, at(18) - 10, 24, easeOut)
+  const back = progress(frame, SHARE_CUES.card - 4, 24, easeOut)
   const strength = 1 - away + back
   const [major, minor] = T.dark ? [0.75, 0.38] : [0.42, 0.2]
   const lines = []

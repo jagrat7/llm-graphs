@@ -161,7 +161,8 @@ transitions = {
     "readout (bar 12, beat 3)": at(12, 2),
     "cube (bar 14)": at(14),
     "link (bar 16)": at(16),
-    "end card (bar 18)": at(18),
+    "shared image (bar 17)": at(17) + 6,
+    "end card (bar 19)": at(19),
 }
 seam_rows = []
 for name, cut in transitions.items():
@@ -197,8 +198,9 @@ moves = {
     "07-punch-in": (at(12), at(12) + 32, 4),
     "08-readout": (at(12, 2) - 2, at(12, 2) + 14, 2),
     "09-pull-back-cube": (at(14), at(15) + 4, 8),
-    "09b-orbit": (at(15), at(18), 30),
-    "10-end-card": (at(18) - 12, at(18) + 40, 6),
+    "09b-orbit": (at(15), at(17), 30),
+    "09c-share": (at(16), at(19), 12),
+    "10-end-card": (at(19) - 12, at(19) + 40, 6),
 }
 for name, (a, b, step) in moves.items():
     ps = []
