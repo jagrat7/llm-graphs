@@ -23,8 +23,8 @@ const settingsSchema = z.object({
   vendorLogos: z.catch(z.boolean(), true),
   /** The chart's graph-paper pattern of fine squares; off, only the labelled gridlines. */
   paperGrid: z.catch(z.boolean(), true),
-  /** Every effort level a model ran at, or only its highest. */
-  effortLevels: z.catch(z.enum(["all", "highest"]), "all"),
+  /** Whether every axis that allows it opens on a log scale; a link can still set one back. */
+  logScale: z.catch(z.boolean(), false),
 })
 
 export type Settings = z.infer<typeof settingsSchema>
@@ -104,23 +104,6 @@ export function withoutHiddenProviders<T extends Pick<Model, "vendor">>(
   const set = new Set(hidden)
 
   return models.filter((model) => model.vendor == null || !set.has(model.vendor))
-}
-
-/** One run per model and configuration, the same split the chart draws its series by. */
-function runKey(model: Pick<Model, "model" | "configuration">) {
-  return `${model.model}\u0000${model.configuration ?? ""}`
-}
-
-/** Each model's highest effort level, so a run collapses to the single point it peaks at. */
-export function highestEffortOnly<T extends Pick<Model, "model" | "configuration" | "effortOrder">>(
-  models: ReadonlyArray<T>,
-): Array<T> {
-  const highest = new Map<string, number>()
-  for (const model of models) {
-    highest.set(runKey(model), Math.max(model.effortOrder, highest.get(runKey(model)) ?? -Infinity))
-  }
-
-  return models.filter((model) => model.effortOrder === highest.get(runKey(model)))
 }
 
 export type ProviderOption = {
