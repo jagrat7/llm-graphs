@@ -11,6 +11,7 @@
     ".agents/**",
     ".claude/**",
     ".codex/**",
+    ".devin/**",
     ".impeccable/**",
     ".venv/**",
     "dist/**",
