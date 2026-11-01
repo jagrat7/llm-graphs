@@ -21,7 +21,7 @@ const settingsSchema = z.object({
   paretoFrontier: z.catch(z.boolean(), true),
   /** Logo markers on the chart; off, every point is a plain dot. */
   vendorLogos: z.catch(z.boolean(), true),
-  /** Fine graph-paper rulings between the gridlines; off, only the labelled gridlines. */
+  /** The chart's graph-paper pattern of fine squares; off, only the labelled gridlines. */
   paperGrid: z.catch(z.boolean(), true),
   /** Every effort level a model ran at, or only its highest. */
   effortLevels: z.catch(z.enum(["all", "highest"]), "all"),

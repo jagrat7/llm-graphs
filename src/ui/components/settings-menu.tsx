@@ -154,8 +154,8 @@ export default function SettingsMenu() {
               </SettingRow>
               <SettingRow
                 id="settings-paper-grid"
-                label="Graph paper"
-                description="Rule fine squares between the gridlines; off, only the labelled lines stay"
+                label="Graph paper pattern"
+                description="Draw the chart's background as fine graph-paper squares; off, only the labelled gridlines"
               >
                 <Switch
                   id="settings-paper-grid"

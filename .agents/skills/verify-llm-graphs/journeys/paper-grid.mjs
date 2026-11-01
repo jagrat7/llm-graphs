@@ -1,4 +1,4 @@
-/** The Graph paper setting: rulings on by default, off from the Settings dialog, kept by the cookie. */
+/** The Graph paper pattern setting: rulings on by default, off from the Settings dialog, kept by the cookie. */
 export default async function paperGrid({ page, step, check, cookies }) {
   const frame = page.locator('[data-chart-frame="loaded"]')
   const loaded = () => frame.waitFor({ timeout: 60_000 })
@@ -20,16 +20,16 @@ export default async function paperGrid({ page, step, check, cookies }) {
   check(before.settings === null, "a fresh browser has no settings cookie")
   check(before.rulings > 0, `rulings drawn by default, got ${before.rulings}`)
 
-  const toggled = await step("turn graph paper off in settings", async () => {
+  const toggled = await step("turn the graph paper pattern off in settings", async () => {
     await page.getByRole("button", { name: "Settings" }).click()
     await settingsDialog.waitFor()
-    const toggle = settingsDialog.getByRole("switch", { name: /Graph paper/ })
+    const toggle = settingsDialog.getByRole("switch", { name: /Graph paper pattern/ })
     const wasOn = await toggle.isChecked()
     await toggle.click()
     await page.waitForFunction(() => document.cookie.includes("settings="))
     return { wasOn, nowOn: await toggle.isChecked(), settings: (await cookies()).settings }
   })
-  check(toggled.wasOn && !toggled.nowOn, "the Graph paper switch flips from on to off")
+  check(toggled.wasOn && !toggled.nowOn, "the Graph paper pattern switch flips from on to off")
   check(toggled.settings?.paperGrid === false, "settings cookie stores paperGrid: false")
 
   const after = await step("chart without graph paper", async () => {
