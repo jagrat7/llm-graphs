@@ -3,8 +3,8 @@
 A 44.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
 [Remotion](https://www.remotion.dev/) with one [remocn](https://remocn.dev) component. One sheet
 of graph paper carries the whole film: ten real leaderboards land on it, fold into one chart, the
-chart switches benchmarks, draws its Pareto frontier, punches in on one model's reasoning levels
-and source, opens its share menu and saves the chart as an image, turns into a cube, and closes
+chart switches benchmarks, draws its Pareto frontier, punches in on one model's reasoning levels,
+opens its share menu and saves the chart as an image, turns into a cube, and closes
 on the wordmark. The last frame matches the first, so it loops. The published copy is
 `docs/launch.mp4`; everything in `out/` is a local build product and is not committed. The dark
 pad (`LaunchDark`) still builds with `DARK=1 scripts/build.sh` but is not in use.
@@ -47,7 +47,7 @@ and muxes it onto the picture without re-encoding it.
 - `src/Chart.tsx`: the chart, drawn in the app's style (rulings in fours, logo marks in vendor
   colour, dashed frontier, run lines per evaluation configuration), with animated domains for
   benchmark switches and a projection where the flat plot is the cube at zero depth.
-- `src/Headline.tsx`, `src/Tooltip.tsx`, `src/EndCard.tsx`, `src/Pad.tsx`.
+- `src/Headline.tsx`, `src/EndCard.tsx`, `src/Pad.tsx`.
 - `src/ShareMenu.tsx`: the chart's share menu (`src/ui/components/chart-share-menu.tsx`) at three
   times its CSS size: it opens, the highlight moves from "Copy link" to "Download image", and the
   trigger reports "Image saved"; then the PNG that the app's "Download image" really saved lands

@@ -136,8 +136,6 @@ for bar in (7, 8, 9):
     cue(f"source switch {bar}", at(bar), paper_slide(0.36, 0.14, 1500, 6500))
 # Bar 10: the frontier drawn like a pen along a ruler, 46 frames, loudest where the pen is fastest.
 cue("frontier drawn", at(10), pen_line(46 / FPS, 0.12))
-# Bar 12 beat 3: the readout opens.
-cue("readout", at(12, 2), pen_tick("C#6", 0.10))
 # Bar 14: the share menu (src/ShareMenu.tsx). A soft tap as it opens, a tick on each row the
 # highlight lands on, a brighter one when "Download image" is picked, and paper as the image lands.
 cue("share menu opens", at(14, 1) + 2, pen_tick("C#5", 0.07))

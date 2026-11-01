@@ -9,7 +9,6 @@ import { LogoGlyph } from "./marks"
 import { END_START } from "./EndCard"
 import { SHARE_DOMAIN, SHARE_PLOT, shareCover } from "./ShareMenu"
 import { useTheme } from "./theme-context"
-import { Tooltip } from "./Tooltip"
 import { at, BAR, easeInOutSoft, easeOut, FONT, lerp, progress, vendorColor, vendorLabelColor } from "./theme"
 
 // ---------------------------------------------------------------------------------------------
@@ -475,9 +474,6 @@ export function Chart() {
   }
 
   const astraLevels = DATA.sources.deepswe.points.filter((p) => p.model === FOCUS && p.level !== "xhigh")
-  const tooltipPoint = DATA.sources.deepswe.points.find((p) => p.model === FOCUS && p.level === "xhigh")!
-  const tooltipPlaced = placed.get(keyOf(tooltipPoint))
-  const tooltipOn = progress(frame, at(12, 2), 12, easeOut) * (1 - progress(frame, at(14), 10, easeOut))
 
   const markerSize = 32 * (1 + (view.zoom - 1) * 0.3) * ink
   const clipA = P(0, 1, backW)
@@ -590,9 +586,8 @@ export function Chart() {
         <g clipPath="url(#point-clip)">
           {sortedPoints.map((p) => {
             const model = MODELS.get(p.point.model)!
-            const active = p.point.id === tooltipPoint.id ? 1 + 0.4 * tooltipOn : 1
             return model.logo ? (
-              <LogoGlyph key={p.key} logo={model.logo} size={markerSize * active} color={vendorColor(T, model)} x={p.x} y={p.y} opacity={p.opacity} />
+              <LogoGlyph key={p.key} logo={model.logo} size={markerSize} color={vendorColor(T, model)} x={p.x} y={p.y} opacity={p.opacity} />
             ) : (
               <circle key={p.key} cx={p.x} cy={p.y} r={8} fill={vendorColor(T, model)} opacity={p.opacity} />
             )
@@ -639,7 +634,6 @@ export function Chart() {
           )
         })}
       </svg>
-      {tooltipPlaced && tooltipOn > 0 && <Tooltip point={tooltipPoint} x={tooltipPlaced.x} y={tooltipPlaced.y} t={tooltipOn} />}
     </div>
   )
 }

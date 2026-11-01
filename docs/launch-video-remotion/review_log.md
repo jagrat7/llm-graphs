@@ -162,3 +162,9 @@ of the exported image's plot, measured off the PNG, so when "Download image" is 
 fades in exactly over the chart it shows, lifts off the sheet, then settles back and clears; the
 same chart then turns into the cube and orbits. The film grew one bar (21 to 22, 44.7 s). Only
 the light master is built now; the dark pad is not in use. Not reviewed by the reviewer agents.
+
+## After review: no hover card in the punch-in (author's request)
+
+The point readout (the hover card on GPT-6 Astra xhigh) repeated the label right above it, so it
+is gone, with its tick in the soundtrack and the enlarged marker that went with it. The bar-12
+headline is now "Each reasoning level is its own point." Not reviewed by the reviewer agents.
