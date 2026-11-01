@@ -17,6 +17,8 @@
     "dist/**",
     "oldpythonref/**",
     "public/**",
+    "docs/**",
+    "scripts/logo-candidates/**",
     "src/routeTree.gen.ts",
     "**/*.gen.ts",
     "bun.lock",

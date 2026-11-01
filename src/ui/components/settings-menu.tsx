@@ -1,6 +1,4 @@
 import { RiEqualizer2Line } from "@remixicon/react"
-import { lazy, Suspense } from "react"
-
 import type { Settings } from "#/ui/lib/settings"
 
 import { Button } from "#/ui/components/ui/button"
@@ -15,10 +13,9 @@ import {
 } from "#/ui/components/ui/dialog"
 import { Switch } from "#/ui/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
+import SettingsProviders from "#/ui/components/settings-providers"
 import { SettingsSection } from "#/ui/components/settings-section"
 import { DEFAULT_SETTINGS, isDefaultSettings, useSettings } from "#/ui/lib/settings"
-
-const SettingsProviders = lazy(() => import("#/ui/components/settings-providers"))
 
 const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
@@ -166,17 +163,7 @@ export default function SettingsMenu() {
             </div>
           </SettingsSection>
 
-          {/* Loaded when the dialog first opens: the list derives from the whole model snapshot,
-              which a closed dialog in the app bar has no reason to read. */}
-          <Suspense
-            fallback={
-              <SettingsSection title="Providers">
-                <p className="text-muted-foreground text-control py-2">Loading providers…</p>
-              </SettingsSection>
-            }
-          >
-            <SettingsProviders />
-          </Suspense>
+          <SettingsProviders />
         </div>
 
         <DialogFooter className="border-border/60 border-t px-6 py-4 sm:justify-between">

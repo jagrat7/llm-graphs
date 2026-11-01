@@ -15,9 +15,9 @@ import { cn } from "#/ui/lib/utils"
 
 /**
  * The settings' provider list. Turning a provider off takes its models out of the picker, the
- * opening selection, and the chart; turning it back on restores any picks. Its own module, loaded
- * when the dialog opens, so the app bar never reads the snapshot to build a list no one has opened.
- * The search lives here too, so closing the dialog clears it.
+ * opening selection, and the chart; turning it back on restores any picks. It mounts only while
+ * the dialog is open, so the app bar never reads the snapshot to build a list no one has opened,
+ * and closing the dialog clears the search.
  */
 export default function SettingsProviders() {
   const [settings, setSettings] = useSettings()

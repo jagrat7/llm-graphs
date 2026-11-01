@@ -3,6 +3,7 @@ import type { QueryClient } from "@tanstack/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import { Analytics } from "@vercel/analytics/react"
 
 import AppHeader from "#/ui/components/app-header"
 import { VariantBar } from "#/ui/dev/variants"
@@ -108,6 +109,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           ]}
         />
         {import.meta.env.DEV ? <VariantBar /> : null}
+        {/* Vite gives the browser no NODE_ENV, so name the mode: dev logs page views, a build sends them. */}
+        <Analytics mode={import.meta.env.DEV ? "development" : "production"} />
         <Scripts />
       </body>
     </html>
