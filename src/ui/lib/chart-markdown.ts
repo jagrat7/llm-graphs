@@ -42,6 +42,34 @@ export function chartMarkdown(
   const axes = axisSettings(search, info)
   const notes: Array<string> = []
 
+  const { models, defaultModels } = comparisonModels(snapshot, info, search, {
+    hiddenProviders: [],
+  })
+  const picked = search.models ?? defaultModels
+  const names = new Map(snapshot.entries.map((entry) => [entry.id, entry.name]))
+  const label = (id: string) => `${names.get(id)} (\`${id}\`)`
+  const drawable = new Set(models.map((model) => model.model))
+  const drawn = picked.filter((id) => drawable.has(id))
+  const unknown = picked.filter((id) => !names.has(id))
+  const missing = picked.filter((id) => names.has(id) && !drawable.has(id))
+  // Built as the page builds it, so an axis reads as log only where the chart can draw one.
+  const ratioOf = (axis: "x" | "y" | "z") => {
+    const { metric, source } = axes[axis]
+
+    return metric != null && isRatioMetric(metric, source, info)
+  }
+  const scaleOf = (axis: "x" | "y" | "z") => {
+    const { metric } = axes[axis]
+
+    return metric != null && search.log?.includes(metric) ? "log" : "linear"
+  }
+  const data = buildPlotData(
+    models.filter((model) => drawn.includes(model.model)),
+    search,
+    { x: ratioOf("x"), y: ratioOf("y"), z: ratioOf("z") },
+    { x: scaleOf("x"), y: scaleOf("y"), z: scaleOf("z") },
+  )
+
   const axisLines = (["y", "x", "z"] as const).flatMap((axis) => {
     const { metric, source } = axes[axis]
     const raw = params.get(axis)
@@ -64,25 +92,12 @@ export function chartMarkdown(
       ? `${info.displayNames[source]}, the Score axis's benchmark`
       : `${info.displayNames[source]} (\`${sourceKey}=${source}\`)`
 
-    // The chart draws `log` only on metrics a log scale fits; elsewhere it stays linear.
-    const scale =
-      search.log?.includes(metric) && isRatioMetric(metric, source, info) ? ", on a log scale" : ""
+    const scale = data.scales[axis] === "log" ? ", on a log scale" : ""
 
     return [
       `- ${AXIS_NAMES[axis]}, \`${axis}=${metric}\`: ${metricAxisLabel(metric, source, info)} from ${from}${scale}`,
     ]
   })
-
-  const { models, defaultModels } = comparisonModels(snapshot, info, search, {
-    hiddenProviders: [],
-  })
-  const picked = search.models ?? defaultModels
-  const names = new Map(snapshot.entries.map((entry) => [entry.id, entry.name]))
-  const label = (id: string) => `${names.get(id)} (\`${id}\`)`
-  const drawable = new Set(models.map((model) => model.model))
-  const drawn = picked.filter((id) => drawable.has(id))
-  const unknown = picked.filter((id) => !names.has(id))
-  const missing = picked.filter((id) => names.has(id) && !drawable.has(id))
 
   if (unknown.length > 0)
     notes.push(`Not model ids, so left out: ${unknown.map((id) => `\`models=${id}\``).join(", ")}.`)
@@ -91,12 +106,7 @@ export function chartMarkdown(
       `Picked but not drawn, with no values on every axis here: ${missing.map(label).join(", ")}.`,
     )
 
-  const quality = plotQuality(
-    buildPlotData(
-      models.filter((model) => drawn.includes(model.model)),
-      search,
-    ),
-  )
+  const quality = plotQuality(data)
 
   return llmsTxt(info, snapshot, origin, [
     "## This link",
