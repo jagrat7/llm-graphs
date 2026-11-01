@@ -28,7 +28,7 @@ import { DataError, DataState } from "#/ui/components/data-state"
 import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { CHART_FRAME_CLASS, PAGE_FILL_CLASS } from "#/ui/lib/layout-styles"
-import { METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
+import { isRatioMetric, METRICS, METRIC_CONFIG } from "#/ui/lib/metrics"
 import {
   axisSettings,
   AXIS_SOURCE_KEY,
@@ -345,7 +345,12 @@ function ComparePage() {
    * whose log scale setting differs.
    */
   function shareLink() {
-    const shown = [search.x, search.y, search.z]
+    // Only axes a log scale fits, so the setting never writes a metric it can't draw on log.
+    const shown = (["x", "y", "z"] as const).flatMap((axis) => {
+      const { metric, source } = axes[axis]
+
+      return metric != null && isRatioMetric(metric, source, info) ? [metric] : []
+    })
     const pinnedLog = logMetrics.filter(
       (metric) => shown.includes(metric) || search.log?.includes(metric),
     )
