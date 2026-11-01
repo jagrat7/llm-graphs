@@ -1,5 +1,6 @@
 /** Frozen-data audit; no upstream requests and no combinations of model selections. */
-import { writeFile } from "node:fs/promises"
+import { mkdir, writeFile } from "node:fs/promises"
+import { dirname } from "node:path"
 import { aggregateModels } from "../src/server/services/model-aggregator/derive"
 import { allFixtureInputs } from "../src/server/services/model-aggregator/fixture-inputs"
 import { ProvidersService } from "../src/server/services/providers"
@@ -55,8 +56,10 @@ const summary = Object.fromEntries(
     results.filter((result) => result.status === status).length,
   ]),
 )
+const output = process.argv[2] ?? ".verify/graph-audit.jsonl"
+await mkdir(dirname(output), { recursive: true })
 await writeFile(
-  process.argv[2] ?? "docs/additional-provider-metrics-data-results.jsonl",
+  output,
   [
     {
       kind: "summary",

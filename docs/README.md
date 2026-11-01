@@ -32,7 +32,7 @@ Leaderboards each publish their own slice of the picture: one has coding scores,
 | [Arena Text](https://arena.ai/leaderboard/text) | Human preference ratings, vote counts |
 | [models.dev](https://models.dev/) | Model catalog, context length, the lab's own token prices |
 
-Each source keeps its own meaning. A score from one benchmark is never mixed with another's, task cost is never derived from token price, and unknown reasoning settings stay unknown. [CONTEXT.md](../CONTEXT.md) defines the terms, and the audits in this folder record each source's details and limits.
+Each source keeps its own meaning. A score from one benchmark is never mixed with another's, task cost is never derived from token price, and unknown reasoning settings stay unknown. [CONTEXT.md](../CONTEXT.md) defines the terms.
 
 ## Running locally
 
