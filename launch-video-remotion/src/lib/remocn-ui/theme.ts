@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { createContext, createElement, useContext } from "react";
+import { createContext, createElement, use } from "react";
 
 export interface RemocnTheme {
   background: string;
@@ -101,7 +101,7 @@ export function useRemocnTheme(
   override?: Partial<RemocnTheme>,
   modeOverride?: "light" | "dark",
 ): RemocnTheme {
-  const ctx = useContext(RemocnThemeContext);
+  const ctx = use(RemocnThemeContext);
   const mode = modeOverride ?? ctx.mode ?? "light";
   const base = mode === "dark" ? defaultDarkTheme : defaultLightTheme;
   return { ...base, ...ctx.theme, ...override };
