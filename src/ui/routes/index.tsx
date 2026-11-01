@@ -1,4 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query"
+import type { ErrorInfo, ReactNode } from "react"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import {
@@ -10,7 +11,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
-import { Suspense, useEffect, useMemo, useState } from "react"
+import { Component, Suspense, useEffect, useMemo, useState } from "react"
 // The browser parses search params with this, so it uses zod's tree-shakeable build.
 import { z } from "zod/mini"
 
@@ -61,6 +62,35 @@ const ComparisonChart3D = lazyRouteComponent(
   () => import("#/ui/components/comparison-chart-3d"),
   "ComparisonChart3D",
 )
+
+/**
+ * A 3D chart that still fails after that reload fails inside the chart frame. Without this the
+ * error reaches the router's global boundary, which replaces the whole page, header and all.
+ */
+class ChartChunkErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Unable to load the 3D comparison chart", error, info.componentStack)
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children
+
+    // The failed chunk is cached for the life of the page, so only a reload asks for it again.
+    return (
+      <DataState className={CHART_FRAME_CLASS} title="The 3D chart could not load">
+        <Button variant="outline" size="xl" onClick={() => window.location.reload()}>
+          Reload page
+        </Button>
+      </DataState>
+    )
+  }
+}
 
 /** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
 const snapshotQuery = queryOptions({
@@ -497,15 +527,17 @@ function ComparePage() {
       {data && selectedModels.length > 0 ? (
         <Suspense fallback={<ChartSkeleton />}>
           {search.z ? (
-            <ComparisonChart3D
-              models={chartModels}
-              metrics={{ x: search.x, y: search.y, z: search.z }}
-              sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
-              phase={morphPhase}
-              onExitComplete={handleExitComplete}
-              getShareLink={shareLink}
-              logMetrics={logMetrics}
-            />
+            <ChartChunkErrorBoundary>
+              <ComparisonChart3D
+                models={chartModels}
+                metrics={{ x: search.x, y: search.y, z: search.z }}
+                sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
+                phase={morphPhase}
+                onExitComplete={handleExitComplete}
+                getShareLink={shareLink}
+                logMetrics={logMetrics}
+              />
+            </ChartChunkErrorBoundary>
           ) : (
             // Sized from its container, which the server can't measure: drawn there, it
             // comes out at a guessed size and jumps once the browser redraws it.
