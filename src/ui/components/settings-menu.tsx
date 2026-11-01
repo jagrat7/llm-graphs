@@ -104,6 +104,11 @@ export default function SettingsMenu() {
                 description="Draw the frontier when a scatter opens"
               />
               <SettingSwitch
+                setting="logScale"
+                label="Log scale"
+                description="Open every axis that allows it on a log scale"
+              />
+              <SettingSwitch
                 setting="vendorLogos"
                 label="Provider logos"
                 description="Mark points with their lab's logo instead of a dot"

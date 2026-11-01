@@ -90,6 +90,18 @@ const loadComparison = createIsomorphicFn()
 
 const metricSchema = z.enum(METRICS)
 const sourceSchema = z.catch(z.optional(z.string()), undefined)
+/** One metric or several; a metric this build doesn't know is dropped, keeping the rest. */
+const metricListSchema = z.catch(
+  z.pipe(
+    z.transform((value: unknown) => {
+      const metrics = [value].flat().filter((metric) => metricSchema.safeParse(metric).success)
+
+      return metrics.length > 0 ? metrics : undefined
+    }),
+    z.optional(z.array(metricSchema)),
+  ),
+  undefined,
+)
 const compareSearchSchema = z.object({
   x: z.catch(metricSchema, "cost"),
   xSource: sourceSchema,
@@ -105,19 +117,10 @@ const compareSearchSchema = z.object({
     ),
     undefined,
   ),
-  /** Metrics drawn on a log scale, wherever they sit; every other axis is linear. */
-  // A metric this build doesn't know is dropped on its own, keeping the rest of the link's.
-  log: z.catch(
-    z.pipe(
-      z.transform((value: unknown) => {
-        const metrics = [value].flat().filter((metric) => metricSchema.safeParse(metric).success)
-
-        return metrics.length > 0 ? metrics : undefined
-      }),
-      z.optional(z.array(metricSchema)),
-    ),
-    undefined,
-  ),
+  /** Metrics drawn on a log scale, wherever they sit. */
+  log: metricListSchema,
+  /** Metrics kept linear for a reader whose settings put every axis on log. */
+  linear: metricListSchema,
 })
 
 function parseCompareSearch(search: Record<string, unknown>) {
@@ -171,7 +174,7 @@ function ComparePage() {
   // Starts once the page has hydrated: the server never fetches it, so it stays out of the HTML.
   const { data: snapshot, isError } = useQuery(snapshotQuery)
   const [settings, setSettings] = useSettings()
-  const { hiddenProviders, vendorLogos } = settings
+  const { hiddenProviders, vendorLogos, logScale } = settings
   // Changing an axis source re-filters the whole snapshot; nothing is refetched. Until it
   // arrives, the server's slice draws the opening chart with the picks it worked out.
   const data = useMemo(() => {
@@ -318,24 +321,41 @@ function ComparePage() {
       vendorLogos ? selectedModels : selectedModels.map((model) => ({ ...model, logoUrl: null })),
     [selectedModels, vendorLogos],
   )
-  /**
-   * Pins the models and sources on screen, so the link keeps showing this comparison
-   * after the default picks or default benchmarks move on.
-   */
-  function setLogMetric(metric: Metric, log: boolean) {
-    const others = (search.log ?? []).filter((logMetric) => logMetric !== metric)
-    const next = log ? [...others, metric] : others
+  // The link's choices win; any metric it leaves alone follows the log scale setting.
+  const logMetrics = METRICS.filter((metric) =>
+    logScale ? !search.linear?.includes(metric) : search.log?.includes(metric),
+  )
 
-    updateSearch({ log: next.length > 0 ? next : undefined })
+  /** Writes the choice into the link only where it differs from what the setting would draw. */
+  function setLogMetric(metric: Metric, log: boolean) {
+    const without = (metrics: Array<Metric> = []) => metrics.filter((other) => other !== metric)
+    const nextLog = log && !logScale ? [...without(search.log), metric] : without(search.log)
+    const nextLinear =
+      !log && logScale ? [...without(search.linear), metric] : without(search.linear)
+
+    updateSearch({
+      log: nextLog.length > 0 ? nextLog : undefined,
+      linear: nextLinear.length > 0 ? nextLinear : undefined,
+    })
   }
 
+  /**
+   * Pins the models, sources and log axes on screen, so the link keeps showing this
+   * comparison after the default picks or default benchmarks move on, and to a reader
+   * whose log scale setting differs.
+   */
   function shareLink() {
+    const shown = [search.x, search.y, search.z]
+    const pinnedLog = logMetrics.filter(
+      (metric) => shown.includes(metric) || search.log?.includes(metric),
+    )
     const location = router.buildLocation({
       to: "/",
       search: {
         ...search,
         ...shareSources(search, info),
         models: selected,
+        log: pinnedLog.length > 0 ? pinnedLog : undefined,
       },
     })
 
@@ -476,7 +496,7 @@ function ComparePage() {
               phase={morphPhase}
               onExitComplete={handleExitComplete}
               getShareLink={shareLink}
-              logMetrics={search.log}
+              logMetrics={logMetrics}
             />
           ) : (
             // Sized from its container, which the server can't measure: drawn there, it
@@ -489,7 +509,7 @@ function ComparePage() {
                 yMetric={search.y}
                 highlight={highlight}
                 getShareLink={shareLink}
-                logMetrics={search.log ?? []}
+                logMetrics={logMetrics}
                 onLogMetricChange={setLogMetric}
               />
             </ClientOnly>

@@ -23,6 +23,8 @@ const settingsSchema = z.object({
   vendorLogos: z.catch(z.boolean(), true),
   /** The chart's graph-paper pattern of fine squares; off, only the labelled gridlines. */
   paperGrid: z.catch(z.boolean(), true),
+  /** Whether every axis that allows it opens on a log scale; a link can still set one back. */
+  logScale: z.catch(z.boolean(), false),
 })
 
 export type Settings = z.infer<typeof settingsSchema>

@@ -15,6 +15,7 @@ describe("settings", () => {
       paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
+      logScale: false,
     })
   })
 
@@ -47,6 +48,7 @@ describe("settings", () => {
       paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
+      logScale: false,
     })
   })
 
