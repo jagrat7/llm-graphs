@@ -226,3 +226,7 @@ report = {
 }
 json.dump(report, open(f"{OUT}/report.json", "w"), indent=2)
 print(json.dumps({k: v for k, v in report.items() if k != "transitions"}, indent=2))
+
+# Glitch candidates include intended fades and are for review; dropouts and flashes fail the gate.
+if dropouts or flash_fail:
+    sys.exit(1)
