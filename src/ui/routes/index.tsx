@@ -67,7 +67,15 @@ const ComparisonChart3D = lazyRouteComponent(
  * A 3D chart that still fails after that reload fails inside the chart frame. Without this the
  * error reaches the router's global boundary, which replaces the whole page, header and all.
  */
-class ChartChunkErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+class ChartChunkErrorBoundary extends Component<
+  {
+    /** The chart's exit contract, which the fallback keeps in the chart's place. */
+    phase: MorphPhase
+    onExitComplete: () => void
+    children: ReactNode
+  },
+  { failed: boolean }
+> {
   state = { failed: false }
 
   static getDerivedStateFromError() {
@@ -76,6 +84,12 @@ class ChartChunkErrorBoundary extends Component<{ children: ReactNode }, { faile
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error("Unable to load the 3D comparison chart", error, info.componentStack)
+  }
+
+  componentDidUpdate() {
+    // Removing Z waits for the chart's exit animation, which a failed chart can't play, so the
+    // fallback leaves at once rather than holding the page in 3D.
+    if (this.state.failed && this.props.phase === "out") this.props.onExitComplete()
   }
 
   render() {
@@ -527,7 +541,7 @@ function ComparePage() {
       {data && selectedModels.length > 0 ? (
         <Suspense fallback={<ChartSkeleton />}>
           {search.z ? (
-            <ChartChunkErrorBoundary>
+            <ChartChunkErrorBoundary phase={morphPhase} onExitComplete={handleExitComplete}>
               <ComparisonChart3D
                 models={chartModels}
                 metrics={{ x: search.x, y: search.y, z: search.z }}
