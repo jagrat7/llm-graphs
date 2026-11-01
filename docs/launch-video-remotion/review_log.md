@@ -152,3 +152,13 @@ image" exported for the 2D DeepSWE chart lands where the cube was, on graph pape
 about 3 s. The film grew one bar (20 to 21, 42.7 s) to give it that time; the end card moved to
 bar 19. Not reviewed by the reviewer agents. QA gates pass on both masters: no dropouts, at most
 1 flash a second, -14.8 LUFS, -2.3 dBTP, last frame matches the first.
+
+## After review: share before the cube (author's request)
+
+Ending the share beat on a flat image of a chart that was a cube a moment earlier read as the
+3D chart turning into 2D. The order is now: punch-in (bars 12-13), share (bars 14-16), cube
+(bars 17-19), end card (bar 20). On bar 14 the 2D chart pulls back into the rectangle and axes
+of the exported image's plot, measured off the PNG, so when "Download image" is picked the image
+fades in exactly over the chart it shows, lifts off the sheet, then settles back and clears; the
+same chart then turns into the cube and orbits. The film grew one bar (21 to 22, 44.7 s). Only
+the light master is built now; the dark pad is not in use. Not reviewed by the reviewer agents.

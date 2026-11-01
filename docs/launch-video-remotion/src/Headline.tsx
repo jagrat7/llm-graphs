@@ -34,8 +34,8 @@ const LINES: Array<Line> = [
   },
   { from: at(10), to: at(12), enter: "wipe", content: "Nothing here beats the dashed line on both cost and score." },
   { from: at(12), to: at(14), enter: "wipe", content: "Each reasoning level is its own point, with its source." },
-  { from: at(14), to: at(16), enter: "wipe", content: "Add a third axis and the chart becomes a cube." },
-  { from: at(16), to: at(19), enter: "rise", content: "Share it as a link, an image or the data." },
+  { from: at(14), to: at(17), enter: "rise", content: "Share it as a link, an image or the data." },
+  { from: at(17), to: at(20), enter: "wipe", content: "Add a third axis and the chart becomes a cube." },
 ]
 
 

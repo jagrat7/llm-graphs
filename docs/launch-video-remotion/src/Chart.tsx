@@ -6,7 +6,8 @@ import type { Point, SourceKey } from "./data"
 import { DATA, FOCUS, MODELS } from "./data"
 import { PLOT, PLOT_CX, PLOT_CY } from "./layout"
 import { LogoGlyph } from "./marks"
-import { SHARE_CUES } from "./ShareMenu"
+import { END_START } from "./EndCard"
+import { SHARE_DOMAIN, SHARE_PLOT, shareCover } from "./ShareMenu"
 import { useTheme } from "./theme-context"
 import { Tooltip } from "./Tooltip"
 import { at, BAR, easeInOutSoft, easeOut, FONT, lerp, progress, vendorColor, vendorLabelColor } from "./theme"
@@ -58,8 +59,8 @@ function sourceBlend(frame: number): { from: SourceKey; to: SourceKey; t: number
   return state
 }
 
-function blendDomain(a: Domain, b: Domain, t: number) {
-  const lx = (d: Domain, i: 0 | 1) => Math.log(d.x[i])
+function blendDomain(a: Pick<Domain, "x" | "y">, b: Pick<Domain, "x" | "y">, t: number) {
+  const lx = (d: Pick<Domain, "x">, i: 0 | 1) => Math.log(d.x[i])
   return {
     x: [Math.exp(lerp(lx(a, 0), lx(b, 0), t)), Math.exp(lerp(lx(a, 1), lx(b, 1), t))] as [number, number],
     y: [lerp(a.y[0], b.y[0], t), lerp(a.y[1], b.y[1], t)] as [number, number],
@@ -70,11 +71,11 @@ function blendDomain(a: Domain, b: Domain, t: number) {
 // The 3D view. A point's normalised (u, v, w) lives in a box; at cube = 0 the box has no depth
 // and no rotation, which is exactly the 2D chart, so the plot turns into the cube in one move.
 
-type View = { cube: number; yaw: number; pitch: number; fit: number; zoom: number; fx: number; fy: number; tx: number; ty: number }
+type View = { cube: number; yaw: number; pitch: number; fit: number; zoom: number; fx: number; fy: number; tx: number; ty: number; sw: number; sh: number; share: number }
 
 function project(u: number, v: number, w: number, view: View) {
-  const width = lerp(PLOT.width, 980, view.cube)
-  const height = lerp(PLOT.height, 640, view.cube)
+  const width = lerp(PLOT.width * view.sw, 980, view.cube)
+  const height = lerp(PLOT.height * view.sh, 640, view.cube)
   const depth = 980 * view.cube
   const X = (u - 0.5) * width
   const Y = (0.5 - v) * height
@@ -100,14 +101,16 @@ const PUNCH_FOCUS = { x: 1072, y: 355 }
 const PUNCH_TARGET = { x: 930, y: 440 }
 
 function viewAt(frame: number): View {
-  // Bar 12: punch in on the focus model's curve over two beats. Bar 14: one camera move that
-  // pulls back and turns the plot into the cube, a full bar. Bars 15-18: a slow eased orbit.
+  // Bar 12: punch in on the focus model's curve over two beats. Bar 14: pull back into the
+  // rectangle the exported image's plot will occupy (ShareMenu.tsx), so the saved image lands
+  // on the chart it was taken from. Bar 17: one camera move turns that plot into the cube, a
+  // full bar, then a slow eased orbit until the end card.
   const punchIn = progress(frame, at(12), Math.round(BAR / 2), easeInOutSoft)
-  const turn = progress(frame, at(14), Math.round(BAR), easeInOutSoft)
-  const punch = punchIn * (1 - turn)
-  const orbit = progress(frame, at(15), at(18) - at(15), easeInOutSoft)
-  // Bar 16: the cube eases right to give the share menu the left of the sheet.
-  const shareRoom = progress(frame, at(16) - 6, 22, easeInOutSoft)
+  const pull = progress(frame, at(14) - 6, 24, easeInOutSoft)
+  const turn = progress(frame, at(17), Math.round(BAR), easeInOutSoft)
+  const punch = punchIn * (1 - pull)
+  const share = pull * (1 - turn)
+  const orbit = progress(frame, at(18), at(21) - at(18), easeInOutSoft)
   return {
     cube: turn,
     yaw: -(0.6 * turn + 0.4 * orbit),
@@ -116,8 +119,11 @@ function viewAt(frame: number): View {
     zoom: lerp(1, 2.3, punch),
     fx: lerp(PLOT_CX, PUNCH_FOCUS.x, punch),
     fy: lerp(PLOT_CY, PUNCH_FOCUS.y, punch),
-    tx: lerp(PLOT_CX, PUNCH_TARGET.x, punch) + 130 * shareRoom,
-    ty: lerp(PLOT_CY, PUNCH_TARGET.y, punch),
+    tx: lerp(lerp(PLOT_CX, PUNCH_TARGET.x, punch), SHARE_PLOT.x + SHARE_PLOT.width / 2, share),
+    ty: lerp(lerp(PLOT_CY, PUNCH_TARGET.y, punch), SHARE_PLOT.y + SHARE_PLOT.height / 2, share),
+    sw: lerp(1, SHARE_PLOT.width / PLOT.width, share),
+    sh: lerp(1, SHARE_PLOT.height / PLOT.height, share),
+    share,
   }
 }
 
@@ -159,16 +165,21 @@ const TITLE_SIZE = 36
 export function Chart() {
   const frame = useCurrentFrame()
   const T = useTheme()
-  if (frame < at(4) + 20 || frame > SHARE_CUES.card + 12) return null
+  if (frame < at(4) + 20 || frame > END_START) return null
 
   const blend = sourceBlend(frame)
   const A = DATA.sources[blend.from]
   const B = DATA.sources[blend.to]
-  const domain = blendDomain(DOMAINS[blend.from], DOMAINS[blend.to], blend.t)
   const view = viewAt(frame)
-  // The chart clears as the shared image lands in its place (ShareMenu.tsx).
-  const exit = progress(frame, SHARE_CUES.card - 4, 14, easeInOutSoft)
-  const chartOpacity = 1 - exit
+  // While it is shared, the plot takes the exported image's domain as well as its rectangle.
+  const domain = blendDomain(blendDomain(DOMAINS[blend.from], DOMAINS[blend.to], blend.t), SHARE_DOMAIN, view.share)
+  // Type, marks and spacing ease toward the image's smaller scale too.
+  const ink = lerp(1, 0.75, view.share)
+  // The chart clears for the end card.
+  const exit = progress(frame, END_START - 10, 16, easeInOutSoft)
+  // Under the saved image only its axis titles would show past the image's edges, so it steps
+  // out; cubed, so it stays solid while the image is still faint and the two don't wash out.
+  const chartOpacity = (1 - exit) * (1 - shareCover(frame) ** 3)
 
   const u = (cost: number) => (Math.log(cost) - Math.log(domain.x[0])) / (Math.log(domain.x[1]) - Math.log(domain.x[0]))
   const v = (score: number) => (score - domain.y[0]) / (domain.y[1] - domain.y[0])
@@ -354,14 +365,14 @@ export function Chart() {
   const front = 0
   const yLabelAt = (value: number) => P(0, v(value), wall > 0 ? front : backW)
   const xLabelAt = (value: number) => P(u(value), 0, wall > 0 ? front : backW)
-  const tickStyle = { fontFamily: FONT.mono, fontSize: TICK_SIZE, fill: T.graphite, fontVariantNumeric: "tabular-nums" as const }
-  const titleStyle = { fontFamily: FONT.sans, fontSize: TITLE_SIZE, fontWeight: 500, fill: T.graphite }
+  const tickStyle = { fontFamily: FONT.mono, fontSize: TICK_SIZE * ink, fill: T.graphite, fontVariantNumeric: "tabular-nums" as const }
+  const titleStyle = { fontFamily: FONT.sans, fontSize: TITLE_SIZE * ink, fontWeight: 500, fill: T.graphite }
   const xEdgeA = P(0, 0, front)
   const xEdgeB = P(1, 0, front)
   const xAngle = (Math.atan2(xEdgeB.y - xEdgeA.y, xEdgeB.x - xEdgeA.x) * 180) / Math.PI
   const xMid0 = P(0.5, 0, front)
   const xNormal = { x: -Math.sin((xAngle * Math.PI) / 180), y: Math.cos((xAngle * Math.PI) / 180) }
-  const xTitleOffset = lerp(96, 118, wall)
+  const xTitleOffset = lerp(96, 118, wall) * ink
   const xMid = { x: xMid0.x + xNormal.x * xTitleOffset, y: xMid0.y + xNormal.y * xTitleOffset - xTitleOffset }
   const zSide = backU === 0 ? 1 : 0
   const zA = P(zSide, 0, 0)
@@ -374,9 +385,9 @@ export function Chart() {
   // ---- labels
   const labelsOn = progress(frame, at(5) + 24, 16, easeOut)
   const switching = progress(frame, at(7), 10, easeOut) * (1 - progress(frame, at(9) + SWITCH, 16, easeOut))
-  const cubeLabels = progress(frame, at(14) + 36, 20, easeOut)
+  const cubeLabels = progress(frame, at(17) + 36, 20, easeOut)
   const levelLabels = (index: number) => progress(frame, at(12) + 16 + index * 3, 14, easeOut) * (1 - progress(frame, at(14), 16, easeOut))
-  const labelScale = 1 + (view.zoom - 1) * 0.12
+  const labelScale = (1 + (view.zoom - 1) * 0.12) * ink
 
   const focusA = focusBest(blend.from)
   const focusB = focusBest(blend.to)
@@ -437,7 +448,7 @@ export function Chart() {
       color: vendorLabelColor(T, model),
       levelColor: T.graphite,
       anchor: spec.anchor,
-      opacity: labelsOn * (1 - switching) * emphasis * (1 - progress(frame, at(14) - 4, 8, easeOut)),
+      opacity: labelsOn * (1 - switching) * emphasis * (1 - progress(frame, at(17) - 4, 8, easeOut)),
     })
   }
   // In the cube, the names that sit apart from the cluster, as the app's 3D view shows them.
@@ -468,7 +479,7 @@ export function Chart() {
   const tooltipPlaced = placed.get(keyOf(tooltipPoint))
   const tooltipOn = progress(frame, at(12, 2), 12, easeOut) * (1 - progress(frame, at(14), 10, easeOut))
 
-  const markerSize = 32 * (1 + (view.zoom - 1) * 0.3)
+  const markerSize = 32 * (1 + (view.zoom - 1) * 0.3) * ink
   const clipA = P(0, 1, backW)
   const clipB = P(1, 0, backW)
   const sortedPoints = [...placed.values()].sort((a, b) => a.depth - b.depth)
@@ -514,7 +525,7 @@ export function Chart() {
           {yTicks.map((tick) => {
             const p = yLabelAt(tick.value)
             return (
-              <text key={`yt${tick.value}`} x={p.x - yLabelGap} y={p.y + 11} textAnchor="end" style={tickStyle} opacity={tick.opacity}>
+              <text key={`yt${tick.value}`} x={p.x - yLabelGap} y={p.y + 11 * ink} textAnchor="end" style={tickStyle} opacity={tick.opacity}>
                 {pct(tick.value)}
               </text>
             )
@@ -522,7 +533,7 @@ export function Chart() {
           {xTicks.map((tick) => {
             const p = xLabelAt(tick.value)
             return (
-              <text key={`xt${tick.value}`} x={p.x} y={p.y + 48} textAnchor="middle" style={tickStyle} opacity={tick.opacity}>
+              <text key={`xt${tick.value}`} x={p.x} y={p.y + 48 * ink} textAnchor="middle" style={tickStyle} opacity={tick.opacity}>
                 {money(tick.value)}
               </text>
             )
@@ -539,7 +550,7 @@ export function Chart() {
           <text x={xMid.x} y={xMid.y + 96} textAnchor="middle" transform={`rotate(${xAngle} ${xMid.x} ${xMid.y + 96})`} style={titleStyle}>
             Task cost ($/task, log scale)
           </text>
-          <text x={yMid.x - 128} y={yMid.y} textAnchor="middle" transform={`rotate(-90 ${yMid.x - 128} ${yMid.y})`} style={titleStyle}>
+          <text x={yMid.x - 128 * ink} y={yMid.y} textAnchor="middle" transform={`rotate(-90 ${yMid.x - 128 * ink} ${yMid.y})`} style={titleStyle}>
             Score (%)
           </text>
           {wall > 0.01 && (

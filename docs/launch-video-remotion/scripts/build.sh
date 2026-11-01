@@ -10,8 +10,11 @@ node scripts/derive-data.mjs
 [ -f audio/serene-view-arulo-mixkit-443.mp3 ] || scripts/audio/fetch-music.sh
 [ -f data/beat-grid.json ] || "$PY" -I scripts/audio/analyze.py audio/serene-view-arulo-mixkit-443.mp3
 
-# One timeline, two pads: the light master and the dark one (src/Root.tsx).
-for comp in Launch LaunchDark; do
+# One timeline, two pads (src/Root.tsx). The light master is the one in use; DARK=1 renders the
+# dark pad as well.
+COMPS="Launch"; SUFFIXES=""
+if [ "${DARK:-0}" = 1 ]; then COMPS="Launch LaunchDark"; SUFFIXES="-dark"; fi
+for comp in $COMPS; do
   suffix=$([ "$comp" = LaunchDark ] && echo -dark || true)
   npx remotion render src/index.ts "$comp" "out/video-silent$suffix.mp4" \
     --codec h264 --crf 14 --pixel-format yuv420p --color-space bt709 --concurrency 8
@@ -30,7 +33,7 @@ ffmpeg -y -hide_banner -loglevel error -i out/soundtrack.wav \
 
 # Mux. The picture is copied as rendered: Remotion encodes BT.709 (--color-space bt709) and
 # tags it limited range; h264_metadata writes the same flags into the stream's VUI as well.
-for suffix in "" -dark; do
+for suffix in "" $SUFFIXES; do
   ffmpeg -y -hide_banner -loglevel error -i "out/video-silent$suffix.mp4" -i out/soundtrack-norm.wav \
     -map 0:v:0 -map 1:a:0 -c:v copy \
     -bsf:v h264_metadata=colour_primaries=1:transfer_characteristics=1:matrix_coefficients=1:video_full_range_flag=0 \
@@ -38,4 +41,4 @@ for suffix in "" -dark; do
     -c:a aac -b:a 256k -ar 48000 -movflags +faststart -shortest "out/launch$suffix.mp4"
 done
 
-for f in out/launch.mp4 out/launch-dark.mp4; do echo "$f"; ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,pix_fmt,color_range,color_space,color_transfer,color_primaries,r_frame_rate -of default=nw=1 "$f"; done
+for f in out/launch.mp4 ${SUFFIXES:+out/launch-dark.mp4}; do echo "$f"; ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,pix_fmt,color_range,color_space,color_transfer,color_primaries,r_frame_rate -of default=nw=1 "$f"; done

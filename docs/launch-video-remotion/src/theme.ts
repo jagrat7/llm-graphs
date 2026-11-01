@@ -94,7 +94,7 @@ export const FPS = 30
  */
 export const BAR_SECONDS = 2.0337915
 export const BAR = BAR_SECONDS * FPS
-export const BARS = 21
+export const BARS = 22
 export const DURATION = Math.round(BARS * BAR)
 /** First frame of bar `bar`, plus `beats` quarter notes. */
 export const at = (bar: number, beats = 0) => Math.round((bar + beats / 4) * BAR)

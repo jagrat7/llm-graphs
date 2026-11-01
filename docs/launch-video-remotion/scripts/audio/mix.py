@@ -16,7 +16,7 @@ FPS = 30
 grid = json.load(open("data/beat-grid.json"))
 BAR_S = grid["bar_seconds"]
 BAR = BAR_S * FPS
-BARS = 21
+BARS = 22
 DURATION_FRAMES = round(BARS * BAR)
 LENGTH = DURATION_FRAMES / FPS
 # Video frame 0 is the track's bar 4: the second chord of the intro, four bars before the bass.
@@ -138,14 +138,14 @@ for bar in (7, 8, 9):
 cue("frontier drawn", at(10), pen_line(46 / FPS, 0.12))
 # Bar 12 beat 3: the readout opens.
 cue("readout", at(12, 2), pen_tick("C#6", 0.10))
-# Bar 16: the share menu (src/ShareMenu.tsx). A soft tap as it opens, a tick on each row the
+# Bar 14: the share menu (src/ShareMenu.tsx). A soft tap as it opens, a tick on each row the
 # highlight lands on, a brighter one when "Download image" is picked, and paper as the image lands.
-cue("share menu opens", at(16, 1), pen_tick("C#5", 0.07))
-cue("highlight: copy link", at(16, 2), pen_tick("D#5", 0.06))
-cue("highlight: download image", at(16, 3), pen_tick("F5", 0.06))
-cue("image saved", at(17) + 3, pen_tick("G#5", 0.09))
-cue("image lands", at(17) + 6, paper_slide(0.4, 0.10, 1200, 5200))
-cue("seal", at(19), stamp(0.155, 138.59))
+cue("share menu opens", at(14, 1) + 2, pen_tick("C#5", 0.07))
+cue("highlight: copy link", at(14, 2), pen_tick("D#5", 0.06))
+cue("highlight: download image", at(14, 3), pen_tick("F5", 0.06))
+cue("image saved", at(15) + 3, pen_tick("G#5", 0.09))
+cue("image lands", at(15) + 6, paper_slide(0.4, 0.10, 1200, 5200))
+cue("seal", at(20), stamp(0.155, 138.59))
 
 # Music: from MUSIC_START for the film's length, faded over the last two bars.
 music, _ = librosa.load("audio/serene-view-arulo-mixkit-443.mp3", sr=SR, mono=False, offset=MUSIC_START, duration=LENGTH + 0.5)
@@ -155,7 +155,7 @@ music = music[:, : int(LENGTH * SR)]
 n = music.shape[1]
 t = np.arange(n) / SR
 fade_in = np.clip(t / 0.2, 0, 1)
-fade_start = sec(at(19))
+fade_start = sec(at(20))
 fade = np.where(t < fade_start, 1.0, np.cos(np.clip((t - fade_start) / (LENGTH - fade_start), 0, 1) * np.pi / 2) ** 2)
 music = music * fade_in * fade
 

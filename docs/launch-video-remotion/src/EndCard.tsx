@@ -6,12 +6,12 @@ import { at, easeInOutSoft, easeOut, FONT, lerp, progress } from "./theme"
 /** brand-marks.tsx: the name as a tokenizer splits it, each token underlined in a theme ink. */
 const TOKENS = ["LL", "M", " Graph", "s"]
 
-/** The seal lands on the bar-19 downbeat (with its stamp), then the name is ruled in after it. */
-export const END_START = at(19)
+/** The seal lands on the bar-20 downbeat (with its stamp), then the name is ruled in after it. */
+export const END_START = at(20)
 
 /**
  * The close: seal, wordmark and address. It is also the video's first frame, so the loop on
- * autoplay closes on itself: drawn from beat 3 of bar 18 to the last frame, and shown whole
+ * autoplay closes on itself: drawn from beat 3 of bar 19 to the last frame, and shown whole
  * for the first frames before the opening sheets land.
  */
 export function EndCard() {

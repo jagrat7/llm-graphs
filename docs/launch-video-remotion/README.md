@@ -1,18 +1,19 @@
 # LLM Graphs launch video
 
-A 42.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
+A 44.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
 [Remotion](https://www.remotion.dev/) with one [remocn](https://remocn.dev) component. One sheet
 of graph paper carries the whole film: ten real leaderboards land on it, fold into one chart, the
 chart switches benchmarks, draws its Pareto frontier, punches in on one model's reasoning levels
-and source, turns into a cube, opens its share menu, saves the chart as an image, and closes on the wordmark. The last frame matches
-the first, so it loops. The published copies are `docs/launch.mp4` and `docs/launch-dark.mp4`;
-everything in `out/` is a local build product and is not committed.
+and source, opens its share menu and saves the chart as an image, turns into a cube, and closes
+on the wordmark. The last frame matches the first, so it loops. The published copy is
+`docs/launch.mp4`; everything in `out/` is a local build product and is not committed. The dark
+pad (`LaunchDark`) still builds with `DARK=1 scripts/build.sh` but is not in use.
 
 | Output | File |
 |---|---|
 | Light master (1920×1080, H.264 yuv420p, BT.709 limited range, AAC 48 kHz) | `out/launch.mp4` |
-| Dark master, same timeline on the dark pad | `out/launch-dark.mp4` |
-| Contact sheets, one frame a second | `out/contact-sheet.png`, `out/contact-sheet-dark.png` |
+| Dark master, same timeline on the dark pad (`DARK=1` only) | `out/launch-dark.mp4` |
+| Contact sheet, one frame a second | `out/contact-sheet.png` |
 | Critique rounds, scores and fixes | `review_log.md` |
 
 ## Re-render from scratch
@@ -23,7 +24,7 @@ Needs bun (or npm), node, ffmpeg/ffprobe, jq, and Python 3 with `librosa numpy s
 cd launch-video-remotion
 bun install
 python3 -m venv /tmp/lv-venv && /tmp/lv-venv/bin/pip install librosa numpy soundfile scipy pillow
-PY=/tmp/lv-venv/bin/python scripts/build.sh          # data -> both renders -> soundtrack -> -15 LUFS -> mux
+PY=/tmp/lv-venv/bin/python scripts/build.sh          # data -> light render -> soundtrack -> -15 LUFS -> mux
 /tmp/lv-venv/bin/python -I scripts/qa/qa.py          # light QA: out/qa/, out/contact-sheet.png
 /tmp/lv-venv/bin/python -I scripts/qa/qa.py --dark   # dark QA: out/qa-dark/, out/contact-sheet-dark.png
 /tmp/lv-venv/bin/python -I scripts/qa/artifacts.py final   # out/qa/artifacts.md, the reviewers' index
@@ -32,9 +33,9 @@ bunx remotion studio src/index.ts                    # preview; compositions Lau
 
 `scripts/build.sh` runs `scripts/derive-data.mjs`, downloads the music if it is missing
 (`scripts/audio/fetch-music.sh`), measures the beat grid if `data/beat-grid.json` is missing
-(`scripts/audio/analyze.py`), renders both compositions with `--color-space bt709`, builds the
+(`scripts/audio/analyze.py`), renders the light composition (both with `DARK=1`) with `--color-space bt709`, builds the
 soundtrack (`scripts/audio/mix.py`), normalises it in two loudnorm passes to −15 LUFS / −1.5 dBTP,
-and muxes it onto both pictures without re-encoding them.
+and muxes it onto the picture without re-encoding it.
 
 ## How it is built
 
@@ -50,7 +51,9 @@ and muxes it onto both pictures without re-encoding them.
 - `src/ShareMenu.tsx`: the chart's share menu (`src/ui/components/chart-share-menu.tsx`) at three
   times its CSS size: it opens, the highlight moves from "Copy link" to "Download image", and the
   trigger reports "Image saved"; then the PNG that the app's "Download image" really saved lands
-  where the cube was. `public/share/score-vs-cost-{light,dark}.png` are those files, unedited:
+  on the chart it shows. Before the menu opens the live chart pulls back into the exact rectangle
+  and axes of the image's plot (`SHARE_PLOT`, `SHARE_DOMAIN`), so every point is where the image
+  has it; the image lifts off, settles back, and the same chart then turns into the cube. `public/share/score-vs-cost-{light,dark}.png` are those files, unedited:
   the default 2D chart (`/?x=cost&y=score&log=cost`, DeepSWE, the nine default picks) exported
   from a local run of the app on 2026-11-01 by `scripts/capture/share-image.mjs`.
 - remocn: `rolodex-flip` (the benchmark name in the headline; its easing changed to the film's

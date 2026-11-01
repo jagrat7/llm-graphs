@@ -159,10 +159,11 @@ transitions = {
     "frontier (bar 10)": at(10),
     "punch-in (bar 12)": at(12),
     "readout (bar 12, beat 3)": at(12, 2),
-    "cube (bar 14)": at(14),
-    "link (bar 16)": at(16),
-    "shared image (bar 17)": at(17) + 6,
-    "end card (bar 19)": at(19),
+    "share (bar 14)": at(14),
+    "shared image (bar 15)": at(15) + 6,
+    "image settles (bar 17)": at(17) - 14,
+    "cube (bar 17)": at(17),
+    "end card (bar 20)": at(20),
 }
 seam_rows = []
 for name, cut in transitions.items():
@@ -197,10 +198,12 @@ moves = {
     "06-frontier-draw": (at(10), at(10) + 42, 6),
     "07-punch-in": (at(12), at(12) + 32, 4),
     "08-readout": (at(12, 2) - 2, at(12, 2) + 14, 2),
-    "09-pull-back-cube": (at(14), at(15) + 4, 8),
-    "09b-orbit": (at(15), at(17), 30),
-    "09c-share": (at(16), at(19), 12),
-    "10-end-card": (at(19) - 12, at(19) + 40, 6),
+    "09-pull-back-share": (at(14), at(15) + 24, 8),
+    "09b-image-lands": (at(15), at(15) + 32, 4),
+    "09c-image-settles": (at(17) - 16, at(17) + 4, 4),
+    "10-turn-cube": (at(17), at(18) + 4, 8),
+    "10b-orbit": (at(18), at(20), 30),
+    "11-end-card": (at(20) - 12, at(20) + 40, 6),
 }
 for name, (a, b, step) in moves.items():
     ps = []

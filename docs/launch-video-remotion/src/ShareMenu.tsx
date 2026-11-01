@@ -2,7 +2,7 @@ import { Img, staticFile, useCurrentFrame } from "remotion"
 
 import { HEADLINE } from "./layout"
 import { useTheme } from "./theme-context"
-import { at, easeInOut, easeOut, FONT, lerp, progress } from "./theme"
+import { at, easeInOut, easeInOutSoft, easeOut, FONT, lerp, progress } from "./theme"
 
 /** Remix Icon paths (24×24), the icons chart-share-menu.tsx uses. */
 const ICON = {
@@ -45,26 +45,54 @@ const ROWS = GROUPS.flatMap((group, g) =>
 )
 const DOWNLOAD_IMAGE = ROWS.findIndex((row) => row.label === "Download image")
 
-// Bar 16: the trigger on the downbeat, the menu on beat 2, the highlight on "Copy link" on beat 3
-// and down to "Download image" on beat 4. The bar-17 downbeat picks it: the menu closes, the
-// trigger reports "Image saved" as the app's does, and the saved image lands where the chart was.
+// Bar 14: the trigger just after the downbeat (as the chart settles), the menu on beat 2, the highlight on "Copy link" on beat 3
+// and down to "Download image" on beat 4. The bar-15 downbeat picks it: the menu closes, the
+// trigger reports "Image saved" as the app's does, and the saved image lands on the chart it was
+// taken from, lifts off it, and settles back just before the chart turns into the cube (bar 17).
 export const SHARE_CUES = {
-  trigger: at(16),
-  open: at(16, 1),
-  firstRow: at(16, 2),
-  moveRow: at(16, 3),
-  pick: at(17),
-  card: at(17) + 6,
+  trigger: at(14) + 4,
+  open: at(14, 1) + 2,
+  firstRow: at(14, 2),
+  moveRow: at(14, 3),
+  pick: at(15),
+  card: at(15) + 6,
+  settle: at(17) - 14,
 } as const
 
-/** The beat ends as the seal lands (EndCard.tsx). */
-const SHARE_END = at(19)
+/** Short crossfades between the chart and its image, so the two are rarely seen at once. */
+const LAND = 8
+const SETTLE = 10
+
+/** The beat ends as the chart starts to turn (Chart.tsx). */
+const SHARE_END = at(17)
 
 /**
  * The PNG the app's "Download image" saved for the default 2D chart (DeepSWE score against task
- * cost, log scale), 1648×1142 at 2× scale, on each pad. Shown at its own aspect, right of the trigger.
+ * cost, log scale), 1648×1142 at 2× scale. Shown at its own aspect, right of the trigger.
  */
 const CARD = { width: 1097, height: 760, right: 56, top: 206 }
+const CARD_LEFT = 1920 - CARD.right - CARD.width
+const PNG = { width: 1648, plot: { left: 173.5, right: 1574.5, top: 216.5, bottom: 993.5 } }
+const K = CARD.width / PNG.width
+
+/** Where the image's plot frame falls on screen; the live chart pulls back into it. */
+export const SHARE_PLOT = {
+  x: CARD_LEFT + PNG.plot.left * K,
+  y: CARD.top + PNG.plot.top * K,
+  width: (PNG.plot.right - PNG.plot.left) * K,
+  height: (PNG.plot.bottom - PNG.plot.top) * K,
+}
+
+/** The image's axes, read off its ticks: $0.5 to $20 a doubling every 213.5 px, 20% to 80%. */
+export const SHARE_DOMAIN = {
+  x: [0.5 * 2 ** ((PNG.plot.left - 318.5) / 213.5), 0.5 * 2 ** ((PNG.plot.right - 318.5) / 213.5)] as [number, number],
+  y: [20, 80] as [number, number],
+}
+
+/** How much the saved image covers the chart; the chart steps out from under it meanwhile. */
+export function shareCover(frame: number) {
+  return progress(frame, SHARE_CUES.card, LAND, easeOut) * (1 - progress(frame, SHARE_CUES.settle, SETTLE, easeInOutSoft))
+}
 
 export function ShareMenu() {
   const frame = useCurrentFrame()
@@ -75,7 +103,12 @@ export function ShareMenu() {
   const triggerOn = progress(frame, SHARE_CUES.trigger, 14, easeOut) * (1 - leave)
   const open = progress(frame, SHARE_CUES.open, 9, easeOut)
   const close = progress(frame, SHARE_CUES.pick + 3, 7, easeOut)
-  const card = progress(frame, SHARE_CUES.card, 18, easeOut) * (1 - leave)
+  // The image fades in exactly over the plot it shows, then lifts off the sheet; it settles back
+  // and clears before the turn, leaving the same chart where it was.
+  const land = progress(frame, SHARE_CUES.card, LAND, easeOut)
+  const settle = progress(frame, SHARE_CUES.settle, SETTLE, easeInOutSoft)
+  const lift = progress(frame, SHARE_CUES.card + 6, 20, easeOut) * (1 - settle)
+  const radius = lerp(0, (T.dark ? 8 : 5) * 2, lift)
   const menu = open * (1 - close)
   const highlightOn = progress(frame, SHARE_CUES.firstRow, 6, easeOut)
   const highlightY = lerp(ROWS[0].y, ROWS[DOWNLOAD_IMAGE].y, progress(frame, SHARE_CUES.moveRow, 12, easeInOut))
@@ -84,23 +117,24 @@ export function ShareMenu() {
 
   return (
     <>
-      {card > 0 && (
-        <Img
-          src={staticFile(T.dark ? "share/score-vs-cost-dark.png" : "share/score-vs-cost-light.png")}
+      {land > 0 && (
+        <div
           style={{
             position: "absolute",
-            right: CARD.right,
+            left: CARD_LEFT,
             top: CARD.top,
             width: CARD.width,
             height: CARD.height,
-            borderRadius: (T.dark ? 8 : 5) * 2,
-            boxShadow: T.float,
-            opacity: card,
-            // It comes from the trigger's side, as a saved file would.
-            transformOrigin: "0 0",
-            transform: `translate(${lerp(-28, 0, card)}px, ${lerp(10, 0, card)}px) scale(${lerp(0.96, 1, card)})`,
+            opacity: land * (1 - settle),
+            transform: `translateY(${lerp(0, -10, lift)}px) scale(${lerp(1, 0.985, lift)})`,
           }}
-        />
+        >
+          <div style={{ position: "absolute", inset: 0, borderRadius: radius, boxShadow: T.float, opacity: lift }} />
+          <Img
+            src={staticFile(T.dark ? "share/score-vs-cost-dark.png" : "share/score-vs-cost-light.png")}
+            style={{ position: "absolute", inset: 0, width: CARD.width, height: CARD.height, borderRadius: radius }}
+          />
+        </div>
       )}
       <div
         style={{
