@@ -1,21 +1,108 @@
+<div align="center">
+
+<img src="../public/logo192.png" alt="LLM Graphs seal: a TRUST ME BRO stamp" width="120" />
+
 # LLM Graphs
 
-Compare language models across benchmarks, live at [llm-graphs.jr7.dev](https://llm-graphs.jr7.dev).
+**Every LLM leaderboard, plotted on one chart.**
 
-Leaderboards each publish their own slice of the picture: one has coding scores, another task cost, another speed or human preference. LLM Graphs pulls those sources into one place and plots them against each other, so you can see tradeoffs like score against cost per task, or speed against price, for the models you care about.
+[**Open LLM Graphs →**](https://llm-graphs.jr7.dev)
 
-## What it does
+</div>
 
-- **2D and 3D comparison charts.** Pick any two or three metrics as axes and a source for each.
-- **Pareto frontier.** The models no other model beats on every selected axis are highlighted.
-- **Reasoning levels kept apart.** Each effort setting (low, high, max…) is its own point, and one model's settings are joined into a curve.
-- **Log scales**, chosen automatically for ratio metrics or set by hand.
-- **Model picker** grouped by vendor. Your picks are kept across visits and benchmarks.
-- **Share links, PNG export, and CSV download** for the current chart.
-- **A guide for AI agents** at `/llms.txt`: how a chart's link is built, with every metric, source, and model id it accepts, so a reader's agent can choose the options and hand back a link. An agent that asks for markdown (`Accept: text/markdown`) at any chart link gets that chart described in words, followed by the same guide.
-- **Visible sources.** Every axis and tooltip names the benchmark and links to it, with its version, harness, and caveats.
+<br />
 
-## Data sources
+<a href="https://llm-graphs.jr7.dev/?x=cost&y=score">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/chart-dark.png" />
+    <img src="images/chart-light.png" alt="DeepSWE score plotted against task cost for nine frontier models, with the Pareto frontier drawn as a dashed line" />
+  </picture>
+</a>
+
+## Why
+
+I just want a calm way to find out which model is good at what, without digging through ten different sites and countless tables and graphs.
+
+Every leaderboard publishes its own slice of the picture. One has coding scores, another task cost, another speed or human preference. Answering _"which model gives me the best coding score per dollar?"_ shouldn't mean opening all of them and doing the math yourself.
+
+So LLM Graphs pulls those sources into one place and plots them against each other, for just the models you care about.
+
+## What you can do
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <b>📈 Compare any two metrics</b><br />
+      Pick an X and Y axis (score, task cost, token price, speed, duration, context length…) and a benchmark for each.
+    </td>
+    <td width="50%" valign="top">
+      <b>🧊 Add a third axis</b><br />
+      Set a Z metric and the chart becomes a cube you can rotate, with front and top views.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>🏆 See the Pareto frontier</b><br />
+      The models no other model beats on every axis are joined by a dashed line, so the best-value picks stand out.
+    </td>
+    <td width="50%" valign="top">
+      <b>🧠 Reasoning levels kept apart</b><br />
+      Each effort setting (low, high, max…) is its own point, and one model's settings are joined into a curve.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>🔗 Share, export, download</b><br />
+      Every chart lives in its URL. Copy the link, save a PNG, or download the data as CSV.
+    </td>
+    <td width="50%" valign="top">
+      <b>🔎 Sources on every point</b><br />
+      Each axis and tooltip names its benchmark and links to it, with the version, harness and caveats.
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <b>📱 Works on your phone</b><br />
+      The full chart and controls fit a mobile screen.
+    </td>
+    <td width="50%" valign="top">
+      <b>🌗 Light and dark</b><br />
+      Follows your system theme, or pick one.
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td width="62%">
+      <a href="https://llm-graphs.jr7.dev/?x=cost&y=score&z=duration&ySource=deepswe">
+        <img src="images/chart-3d.png" alt="3D chart of DeepSWE score, task cost and task duration" />
+      </a>
+      <p align="center"><sub>Score, cost and duration on DeepSWE, in 3D</sub></p>
+    </td>
+    <td width="38%">
+      <a href="https://llm-graphs.jr7.dev/?x=cost&y=score">
+        <img src="images/mobile.png" alt="The chart on a phone-sized screen" />
+      </a>
+      <p align="center"><sub>On a phone</sub></p>
+    </td>
+  </tr>
+</table>
+
+## Try these
+
+| Question                                                         | Chart                                                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Which coding model gives the most for its cost?                  | [Score vs task cost on SWE-bench Verified](https://llm-graphs.jr7.dev/?x=cost&y=score&ySource=sweBench) |
+| Do people prefer the expensive models?                           | [Arena rating vs token price](https://llm-graphs.jr7.dev/?x=price&y=score&ySource=arena)          |
+| What's the tradeoff between quality, cost and speed on agent work? | [DeepSWE score, cost and duration in 3D](https://llm-graphs.jr7.dev/?x=cost&y=score&z=duration&ySource=deepswe) |
+| How long a task can a model handle?                              | [METR task horizon vs token price](https://llm-graphs.jr7.dev/?x=price&y=score&ySource=metr)            |
+
+<a href="https://llm-graphs.jr7.dev/?x=price&y=score&ySource=arena">
+  <img src="images/chart-arena.png" alt="Arena Text preference rating plotted against blended token price" />
+</a>
+
+## Where the data comes from
 
 | Source                                                                                                                                          | What it adds                                              |
 | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -32,49 +119,20 @@ Leaderboards each publish their own slice of the picture: one has coding scores,
 | [Arena Text](https://arena.ai/leaderboard/text)                                                                                                 | Human preference ratings, vote counts                     |
 | [models.dev](https://models.dev/)                                                                                                               | Model catalog, context length, the lab's own token prices |
 
-Each source keeps its own meaning. A score from one benchmark is never mixed with another's, task cost is never derived from token price, and unknown reasoning settings stay unknown. [CONTEXT.md](../CONTEXT.md) defines the terms.
+Data refreshes automatically from each source.
 
-## Running locally
+### Honest numbers
 
-Requires [Bun](https://bun.sh/) 1.4.3 or later.
+- **No mixing.** A score from one benchmark is never blended with another's.
+- **No guessing.** Task cost is what the benchmark reported, never derived from token prices. An unknown reasoning setting stays unknown.
+- **No hidden context.** Every number links back to where it came from.
 
-```bash
-bun install
-cp .env.example .env
-bun run dev   # http://localhost:3000
-```
+The exact meaning of terms like _score_, _task cost_ and _task horizon_ is in [CONTEXT.md](../CONTEXT.md).
 
-Environment variables, all optional:
+## For AI agents
 
-| Variable                                             | Purpose                                                                                                             |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `AA_API_KEY`                                         | [Artificial Analysis API](https://artificialanalysis.ai/documentation) key. Without it, that source is unavailable. |
-| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shares the source cache across server instances. Without them, each server caches in memory.                        |
+Ask your assistant for a chart and it can build the link for you. [`/llms.txt`](https://llm-graphs.jr7.dev/llms.txt) explains how chart links work and lists every metric, source and model id. An agent that requests any chart link with `Accept: text/markdown` gets that chart described in words.
 
-Sources are fetched on the server, cached, and refreshed in the background once stale. A failed refresh keeps the last good copy.
+## Contributing
 
-## Development
-
-| Command                   | What it runs                                                                |
-| ------------------------- | --------------------------------------------------------------------------- |
-| `bun run test`            | Vitest. Tests use committed fixtures and make no upstream requests.         |
-| `bun run typecheck`       | Bun's TypeScript checker                                                    |
-| `bun run lint`            | oxlint (type-aware), with custom rules in `dev/oxlint/`                     |
-| `bun run fmt`             | oxfmt                                                                       |
-| `bun run build`           | Production build (Nitro server, deployed on Vercel)                         |
-| `bun run fixtures:models` | Refreshes the first-party data snapshots used by tests (needs `AA_API_KEY`) |
-
-Code layout:
-
-- `src/server/services/providers/`: one adapter per source, registered in `index.ts`
-- `src/server/services/model-aggregator/`: joins sources into one model snapshot
-- `src/server/api/`: server functions the UI calls
-- `src/ui/`: routes, chart components, and chart logic
-
-To add a benchmark, see [Adding a score provider](adding-a-score-provider.md).
-
-## Further reading
-
-- [PRODUCT.md](PRODUCT.md): who it's for and the design principles
-- [CONTEXT.md](../CONTEXT.md): domain terms such as score, task cost, and task horizon
-- [brand.md](brand.md): the wordmark and seal
+Want to run it locally or add a benchmark? See [CONTRIBUTING.md](CONTRIBUTING.md).
