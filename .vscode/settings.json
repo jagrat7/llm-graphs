@@ -30,6 +30,5 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "oxc.typeAware": true
+  }
 }
