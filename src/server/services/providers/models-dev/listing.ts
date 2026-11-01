@@ -101,6 +101,10 @@ export class ModelsDevListingProvider
   readonly displayName = "models.dev"
   readonly href = BASE_URL
   readonly abbreviation = "MD"
+  readonly publisher = "models.dev"
+  readonly category = "market"
+  readonly summary =
+    "An open catalog of model specs: context windows and each lab's own token prices."
   readonly cacheKey = CACHE_KEY
   /** Refetched once its cached copy is a day old. */
   readonly refreshWindowMs = 24 * 60 * 60 * 1000

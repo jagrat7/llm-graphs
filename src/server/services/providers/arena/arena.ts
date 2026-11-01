@@ -131,6 +131,9 @@ export class ArenaProvider
   readonly displayName = "Arena Text"
   readonly href = "https://arena.ai/leaderboard/text"
   readonly abbreviation = "Arena"
+  readonly publisher = "Arena"
+  readonly category = "preference"
+  readonly summary = "Ratings from blind, side-by-side human votes between two anonymous models."
   readonly cacheKey = "llm-scores:source:arena:text-overall-style-control:v5"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = metrics

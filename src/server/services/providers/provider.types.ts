@@ -2,6 +2,9 @@
 export type ProviderName = import("./index").RegisteredProviderName
 export type SourceName = ProviderName | "modelsDev"
 
+/** What a source is for, which groups it in the sources dialog. */
+export type SourceCategory = "coding" | "agents" | "reasoning" | "preference" | "market"
+
 export type SourceDefinition<TPayload> = {
   readonly name: SourceName
   readonly cacheKey: string
@@ -17,6 +20,12 @@ export type MetricSource<TPayload, TRow> = SourceDefinition<TPayload> & {
   readonly displayName: string
   readonly href: string
   readonly abbreviation: string
+  /** Who built and runs the benchmark, credited wherever its numbers appear. */
+  readonly publisher: string
+  /** What the benchmark is for, which groups it with its peers. */
+  readonly category: SourceCategory
+  /** One sentence on what the benchmark measures, for the credit card. */
+  readonly summary: string
   readonly metrics: MetricReaders<TRow>
   readMetrics(row: TRow): MetricValues
   /** Splits each row's model id from its reasoning effort, for the aggregator to join. */
@@ -26,7 +35,16 @@ export type MetricSource<TPayload, TRow> = SourceDefinition<TPayload> & {
 /** What the UI needs to know about the metric sources, as plain data it gets from a server function. */
 export type ProvidersInfo = {
   displayNames: Record<ProviderName, string>
-  sources: Record<ProviderName, { href: string; abbreviation: string }>
+  sources: Record<
+    ProviderName,
+    {
+      href: string
+      abbreviation: string
+      publisher: string
+      category: SourceCategory
+      summary: string
+    }
+  >
   presentation: Record<ProviderName, Partial<Record<MetricKey, MetricPresentation>>>
   scopes: Record<ProviderName, Partial<Record<MetricKey, "model">>>
   /** The sources offering each metric. The first one is the default. */

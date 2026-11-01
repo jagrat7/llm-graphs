@@ -102,6 +102,10 @@ export class METRProvider
   readonly displayName = "METR"
   readonly href = "https://metr.org/time-horizons/"
   readonly abbreviation = "METR"
+  readonly publisher = "METR"
+  readonly category = "agents"
+  readonly summary =
+    "Time horizons: how long a task, in human working time, a model can complete reliably."
   readonly cacheKey = "llm-scores:source:metr:th1.1:v3"
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics = metrics

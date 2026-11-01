@@ -99,6 +99,10 @@ export class SWEBenchProvider
   readonly displayName = "SWE-bench Verified"
   readonly href = "https://www.swebench.com/"
   readonly abbreviation = "SWE"
+  readonly publisher = "SWE-bench team"
+  readonly category = "coding"
+  readonly summary =
+    "500 real GitHub issues, checked by hand. A fix counts when the repository's tests pass."
   readonly cacheKey = `llm-scores:source:sweBench:verified:mini-${AGENT_VERSION}:v1`
   readonly refreshWindowMs = 6 * 60 * 60 * 1000
   readonly metrics: MetricReaders<SWEBenchRow> = {

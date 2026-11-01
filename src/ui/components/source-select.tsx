@@ -67,10 +67,11 @@ export function SourceSelect({
         }}
         disabled={disabled}
       >
+        {/* Bare until hovered. The fills are `!` so they also beat the trigger's dark-only ones. */}
         <SelectTrigger
           size="lg"
           aria-label={`${axis}-axis data source`}
-          className="text-muted-foreground hover:border-input hover:bg-muted hover:text-foreground dark:hover:bg-muted min-w-0 gap-1.5 border-transparent bg-transparent px-2 shadow-none dark:bg-transparent"
+          className="text-muted-foreground hover:border-input hover:bg-muted! hover:text-foreground min-w-0 gap-1.5 border-transparent bg-transparent! px-2 shadow-none"
         >
           {/* Base UI resolves the label from the raw value, so the mark is rendered here. */}
           {/* The trigger lays the value out as a flex row, which kills the registry's

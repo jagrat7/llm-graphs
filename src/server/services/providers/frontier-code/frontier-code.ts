@@ -112,6 +112,10 @@ export class FrontierCodeProvider
   readonly displayName = `FrontierCode ${VERSION}`
   readonly href = PAGE
   readonly abbreviation = "FC"
+  readonly publisher = "Cognition"
+  readonly category = "coding"
+  readonly summary =
+    "Coding tasks written by open-source maintainers, scored on whether they would merge the change."
   readonly cacheKey = `llm-scores:source:frontierCode:${VERSION}:${DATASET}:v1`
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<FrontierCodeRow> = {

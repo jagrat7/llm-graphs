@@ -135,7 +135,9 @@ export function ChartShareMenu({
       async () =>
         downloadBlob(
           // The byte-order mark makes Excel read the file as UTF-8, so "·" survives.
-          new Blob([`﻿${plotCsv(data, sources, info)}`], { type: "text/csv;charset=utf-8" }),
+          new Blob([`﻿${plotCsv(data, sources, info)}`], {
+            type: "text/csv;charset=utf-8",
+          }),
           shareFilename(data, "csv"),
         ),
       "CSV saved",
@@ -152,13 +154,14 @@ export function ChartShareMenu({
           render={
             // Grey and bare at rest, as a toolbar toggle is when off; hover and an open menu take
             // the fill and full ink a toggle has when on. A toggle has no border, so neither does
-            // this, and its icon is the height of their swatches.
+            // this, and its icon is the height of their swatches. The hover fill is `!` so it
+            // also beats the ghost variant's dark-only one.
             <Button
               variant="ghost"
               size="sm"
               aria-busy={status.kind === "busy"}
               className={cn(
-                "text-muted-foreground hover:bg-foreground/12 hover:text-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground dark:hover:bg-foreground/12 gap-1.5 border-0 [&_svg]:size-3.5!",
+                "text-muted-foreground hover:bg-foreground/12! hover:text-foreground aria-expanded:bg-foreground/12 aria-expanded:text-foreground gap-1.5 border-0 [&_svg]:size-3.5!",
                 className,
               )}
             />

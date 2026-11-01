@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { MetricProvider } from "../metric-provider"
 import type {
+  SourceCategory,
   MetricReaders,
   MetricRow,
   MetricSource,
@@ -71,6 +72,9 @@ type Leaderboard = {
   displayName: string
   href: string
   abbreviation: string
+  publisher: string
+  category: SourceCategory
+  summary: string
   package: string
   release: string
   dataset: string
@@ -91,6 +95,9 @@ export class HarborProvider
   readonly displayName: string
   readonly href: string
   readonly abbreviation: string
+  readonly publisher: string
+  readonly category: SourceCategory
+  readonly summary: string
   readonly cacheKey: string
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<HarborRow>
@@ -101,6 +108,9 @@ export class HarborProvider
     this.displayName = leaderboard.displayName
     this.href = leaderboard.href
     this.abbreviation = leaderboard.abbreviation
+    this.publisher = leaderboard.publisher
+    this.category = leaderboard.category
+    this.summary = leaderboard.summary
     this.cacheKey = `llm-scores:source:${this.name}:${leaderboard.release}:v2`
     this.metrics = {
       score: {
