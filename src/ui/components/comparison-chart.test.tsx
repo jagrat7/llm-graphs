@@ -80,6 +80,8 @@ function renderChart(
         yMetric="score"
         highlight={highlight}
         getShareLink={getShareLink}
+        logMetrics={[]}
+        onLogMetricChange={() => {}}
       />
     </QueryClientProvider>,
   )
@@ -410,6 +412,8 @@ describe("stacked runs", () => {
           sources={{ x: xMetric === "price" ? "artificialAnalysis" : "deepswe", y: "deepswe" }}
           xMetric={xMetric}
           yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>,
     )
@@ -464,6 +468,8 @@ describe("stacked runs", () => {
           }
           xMetric={swapped ? "score" : "price"}
           yMetric={swapped ? "price" : "score"}
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>
     )
@@ -493,6 +499,8 @@ describe("stacked runs", () => {
           sources={{ x: "artificialAnalysis", y: "deepswe" }}
           xMetric="price"
           yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>,
     )

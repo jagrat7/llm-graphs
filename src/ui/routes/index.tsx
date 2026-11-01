@@ -491,7 +491,7 @@ function ComparePage() {
                 yMetric={search.y}
                 highlight={highlight}
                 getShareLink={shareLink}
-                logMetrics={search.log}
+                logMetrics={search.log ?? []}
                 onLogMetricChange={setLogMetric}
               />
             </ClientOnly>

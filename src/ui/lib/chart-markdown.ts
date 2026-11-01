@@ -5,7 +5,7 @@ import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { comparisonModels } from "#/ui/lib/comparison-view"
 import { AXIS_SOURCE_KEY, axisSettings } from "#/ui/lib/graph-state"
 import { llmsTxt } from "#/ui/lib/llms-txt"
-import { isMetric, metricAxisLabel } from "#/ui/lib/metrics"
+import { isMetric, isRatioMetric, metricAxisLabel, type Metric } from "#/ui/lib/metrics"
 
 const AXIS_NAMES = { x: "Horizontal axis", y: "Vertical axis", z: "Depth axis" } as const
 
@@ -35,7 +35,7 @@ export function prefersMarkdown(accept: string | null) {
 export function chartMarkdown(
   info: ProvidersInfo,
   snapshot: ModelSnapshot,
-  search: GraphSearch & { models?: Array<string> },
+  search: GraphSearch & { models?: Array<string>; log?: Array<Metric> },
   params: URLSearchParams,
   origin: string,
 ) {
@@ -64,8 +64,12 @@ export function chartMarkdown(
       ? `${info.displayNames[source]}, the Score axis's benchmark`
       : `${info.displayNames[source]} (\`${sourceKey}=${source}\`)`
 
+    // The chart draws `log` only on metrics a log scale fits; elsewhere it stays linear.
+    const scale =
+      search.log?.includes(metric) && isRatioMetric(metric, source, info) ? ", on a log scale" : ""
+
     return [
-      `- ${AXIS_NAMES[axis]}, \`${axis}=${metric}\`: ${metricAxisLabel(metric, source, info)} from ${from}`,
+      `- ${AXIS_NAMES[axis]}, \`${axis}=${metric}\`: ${metricAxisLabel(metric, source, info)} from ${from}${scale}`,
     ]
   })
 

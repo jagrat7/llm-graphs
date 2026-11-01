@@ -268,7 +268,7 @@ export function ComparisonChart({
   yMetric,
   highlight = null,
   getShareLink,
-  logMetrics = [],
+  logMetrics,
   onLogMetricChange,
 }: {
   models: Array<Model>
@@ -280,8 +280,8 @@ export function ComparisonChart({
   /** The page's link to this exact comparison, for the share menu. */
   getShareLink?: () => string
   /** Metrics the reader put on a log scale; every other axis is linear. */
-  logMetrics?: ReadonlyArray<Metric>
-  onLogMetricChange?: (metric: Metric, log: boolean) => void
+  logMetrics: ReadonlyArray<Metric>
+  onLogMetricChange: (metric: Metric, log: boolean) => void
 }) {
   const info = useProvidersInfo()
   const frameRef = useRef<HTMLDivElement>(null)
@@ -374,7 +374,7 @@ export function ComparisonChart({
             key={axis}
             label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
             pressed={data.scales[axis] === "log"}
-            onPressedChange={(next) => onLogMetricChange?.(data.metrics[axis]!, next)}
+            onPressedChange={(next) => onLogMetricChange(data.metrics[axis]!, next)}
           />
         ))}
         <div className="ml-auto flex items-center gap-2">
