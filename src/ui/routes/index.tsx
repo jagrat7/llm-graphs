@@ -1,15 +1,17 @@
 import type { QueryClient } from "@tanstack/react-query"
+import type { ErrorInfo, ReactNode } from "react"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
 import {
   ClientOnly,
   createFileRoute,
   defaultParseSearch,
+  lazyRouteComponent,
   useRouter,
   useRouterState,
 } from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
-import { lazy, Suspense, useEffect, useMemo, useState } from "react"
+import { Component, Suspense, useEffect, useMemo, useState } from "react"
 // The browser parses search params with this, so it uses zod's tree-shakeable build.
 import { z } from "zod/mini"
 
@@ -52,12 +54,57 @@ import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 import { cn } from "#/ui/lib/utils"
 
-// three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand.
-const ComparisonChart3D = lazy(() =>
-  import("#/ui/components/comparison-chart-3d").then((module) => ({
-    default: module.ComparisonChart3D,
-  })),
+// three.js is the largest chunk in the app and only `?z=` needs it, so it loads on demand. A tab
+// opened before a deploy asks for its own build's chunk, which the new deploy no longer serves;
+// TanStack's loader then reloads the page once, onto the new build and still at `?z=`, where
+// `React.lazy` would fail for good.
+const ComparisonChart3D = lazyRouteComponent(
+  () => import("#/ui/components/comparison-chart-3d"),
+  "ComparisonChart3D",
 )
+
+/**
+ * A 3D chart that still fails after that reload fails inside the chart frame. Without this the
+ * error reaches the router's global boundary, which replaces the whole page, header and all.
+ */
+class ChartChunkErrorBoundary extends Component<
+  {
+    /** The chart's exit contract, which the fallback keeps in the chart's place. */
+    phase: MorphPhase
+    onExitComplete: () => void
+    children: ReactNode
+  },
+  { failed: boolean }
+> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Unable to load the 3D comparison chart", error, info.componentStack)
+  }
+
+  componentDidUpdate() {
+    // Removing Z waits for the chart's exit animation, which a failed chart can't play, so the
+    // fallback leaves at once rather than holding the page in 3D.
+    if (this.state.failed && this.props.phase === "out") this.props.onExitComplete()
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children
+
+    // The failed chunk is cached for the life of the page, so only a reload asks for it again.
+    return (
+      <DataState className={CHART_FRAME_CLASS} title="The 3D chart could not load">
+        <Button variant="outline" size="xl" onClick={() => window.location.reload()}>
+          Reload page
+        </Button>
+      </DataState>
+    )
+  }
+}
 
 /** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
 const snapshotQuery = queryOptions({
@@ -494,15 +541,17 @@ function ComparePage() {
       {data && selectedModels.length > 0 ? (
         <Suspense fallback={<ChartSkeleton />}>
           {search.z ? (
-            <ComparisonChart3D
-              models={chartModels}
-              metrics={{ x: search.x, y: search.y, z: search.z }}
-              sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
-              phase={morphPhase}
-              onExitComplete={handleExitComplete}
-              getShareLink={shareLink}
-              logMetrics={logMetrics}
-            />
+            <ChartChunkErrorBoundary phase={morphPhase} onExitComplete={handleExitComplete}>
+              <ComparisonChart3D
+                models={chartModels}
+                metrics={{ x: search.x, y: search.y, z: search.z }}
+                sources={{ x: axes.x.source, y: axes.y.source, z: axes.z.source }}
+                phase={morphPhase}
+                onExitComplete={handleExitComplete}
+                getShareLink={shareLink}
+                logMetrics={logMetrics}
+              />
+            </ChartChunkErrorBoundary>
           ) : (
             // Sized from its container, which the server can't measure: drawn there, it
             // comes out at a guessed size and jumps once the browser redraws it.
