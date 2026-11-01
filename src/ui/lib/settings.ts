@@ -21,6 +21,8 @@ const settingsSchema = z.object({
   paretoFrontier: z.catch(z.boolean(), true),
   /** Logo markers on the chart; off, every point is a plain dot. */
   vendorLogos: z.catch(z.boolean(), true),
+  /** Fine graph-paper rulings between the gridlines; off, only the labelled gridlines. */
+  paperGrid: z.catch(z.boolean(), true),
   /** Every effort level a model ran at, or only its highest. */
   effortLevels: z.catch(z.enum(["all", "highest"]), "all"),
 })
@@ -34,6 +36,7 @@ export function isDefaultSettings(settings: Settings) {
     settings.hiddenProviders.length === 0 &&
     settings.paretoFrontier === DEFAULT_SETTINGS.paretoFrontier &&
     settings.vendorLogos === DEFAULT_SETTINGS.vendorLogos &&
+    settings.paperGrid === DEFAULT_SETTINGS.paperGrid &&
     settings.effortLevels === DEFAULT_SETTINGS.effortLevels
   )
 }

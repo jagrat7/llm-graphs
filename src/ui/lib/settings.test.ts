@@ -14,6 +14,7 @@ describe("settings", () => {
       hiddenProviders: [],
       paretoFrontier: true,
       vendorLogos: true,
+      paperGrid: true,
       effortLevels: "all",
     })
   })
@@ -28,6 +29,7 @@ describe("settings", () => {
       hiddenProviders: ["meta"],
       paretoFrontier: true,
       vendorLogos: true,
+      paperGrid: true,
       effortLevels: "all",
     })
   })

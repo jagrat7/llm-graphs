@@ -152,6 +152,17 @@ export default function SettingsMenu() {
                   onCheckedChange={(vendorLogos) => update({ vendorLogos })}
                 />
               </SettingRow>
+              <SettingRow
+                id="settings-paper-grid"
+                label="Graph paper"
+                description="Rule fine squares between the gridlines; off, only the labelled lines stay"
+              >
+                <Switch
+                  id="settings-paper-grid"
+                  checked={settings.paperGrid}
+                  onCheckedChange={(paperGrid) => update({ paperGrid })}
+                />
+              </SettingRow>
             </div>
           </SettingsSection>
 

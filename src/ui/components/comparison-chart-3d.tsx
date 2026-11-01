@@ -47,6 +47,7 @@ import {
   LABEL_EFFORT_SIZE,
   LABEL_NAME_SIZE,
 } from "#/ui/lib/plot-labels"
+import { useSettings } from "#/ui/lib/settings"
 import { useThemeColors } from "#/ui/lib/theme-colors"
 import { cn } from "#/ui/lib/utils"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
@@ -282,19 +283,21 @@ function rulingFractions(gridFractions: Record<PlotAxis, Array<number>>) {
 /**
  * The cube's edges and the three walls behind the data: each wall carries the grid at the
  * labelled ticks and the finer rulings between them, so the walls read as three sheets
- * of graph paper folded into a corner.
+ * of graph paper folded into a corner. Without `paper`, the walls carry the grid alone.
  */
 function PlotFrame({
   borderColor,
   gridColor,
   rulingColor,
   gridFractions,
+  paper,
   scene,
 }: {
   borderColor: string
   gridColor: string
   rulingColor: string
   gridFractions: Record<PlotAxis, Array<number>>
+  paper: boolean
   scene: React.RefObject<SceneRefs>
 }) {
   const groupRef = useRef<THREE.Group>(null)
@@ -303,7 +306,7 @@ function PlotFrame({
   const appliedDepth = useRef(-1)
   const box = useMemo(() => new THREE.BoxGeometry(2 * CUBE_HALF, 2 * CUBE_HALF, 2 * CUBE_HALF), [])
   const walls = useMemo(() => {
-    const minor = rulingFractions(gridFractions)
+    const minor = paper ? rulingFractions(gridFractions) : { x: [], y: [], z: [] }
 
     return AXES.flatMap((normal) =>
       WALL_SIDES.map((side) => ({
@@ -314,7 +317,7 @@ function PlotFrame({
         rulings: lineGeometry(wallLinePositions(normal, side, minor)),
       })),
     )
-  }, [gridFractions])
+  }, [gridFractions, paper])
 
   useEffect(
     () => () => {
@@ -1088,6 +1091,7 @@ export function ComparisonChart3D({
   const info = useProvidersInfo()
   const reduceMotion = useReducedMotion()
   const { colors, resolve } = useThemeColors()
+  const [settings] = useSettings()
   const [activeId, setActiveId] = useState<string | null>(null)
   const [preset, setPreset] = useState({ name: "Perspective", nonce: 0 })
   const [webgl, setWebgl] = useState<boolean | null>(null)
@@ -1342,6 +1346,7 @@ export function ComparisonChart3D({
                 gridColor={colors.border}
                 rulingColor={colors.mutedForeground}
                 gridFractions={axisTickFractions}
+                paper={settings.paperGrid}
                 scene={sceneRef}
               />
               <PlotPoints
