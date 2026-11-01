@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
+import { useState } from "react"
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest"
 
+import type { Metric } from "#/ui/lib/metrics"
 import type { Model } from "#/ui/lib/model-view"
 
 import { ProvidersService } from "#/server/services/providers"
@@ -78,6 +80,8 @@ function renderChart(
         yMetric="score"
         highlight={highlight}
         getShareLink={getShareLink}
+        logMetrics={[]}
+        onLogMetricChange={() => {}}
       />
     </QueryClientProvider>,
   )
@@ -259,13 +263,21 @@ describe("comparison chart", () => {
     expect(description).toContain("Vertical axis: Score · % (DeepSWE")
   })
 
-  it("shows the Pareto frontier until the reader toggles it off, and back on", async () => {
+  it("hides the Pareto frontier until the reader toggles it on, and back off", async () => {
     const { container } = renderChart()
     const toggle = screen.getByRole("button", { name: "Pareto frontier" })
     const curve = () => container.querySelector('[data-ts-key="pareto-frontier-2:line"]')
     const description = () => container.querySelector("svg.ts-chart desc")?.textContent ?? ""
     // Beta sits off the frontier, so it is muted while the frontier shows.
     const beta = () => Number(marker(container, "beta-unknown-unknown").getAttribute("opacity"))
+
+    expect(toggle.getAttribute("aria-pressed")).toBe("false")
+    expect(curve()).toBeNull()
+    expect(description()).not.toContain("Pareto frontier")
+    expect(beta()).toBe(1)
+
+    await act(async () => fireEvent.click(toggle))
+    await settle()
 
     expect(toggle.getAttribute("aria-pressed")).toBe("true")
     expect(curve()).not.toBeNull()
@@ -275,44 +287,52 @@ describe("comparison chart", () => {
     await act(async () => fireEvent.click(toggle))
     await settle()
 
-    expect(toggle.getAttribute("aria-pressed")).toBe("false")
     expect(curve()).toBeNull()
-    expect(description()).not.toContain("Pareto frontier")
-    expect(beta()).toBe(1)
-
-    await act(async () => fireEvent.click(toggle))
-
-    expect(curve()).not.toBeNull()
   })
 
-  it("starts the log switch where detection put the axis, and flips it", async () => {
+  it("starts a crowded axis linear, and flips it to log", async () => {
     const crowded = [0.05, 0.1, 0.2, 0.4, 60].map((costPerTask, index) =>
       makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
     )
     const client = new QueryClient()
     client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
-    const { container } = render(
-      <QueryClientProvider client={client}>
+    const onLogMetricChange = vi.fn()
+    // The page keeps the choice in its link; this stands in for it.
+    function Page() {
+      const [logMetrics, setLogMetrics] = useState<Array<Metric>>([])
+
+      return (
         <ComparisonChart
           models={crowded}
           sources={{ x: "deepswe", y: "deepswe" }}
           xMetric="cost"
           yMetric="score"
+          logMetrics={logMetrics}
+          onLogMetricChange={(metric, log) => {
+            onLogMetricChange(metric, log)
+            setLogMetrics(log ? [metric] : [])
+          }}
         />
+      )
+    }
+    const { container } = render(
+      <QueryClientProvider client={client}>
+        <Page />
       </QueryClientProvider>,
     )
     const toggle = screen.getByRole("button", { name: "Log scale for Task cost" })
 
-    expect(toggle.getAttribute("aria-pressed")).toBe("true")
-    expect(container.textContent).toContain("log scale")
+    expect(toggle.getAttribute("aria-pressed")).toBe("false")
+    expect(container.textContent).not.toContain("log scale")
     // Score is no ratio metric, so it never gets a switch.
     expect(screen.queryByRole("button", { name: /Log scale for Score/ })).toBeNull()
 
     await act(async () => fireEvent.click(toggle))
     await settle()
 
-    expect(toggle.getAttribute("aria-pressed")).toBe("false")
-    expect(container.textContent).not.toContain("log scale")
+    expect(onLogMetricChange).toHaveBeenCalledWith("cost", true)
+    expect(toggle.getAttribute("aria-pressed")).toBe("true")
+    expect(container.textContent).toContain("log scale")
   })
 
   it("offers log on a narrow axis without turning it on", () => {
@@ -323,13 +343,19 @@ describe("comparison chart", () => {
     ).toBe("false")
   })
 
-  it("says a highlighted model, not the frontier, keeps its emphasis", () => {
+  it("says a highlighted model, not the frontier, keeps its emphasis", async () => {
     const { container } = renderChart("beta")
+    const toggle = screen.getByRole("button", { name: "Pareto frontier" })
+
+    await act(async () => fireEvent.click(toggle))
     const description = container.querySelector("svg.ts-chart desc")?.textContent ?? ""
 
     expect(description).toContain("Pareto frontier")
     expect(description).toContain("is highlighted, so every other model is muted")
     expect(description).not.toContain("Variants off it are muted")
+
+    // The setting outlives the test, so put it back.
+    await act(async () => fireEvent.click(toggle))
   })
 
   it("ignores a highlight for a model that has no plotted points", () => {
@@ -386,6 +412,8 @@ describe("stacked runs", () => {
           sources={{ x: xMetric === "price" ? "artificialAnalysis" : "deepswe", y: "deepswe" }}
           xMetric={xMetric}
           yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>,
     )
@@ -440,6 +468,8 @@ describe("stacked runs", () => {
           }
           xMetric={swapped ? "score" : "price"}
           yMetric={swapped ? "price" : "score"}
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>
     )
@@ -469,6 +499,8 @@ describe("stacked runs", () => {
           sources={{ x: "artificialAnalysis", y: "deepswe" }}
           xMetric="price"
           yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
         />
       </QueryClientProvider>,
     )

@@ -4,7 +4,6 @@ import type { Model } from "#/ui/lib/model-view"
 import { metricRecord } from "./metrics"
 
 import {
-  axisScale,
   logAllowed,
   axisTicks,
   buildPlotData,
@@ -215,41 +214,17 @@ describe("buildPlotData", () => {
   })
 })
 
-describe("axisScale", () => {
-  it("goes log when a wide ratio metric crowds the low end of the axis", () => {
-    // Token prices: one $600 model would flatten the $1–$5 ones onto the baseline.
-    expect(axisScale(true, [1, 2, 2.5, 3, 5, 600])).toBe("log")
-    // Evenly spread across decades, as task horizons often are.
-    expect(axisScale(true, [0.01, 0.1, 1, 10, 100])).toBe("log")
-  })
-
-  it("stays linear when values spread evenly, however wide their range", () => {
-    expect(axisScale(true, [10, 50, 100, 150, 200])).toBe("linear")
-  })
-
-  it("stays linear under a decade of spread", () => {
-    expect(axisScale(true, [1, 1.1, 1.2, 9])).toBe("linear")
-  })
-
-  it("stays linear for zero, negative, or too few values", () => {
-    expect(axisScale(true, [0, 1, 2, 500])).toBe("linear")
-    expect(axisScale(true, [-1, 1, 2, 500])).toBe("linear")
-    // Repeated efforts at one price are one position, not three.
-    expect(axisScale(true, [1, 1, 1, 500])).toBe("linear")
-  })
-
-  it("never puts a score or rating on a log axis", () => {
-    expect(axisScale(false, [1, 2, 2.5, 3, 5, 600])).toBe("linear")
-  })
-})
-
 describe("buildPlotData axis scales", () => {
   const spread = [0.1, 0.2, 0.3, 1, 100].map((costPerTask, index) =>
     makeModel({ model: `m${index}`, costPerTask, score: 10 + index * 10 }),
   )
 
+  it("starts every axis linear, however crowded its values", () => {
+    expect(buildPlotData(spread, XY).scales).toEqual({ x: "linear", y: "linear", z: "linear" })
+  })
+
   it("places points on a log axis by their decade", () => {
-    const data = buildPlotData(spread, XY)
+    const data = buildPlotData(spread, XY, {}, { x: "log" })
 
     expect(data.scales).toEqual({ x: "log", y: "linear", z: "linear" })
     // $1 is a third of the way from $0.10 to $100 in decades, not 1% of the dollars.
@@ -261,16 +236,16 @@ describe("buildPlotData axis scales", () => {
       makeModel({ model: `h${index}`, score }),
     )
 
-    expect(buildPlotData(horizons, XY).scales.y).toBe("linear")
-    expect(buildPlotData(horizons, XY, { y: true }).scales.y).toBe("log")
+    expect(buildPlotData(horizons, XY, {}, { y: "log" }).scales.y).toBe("linear")
+    expect(buildPlotData(horizons, XY, { y: true }, { y: "log" }).scales.y).toBe("log")
   })
-  it("lets the reader's choice win over detection, where log is possible", () => {
+
+  it("draws log only where it is possible", () => {
     const even = [1, 25, 50, 75, 100].map((costPerTask, index) =>
       makeModel({ model: `e${index}`, costPerTask, score: 10 + index * 10 }),
     )
     const forced = buildPlotData(even, XY, {}, { x: "log", y: "log" })
 
-    expect(forced.autoScales.x).toBe("linear")
     expect(forced.logAllowed).toEqual({ x: true, y: false, z: false })
     // Score is no ratio metric, so asking for log there changes nothing.
     expect(forced.scales).toEqual({ x: "log", y: "linear", z: "linear" })
@@ -386,7 +361,7 @@ describe("describePlot", () => {
       makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
     )
 
-    expect(describePlot(buildPlotData(crowded, XYZ))).toContain(
+    expect(describePlot(buildPlotData(crowded, XYZ, {}, { x: "log" }))).toContain(
       "by X Task cost on a log scale, Y Score,",
     )
   })

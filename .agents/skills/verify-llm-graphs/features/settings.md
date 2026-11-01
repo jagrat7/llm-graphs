@@ -1,6 +1,6 @@
 # Settings
 
-The Settings dialog changes how this browser's chart opens and looks: how many models it starts on, which providers' models appear, whether to show every effort level or only each model's highest, the Pareto frontier, provider logos, and the chart's graph paper pattern. Every choice is stored in the `settings` cookie, so the server renders the next visit with it.
+The Settings dialog changes how this browser's chart opens and looks: how many models it starts on, which providers' models appear, whether to show every effort level or only each model's highest, the Pareto frontier, provider logos, and the chart's graph paper pattern. The cookie holds only the settings a reader changed, so the server renders the next visit with them and the rest follow the current defaults. The Pareto frontier starts off.
 
 ## Sub-features
 
@@ -29,6 +29,7 @@ Preconditions:
 - **Malformed cookie.** Run `llmg page '/' --name settings-garbage --cookie 'settings={"openingModels":7,"hiddenProviders":"x"}'`. The facts match `settings-baseline`: each bad field falls back on its own.
 - **Dialog writes the cookie (browser).** Open `Settings`, set `Starting models` to 6, untick a provider under `Providers`, and choose `Done`. The chips update at once, and `document.cookie` contains `settings=` with `"openingModels":6` and the vendor slug. Then load that cookie with `llmg page` as above and see the same chips: that is the persistence proof.
 - **Effort, Pareto, logos (browser).** Toggle each one and compare `[data-chart-frame="loaded"]` before and after: fewer points per model with `Highest only`, the dashed frontier line on or off, and logos replaced by dots. The server HTML does not change for these three.
+- **Defaults, log in the link, changes-only cookie (browser).** Run `llmg browse log-and-defaults.mjs`. A fresh reader starts with Pareto off and Task cost linear; the log switch writes `log` into the URL and the share link, a shared or hand-written `log=cost` link opens on log, the cookie holds only changed fields, and Reset deletes it.
 - **Gridlines detail (browser).** Run `llmg browse paper-grid.mjs`. It counts `.chart-paper-ruling line` in the 2D chart (above zero by default), turns `Gridlines detail` off in the dialog, checks the cookie holds `"paperGrid":false`, then confirms zero rulings before and after a reload while the labelled gridlines stay. The server HTML does not change for this one either.
 - **Proof.** Keep `settings-baseline`, `settings-opening-6`, and `settings-hide` facts side by side.
 

@@ -7,7 +7,7 @@ description: Launch an isolated LLM Graphs dev server (the TanStack Start web ap
 
 LLM Graphs is one web page (`/`, "Compare language models") that plots models from public benchmark sources on 2–3 metric axes. State lives in three places a reader controls, and the server renders all three into the first HTML:
 
-- **URL search params:** `x`, `y`, `z` (metrics), `xSource`, `ySource`, `zSource` (benchmarks), `models` (picked entry ids).
+- **URL search params:** `x`, `y`, `z` (metrics), `xSource`, `ySource`, `zSource` (benchmarks), `models` (picked entry ids), `log` (metrics on a log scale; the app writes it as JSON, `log=["cost"]`, and also reads a plain `log=cost`).
 - **`settings` cookie:** URI-encoded JSON `{hiddenProviders, paretoFrontier, vendorLogos, effortLevels, openingModels}`.
 - **`picked-models` cookie:** URI-encoded JSON array of entry ids.
 

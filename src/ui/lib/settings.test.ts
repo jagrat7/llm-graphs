@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  changedSettings,
   DEFAULT_SETTINGS,
   highestEffortOnly,
   isDefaultSettings,
@@ -12,7 +13,7 @@ describe("settings", () => {
   it("starts on the defaults when this browser has never changed one", () => {
     expect(parseSettings(null)).toEqual({
       hiddenProviders: [],
-      paretoFrontier: true,
+      paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
       effortLevels: "all",
@@ -22,12 +23,30 @@ describe("settings", () => {
   it("needs no cookie for the defaults, but does for any change", () => {
     expect(isDefaultSettings(DEFAULT_SETTINGS)).toBe(true)
     expect(isDefaultSettings({ ...DEFAULT_SETTINGS, hiddenProviders: ["xai"] })).toBe(false)
+    // Every field counts, not only the ones someone remembered to list.
+    for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
+      const changed = typeof value === "boolean" ? !value : typeof value === "string" ? "x" : ["x"]
+
+      expect(isDefaultSettings({ ...DEFAULT_SETTINGS, [key]: changed })).toBe(false)
+    }
+  })
+
+  it("saves only the settings a reader changed, so the rest follow the defaults", () => {
+    expect(changedSettings(DEFAULT_SETTINGS)).toEqual({})
+    expect(changedSettings({ ...DEFAULT_SETTINGS, vendorLogos: false })).toEqual({
+      vendorLogos: false,
+    })
+    // Read back, the untouched fields take whatever the defaults are now.
+    expect(parseSettings({ vendorLogos: false })).toEqual({
+      ...DEFAULT_SETTINGS,
+      vendorLogos: false,
+    })
   })
 
   it("keeps the valid fields of a stored value and defaults the rest", () => {
     expect(parseSettings({ hiddenProviders: ["meta"], paretoFrontier: "nope" })).toEqual({
       hiddenProviders: ["meta"],
-      paretoFrontier: true,
+      paretoFrontier: false,
       vendorLogos: true,
       paperGrid: true,
       effortLevels: "all",

@@ -35,13 +35,20 @@ type CookieStoreOptions<T> = {
   parse: (value: string | null) => T
   /** Values that need no cookie, such as "never picked" or the default settings. */
   isEmpty: (value: T) => boolean
+  /** What the cookie holds for a value, when not the whole value; `parse` reads it back. */
+  serialize?: (value: T) => unknown
 }
 
 /**
  * A value kept in a cookie, so the server sees it on the page request and renders with it.
  * The server reads it once per request; the browser writes it and hears changes from other tabs.
  */
-export function createCookieStore<T>({ name, parse, isEmpty }: CookieStoreOptions<T>) {
+export function createCookieStore<T>({
+  name,
+  parse,
+  isEmpty,
+  serialize = (value) => value,
+}: CookieStoreOptions<T>) {
   /**
    * This tab's value once it has saved or heard one, kept with its encoded form so an echo of
    * its own save is told apart from a real change. `undefined` defers to the request's value.
@@ -51,7 +58,7 @@ export function createCookieStore<T>({ name, parse, isEmpty }: CookieStoreOption
   let watchingCookie = false
 
   function publish(value: T) {
-    const encoded = isEmpty(value) ? null : encodeURIComponent(JSON.stringify(value))
+    const encoded = isEmpty(value) ? null : encodeURIComponent(JSON.stringify(serialize(value)))
 
     if (latest?.encoded === encoded) return
     latest = { encoded, value }

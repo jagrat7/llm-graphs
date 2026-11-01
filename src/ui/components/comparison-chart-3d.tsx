@@ -8,7 +8,7 @@ import * as THREE from "three"
 import type { Metric } from "#/ui/lib/metrics"
 import type { ProviderName } from "#/server/api"
 import type { Model } from "#/ui/lib/model-view"
-import type { PlotAxis, PlotData } from "#/ui/lib/comparison-plot-data"
+import type { AxisScale, PlotAxis, PlotData } from "#/ui/lib/comparison-plot-data"
 
 import { ChartShareMenu } from "#/ui/components/chart-share-menu"
 import { DataState } from "#/ui/components/data-state"
@@ -47,7 +47,7 @@ import {
   LABEL_EFFORT_SIZE,
   LABEL_NAME_SIZE,
 } from "#/ui/lib/plot-labels"
-import { useSettings } from "#/ui/lib/settings"
+import { useSetting } from "#/ui/lib/settings"
 import { useThemeColors } from "#/ui/lib/theme-colors"
 import { cn } from "#/ui/lib/utils"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
@@ -1079,6 +1079,7 @@ export function ComparisonChart3D({
   phase = "instant",
   onExitComplete,
   getShareLink,
+  logMetrics = [],
 }: {
   models: Array<Model>
   metrics: Record<"x" | "y" | "z", Metric>
@@ -1087,11 +1088,13 @@ export function ComparisonChart3D({
   onExitComplete?: () => void
   /** The page's link to this exact comparison, for the share menu. */
   getShareLink?: () => string
+  /** Metrics the link puts on a log scale; every other axis is linear. */
+  logMetrics?: ReadonlyArray<Metric>
 }) {
   const info = useProvidersInfo()
   const reduceMotion = useReducedMotion()
   const { colors, resolve } = useThemeColors()
-  const [settings] = useSettings()
+  const [paperGrid] = useSetting("paperGrid")
   const [activeId, setActiveId] = useState<string | null>(null)
   const [preset, setPreset] = useState({ name: "Perspective", nonce: 0 })
   const [webgl, setWebgl] = useState<boolean | null>(null)
@@ -1104,14 +1107,23 @@ export function ComparisonChart3D({
   const tooltipCard = useRef<HTMLDivElement>(null)
   const controlsRef = useRef<PlotControls>(null)
   const { x: xSource, y: ySource, z: zSource } = sources
+  const scaleOf = (metric: Metric): AxisScale => (logMetrics.includes(metric) ? "log" : "linear")
+  const xScale = scaleOf(metrics.x)
+  const yScale = scaleOf(metrics.y)
+  const zScale = scaleOf(metrics.z)
   const data = useMemo(
     () =>
-      buildPlotData(models, metrics, {
-        x: isRatioMetric(metrics.x, xSource, info),
-        y: isRatioMetric(metrics.y, ySource, info),
-        z: isRatioMetric(metrics.z, zSource, info),
-      }),
-    [metrics, models, xSource, ySource, zSource, info],
+      buildPlotData(
+        models,
+        metrics,
+        {
+          x: isRatioMetric(metrics.x, xSource, info),
+          y: isRatioMetric(metrics.y, ySource, info),
+          z: isRatioMetric(metrics.z, zSource, info),
+        },
+        { x: xScale, y: yScale, z: zScale },
+      ),
+    [metrics, models, xSource, ySource, zSource, info, xScale, yScale, zScale],
   )
   const startsFlat = phase === "in" && !reduceMotion
   const sceneRef = useRef<SceneRefs>({ depth: startsFlat ? 0 : 1, activeId: null })
@@ -1346,7 +1358,7 @@ export function ComparisonChart3D({
                 gridColor={colors.border}
                 rulingColor={colors.mutedForeground}
                 gridFractions={axisTickFractions}
-                paper={settings.paperGrid}
+                paper={paperGrid}
                 scene={sceneRef}
               />
               <PlotPoints
