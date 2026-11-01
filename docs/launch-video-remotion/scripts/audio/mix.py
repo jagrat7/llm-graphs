@@ -138,11 +138,12 @@ for bar in (7, 8, 9):
 cue("frontier drawn", at(10), pen_line(46 / FPS, 0.12))
 # Bar 12 beat 3: the readout opens.
 cue("readout", at(12, 2), pen_tick("C#6", 0.10))
-# Bar 16: the link typed; one soft tick per segment of the address (host, ?x, &y, &z, &ySource).
-URL = "llm-graphs.jr7.dev/?x=cost&y=score&z=duration&ySource=deepswe"
-for i in [0] + [k for k, ch in enumerate(URL) if ch in "?&"]:
-    cue(f"key {i}", at(16) + 14 + round(i * FPS / 46), pen_tick("G#5", 0.08))
-# Bar 18: the seal, pressed once on the downbeat.
+# Bar 16: the share menu (src/ShareMenu.tsx). A soft tap as it opens, a tick on each row the
+# highlight lands on, and a brighter one when "Download image" is picked.
+cue("share menu opens", at(16, 1), pen_tick("C#5", 0.07))
+cue("highlight: copy link", at(16, 2), pen_tick("D#5", 0.06))
+cue("highlight: download image", at(17), pen_tick("F5", 0.06))
+cue("image saved", at(17, 1) + 3, pen_tick("G#5", 0.09))
 cue("seal", at(18), stamp(0.155, 138.59))
 
 # Music: from MUSIC_START for the film's length, faded over the last two bars.

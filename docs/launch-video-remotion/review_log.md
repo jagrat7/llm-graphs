@@ -135,3 +135,12 @@ measured ones and describe the render before these fixes.
 
 No part reached 8.5. The shipped masters include the post-round-2 fixes above, which were not
 re-reviewed under the 2-round cap.
+
+## After review: the share beat (author's request)
+
+Bars 16-18 no longer type the chart's link. They show the app's share menu instead: the cube
+eases right, the menu opens under its trigger, the highlight moves from "Copy link" to
+"Download image", and the trigger reports "Image saved". The URL key ticks became four soft
+ticks on the menu's moves. This edit was not reviewed by the reviewer agents. QA gates pass on
+both masters: no dropouts, at most 1 flash a second, -14.9 LUFS, -2.3 dBTP, last frame matches
+the first.

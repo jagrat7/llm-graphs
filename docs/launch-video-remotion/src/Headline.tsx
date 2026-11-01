@@ -2,9 +2,7 @@ import type { ReactNode } from "react"
 
 import { useCurrentFrame } from "remotion"
 
-import { Caret } from "@/components/remocn/caret"
 import { RolodexFlip } from "@/components/remocn/rolodex-flip"
-import { useTypewriter } from "@/lib/remocn-ui"
 
 import { HEADLINE } from "./layout"
 import { useTheme } from "./theme-context"
@@ -37,10 +35,9 @@ const LINES: Array<Line> = [
   { from: at(10), to: at(12), enter: "wipe", content: "Nothing here beats the dashed line on both cost and score." },
   { from: at(12), to: at(14), enter: "wipe", content: "Each reasoning level is its own point, with its source." },
   { from: at(14), to: at(16), enter: "wipe", content: "Add a third axis and the chart becomes a cube." },
-  { from: at(16), to: at(18), enter: "rise", content: "Every chart lives in its link." },
+  { from: at(16), to: at(18), enter: "rise", content: "Share it as a link, an image or the data." },
 ]
 
-const URL_TEXT = "llm-graphs.jr7.dev/?x=cost&y=score&z=duration&ySource=deepswe"
 
 export function Headline() {
   const frame = useCurrentFrame()
@@ -78,36 +75,7 @@ export function Headline() {
           </div>
         )
       })}
-      <LinkLine />
     </>
   )
 }
 
-function LinkLine() {
-  const frame = useCurrentFrame()
-  const T = useTheme()
-  const start = at(16) + 14
-  const typed = useTypewriter(URL_TEXT, { cps: 46, startFrame: start })
-  const opacity = progress(frame, at(16), 10, easeOut) * (1 - progress(frame, at(18) - 8, 8, easeOut))
-  if (frame < at(16) || opacity <= 0) return null
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: HEADLINE.x,
-        top: HEADLINE.y + 78,
-        fontFamily: FONT.mono,
-        fontSize: 40,
-        letterSpacing: "-0.03em",
-        color: T.pen,
-        opacity,
-        whiteSpace: "pre",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      {typed.text}
-      <Caret color={T.pen} width={3} height={44} blink={!typed.typing} blinkPerSecond={1} marginLeft={4} />
-    </div>
-  )
-}
