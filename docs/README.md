@@ -1,6 +1,6 @@
 # LLM Graphs
 
-Compare language models across benchmarks, live at [llm-graphs.vercel.app](https://llm-graphs.vercel.app).
+Compare language models across benchmarks, live at [llm-graphs.jr7.dev](https://llm-graphs.jr7.dev).
 
 Leaderboards each publish their own slice of the picture: one has coding scores, another task cost, another speed or human preference. LLM Graphs pulls those sources into one place and plots them against each other, so you can see tradeoffs like score against cost per task, or speed against price, for the models you care about.
 
