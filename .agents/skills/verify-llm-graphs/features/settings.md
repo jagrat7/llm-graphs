@@ -6,8 +6,8 @@ The Settings dialog changes how this browser's chart opens and looks: how many m
 
 - `settings-opening` sets the starting model count (6, 9, or 12).
 - `settings-hide-providers` hides chosen providers' models from defaults, picker, and chart.
-- `settings-effort` shows all effort levels or only the highest per model **(browser: chart points)**.
 - `settings-pareto` toggles the Pareto frontier line **(browser)**.
+- `settings-log-scale` opens every log-capable axis on log; the link's `linear` sets one back **(browser: [`log-scale-setting.mjs`](../journeys/log-scale-setting.mjs))**.
 - `settings-logos` toggles logo markers versus plain dots **(browser)**.
 - `settings-paper` toggles the graph paper pattern, the fine rulings between gridlines **(browser: [`paper-grid.mjs`](../journeys/paper-grid.mjs))**.
 - `settings-persist` writes the cookie the server reads on the next load **(browser for the write)**.
