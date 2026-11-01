@@ -267,6 +267,8 @@ function ComparePage() {
   useEffect(() => {
     const picks = search.models ?? pickedModels
     if (!fromGraphShortcut || !data || picks == null) return
+    // With every provider hidden there are no defaults either, so the picks stay for later.
+    if (data.defaultModels.length === 0) return
     if (data.models.some((model) => picks.includes(model.model))) return
     void navigate({
       search: (previous) => ({ ...previous, models: data.defaultModels }),
