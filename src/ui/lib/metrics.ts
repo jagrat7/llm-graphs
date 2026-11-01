@@ -36,7 +36,7 @@ export const METRIC_CONFIG: Record<
     better?: "higher" | "lower"
     /**
      * A ratio-scale quantity, where "5× cheaper" says more than "$0.40 cheaper". Only
-     * these axes may switch to log; see `axisScale`. Scores and ratings stay linear.
+     * these axes may switch to log; see `logAllowed`. Scores and ratings stay linear.
      */
     ratio?: true
   }

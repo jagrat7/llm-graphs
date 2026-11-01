@@ -105,6 +105,19 @@ const compareSearchSchema = z.object({
     ),
     undefined,
   ),
+  /** Metrics drawn on a log scale, wherever they sit; every other axis is linear. */
+  // A metric this build doesn't know is dropped on its own, keeping the rest of the link's.
+  log: z.catch(
+    z.pipe(
+      z.transform((value: unknown) => {
+        const metrics = [value].flat().filter((metric) => metricSchema.safeParse(metric).success)
+
+        return metrics.length > 0 ? metrics : undefined
+      }),
+      z.optional(z.array(metricSchema)),
+    ),
+    undefined,
+  ),
 })
 
 function parseCompareSearch(search: Record<string, unknown>) {
@@ -311,6 +324,13 @@ function ComparePage() {
    * Pins the models and sources on screen, so the link keeps showing this comparison
    * after the default picks or default benchmarks move on.
    */
+  function setLogMetric(metric: Metric, log: boolean) {
+    const others = (search.log ?? []).filter((logMetric) => logMetric !== metric)
+    const next = log ? [...others, metric] : others
+
+    updateSearch({ log: next.length > 0 ? next : undefined })
+  }
+
   function shareLink() {
     const location = router.buildLocation({
       to: "/",
@@ -458,6 +478,7 @@ function ComparePage() {
               phase={morphPhase}
               onExitComplete={handleExitComplete}
               getShareLink={shareLink}
+              logMetrics={search.log}
             />
           ) : (
             // Sized from its container, which the server can't measure: drawn there, it
@@ -470,6 +491,8 @@ function ComparePage() {
                 yMetric={search.y}
                 highlight={highlight}
                 getShareLink={shareLink}
+                logMetrics={search.log}
+                onLogMetricChange={setLogMetric}
               />
             </ClientOnly>
           )}

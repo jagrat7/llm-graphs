@@ -13,7 +13,7 @@ export type PlotMetrics = { x: Metric; y: Metric; z?: Metric | null }
 
 export type PlotDomain = { min: number; max: number }
 
-/** How an axis maps values to positions; see `axisScale` for when an axis goes log. */
+/** How an axis maps values to positions. Every axis starts linear; a reader may switch it to log. */
 export type AxisScale = "linear" | "log"
 
 export type PlotPoint = {
@@ -51,10 +51,8 @@ export type PlotData = {
   points: Array<PlotPoint>
   series: Array<PlotSeries>
   domains: Record<PlotAxis, PlotDomain>
-  /** The scale each axis is drawn on: the reader's choice where made, else `autoScales`. */
+  /** The scale each axis is drawn on: the reader's choice where made, else linear. */
   scales: Record<PlotAxis, AxisScale>
-  /** The scale `axisScale` picks for each axis from its values. */
-  autoScales: Record<PlotAxis, AxisScale>
   /** Axes a reader may switch to log; see `logAllowed`. */
   logAllowed: Record<PlotAxis, boolean>
   pointById: Map<string, PlotPoint>
@@ -99,14 +97,6 @@ function pointLabel(model: Model) {
   return model.configuration ? `${label} (${model.configuration})` : label
 }
 
-/** A log axis needs at least one decade of spread; below that it barely differs from linear. */
-const LOG_MIN_RATIO = 10
-/**
- * Where the median value sits along a linear axis, as a share of its span, below which
- * the axis counts as crowded: half the values squeezed into its bottom fifth.
- */
-const LOG_CROWDED_MEDIAN = 0.2
-
 /** Distinct values, ascending: repeated values share one position on an axis. */
 function distinctSorted(values: Iterable<number>) {
   return Array.from(new Set(values)).toSorted((left, right) => left - right)
@@ -122,32 +112,6 @@ export function logAllowed(ratio: boolean, values: Iterable<number>) {
   const distinct = distinctSorted(values)
 
   return distinct.length >= 2 && distinct[0] > 0
-}
-
-/**
- * Whether an axis reads better on a log scale. It goes log only for ratio metrics (see
- * `isRatioMetric`) whose values are all positive, span at least a decade and crowd the
- * low end of a linear axis — one $600 model flattening every $1–$5 one. Evenly spread
- * values stay linear however wide their range, so differences keep reading as
- * differences.
- */
-export function axisScale(ratio: boolean, values: Iterable<number>): AxisScale {
-  if (!ratio) return "linear"
-
-  const distinct = distinctSorted(values)
-
-  if (distinct.length < 3 || distinct[0] <= 0) return "linear"
-
-  const min = distinct[0]
-  const max = distinct[distinct.length - 1]
-
-  if (max / min < LOG_MIN_RATIO) return "linear"
-
-  const middle = Math.floor(distinct.length / 2)
-  const median =
-    distinct.length % 2 === 1 ? distinct[middle] : (distinct[middle - 1] + distinct[middle]) / 2
-
-  return (median - min) / (max - min) < LOG_CROWDED_MEDIAN ? "log" : "linear"
 }
 
 /**
@@ -435,9 +399,8 @@ export function buildPlotData(
     return metric != null && (ratio[axis] ?? METRIC_CONFIG[metric].ratio === true)
   }
   const valuesOf = (axis: PlotAxis) => points.map((point) => point.values[axis])
-  const autoScales = byAxis((axis) => axisScale(ratioOf(axis), valuesOf(axis)))
   const allowed = byAxis((axis) => logAllowed(ratioOf(axis), valuesOf(axis)))
-  const scales = byAxis((axis) => (allowed[axis] ? (scale[axis] ?? autoScales[axis]) : "linear"))
+  const scales = byAxis((axis) => (allowed[axis] ? (scale[axis] ?? "linear") : "linear"))
 
   for (const point of points) {
     for (const axis of axes)
@@ -475,7 +438,6 @@ export function buildPlotData(
     series,
     domains,
     scales,
-    autoScales,
     logAllowed: allowed,
     pointById,
     excludedCount: models.length - points.length,

@@ -237,11 +237,11 @@ describe("scatter definition", () => {
     expect(chartScene.points[0]?.key.startsWith("model-runs-3:")).toBe(true)
   })
 
-  it("puts a crowded cost axis on a log scale with decade ticks", () => {
+  it("draws a log cost axis with decade ticks", () => {
     const priced = [0.05, 0.1, 0.2, 0.4, 60].map((costPerTask, index) =>
       makeModel({ model: `m${index}`, costPerTask, score: 20 + index * 10 }),
     )
-    const data = buildPlotData(priced, { x: "cost", y: "score" })
+    const data = buildPlotData(priced, { x: "cost", y: "score" }, {}, { x: "log" })
     const svg = renderChartSvg(
       createChartScene(
         scatterDefinition(data, {

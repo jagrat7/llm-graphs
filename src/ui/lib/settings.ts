@@ -18,7 +18,7 @@ const settingsSchema = z.object({
   /** Vendor slugs whose models stay off the picker, the defaults, and the chart. */
   hiddenProviders: z.catch(z.array(z.string()), []),
   /** Whether the scatter opens with its Pareto frontier drawn. */
-  paretoFrontier: z.catch(z.boolean(), true),
+  paretoFrontier: z.catch(z.boolean(), false),
   /** Logo markers on the chart; off, every point is a plain dot. */
   vendorLogos: z.catch(z.boolean(), true),
   /** The chart's graph-paper pattern of fine squares; off, only the labelled gridlines. */
@@ -31,14 +31,23 @@ export type Settings = z.infer<typeof settingsSchema>
 
 export const DEFAULT_SETTINGS: Settings = settingsSchema.parse({})
 
-export function isDefaultSettings(settings: Settings) {
-  return (
-    settings.hiddenProviders.length === 0 &&
-    settings.paretoFrontier === DEFAULT_SETTINGS.paretoFrontier &&
-    settings.vendorLogos === DEFAULT_SETTINGS.vendorLogos &&
-    settings.paperGrid === DEFAULT_SETTINGS.paperGrid &&
-    settings.effortLevels === DEFAULT_SETTINGS.effortLevels
+// oxlint-disable-next-line typescript/no-unsafe-type-assertion -- the keys of a parsed `Settings`
+const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS) as Array<keyof Settings>
+
+/**
+ * Only the settings this reader changed. The cookie keeps just these, so a later change to a
+ * default still reaches everyone who never touched that setting.
+ */
+export function changedSettings(settings: Settings): Partial<Settings> {
+  return Object.fromEntries(
+    SETTING_KEYS.filter(
+      (key) => JSON.stringify(settings[key]) !== JSON.stringify(DEFAULT_SETTINGS[key]),
+    ).map((key) => [key, settings[key]]),
   )
+}
+
+export function isDefaultSettings(settings: Settings) {
+  return Object.keys(changedSettings(settings)).length === 0
 }
 
 export function parseSettings(value: unknown): Settings {
@@ -56,6 +65,7 @@ const settingsCookie = createCookieStore<Settings>({
   name: SETTINGS_COOKIE,
   parse: (value) => parseSettings(parseJsonCookie(value)),
   isEmpty: isDefaultSettings,
+  serialize: changedSettings,
 })
 
 export const readSettings = settingsCookie.read
@@ -72,6 +82,17 @@ export function useSettings() {
   }
 
   return [settings, setSettings] as const
+}
+
+/** One setting and a setter for it alone, for a control that changes nothing else. */
+export function useSetting<K extends keyof Settings>(key: K) {
+  const [settings, setSettings] = useSettings()
+
+  function setSetting(value: Settings[K]) {
+    setSettings((current) => ({ ...current, [key]: value }))
+  }
+
+  return [settings[key], setSetting] as const
 }
 
 /** Models without a vendor have nothing to hide them by, so they always stay. */

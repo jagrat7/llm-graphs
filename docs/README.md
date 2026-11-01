@@ -9,7 +9,7 @@ Leaderboards each publish their own slice of the picture: one has coding scores,
 - **2D and 3D comparison charts.** Pick any two or three metrics as axes and a source for each.
 - **Pareto frontier.** The models no other model beats on every selected axis are highlighted.
 - **Reasoning levels kept apart.** Each effort setting (low, high, max…) is its own point, and one model's settings are joined into a curve.
-- **Log scales**, chosen automatically for ratio metrics or set by hand.
+- **Log scales** for ratio metrics, switched on by hand and kept in share links.
 - **Model picker** grouped by vendor. Your picks are kept across visits and benchmarks.
 - **Share links, PNG export, and CSV download** for the current chart.
 - **A guide for AI agents** at `/llms.txt`: how a chart's link is built, with every metric, source, and model id it accepts, so a reader's agent can choose the options and hand back a link. An agent that asks for markdown (`Accept: text/markdown`) at any chart link gets that chart described in words, followed by the same guide.

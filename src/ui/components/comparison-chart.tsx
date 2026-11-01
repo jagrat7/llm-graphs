@@ -36,7 +36,7 @@ import { PARETO_STYLE } from "#/ui/lib/chart-marks"
 import { drawnFrontier } from "#/ui/lib/pareto"
 import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
-import { useSettings } from "#/ui/lib/settings"
+import { useSetting } from "#/ui/lib/settings"
 import { stackedAxis } from "#/ui/lib/stacking"
 import { useProvidersInfo } from "#/ui/lib/use-providers-info"
 
@@ -193,9 +193,8 @@ function FrontierToggle({
 const LOG_SWATCH = "M2 2 V11 M10 5 V11 M14.5 5 V11 M17 5 V11 M18.5 2 V11"
 
 /**
- * Puts one axis on a log scale or back. It starts in the state detection picked (see
- * `axisScale`), and names the metric rather than the axis, since the range view lays
- * either metric out left to right.
+ * Puts one axis on a log scale or back. It starts linear, and names the metric rather
+ * than the axis, since the range view lays either metric out left to right.
  */
 function LogToggle({
   label,
@@ -269,6 +268,8 @@ export function ComparisonChart({
   yMetric,
   highlight = null,
   getShareLink,
+  logMetrics = [],
+  onLogMetricChange,
 }: {
   models: Array<Model>
   sources: Record<"x" | "y", ProviderName | null>
@@ -278,18 +279,19 @@ export function ComparisonChart({
   highlight?: string | null
   /** The page's link to this exact comparison, for the share menu. */
   getShareLink?: () => string
+  /** Metrics the reader put on a log scale; every other axis is linear. */
+  logMetrics?: ReadonlyArray<Metric>
+  onLogMetricChange?: (metric: Metric, log: boolean) => void
 }) {
   const info = useProvidersInfo()
   const frameRef = useRef<HTMLDivElement>(null)
   const measureText = useChartTextMeasurer()
   const logoPrefix = `chart-logo-${useId().replaceAll(/[^a-zA-Z0-9]/g, "")}`
   const { x: xSource, y: ySource } = sources
-  // A reader's linear or log choice follows the metric, whichever axis it moves to; a
-  // metric they have not touched takes the scale detection picks.
-  const scaleKey = { x: `${xMetric}@${xSource}`, y: `${yMetric}@${ySource}` }
-  const [scaleChoices, setScaleChoices] = useState<Record<string, AxisScale>>({})
-  const xScale = scaleChoices[scaleKey.x]
-  const yScale = scaleChoices[scaleKey.y]
+  // A log choice follows the metric, whichever axis it moves to.
+  const scaleOf = (metric: Metric): AxisScale => (logMetrics.includes(metric) ? "log" : "linear")
+  const xScale = scaleOf(xMetric)
+  const yScale = scaleOf(yMetric)
   const data = useMemo(
     () =>
       buildPlotData(
@@ -326,10 +328,8 @@ export function ComparisonChart({
   const frontier = useMemo(() => (view === "scatter" ? drawnFrontier(data) : []), [data, view])
   // One switch for every pair of metrics: someone who hides the frontier wants it gone.
   // It is the same setting the header's settings carry, so the choice outlives the visit.
-  const [settings, setSettings] = useSettings()
-  const frontierOn = settings.paretoFrontier
-  const setFrontierOn = (next: boolean) =>
-    setSettings((current) => ({ ...current, paretoFrontier: next }))
+  const [frontierOn, setFrontierOn] = useSetting("paretoFrontier")
+  const [paperGrid] = useSetting("paperGrid")
   const hasFrontier = frontier.length > 0
   const showFrontier = hasFrontier && frontierOn
   // Rows in the range view have no numeric scale along the fixed metric, so only the
@@ -342,8 +342,8 @@ export function ComparisonChart({
 
     return view === "ranges" && flat != null
       ? rangeDefinition(data, { ...options, flat })
-      : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid: settings.paperGrid })
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, settings.paperGrid])
+      : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid })
+  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, paperGrid])
 
   // The range view grows with its rows; the scatter fits whatever height the page gives it.
   const frameStyle: ChartFrameStyle | undefined =
@@ -374,12 +374,7 @@ export function ComparisonChart({
             key={axis}
             label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
             pressed={data.scales[axis] === "log"}
-            onPressedChange={(next) =>
-              setScaleChoices((previous) => ({
-                ...previous,
-                [scaleKey[axis]]: next ? "log" : "linear",
-              }))
-            }
+            onPressedChange={(next) => onLogMetricChange?.(data.metrics[axis]!, next)}
           />
         ))}
         <div className="ml-auto flex items-center gap-2">

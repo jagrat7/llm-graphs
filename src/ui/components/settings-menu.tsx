@@ -15,7 +15,7 @@ import { Switch } from "#/ui/components/ui/switch"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import SettingsProviders from "#/ui/components/settings-providers"
 import { SettingsSection } from "#/ui/components/settings-section"
-import { DEFAULT_SETTINGS, isDefaultSettings, useSettings } from "#/ui/lib/settings"
+import { DEFAULT_SETTINGS, isDefaultSettings, useSetting, useSettings } from "#/ui/lib/settings"
 
 const EFFORT_OPTIONS = [
   { value: "all", label: "All" },
@@ -83,14 +83,35 @@ function Segmented<T extends string | number>({
   )
 }
 
+type SwitchSetting = {
+  [K in keyof Settings]: Settings[K] extends boolean ? K : never
+}[keyof Settings]
+
+/** A row whose control is one on/off setting. */
+function SettingSwitch({
+  setting,
+  label,
+  description,
+}: {
+  setting: SwitchSetting
+  label: string
+  description: string
+}) {
+  const [checked, setChecked] = useSetting(setting)
+  const id = `settings-${setting}`
+
+  return (
+    <SettingRow id={id} label={label} description={description}>
+      <Switch id={id} checked={checked} onCheckedChange={setChecked} />
+    </SettingRow>
+  )
+}
+
 /** Preferences that outlive one comparison: how the chart draws, and which providers it shows. */
 export default function SettingsMenu() {
   const [settings, setSettings] = useSettings()
+  const [effortLevels, setEffortLevels] = useSetting("effortLevels")
   const isDefault = isDefaultSettings(settings)
-
-  function update(change: Partial<Settings>) {
-    setSettings((current) => ({ ...current, ...change }))
-  }
 
   return (
     <Dialog>
@@ -122,44 +143,26 @@ export default function SettingsMenu() {
               >
                 <Segmented
                   labelId="settings-effort-levels-label"
-                  value={settings.effortLevels}
+                  value={effortLevels}
                   options={EFFORT_OPTIONS}
-                  onChange={(effortLevels) => update({ effortLevels })}
+                  onChange={setEffortLevels}
                 />
               </SettingRow>
-              <SettingRow
-                id="settings-pareto-frontier"
+              <SettingSwitch
+                setting="paretoFrontier"
                 label="Pareto frontier"
                 description="Draw the frontier when a scatter opens"
-              >
-                <Switch
-                  id="settings-pareto-frontier"
-                  checked={settings.paretoFrontier}
-                  onCheckedChange={(paretoFrontier) => update({ paretoFrontier })}
-                />
-              </SettingRow>
-              <SettingRow
-                id="settings-provider-logos"
+              />
+              <SettingSwitch
+                setting="vendorLogos"
                 label="Provider logos"
                 description="Mark points with their lab's logo instead of a dot"
-              >
-                <Switch
-                  id="settings-provider-logos"
-                  checked={settings.vendorLogos}
-                  onCheckedChange={(vendorLogos) => update({ vendorLogos })}
-                />
-              </SettingRow>
-              <SettingRow
-                id="settings-paper-grid"
+              />
+              <SettingSwitch
+                setting="paperGrid"
                 label="Gridlines detail"
                 description="Control the labelled gridlines look, low or graph paper like"
-              >
-                <Switch
-                  id="settings-paper-grid"
-                  checked={settings.paperGrid}
-                  onCheckedChange={(paperGrid) => update({ paperGrid })}
-                />
-              </SettingRow>
+              />
             </div>
           </SettingsSection>
 
