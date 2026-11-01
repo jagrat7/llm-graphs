@@ -1,0 +1,6 @@
+node_modules/
+# Renders, stems, contact sheets and QA evidence; rebuilt by scripts/build.sh and scripts/qa/qa.py.
+# The published videos live in docs/.
+out/
+# The music is downloaded by scripts/audio/fetch-music.sh rather than redistributed.
+audio/*.mp3

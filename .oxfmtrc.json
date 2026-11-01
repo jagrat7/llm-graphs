@@ -16,6 +16,7 @@
     ".venv/**",
     "dist/**",
     "oldpythonref/**",
+    "launch-video-remotion/**",
     "public/**",
     "docs/**",
     "scripts/logo-candidates/**",

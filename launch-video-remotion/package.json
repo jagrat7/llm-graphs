@@ -1,0 +1,24 @@
+{
+  "name": "llm-graphs-launch-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "data": "node scripts/derive-data.mjs",
+    "render:video": "remotion render src/index.ts Launch out/video-silent.mp4 --codec h264 --crf 16 --pixel-format yuv420p --color-space bt709 --concurrency 6",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.539",
+    "@remotion/fonts": "4.0.539",
+    "culori": "^4.0.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.539"
+  },
+  "devDependencies": {
+    "@types/culori": "^4.0.1",
+    "@types/react": "^19.2.0",
+    "typescript": "^5.9.0"
+  }
+}
