@@ -74,15 +74,15 @@ So LLM Graphs pulls those sources into one place and plots them against each oth
 
 <table>
   <tr>
-    <td width="62%">
+    <td valign="top">
       <a href="https://llm-graphs.jr7.dev/?x=cost&y=score&z=duration&ySource=deepswe">
-        <img src="images/chart-3d.png" alt="3D chart of DeepSWE score, task cost and task duration" />
+        <img src="images/chart-3d.png" width="620" alt="3D chart of DeepSWE score, task cost and task duration" />
       </a>
       <p align="center"><sub>Score, cost and duration on DeepSWE, in 3D</sub></p>
     </td>
-    <td width="38%">
+    <td valign="top">
       <a href="https://llm-graphs.jr7.dev/?x=cost&y=score">
-        <img src="images/mobile.png" alt="The chart on a phone-sized screen" />
+        <img src="images/mobile.png" width="196" alt="The chart on a phone-sized screen" />
       </a>
       <p align="center"><sub>On a phone</sub></p>
     </td>
