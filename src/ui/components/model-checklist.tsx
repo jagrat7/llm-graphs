@@ -139,12 +139,13 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
                     <li key={model.model}>
                       <label className={CHECK_ROW_CLASS} {...rowProps?.(model.model)}>
                         {/* The box takes the series colour once checked, so the list
-                          keys the chart the same way the chips do. */}
+                          keys the chart the same way the chips do. The fill is `!` so it
+                          also beats the box's dark-only one. */}
                         <Checkbox
                           checked={selected.has(model.model)}
                           onCheckedChange={() => toggle(model.model)}
                           style={dotStyle}
-                          className="data-checked:text-background data-checked:border-(--dot) data-checked:bg-(--dot) dark:data-checked:bg-(--dot)"
+                          className="data-checked:text-background data-checked:border-(--dot) data-checked:bg-(--dot)!"
                         />
                         <span className="truncate">{model.displayName}</span>
                       </label>
