@@ -1,9 +1,15 @@
 import type { QueryClient } from "@tanstack/react-query"
 
 import { queryOptions, useQuery } from "@tanstack/react-query"
-import { ClientOnly, createFileRoute, defaultParseSearch, useRouter } from "@tanstack/react-router"
+import {
+  ClientOnly,
+  createFileRoute,
+  defaultParseSearch,
+  useRouter,
+  useRouterState,
+} from "@tanstack/react-router"
 import { createIsomorphicFn } from "@tanstack/react-start"
-import { lazy, Suspense, useMemo, useState } from "react"
+import { lazy, Suspense, useEffect, useMemo, useState } from "react"
 // The browser parses search params with this, so it uses zod's tree-shakeable build.
 import { z } from "zod/mini"
 
@@ -252,6 +258,21 @@ function ComparePage() {
     setMorphPhase("instant")
     updateSearch({ z: undefined, zSource: undefined })
   }
+
+  // A graph shortcut promises a chart, so when none of the picks has results on its benchmark
+  // it pins that benchmark's defaults to the URL. The saved picks stay as they were.
+  const fromGraphShortcut = useRouterState({
+    select: (state) => state.location.state.graphShortcut === true,
+  })
+  useEffect(() => {
+    const picks = search.models ?? pickedModels
+    if (!fromGraphShortcut || !data || picks == null) return
+    if (data.models.some((model) => picks.includes(model.model))) return
+    void navigate({
+      search: (previous) => ({ ...previous, models: data.defaultModels }),
+      replace: true,
+    })
+  }, [fromGraphShortcut, data, search.models, pickedModels, navigate])
 
   // A shared link's models win, then this browser's own picks, then the benchmark's defaults.
   const selected = useMemo(

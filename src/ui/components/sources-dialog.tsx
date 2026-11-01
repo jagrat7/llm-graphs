@@ -191,6 +191,7 @@ export default function SourcesDialog() {
                             ...graph.search,
                             z: undefined,
                           })}
+                          state={{ graphShortcut: true }}
                           onClick={() => setOpen(false)}
                           className="text-muted-foreground hover:text-primary text-control -mx-1 inline-flex items-start gap-1.5 rounded-sm px-1 py-0.5 transition-colors hover:underline"
                         >

@@ -24,4 +24,8 @@ declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof getRouter>
   }
+  interface HistoryState {
+    /** Set by a Sources dialog graph link, which promises a chart with models on it. */
+    graphShortcut?: boolean
+  }
 }
