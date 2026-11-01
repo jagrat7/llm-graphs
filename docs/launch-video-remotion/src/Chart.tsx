@@ -105,6 +105,8 @@ function viewAt(frame: number): View {
   const turn = progress(frame, at(14), Math.round(BAR), easeInOutSoft)
   const punch = punchIn * (1 - turn)
   const orbit = progress(frame, at(15), at(18) - at(15), easeInOutSoft)
+  // Bar 16: the cube eases right to give the share menu the left of the sheet.
+  const shareRoom = progress(frame, at(16) - 6, 22, easeInOutSoft)
   return {
     cube: turn,
     yaw: -(0.6 * turn + 0.4 * orbit),
@@ -113,7 +115,7 @@ function viewAt(frame: number): View {
     zoom: lerp(1, 2.3, punch),
     fx: lerp(PLOT_CX, PUNCH_FOCUS.x, punch),
     fy: lerp(PLOT_CY, PUNCH_FOCUS.y, punch),
-    tx: lerp(PLOT_CX, PUNCH_TARGET.x, punch),
+    tx: lerp(PLOT_CX, PUNCH_TARGET.x, punch) + 130 * shareRoom,
     ty: lerp(PLOT_CY, PUNCH_TARGET.y, punch),
   }
 }

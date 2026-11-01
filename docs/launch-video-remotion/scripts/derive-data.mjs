@@ -256,7 +256,7 @@ const scraps = [
 
 // The benchmarks' own marks, read from the app's source-logo.tsx so the video uses the same art.
 const logoFile = readFileSync(
-  new URL("../../src/ui/components/source-logo.tsx", import.meta.url),
+  new URL("../../../src/ui/components/source-logo.tsx", import.meta.url),
   "utf8",
 )
 const literal = logoFile.match(/const SOURCE_MARKS[^=]*=\s*(\{[\s\S]*?\n\})\n/)?.[1]

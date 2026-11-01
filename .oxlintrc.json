@@ -27,7 +27,7 @@
     ".venv/**",
     "dist/**",
     "oldpythonref/**",
-    "launch-video-remotion/**",
+    "docs/launch-video-remotion/**",
     "public/**",
     "src/ui/components/ui/**",
     "src/ui/routeTree.gen.ts",

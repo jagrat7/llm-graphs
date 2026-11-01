@@ -1,10 +1,10 @@
 # LLM Graphs launch video
 
 A 40.7 s launch film for [LLM Graphs](https://llm-graphs.jr7.dev), built in
-[Remotion](https://www.remotion.dev/) with two [remocn](https://remocn.dev) components. One sheet
+[Remotion](https://www.remotion.dev/) with one [remocn](https://remocn.dev) component. One sheet
 of graph paper carries the whole film: ten real leaderboards land on it, fold into one chart, the
 chart switches benchmarks, draws its Pareto frontier, punches in on one model's reasoning levels
-and source, turns into a cube, shows its link, and closes on the wordmark. The last frame matches
+and source, turns into a cube, opens its share menu, and closes on the wordmark. The last frame matches
 the first, so it loops. The published copies are `docs/launch.mp4` and `docs/launch-dark.mp4`;
 everything in `out/` is a local build product and is not committed.
 
@@ -47,8 +47,11 @@ and muxes it onto both pictures without re-encoding them.
   colour, dashed frontier, run lines per evaluation configuration), with animated domains for
   benchmark switches and a projection where the flat plot is the cube at zero depth.
 - `src/Headline.tsx`, `src/Tooltip.tsx`, `src/EndCard.tsx`, `src/Pad.tsx`.
+- `src/ShareMenu.tsx`: the chart's share menu (`src/ui/components/chart-share-menu.tsx`) at three
+  times its CSS size: it opens, the highlight moves from "Copy link" to "Download image", and the
+  trigger reports "Image saved".
 - remocn: `rolodex-flip` (the benchmark name in the headline; its easing changed to the film's
-  curves) and `caret` plus `useTypewriter` from `remocn-ui` (the typed link).
+  curves).
 - Fonts are the app's own: Instrument Sans, Martian Mono and Space Mono (wordmark only), copied
   from the app's `@fontsource` packages into `public/fonts/` (SIL Open Font License).
 

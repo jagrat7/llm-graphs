@@ -6,6 +6,7 @@ import { EndCard } from "./EndCard"
 import { Headline } from "./Headline"
 import { Pad } from "./Pad"
 import { Scraps } from "./Scraps"
+import { ShareMenu } from "./ShareMenu"
 import { ThemeContext } from "./theme-context"
 import { DARK, LIGHT } from "./theme"
 
@@ -25,6 +26,7 @@ export function Launch({ theme }: LaunchProps) {
         <Scraps />
         <Chart />
         <Headline />
+        <ShareMenu />
         <EndCard />
       </AbsoluteFill>
     </ThemeContext.Provider>
