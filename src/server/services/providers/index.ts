@@ -6,6 +6,7 @@ import { AutomationBenchProvider } from "./automation-bench/automation-bench"
 import { ARCPrizeProvider } from "./arc-prize/arc-prize"
 import { CursorBenchProvider } from "./cursor-bench/cursor-bench"
 import { FrontierCodeProvider } from "./frontier-code/frontier-code"
+import { ReactBenchProvider } from "./react-bench/react-bench"
 import { SWEBenchProvider } from "./swe-bench/swe-bench"
 import { LiveCodeBenchProvider } from "./live-code-bench/live-code-bench"
 import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
@@ -32,6 +33,7 @@ const metricSources = {
   arcPrize: new ARCPrizeProvider(),
   cursorBench: new CursorBenchProvider(),
   frontierCode: new FrontierCodeProvider(),
+  reactBench: new ReactBenchProvider(),
   sweBench: new SWEBenchProvider(),
   liveCodeBench: new LiveCodeBenchProvider(),
   modelsDevListing: new ModelsDevListingProvider(),

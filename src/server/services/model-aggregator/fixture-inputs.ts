@@ -15,6 +15,7 @@ import modelsDevListingFixture from "./fixtures/models-dev-listing.json"
 import arcPrizeFixture from "./fixtures/arc-prize.json"
 import cursorBenchFixture from "./fixtures/cursor-bench.json"
 import frontierCodeFixture from "./fixtures/frontier-code.json"
+import reactBenchFixture from "./fixtures/react-bench.json"
 import sweBenchFixture from "./fixtures/swe-bench.json"
 import liveCodeBenchFixture from "./fixtures/live-code-bench.json"
 import { catalogInput, metricSourceInput } from "./inputs"
@@ -24,6 +25,7 @@ export const fixtures = {
   liveCodeBench: liveCodeBenchFixture,
   cursorBench: cursorBenchFixture,
   frontierCode: frontierCodeFixture,
+  reactBench: reactBenchFixture,
   arcPrize: arcPrizeFixture,
   automationBench: automationBenchFixture,
   terminalBench: terminalBenchFixture,
@@ -56,6 +58,7 @@ export function allFixtureInputs(): AggregatorInputs {
     metricSourceInput(ProvidersService.metricSources.liveCodeBench, fixtures.liveCodeBench),
     metricSourceInput(ProvidersService.metricSources.cursorBench, fixtures.cursorBench),
     metricSourceInput(ProvidersService.metricSources.frontierCode, fixtures.frontierCode),
+    metricSourceInput(ProvidersService.metricSources.reactBench, fixtures.reactBench),
     metricSourceInput(ProvidersService.metricSources.arcPrize, fixtures.arcPrize),
     metricSourceInput(ProvidersService.metricSources.metr, fixtures.metr),
     metricSourceInput(ProvidersService.metricSources.arena, fixtures.arena),

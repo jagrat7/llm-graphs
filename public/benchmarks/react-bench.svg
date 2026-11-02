@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+  <!-- The nav brand mark at favicon scale: the variant-1 atom (nucleus ring +
+       one orbit at 30°) from react-atom.tsx, strokes thickened for 16–32px
+       rendering. React blue, following the browser's color scheme (the tab
+       chrome, not the site theme). -->
+  <style>
+    .s { stroke: #149eca; }
+    @media (prefers-color-scheme: dark) {
+      .s { stroke: #61dafb; }
+    }
+  </style>
+  <g class="s" fill="none" stroke-width="5" stroke-linecap="round">
+    <circle cx="38" cy="38" r="34" opacity="0.75" />
+    <ellipse cx="38" cy="38" rx="34" ry="15.3" transform="rotate(30 38 38)" />
+  </g>
+</svg>
