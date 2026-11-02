@@ -79,9 +79,17 @@ function findVersion(node: unknown): unknown {
  * site's JavaScript. Versions are keyed, so a new revision cannot replace the pinned one.
  */
 export function parseReactBenchPage(html: string): ReactBenchPayload {
-  const flight = [...html.matchAll(/self\.__next_f\.push\((\[[\s\S]*?\])\)<\/script>/g)]
-    .map((match): unknown => JSON.parse(match[1]))
-    .map((chunk) => (Array.isArray(chunk) && typeof chunk[1] === "string" ? chunk[1] : ""))
+  // An unreadable chunk elsewhere on the page must not hide an intact leaderboard; one
+  // inside it leaves a line that fails to parse, so the leaderboard is never read partially.
+  const flight = [...html.matchAll(/self\.__next_f\.push\(([\s\S]*?)\)<\/script>/g)]
+    .map((match) => {
+      try {
+        const chunk: unknown = JSON.parse(match[1])
+        return Array.isArray(chunk) && typeof chunk[1] === "string" ? chunk[1] : ""
+      } catch {
+        return ""
+      }
+    })
     .join("")
   let found: unknown
   for (const line of flight.split("\n")) {

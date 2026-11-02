@@ -98,3 +98,13 @@ it("refuses a page without the pinned version or with a duplicate run identity",
     ),
   ).toThrow(/duplicate/)
 })
+
+it("reads around an unreadable chunk but never a damaged leaderboard", () => {
+  const html = page([run("claude-opus-5-5", "max", 0.5)])
+  const broken = `<script>self.__next_f.push([1,"oops)</script>`
+  expect(parseReactBenchPage(broken + html).rows).toHaveLength(1)
+  const chunks = html.split("</script>")
+  expect(() =>
+    parseReactBenchPage(`${chunks[0].slice(0, -40)}</script>${chunks[1]}</script>`),
+  ).toThrow(/leaderboard missing/)
+})
