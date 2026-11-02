@@ -34,7 +34,12 @@ import {
   metricTicks,
   unitPosition,
 } from "#/ui/lib/comparison-plot-data"
-import { CHART_FRAME_CLASS } from "#/ui/lib/layout-styles"
+import {
+  CHART_FRAME_CLASS,
+  CHART_TOOLBAR_CLASS,
+  CHART_TOOLBAR_ACTIONS_CLASS,
+  CHART_TOOLBAR_CONTROLS_CLASS,
+} from "#/ui/lib/layout-styles"
 import {
   formatMetric,
   metricAxisLabel,
@@ -1274,37 +1279,40 @@ export function ComparisonChart3D({
       className={`relative flex flex-col ${CHART_FRAME_CLASS}`}
       data-chart-frame="loaded"
     >
-      {/* One quiet track with only the current view filled, so the control recedes
-          behind the plot instead of reading as three separate buttons. */}
-      <div className="absolute top-3 left-3 z-20 flex items-center gap-0.5">
-        {Object.keys(VIEW_PRESETS).map((label) => (
-          <Button
-            key={label}
-            size="sm"
-            variant="ghost"
-            aria-pressed={preset.name === label}
-            onClick={() => setPreset((current) => ({ name: label, nonce: current.nonce + 1 }))}
-            className={cn(
-              "px-2 font-normal",
-              preset.name === label ? "bg-muted text-foreground" : "text-muted-foreground",
-            )}
-          >
-            {label}
-          </Button>
-        ))}
-      </div>
-      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
-        <ChartImportButton />
-        <ChartShareMenu
-          data={data}
-          sources={sources}
-          getLink={getShareLink}
-          renderPlot={(scale) => {
-            if (!plotRef.current || !frameReader.current) throw new Error("3D chart is not ready")
+      <div className={CHART_TOOLBAR_CLASS}>
+        {/* One quiet track with only the current view filled, so the control recedes
+            behind the plot instead of reading as three separate buttons. */}
+        <div className={cn(CHART_TOOLBAR_CONTROLS_CLASS, "gap-0.5")}>
+          {Object.keys(VIEW_PRESETS).map((label) => (
+            <Button
+              key={label}
+              size="sm"
+              variant="ghost"
+              aria-pressed={preset.name === label}
+              onClick={() => setPreset((current) => ({ name: label, nonce: current.nonce + 1 }))}
+              className={cn(
+                // On a phone they join the toolbar's line, so they take its buttons' weight.
+                "px-2 font-normal max-sm:font-medium",
+                preset.name === label ? "bg-muted text-foreground" : "text-muted-foreground",
+              )}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
+        <div className={CHART_TOOLBAR_ACTIONS_CLASS}>
+          <ChartImportButton />
+          <ChartShareMenu
+            data={data}
+            sources={sources}
+            getLink={getShareLink}
+            renderPlot={(scale) => {
+              if (!plotRef.current || !frameReader.current) throw new Error("3D chart is not ready")
 
-            return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
-          }}
-        />
+              return glPlotImage(plotRef.current, frameReader.current, labelLayerRef.current, scale)
+            }}
+          />
+        </div>
       </div>
       <p className="text-muted-foreground text-control pointer-events-none absolute right-3 bottom-3 z-20 hidden items-center gap-1.5 lg:flex">
         <RiDragMove2Line aria-hidden="true" className="size-3.5" />
