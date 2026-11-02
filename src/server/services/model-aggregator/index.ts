@@ -62,6 +62,8 @@ export class ModelAggregatorService {
   private checking: Promise<Aggregation> | undefined
   /** One build at a time, whether a request waits on it or it runs after the response. */
   private building: Promise<FullAggregation> | undefined
+  /** One catch-up at a time; a failure keeps the snapshot on hand, and the next check retries. */
+  private catchingUp: Promise<void> | undefined
 
   constructor(
     private readonly cache = new SourceCache(),
@@ -127,14 +129,40 @@ export class ModelAggregatorService {
       : SOURCES.map((source) => stamps[source.cacheKey]).join("|")
     if (version != null && this.latest?.version === version) return this.latest
 
-    if (!this.latest) {
+    // A cold instance reads the shared copy now, so its catch-up needn't read it again.
+    const sharedRead = !this.latest
+    if (sharedRead) {
       const built = await this.readBuilt()
       if (built) this.latest = { ...built, derivation: null, report: null }
     }
     if (!this.latest) return this.rebuild()
-    if (this.latest.version !== version) this.background(this.rebuildQuietly())
+    if (this.latest.version !== version) {
+      this.catchingUp ??= this.catchUp(sharedRead ? null : version).finally(() => {
+        this.catchingUp = undefined
+      })
+      this.background(this.catchingUp)
+    }
 
     return this.latest
+  }
+
+  /**
+   * Brings an outdated snapshot up to `version` after the response: from the copy another
+   * instance of this deploy saved when it has one, by building otherwise. With no version to
+   * look for, it builds.
+   */
+  private async catchUp(version: string | null) {
+    try {
+      const built = version == null ? null : await this.readBuilt()
+      if (built != null && built.version === version) {
+        this.latest = { ...built, derivation: null, report: null }
+        return
+      }
+
+      await this.rebuild()
+    } catch (error) {
+      console.error("[aggregator] background update failed:", error)
+    }
   }
 
   /** Builds the snapshot, joining a build already running. */
@@ -144,15 +172,6 @@ export class ModelAggregatorService {
     })
 
     return this.building
-  }
-
-  /** A build no request waits on: a failure keeps the snapshot on hand, and the next check retries. */
-  private async rebuildQuietly() {
-    try {
-      await this.rebuild()
-    } catch (error) {
-      console.error("[aggregator] background rebuild failed:", error)
-    }
   }
 
   /** Reads every source's payload and builds the snapshot, as each request used to. */

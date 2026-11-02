@@ -173,6 +173,31 @@ describe("snapshot caching", () => {
     expect(store.payloadReads).toBe(payloads.length)
   })
 
+  it("lets a warm instance take the snapshot another instance saved instead of rebuilding", async () => {
+    const store = await seededStore()
+    const clock = { now: start }
+    const first = service(store, clock)
+    const second = service(store, clock)
+    await first.getSnapshot()
+    await settle()
+    const before = await second.getSnapshot()
+    await settle()
+
+    const refreshedAt = new Date(start + 1).toISOString()
+    await refreshMetr(store, refreshedAt)
+    clock.now += 10_000
+    await first.getSnapshot()
+    await settle()
+
+    store.reset()
+    clock.now += 10_000
+    expect(await second.getSnapshot()).toBe(before)
+    await settle()
+    expect((await second.getSnapshot()).fetchedAt.metr).toBe(refreshedAt)
+    expect(store.payloadReads).toBe(0)
+    expect(store.sharedReads).toBe(1)
+  })
+
   it("lets a cold instance serve its deploy's older snapshot while it rebuilds", async () => {
     const store = await seededStore()
     const clock = { now: start }
