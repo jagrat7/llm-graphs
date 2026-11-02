@@ -13,8 +13,21 @@ export const CHART_FRAME_CLASS =
 /** A frame whose content needs more than the floor (the range view's rows) asks through this. */
 export const CHART_MIN_HEIGHT_VAR = "--chart-min-height"
 export type ChartFrameStyle = CSSProperties & { [CHART_MIN_HEIGHT_VAR]?: string }
-/** The 2D chart's toolbar row above its plot, which a frame's minimum has to make room for. */
-export const CHART_TOOLBAR_HEIGHT_PX = 40
+/**
+ * The height of a chart's toolbar, which a frame's minimum has to make room for. It lives in
+ * `styles.css`, since it changes with the pointer's control size and with the phone layout.
+ */
+export const CHART_TOOLBAR_HEIGHT = "var(--chart-toolbar-height)"
+/**
+ * Every chart's toolbar, above the plot rather than over it, since the plot's corners are
+ * where points land. From `sm` up it is one row: the chart's controls on the left, Import and
+ * Share on the right. A phone has no room for both, so there each group takes a centered row.
+ */
+export const CHART_TOOLBAR_CLASS = "flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 pb-2"
+export const CHART_TOOLBAR_CONTROLS_CLASS =
+  "flex flex-wrap items-center gap-2 max-sm:basis-full max-sm:justify-center"
+export const CHART_TOOLBAR_ACTIONS_CLASS =
+  "ml-auto flex items-center gap-2 max-sm:ml-0 max-sm:basis-full max-sm:justify-center"
 export const TABLE_WIDTH_CLASS = "w-full min-w-[52rem]"
 /**
  * Every leaderboard cell, heading row included, shared with its skeleton so the loading

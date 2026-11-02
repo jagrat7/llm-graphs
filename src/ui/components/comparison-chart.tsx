@@ -30,7 +30,10 @@ import {
 import {
   CHART_FRAME_CLASS,
   CHART_MIN_HEIGHT_VAR,
-  CHART_TOOLBAR_HEIGHT_PX,
+  CHART_TOOLBAR_CLASS,
+  CHART_TOOLBAR_ACTIONS_CLASS,
+  CHART_TOOLBAR_CONTROLS_CLASS,
+  CHART_TOOLBAR_HEIGHT,
   type ChartFrameStyle,
 } from "#/ui/lib/layout-styles"
 import { PARETO_STYLE } from "#/ui/lib/chart-marks"
@@ -350,7 +353,7 @@ export function ComparisonChart({
   const frameStyle: ChartFrameStyle | undefined =
     view === "ranges"
       ? {
-          [CHART_MIN_HEIGHT_VAR]: `${rangeMinHeight(data.series.length) + CHART_TOOLBAR_HEIGHT_PX}px`,
+          [CHART_MIN_HEIGHT_VAR]: `calc(${rangeMinHeight(data.series.length)}px + ${CHART_TOOLBAR_HEIGHT})`,
         }
       : undefined
 
@@ -366,25 +369,25 @@ export function ComparisonChart({
       style={frameStyle}
     >
       <LogoMasks logoClass={logoClass} />
-      {/* A row of its own rather than an overlay: the plot's top-right corner is where
-          the strongest, priciest models land. It wraps rather than overflow a phone. */}
-      <div className="flex shrink-0 flex-wrap items-center gap-2 pb-2">
-        {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
-        {logAxes.map((axis) => (
-          <LogToggle
-            key={axis}
-            label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
-            pressed={data.scales[axis] === "log"}
-            onPressedChange={(next) => onLogMetricChange(data.metrics[axis]!, next)}
-          />
-        ))}
-        <div className="ml-auto flex items-center gap-2">
+      <div className={CHART_TOOLBAR_CLASS}>
+        <div className={CHART_TOOLBAR_CONTROLS_CLASS}>
+          {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
+          {logAxes.map((axis) => (
+            <LogToggle
+              key={axis}
+              label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
+              pressed={data.scales[axis] === "log"}
+              onPressedChange={(next) => onLogMetricChange(data.metrics[axis]!, next)}
+            />
+          ))}
           {flat != null && (
             <StackedViewSwitch
               view={view}
               onChange={(next) => setChoices((previous) => ({ ...previous, [metricsKey]: next }))}
             />
           )}
+        </div>
+        <div className={CHART_TOOLBAR_ACTIONS_CLASS}>
           <ChartImportButton />
           <ChartShareMenu
             data={data}
