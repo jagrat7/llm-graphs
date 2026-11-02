@@ -174,6 +174,6 @@ export function rangeDefinition(
     focusRing: { radius: FOCUS_RING_RADIUS, strokeWidth: 1.5, fill: "none" },
     maxFocusDistance: 0,
     svgAnimation: true,
-    tooltip: chartTooltip(data, sources, info, { rows: true }),
+    tooltip: chartTooltip(data, sources, info),
   })
 }
