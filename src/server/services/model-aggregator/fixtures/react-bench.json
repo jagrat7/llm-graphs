@@ -1,0 +1,1816 @@
+{
+  "fetchedAt": "2026-11-01T08:40:50.267Z",
+  "payload": {
+    "rows": [
+      {
+        "id": "claude-opus-5-5:max",
+        "model": "claude-opus-5-5",
+        "effort": "max",
+        "passRate": 0.5435897435897435,
+        "ciLo": 0.49486434604853324,
+        "ciHi": 0.5923151411309538,
+        "avgCost": 5.642925128205128,
+        "avgOutTokens": 131659.37948717948,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8307692307692308
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5-5:xhigh",
+        "model": "claude-opus-5-5",
+        "effort": "xhigh",
+        "passRate": 0.5076923076923077,
+        "ciLo": 0.48888808082544377,
+        "ciHi": 0.5264965345591716,
+        "avgCost": 1.6197953846153845,
+        "avgOutTokens": 39634.22051282051,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5-1:max",
+        "model": "claude-fable-5-1",
+        "effort": "max",
+        "passRate": 0.49230769230769234,
+        "ciLo": 0.47350346544082844,
+        "ciHi": 0.5111119191745562,
+        "avgCost": 5.49921846153846,
+        "avgOutTokens": 69979.40512820512,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7897435897435897
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-sol:max",
+        "model": "gpt-5.6-sol",
+        "effort": "max",
+        "passRate": 0.4666666666666667,
+        "ciLo": 0.4154149833505546,
+        "ciHi": 0.5179183499827787,
+        "avgCost": 3.0554010256410256,
+        "avgOutTokens": 26024.08205128205,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7897435897435897
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5-1:xhigh",
+        "model": "claude-fable-5-1",
+        "effort": "xhigh",
+        "passRate": 0.46153846153846156,
+        "ciLo": 0.42600181304806073,
+        "ciHi": 0.4970751100288624,
+        "avgCost": 3.739393846153846,
+        "avgOutTokens": 47168.97948717949,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5-5:high",
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "passRate": 0.46153846153846156,
+        "ciLo": 0.4297535168516409,
+        "ciHi": 0.4933234062252822,
+        "avgCost": 0.6748846153846157,
+        "avgOutTokens": 15216.276923076923,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7948717948717948
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5:max",
+        "model": "claude-fable-5",
+        "effort": "max",
+        "passRate": 0.4461538461538462,
+        "ciLo": 0.42052800449579014,
+        "ciHi": 0.4717796878119022,
+        "avgCost": 12.761262564102566,
+        "avgOutTokens": 57656.7282051282,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8102564102564103
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5-1:high",
+        "model": "claude-fable-5-1",
+        "effort": "high",
+        "passRate": 0.441025641025641,
+        "ciLo": 0.42222141415877706,
+        "ciHi": 0.45982986789250496,
+        "avgCost": 1.73849641025641,
+        "avgOutTokens": 21895.389743589745,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5-5:medium",
+        "model": "claude-opus-5-5",
+        "effort": "medium",
+        "passRate": 0.4358974358974359,
+        "ciLo": 0.38564102564102565,
+        "ciHi": 0.48615384615384616,
+        "avgCost": 0.48735743589743613,
+        "avgOutTokens": 10675.31794871795,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7846153846153846
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5:xhigh",
+        "model": "claude-fable-5",
+        "effort": "xhigh",
+        "passRate": 0.4307692307692308,
+        "ciLo": 0.36640962304939295,
+        "ciHi": 0.49512883848906863,
+        "avgCost": 9.16849846153846,
+        "avgOutTokens": 39289.933333333334,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8256410256410256
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5:max",
+        "model": "claude-opus-5",
+        "effort": "max",
+        "passRate": 0.4205128205128205,
+        "ciLo": 0.38642726470019095,
+        "ciHi": 0.4545983763254501,
+        "avgCost": 5.942708205128204,
+        "avgOutTokens": 77950.98461538462,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7384615384615385
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5:high",
+        "model": "claude-opus-5",
+        "effort": "high",
+        "passRate": 0.4153846153846154,
+        "ciLo": 0.3572086145398235,
+        "ciHi": 0.4735606162294073,
+        "avgCost": 3.6831471794871784,
+        "avgOutTokens": 43678.635897435895,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7384615384615385
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-sol:xhigh",
+        "model": "gpt-5.6-sol",
+        "effort": "xhigh",
+        "passRate": 0.41025641025641024,
+        "ciLo": 0.3682088807177747,
+        "ciHi": 0.4523039397950458,
+        "avgCost": 2.0232528205128193,
+        "avgOutTokens": 17532.415384615386,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7487179487179487
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5:high",
+        "model": "claude-fable-5",
+        "effort": "high",
+        "passRate": 0.40512820512820513,
+        "ciLo": 0.38632397826134124,
+        "ciHi": 0.423932431995069,
+        "avgCost": 6.796586666666666,
+        "avgOutTokens": 28241.215384615385,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7897435897435897
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-terra:max",
+        "model": "gpt-5.6-terra",
+        "effort": "max",
+        "passRate": 0.38974358974358975,
+        "ciLo": 0.3651230774571537,
+        "ciHi": 0.41436410203002577,
+        "avgCost": 1.132318974358974,
+        "avgOutTokens": 29925.589743589742,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7333333333333333
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-terra:high",
+        "model": "gpt-5.6-terra",
+        "effort": "high",
+        "passRate": 0.37435897435897436,
+        "ciLo": 0.3487331327009183,
+        "ciHi": 0.3999848160170304,
+        "avgCost": 0.4001405128205129,
+        "avgOutTokens": 10386.435897435897,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7384615384615385
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-sol:high",
+        "model": "gpt-5.6-sol",
+        "effort": "high",
+        "passRate": 0.36923076923076925,
+        "ciLo": 0.34912820512820514,
+        "ciHi": 0.38933333333333336,
+        "avgCost": 1.582831794871795,
+        "avgOutTokens": 13451.917948717948,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7589743589743589
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-terra:xhigh",
+        "model": "gpt-5.6-terra",
+        "effort": "xhigh",
+        "passRate": 0.36923076923076925,
+        "ciLo": 0.3351452134181397,
+        "ciHi": 0.4033163250433988,
+        "avgCost": 0.5981630769230771,
+        "avgOutTokens": 16463.4358974359,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7692307692307693
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "alibaba/qwen3.8-max:xhigh",
+        "model": "alibaba/qwen3.8-max",
+        "effort": "xhigh",
+        "passRate": 0.3641025641025641,
+        "ciLo": 0.31537716656135384,
+        "ciHi": 0.41282796164377433,
+        "avgCost": 1.6230702564102557,
+        "avgOutTokens": 55024.15897435897,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.764102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5:xhigh",
+        "model": "claude-opus-5",
+        "effort": "xhigh",
+        "passRate": 0.3641025641025641,
+        "ciLo": 0.3208703653246063,
+        "ciHi": 0.4073347628805219,
+        "avgCost": 4.931038974358975,
+        "avgOutTokens": 59937.94871794872,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6820512820512821
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "callstack/apex:medium",
+        "model": "callstack/apex",
+        "effort": "medium",
+        "passRate": 0.35384615384615387,
+        "ciLo": 0.29567015300136196,
+        "ciHi": 0.4120221546909458,
+        "avgCost": 1.4236620512820517,
+        "avgOutTokens": 108609.51794871796,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6615384615384615
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5:low",
+        "model": "claude-fable-5",
+        "effort": "low",
+        "passRate": 0.35384615384615387,
+        "ciLo": 0.31061395506819606,
+        "ciHi": 0.3970783526241117,
+        "avgCost": 3.052098974358974,
+        "avgOutTokens": 12399.015384615384,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7692307692307693
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4.1-flash-1017:medium",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "effort": "medium",
+        "passRate": 0.3487179487179487,
+        "ciLo": 0.29230526811735696,
+        "ciHi": 0.40513062931854044,
+        "avgCost": 0.09533948717948719,
+        "avgOutTokens": 36115.08717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8153846153846154
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-sol:medium",
+        "model": "gpt-5.6-sol",
+        "effort": "medium",
+        "passRate": 0.3487179487179487,
+        "ciLo": 0.2901094065954011,
+        "ciHi": 0.4073264908404963,
+        "avgCost": 1.0973200000000005,
+        "avgOutTokens": 8829.923076923076,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7128205128205128
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "callstack/apex:xhigh",
+        "model": "callstack/apex",
+        "effort": "xhigh",
+        "passRate": 0.3435897435897436,
+        "ciLo": 0.31343589743589745,
+        "ciHi": 0.37374358974358973,
+        "avgCost": 1.9810076923076922,
+        "avgOutTokens": 146320.94871794872,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6615384615384615
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5:medium",
+        "model": "claude-opus-5",
+        "effort": "medium",
+        "passRate": 0.3435897435897436,
+        "ciLo": 0.30276124288952183,
+        "ciHi": 0.38441824428996535,
+        "avgCost": 2.041929230769231,
+        "avgOutTokens": 22889.68717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7435897435897436
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4.1-flash-1017:low",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "effort": "low",
+        "passRate": 0.3435897435897436,
+        "ciLo": 0.29184760236837304,
+        "ciHi": 0.39533188481111414,
+        "avgCost": 0.07469897435897437,
+        "avgOutTokens": 28040.923076923078,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7794871794871795
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.8-flash:max",
+        "model": "google/gemini-3.8-flash",
+        "effort": "max",
+        "passRate": 0.3435897435897436,
+        "ciLo": 0.30276124288952183,
+        "ciHi": 0.38441824428996535,
+        "avgCost": 1.629012820512821,
+        "avgOutTokens": 100155.6358974359,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8205128205128205
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5-1:medium",
+        "model": "claude-fable-5-1",
+        "effort": "medium",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.3284102564102564,
+        "ciHi": 0.34851282051282056,
+        "avgCost": 1.1192861538461545,
+        "avgOutTokens": 13669.615384615385,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7435897435897436
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.6:high",
+        "model": "cursor-grok-4.6",
+        "effort": "high",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.30512520723540215,
+        "ciHi": 0.3717978696876748,
+        "avgCost": 1.683129743589743,
+        "avgOutTokens": 37799.54871794872,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8205128205128205
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.6:xhigh",
+        "model": "cursor-grok-4.6",
+        "effort": "xhigh",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.28480237596415037,
+        "ciHi": 0.3921207009589266,
+        "avgCost": 2.041361025641025,
+        "avgOutTokens": 45738.446153846155,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7948717948717948
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4-pro-0813:max",
+        "model": "deepseek/deepseek-v4-pro-0813",
+        "effort": "max",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.26324463099408285,
+        "ciHi": 0.4136784459289941,
+        "avgCost": 0.08933128205128206,
+        "avgOutTokens": 45854.389743589745,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7435897435897436
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-luna:max",
+        "model": "gpt-5.6-luna",
+        "effort": "max",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.30512520723540215,
+        "ciHi": 0.3717978696876748,
+        "avgCost": 0.8414107692307695,
+        "avgOutTokens": 31601.17435897436,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-sol:low",
+        "model": "gpt-5.6-sol",
+        "effort": "low",
+        "passRate": 0.3384615384615385,
+        "ciLo": 0.3015307700318844,
+        "ciHi": 0.3753923068911926,
+        "avgCost": 0.5925497435897434,
+        "avgOutTokens": 4681.3538461538465,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6923076923076923
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "moonshotai/kimi-k3:mini-swe-agent-preinstalled",
+        "model": "moonshotai/kimi-k3",
+        "effort": "",
+        "passRate": 0.3333333333333333,
+        "ciLo": 0.2640596524253927,
+        "ciHi": 0.40260701424127393,
+        "avgCost": 1.9188379487179485,
+        "avgOutTokens": 38119.11282051282,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7128205128205128
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "particle-ai/particle-1:medium",
+        "model": "particle-ai/particle-1",
+        "effort": "medium",
+        "passRate": 0.3333333333333333,
+        "ciLo": 0.2806239655791411,
+        "ciHi": 0.38604270108752553,
+        "avgCost": 0.17844102564102568,
+        "avgOutTokens": 27298.33846153846,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7794871794871795
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-fable-5-1:low",
+        "model": "claude-fable-5-1",
+        "effort": "low",
+        "passRate": 0.3282051282051282,
+        "ciLo": 0.2658385632150203,
+        "ciHi": 0.3905716931952361,
+        "avgCost": 0.842929230769231,
+        "avgOutTokens": 10291.892307692307,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7230769230769231
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "particle-ai/particle-1:high",
+        "model": "particle-ai/particle-1",
+        "effort": "high",
+        "passRate": 0.3282051282051282,
+        "ciLo": 0.288,
+        "ciHi": 0.36841025641025643,
+        "avgCost": 0.1750184615384616,
+        "avgOutTokens": 26833.241025641026,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "zai/glm-5.3-flash:max",
+        "model": "zai/glm-5.3-flash",
+        "effort": "max",
+        "passRate": 0.3282051282051282,
+        "ciLo": 0.3094009013382643,
+        "ciHi": 0.3470093550719921,
+        "avgCost": 0.06507948717948728,
+        "avgOutTokens": 243.52307692307693,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7025641025641025
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-4-8:max",
+        "model": "claude-opus-4-8",
+        "effort": "max",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.29292307692307695,
+        "ciHi": 0.35323076923076924,
+        "avgCost": 6.7736317948718,
+        "avgOutTokens": 72899.7435897436,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7230769230769231
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-sonnet-5:xhigh",
+        "model": "claude-sonnet-5",
+        "effort": "xhigh",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.28899136726429353,
+        "ciHi": 0.35716247888955266,
+        "avgCost": 3.1679717948717934,
+        "avgOutTokens": 47751.91282051282,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7230769230769231
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.5:low",
+        "model": "cursor-grok-4.5",
+        "effort": "low",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.2545363176254044,
+        "ciHi": 0.3916175285284418,
+        "avgCost": 0.945477435897436,
+        "avgOutTokens": 20618.958974358975,
+        "trials": 195,
+        "scored": 195,
+        "hasEstimatedUsage": true,
+        "testsOnly": {
+          "passRate": 0.7384615384615385
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.7:low",
+        "model": "cursor-grok-4.7",
+        "effort": "low",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.273835898504051,
+        "ciHi": 0.3723179476497952,
+        "avgCost": 0.6781779487179488,
+        "avgOutTokens": 16552.276923076923,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7282051282051282
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4.1-flash-1017:high",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "effort": "high",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.27926440036236044,
+        "ciHi": 0.36688944579148575,
+        "avgCost": 0.09279333333333337,
+        "avgOutTokens": 35266.08205128205,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.8102564102564103
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-luna:high",
+        "model": "gpt-5.6-luna",
+        "effort": "high",
+        "passRate": 0.3230769230769231,
+        "ciLo": 0.28224842237670134,
+        "ciHi": 0.36390542377714485,
+        "avgCost": 0.3798692307692306,
+        "avgOutTokens": 15720.65641025641,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6974358974358974
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.5:high",
+        "model": "cursor-grok-4.5",
+        "effort": "high",
+        "passRate": 0.31794871794871793,
+        "ciLo": 0.2662065767273474,
+        "ciHi": 0.3696908591700885,
+        "avgCost": 0.953198461538461,
+        "avgOutTokens": 20921.271794871795,
+        "trials": 195,
+        "scored": 195,
+        "hasEstimatedUsage": true,
+        "testsOnly": {
+          "passRate": 0.7474226804123711
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.7:medium",
+        "model": "cursor-grok-4.7",
+        "effort": "medium",
+        "passRate": 0.31794871794871793,
+        "ciLo": 0.27712021724849617,
+        "ciHi": 0.3587772186489397,
+        "avgCost": 2.415757435897435,
+        "avgOutTokens": 56885.68205128205,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.764102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.7:xhigh",
+        "model": "cursor-grok-4.7",
+        "effort": "xhigh",
+        "passRate": 0.31794871794871793,
+        "ciLo": 0.28386316213608837,
+        "ciHi": 0.3520342737613475,
+        "avgCost": 4.561368205128203,
+        "avgOutTokens": 100473.53333333334,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7948717948717948
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-sonnet-5:max",
+        "model": "claude-sonnet-5",
+        "effort": "max",
+        "passRate": 0.3128205128205128,
+        "ciLo": 0.2940162859536489,
+        "ciHi": 0.3316247396873767,
+        "avgCost": 4.742857435897438,
+        "avgOutTokens": 88420.08717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6871794871794872
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-luna:xhigh",
+        "model": "gpt-5.6-luna",
+        "effort": "xhigh",
+        "passRate": 0.3128205128205128,
+        "ciLo": 0.2591613503231247,
+        "ciHi": 0.36647967531790093,
+        "avgCost": 0.568254358974359,
+        "avgOutTokens": 22737.59487179487,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7128205128205128
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-4-8:xhigh",
+        "model": "claude-opus-4-8",
+        "effort": "xhigh",
+        "passRate": 0.3076923076923077,
+        "ciLo": 0.28016573813563783,
+        "ciHi": 0.3352188772489776,
+        "avgCost": 5.6322087179487195,
+        "avgOutTokens": 52811.933333333334,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7025641025641025
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5-5:low",
+        "model": "claude-opus-5-5",
+        "effort": "low",
+        "passRate": 0.3076923076923077,
+        "ciLo": 0.27590736300548707,
+        "ciHi": 0.33947725237912835,
+        "avgCost": 0.23649589743589738,
+        "avgOutTokens": 4620.784615384616,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.5:medium",
+        "model": "cursor-grok-4.5",
+        "effort": "medium",
+        "passRate": 0.3076923076923077,
+        "ciLo": 0.25743589743589745,
+        "ciHi": 0.35794871794871796,
+        "avgCost": 0.9559717948717948,
+        "avgOutTokens": 20874.041025641025,
+        "trials": 195,
+        "scored": 195,
+        "hasEstimatedUsage": true,
+        "testsOnly": {
+          "passRate": 0.7680412371134021
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "zai/glm-5.3:max",
+        "model": "zai/glm-5.3",
+        "effort": "max",
+        "passRate": 0.3076923076923077,
+        "ciLo": 0.2917998353488974,
+        "ciHi": 0.323584780035718,
+        "avgCost": 2.246330256410256,
+        "avgOutTokens": 82967.70256410257,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.717948717948718
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-sonnet-5:high",
+        "model": "claude-sonnet-5",
+        "effort": "high",
+        "passRate": 0.30256410256410254,
+        "ciLo": 0.27794359027766646,
+        "ciHi": 0.3271846148505386,
+        "avgCost": 2.309656410256409,
+        "avgOutTokens": 36065.984615384616,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.676923076923077
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4.1-flash-1017:minimal",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "effort": "minimal",
+        "passRate": 0.30256410256410254,
+        "ciLo": 0.25933190378614474,
+        "ciHi": 0.34579630134206035,
+        "avgCost": 0.07271282051282049,
+        "avgOutTokens": 27858.420512820514,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "callstack/apex:low",
+        "model": "callstack/apex",
+        "effort": "low",
+        "passRate": 0.29743589743589743,
+        "ciLo": 0.25083001986879083,
+        "ciHi": 0.34404177500300404,
+        "avgCost": 1.5406153846153845,
+        "avgOutTokens": 128097.65128205129,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6410256410256411
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-terra:medium",
+        "model": "gpt-5.6-terra",
+        "effort": "medium",
+        "passRate": 0.29743589743589743,
+        "ciLo": 0.2718100557778414,
+        "ciHi": 0.32306173909395347,
+        "avgCost": 0.2513979487179487,
+        "avgOutTokens": 6352.3538461538465,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6717948717948717
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.6:medium",
+        "model": "cursor-grok-4.6",
+        "effort": "medium",
+        "passRate": 0.2923076923076923,
+        "ciLo": 0.25822213649506276,
+        "ciHi": 0.3263932481203219,
+        "avgCost": 1.020414358974359,
+        "avgOutTokens": 22333.625641025643,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7948717948717948
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4.1-flash-1017:max",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "effort": "max",
+        "passRate": 0.2923076923076923,
+        "ciLo": 0.23158264074808882,
+        "ciHi": 0.35303274386729583,
+        "avgCost": 0.09471282051282047,
+        "avgOutTokens": 36076.53333333333,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.764102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "particle-ai/particle-1:low",
+        "model": "particle-ai/particle-1",
+        "effort": "low",
+        "passRate": 0.2923076923076923,
+        "ciLo": 0.22017617388451705,
+        "ciHi": 0.3644392107308676,
+        "avgCost": 0.1221553846153846,
+        "avgOutTokens": 19802.846153846152,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6871794871794872
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "particle-ai/particle-1:max",
+        "model": "particle-ai/particle-1",
+        "effort": "max",
+        "passRate": 0.2923076923076923,
+        "ciLo": 0.25147919160747056,
+        "ciHi": 0.3331361930079141,
+        "avgCost": 0.17533076923076923,
+        "avgOutTokens": 32408.48717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.6:low",
+        "model": "cursor-grok-4.6",
+        "effort": "low",
+        "passRate": 0.28717948717948716,
+        "ciLo": 0.2683752603126232,
+        "ciHi": 0.3059837140463511,
+        "avgCost": 0.66272,
+        "avgOutTokens": 14500.158974358974,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-4-8:medium",
+        "model": "claude-opus-4-8",
+        "effort": "medium",
+        "passRate": 0.28205128205128205,
+        "ciLo": 0.2247501581232228,
+        "ciHi": 0.3393524059793413,
+        "avgCost": 3.4102492307692303,
+        "avgOutTokens": 24991.88717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6666666666666666
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-terra:low",
+        "model": "gpt-5.6-terra",
+        "effort": "low",
+        "passRate": 0.28205128205128205,
+        "ciLo": 0.25452471249461217,
+        "ciHi": 0.3095778516079519,
+        "avgCost": 0.20926820512820524,
+        "avgOutTokens": 5058.789743589744,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6564102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "particle-ai/particle-1:xhigh",
+        "model": "particle-ai/particle-1",
+        "effort": "xhigh",
+        "passRate": 0.28205128205128205,
+        "ciLo": 0.2317948717948718,
+        "ciHi": 0.3323076923076923,
+        "avgCost": 0.17270974358974364,
+        "avgOutTokens": 26994.14871794872,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.764102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-4-8:high",
+        "model": "claude-opus-4-8",
+        "effort": "high",
+        "passRate": 0.27692307692307694,
+        "ciLo": 0.22567139360696484,
+        "ciHi": 0.328174760239189,
+        "avgCost": 4.08203692307692,
+        "avgOutTokens": 30816.902564102566,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.676923076923077
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "cursor-grok-4.7:high",
+        "model": "cursor-grok-4.7",
+        "effort": "high",
+        "passRate": 0.27692307692307694,
+        "ciLo": 0.22819767938186666,
+        "ciHi": 0.32564847446428724,
+        "avgCost": 3.456916410256409,
+        "avgOutTokens": 78044.02564102564,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.7538461538461538
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-5:low",
+        "model": "claude-opus-5",
+        "effort": "low",
+        "passRate": 0.2717948717948718,
+        "ciLo": 0.2377093159822422,
+        "ciHi": 0.30588042760750134,
+        "avgCost": 1.1906651282051284,
+        "avgOutTokens": 12809.42564102564,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.717948717948718
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.1:max",
+        "model": "meta/muse-spark-1.1",
+        "effort": "max",
+        "passRate": 0.2717948717948718,
+        "ciLo": 0.22798234908030912,
+        "ciHi": 0.3156073945094344,
+        "avgCost": 2.689764102564102,
+        "avgOutTokens": 153915.2512820513,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6666666666666666
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "zai/glm-5.2:max",
+        "model": "zai/glm-5.2",
+        "effort": "max",
+        "passRate": 0.2717948717948718,
+        "ciLo": 0.22798234908030912,
+        "ciHi": 0.3156073945094344,
+        "avgCost": 1.2250487179487182,
+        "avgOutTokens": 65045.984615384616,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6461538461538462
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.1-pro-preview:high",
+        "model": "google/gemini-3.1-pro-preview",
+        "effort": "high",
+        "passRate": 0.2564102564102564,
+        "ciLo": 0.2288836868535865,
+        "ciHi": 0.28393682596692627,
+        "avgCost": 0.8015687179487179,
+        "avgOutTokens": 15429.292307692307,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5538461538461539
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.1:high",
+        "model": "meta/muse-spark-1.1",
+        "effort": "high",
+        "passRate": 0.2564102564102564,
+        "ciLo": 0.2288836868535865,
+        "ciHi": 0.28393682596692627,
+        "avgCost": 2.2081302564102563,
+        "avgOutTokens": 154040.46666666667,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6615384615384615
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.1:medium",
+        "model": "meta/muse-spark-1.1",
+        "effort": "medium",
+        "passRate": 0.2512820512820513,
+        "ciLo": 0.22197778022077747,
+        "ciHi": 0.2805863223433251,
+        "avgCost": 1.303296923076923,
+        "avgOutTokens": 81463.10256410256,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.676923076923077
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.1:xhigh",
+        "model": "meta/muse-spark-1.1",
+        "effort": "xhigh",
+        "passRate": 0.2512820512820513,
+        "ciLo": 0.21794572005591495,
+        "ciHi": 0.2846183825081876,
+        "avgCost": 2.572446153846153,
+        "avgOutTokens": 149156.91794871795,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6564102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.2:xhigh",
+        "model": "meta/muse-spark-1.2",
+        "effort": "xhigh",
+        "passRate": 0.2358974358974359,
+        "ciLo": 0.18717203835622562,
+        "ciHi": 0.2846228334386462,
+        "avgCost": 4.670277435897437,
+        "avgOutTokens": 217018.91794871795,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6666666666666666
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "moonshotai/kimi-k2.7-code:mini-swe-agent-preinstalled",
+        "model": "moonshotai/kimi-k2.7-code",
+        "effort": "",
+        "passRate": 0.2358974358974359,
+        "ciLo": 0.20256110467129956,
+        "ciHi": 0.2692337671235722,
+        "avgCost": 1.2697861538461541,
+        "avgOutTokens": 45199.251282051286,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5948717948717949
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.1-pro-preview:xhigh",
+        "model": "google/gemini-3.1-pro-preview",
+        "effort": "xhigh",
+        "passRate": 0.23076923076923078,
+        "ciLo": 0.2032426612125609,
+        "ciHi": 0.25829580032590066,
+        "avgCost": 0.7986897435897437,
+        "avgOutTokens": 16282.179487179486,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5846153846153846
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.5-flash:medium",
+        "model": "google/gemini-3.5-flash",
+        "effort": "medium",
+        "passRate": 0.23076923076923078,
+        "ciLo": 0.19898428608241014,
+        "ciHi": 0.2625541754560514,
+        "avgCost": 1.39991641025641,
+        "avgOutTokens": 39107.18974358974,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6153846153846154
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-sonnet-5:medium",
+        "model": "claude-sonnet-5",
+        "effort": "medium",
+        "passRate": 0.22564102564102564,
+        "ciLo": 0.19230469441488932,
+        "ciHi": 0.25897735686716195,
+        "avgCost": 1.4366979487179499,
+        "avgOutTokens": 22227.68717948718,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.5-flash:xhigh",
+        "model": "google/gemini-3.5-flash",
+        "effort": "xhigh",
+        "passRate": 0.22564102564102564,
+        "ciLo": 0.15746991401576654,
+        "ciHi": 0.29381213726628475,
+        "avgCost": 1.441448717948719,
+        "avgOutTokens": 41176.153846153844,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6666666666666666
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-opus-4-8:low",
+        "model": "claude-opus-4-8",
+        "effort": "low",
+        "passRate": 0.2205128205128205,
+        "ciLo": 0.2004102564102564,
+        "ciHi": 0.24061538461538462,
+        "avgCost": 1.844875384615385,
+        "avgOutTokens": 16745.882051282053,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6102564102564103
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.1-pro-preview:max",
+        "model": "google/gemini-3.1-pro-preview",
+        "effort": "max",
+        "passRate": 0.2205128205128205,
+        "ciLo": 0.1829043667790927,
+        "ciHi": 0.25812127424654835,
+        "avgCost": 0.8432692307692311,
+        "avgOutTokens": 17164.37948717949,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.558974358974359
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "deepseek/deepseek-v4-flash-0731:max",
+        "model": "deepseek/deepseek-v4-flash-0731",
+        "effort": "max",
+        "passRate": 0.2153846153846154,
+        "ciLo": 0.19528205128205128,
+        "ciHi": 0.2354871794871795,
+        "avgCost": 0.2645558974358975,
+        "avgOutTokens": 59608.43076923077,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6461538461538462
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.1-pro-preview:medium",
+        "model": "google/gemini-3.1-pro-preview",
+        "effort": "medium",
+        "passRate": 0.2153846153846154,
+        "ciLo": 0.18523076923076925,
+        "ciHi": 0.24553846153846154,
+        "avgCost": 0.8367297435897437,
+        "avgOutTokens": 18623.897435897437,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5435897435897435
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.5-flash:high",
+        "model": "google/gemini-3.5-flash",
+        "effort": "high",
+        "passRate": 0.2153846153846154,
+        "ciLo": 0.18975877372655936,
+        "ciHi": 0.24101045704267143,
+        "avgCost": 1.4251215384615388,
+        "avgOutTokens": 39693.235897435894,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6153846153846154
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.5-flash:low",
+        "model": "google/gemini-3.5-flash",
+        "effort": "low",
+        "passRate": 0.2153846153846154,
+        "ciLo": 0.17777616165088758,
+        "ciHi": 0.25299306911834324,
+        "avgCost": 0.9227502564102563,
+        "avgOutTokens": 26753.528205128205,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6102564102564103
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-luna:medium",
+        "model": "gpt-5.6-luna",
+        "effort": "medium",
+        "passRate": 0.2,
+        "ciLo": 0.1567678012220422,
+        "ciHi": 0.24323219877795782,
+        "avgCost": 0.15049179487179484,
+        "avgOutTokens": 6310.887179487179,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.6205128205128205
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "meta/muse-spark-1.1:low",
+        "model": "meta/muse-spark-1.1",
+        "effort": "low",
+        "passRate": 0.1794871794871795,
+        "ciLo": 0.16359470714376917,
+        "ciHi": 0.1953796518305898,
+        "avgCost": 0.6521712820512817,
+        "avgOutTokens": 37715.61538461538,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5794871794871795
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "recursive/flint:mini-swe-agent-preinstalled",
+        "model": "recursive/flint",
+        "effort": "",
+        "passRate": 0.1794871794871795,
+        "ciLo": 0.12923076923076923,
+        "ciHi": 0.22974358974358974,
+        "avgCost": 0,
+        "avgOutTokens": 57699.4,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.4666666666666667
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "composer-2.5:cursor-cli",
+        "model": "composer-2.5",
+        "effort": "",
+        "passRate": 0.17435897435897435,
+        "ciLo": 0.13742820592932029,
+        "ciHi": 0.21128974278862842,
+        "avgCost": 0.13815487179487185,
+        "avgOutTokens": 6977.041025641026,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.5794871794871795
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "claude-sonnet-5:low",
+        "model": "claude-sonnet-5",
+        "effort": "low",
+        "passRate": 0.16923076923076924,
+        "ciLo": 0.1390769230769231,
+        "ciHi": 0.19938461538461538,
+        "avgCost": 0.7355748717948715,
+        "avgOutTokens": 13079.723076923077,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.49743589743589745
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "google/gemini-3.1-pro-preview:low",
+        "model": "google/gemini-3.1-pro-preview",
+        "effort": "low",
+        "passRate": 0.1282051282051282,
+        "ciLo": 0.06665384748903808,
+        "ciHi": 0.1897564089212183,
+        "avgCost": 0.37388820512820503,
+        "avgOutTokens": 8145.153846153846,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.40512820512820513
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "gpt-5.6-luna:low",
+        "model": "gpt-5.6-luna",
+        "effort": "low",
+        "passRate": 0.1076923076923077,
+        "ciLo": 0.07076153926265363,
+        "ciHi": 0.14462307612196176,
+        "avgCost": 0.06567384615384617,
+        "avgOutTokens": 2864.7641025641024,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.4564102564102564
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      },
+      {
+        "id": "thinkingmachines/inkling-small:thinking-0.99",
+        "model": "thinkingmachines/inkling-small",
+        "effort": "",
+        "passRate": 0.07692307692307693,
+        "ciLo": 0.0451381322362563,
+        "ciHi": 0.10870802160989756,
+        "avgCost": 0.09869128205128208,
+        "avgOutTokens": 11503.861538461539,
+        "trials": 195,
+        "scored": 195,
+        "testsOnly": {
+          "passRate": 0.38461538461538464
+        },
+        "tasks": 39,
+        "writeTasks": 28,
+        "fixTasks": 11,
+        "repositories": 37
+      }
+    ],
+    "dropped": []
+  }
+}

@@ -10,6 +10,7 @@
     "arcPrize": null,
     "cursorBench": null,
     "frontierCode": null,
+    "reactBench": null,
     "sweBench": null,
     "liveCodeBench": null,
     "modelsDevListing": null,
@@ -52,6 +53,9 @@
     "frontierCode.keyClashes": 0,
     "frontierCode.unmatched": 0,
     "frontierCode.nearMisses": 0,
+    "reactBench.keyClashes": 0,
+    "reactBench.unmatched": 0,
+    "reactBench.nearMisses": 0,
     "sweBench.keyClashes": 0,
     "sweBench.unmatched": 0,
     "sweBench.nearMisses": 0,
@@ -3405,6 +3409,10 @@
       "unmatched": []
     },
     "frontierCode": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "reactBench": {
       "keyClashes": [],
       "unmatched": []
     },

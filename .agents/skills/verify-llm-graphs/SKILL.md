@@ -80,7 +80,7 @@ $V page '/' --name six --cookie 'settings={"openingModels":6}'
 $V page '/' --name picks --cookie 'picked-models=["claude-opus-5","grok-4-6"]'
 ```
 
-Metric keys: `score cost price speed duration inputPrice outputPrice context votes horizon80 taskScore`. Source keys are the snapshot's `variants` keys: `artificialAnalysis deepswe metr arena automationBench terminalBench terminalBenchScience arcPrize cursorBench frontierCode sweBench liveCodeBench`. Entry ids come from `jq -r '.entries[].id' <evidence>/<name>.body` after an `api` snapshot fetch.
+Metric keys: `score cost price speed duration inputPrice outputPrice context votes horizon80 taskScore`. Source keys are the snapshot's `variants` keys: `artificialAnalysis deepswe metr arena automationBench terminalBench terminalBenchScience arcPrize cursorBench frontierCode reactBench sweBench liveCodeBench`. Entry ids come from `jq -r '.entries[].id' <evidence>/<name>.body` after an `api` snapshot fetch.
 
 ### API
 
@@ -112,6 +112,8 @@ A journey is an ES module whose default export receives `{ page, context, base, 
 - `saveDownload(download)` saves a Playwright download into the journey's evidence directory.
 
 [`journeys/model-picks.mjs`](journeys/model-picks.mjs) is the worked example: it adds a model in the picker, removes a chip, reloads to prove the cookie, then uses Reset. Copy its shape for new journeys, and save new ones in `journeys/` once they pass. Wait for `[data-chart-frame="loaded"]` before touching controls, because they stay disabled until the browser has the snapshot. When you need a handle, read it from an `.aria.yml` file rather than guessing.
+
+[`journeys/source-chart.mjs`](journeys/source-chart.mjs) checks one score benchmark end to end: it picks it from `Y-axis data source`, plots it against task cost, hovers a point for its tooltip, reopens the link, and loads it on a phone. Name the benchmark with `SOURCE` (its `variants` key) and `LABEL` (its menu name), e.g. `SOURCE=reactBench LABEL='ReactBench 1.2' $V browse source-chart.mjs`. Run it for every new score provider. Plotted points are `.ts-chart__marks` circles and `rect[class*=chart-logo]`, and the tooltip is `.ts-chart-tooltip`. Changing source morphs the old points out, so count marks once their number holds still.
 
 Evidence goes to `<evidence>/<journey-name>/`. A rerun in the same run gets `<journey-name>-2/` and so on, so a failed attempt's `failure.png` and `steps.jsonl` survive. Console errors and page errors go to `console.txt`, and `result.json` records pass or fail. Video recording is unavailable here: Playwright needs its own ffmpeg at `~/.cache/ms-playwright/ffmpeg-1013/` (from `playwright install ffmpeg`) and does not use the system `/usr/bin/ffmpeg`. Use the per-step screenshots.
 
