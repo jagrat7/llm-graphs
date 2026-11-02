@@ -108,3 +108,11 @@ it("reads around an unreadable chunk but never a damaged leaderboard", () => {
     parseReactBenchPage(`${chunks[0].slice(0, -40)}</script>${chunks[1]}</script>`),
   ).toThrow(/leaderboard missing/)
 })
+
+it("drops rows without an id instead of refusing the refresh", () => {
+  const { id: _first, ...first } = run("claude-opus-5-5", "max", 0.5)
+  const { id: _second, ...second } = run("claude-opus-5-5", "high", 0.4)
+  const payload = parseReactBenchPage(page([first, second, run("gpt-5.6-sol", "max", 0.47)]))
+  expect(payload.rows.map((row) => row.id)).toEqual(["gpt-5.6-sol:max"])
+  expect(payload.dropped).toHaveLength(2)
+})

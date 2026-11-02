@@ -104,9 +104,10 @@ export function parseReactBenchPage(html: string): ReactBenchPayload {
   }
   if (found === undefined) throw new Error(`ReactBench v${VERSION} leaderboard missing`)
   const { source, leaderboard } = versionSchema.parse(found)
-  const ids = leaderboard.map((row) =>
-    row != null && typeof row === "object" ? Reflect.get(row, "id") : null,
-  )
+  // Rows without an id are left for parseRows to drop; only a repeated real id is a conflict.
+  const ids = leaderboard
+    .map((row) => (row != null && typeof row === "object" ? Reflect.get(row, "id") : null))
+    .filter((id) => typeof id === "string")
   if (new Set(ids).size !== ids.length) throw new Error("ReactBench duplicate run identity")
   return parseRows(
     "ReactBench",
