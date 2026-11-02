@@ -226,7 +226,13 @@ export class ModelAggregatorService {
     if (!key || version.split("|").includes("none")) return
 
     const built: BuiltSnapshot = { version, snapshot }
+    const startedAt = performance.now()
     await this.cache.writeShared(key, built, BUILT_SNAPSHOT_TTL_SECONDS)
+    // Logged under the request that built it only while the platform keeps the instance alive
+    // past the response, so it shows whether the after-response save finishes.
+    console.info(
+      `[aggregator] saved the built snapshot in ${Math.round(performance.now() - startedAt)} ms`,
+    )
   }
 
   private async readMetricSource(source: MetricSource<SourcePayload<unknown>, unknown>) {
