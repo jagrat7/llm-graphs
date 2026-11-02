@@ -22,6 +22,14 @@ function row(model: string, effort: string | null) {
 }
 
 describe("DeepSWEProvider", () => {
+  it("reads a none effort as non-reasoning, not as a level called none", () => {
+    const [run] = new DeepSWEProvider().toMetricRows({
+      rows: [row("gpt-6-astra", "none")],
+      dropped: [],
+    })
+    expect(run).toMatchObject({ mode: "off", level: "unknown" })
+  })
+
   it("uses the published task cost without dividing it by token usage", () => {
     const provider = new DeepSWEProvider()
     const measured = row("gpt-6-astra", "high")

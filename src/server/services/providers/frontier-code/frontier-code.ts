@@ -1,13 +1,7 @@
 import { z } from "zod"
 import { MetricProvider } from "../metric-provider"
-import { describeMetrics, fetchOk, isKnownLevel, normalizeLevel, parseRows } from "../utils"
-import type {
-  MetricReaders,
-  MetricRow,
-  MetricSource,
-  ReasoningMode,
-  SourcePayload,
-} from "../provider.types"
+import { describeMetrics, fetchOk, isKnownLevel, parseRows, reasoningFromEffort } from "../utils"
+import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
 
 const VERSION = "2.0"
 const DATASET = "main"
@@ -94,10 +88,9 @@ function percent(fraction: number) {
   return `${(fraction * 100).toFixed(1)}%`
 }
 
-function reasoning(effort: string): { mode: ReasoningMode; level: string } {
-  if (effort === "na") return { mode: "unknown", level: "unknown" }
-  const level = normalizeLevel(effort)
-  return level === "none" ? { mode: "off", level: "unknown" } : { mode: "on", level }
+/** Frontier-Code writes `na` where it doesn't report an effort. */
+function reasoning(effort: string) {
+  return reasoningFromEffort(effort === "na" ? null : effort)
 }
 
 function configuration(row: FrontierCodeRow) {

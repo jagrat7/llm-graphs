@@ -96,9 +96,7 @@ export function parseLiveCodeBenchFeed(raw: unknown): LiveCodeBenchPayload {
 function modelConfiguration(row: LiveCodeBenchRow) {
   const suffix = /__(low|medium|high)$/.exec(row.model_name)
   const labelEffort = /\s*\((Low|Med|Medium|High)\)$/i.exec(row.model_repr)
-  const labelLevel = labelEffort
-    ? normalizeLevel(/^med$/i.test(labelEffort[1]) ? "medium" : labelEffort[1])
-    : null
+  const labelLevel = labelEffort ? normalizeLevel(labelEffort[1]) : null
   const effort = suffix?.[1] ?? labelLevel
   const thinking = /\(Thinking\)$/i.test(row.model_repr)
   const off = row.model_name.endsWith("_nothink")

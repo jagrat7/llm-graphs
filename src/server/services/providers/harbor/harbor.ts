@@ -8,7 +8,7 @@ import type {
   ProviderName,
   SourcePayload,
 } from "../provider.types"
-import { describeMetrics, fetchOk, normalizeLevel, parseRows } from "../utils"
+import { describeMetrics, fetchOk, parseRows, reasoningFromEffort } from "../utils"
 
 const optionalNumber = z
   .number()
@@ -197,12 +197,10 @@ export class HarborProvider
           ? `Claude ${publishedName}`
           : publishedName
       const effort = row.metadata.reasoning_effort
-      const off = effort != null && /^(none|off)$/i.test(effort)
       return {
         sourceModelId: name.toLowerCase().replaceAll(/[\s.]+/g, "-"),
         rawId: row.id,
-        mode: effort == null ? "unknown" : off ? "off" : "on",
-        level: effort == null || off ? "unknown" : normalizeLevel(effort),
+        ...reasoningFromEffort(effort),
         configuration: `${row.metadata.agent_org.label} ${row.metadata.agent_display.label}`,
         ...(effort == null ? { configurationKnown: false as const } : {}),
         metrics: this.readMetrics(row),

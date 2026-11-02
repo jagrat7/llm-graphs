@@ -1,7 +1,39 @@
 import { describe, expect, it } from "vitest"
 
 import type { ReasoningMode } from "./provider.types"
-import { effortOrder } from "./utils"
+import { effortOrder, normalizeLevel, reasoningFromEffort } from "./utils"
+
+describe("reasoningFromEffort", () => {
+  it.each([
+    [null, "unknown", "unknown"],
+    [undefined, "unknown", "unknown"],
+    ["", "unknown", "unknown"],
+    ["None", "off", "unknown"],
+    ["off", "off", "unknown"],
+    ["High", "on", "high"],
+    ["Extra High", "on", "xhigh"],
+    ["Med", "on", "medium"],
+    ["16K", "on", "16k"],
+  ])("reads %j as %s/%s", (effort, mode, level) => {
+    expect(reasoningFromEffort(effort)).toEqual({ mode, level })
+  })
+
+  it("keeps a run the source says reasons as reasoning when it names no effort", () => {
+    expect(reasoningFromEffort(null, "on")).toEqual({ mode: "on", level: "unknown" })
+    expect(reasoningFromEffort("none", "on")).toEqual({ mode: "off", level: "unknown" })
+  })
+})
+
+describe("normalizeLevel", () => {
+  it("spells a known level one way", () => {
+    expect(["Xhigh", "x-high", "Extra High", "xhigh"].map(normalizeLevel)).toEqual([
+      "xhigh",
+      "xhigh",
+      "xhigh",
+      "xhigh",
+    ])
+  })
+})
 
 function sorted(runs: Array<[ReasoningMode, string]>) {
   return runs

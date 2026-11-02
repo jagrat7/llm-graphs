@@ -1,7 +1,14 @@
 import { z } from "zod"
 import { MetricProvider } from "../metric-provider"
 import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
-import { describeMetrics, fetchOk, isKnownLevel, normalizeLevel, parseRows } from "../utils"
+import {
+  describeMetrics,
+  fetchOk,
+  isKnownLevel,
+  normalizeLevel,
+  parseRows,
+  reasoningFromEffort,
+} from "../utils"
 
 const VERSION = "1.0.6"
 const PAGE_URL = "https://zapier.com/benchmarks"
@@ -26,11 +33,12 @@ function configuration(label: string) {
   const policy = known ? setting.split(",").slice(0, -1).join(",").trim() : setting
   // An explicitly mixed-model fallback must not borrow the primary model's token pricing.
   const modelId = /with .+ fallback/i.test(policy) ? `${model} ${policy}` : model
+  const { mode, level } = reasoningFromEffort(known ? effort : null)
   return {
     model,
     sourceModelId: modelId.toLowerCase().replaceAll(/[\s.]+/g, "-"),
-    mode: effort === "none" ? ("off" as const) : known ? ("on" as const) : ("unknown" as const),
-    level: effort === "betweentools" ? "between tools" : isKnownLevel(effort) ? effort : "unknown",
+    mode,
+    level: level === "betweentools" ? "between tools" : level,
     // "Between tools" is already the level, so only a fallback policy sets one run of a
     // model apart from another.
     policy,

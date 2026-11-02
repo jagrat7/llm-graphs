@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { MetricProvider } from "../metric-provider"
-import { describeMetrics, fetchOk, normalizeLevel, parseRows } from "../utils"
+import { describeMetrics, fetchOk, parseRows, reasoningFromEffort } from "../utils"
 import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
 
 const VERSION = "4.0"
@@ -77,14 +77,8 @@ function configuration(label: string) {
   return {
     name,
     sourceModelId: name.toLowerCase().replaceAll(/[\s.]+/g, "-"),
-    mode: effort == null ? "unknown" : /^none$/i.test(effort) ? "off" : "on",
-    level:
-      effort == null || /^none$/i.test(effort)
-        ? "unknown"
-        : /^extra high$/i.test(effort)
-          ? "xhigh"
-          : normalizeLevel(effort),
-  } as const
+    ...reasoningFromEffort(effort),
+  }
 }
 
 export class CursorBenchProvider

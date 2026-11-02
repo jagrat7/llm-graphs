@@ -94,13 +94,38 @@ export const KNOWN_LEVELS = ["minimal", "low", "medium", "high", "xhigh", "max"]
 
 const KNOWN_LEVEL_SET: ReadonlySet<string> = new Set(KNOWN_LEVELS)
 
-/** Lowercases and closes up a level word, so `Xhigh`, `x-high`, and `xhigh` agree. */
+/** Other spellings of a known level, after closing up: `Extra High` and `Med`. */
+const LEVEL_ALIASES: Readonly<Record<string, string>> = { extrahigh: "xhigh", med: "medium" }
+
+/** Lowercases and closes up a level word, so `Xhigh`, `x-high`, `Extra High`, and `xhigh` agree. */
 export function normalizeLevel(word: string) {
-  return word.toLowerCase().replaceAll(/[\s_-]+/g, "")
+  const closed = word.toLowerCase().replaceAll(/[\s_-]+/g, "")
+  return LEVEL_ALIASES[closed] ?? closed
 }
 
 export function isKnownLevel(level: string) {
   return KNOWN_LEVEL_SET.has(level)
+}
+
+/** Effort words, after normalizing, that say the run doesn't reason at all. */
+const NON_REASONING_EFFORTS: ReadonlySet<string> = new Set(["none", "off"])
+
+/** How every source records a run that doesn't reason: there is no effort level to give. */
+export const NON_REASONING = { mode: "off", level: "unknown" } as const
+
+/**
+ * A source's stated reasoning effort as a mode and level. No effort says nothing, so it is
+ * `unknown/unknown` unless the source says the run reasons (`unstated: "on"`). `none` and `off`
+ * mean non-reasoning, which is `off/unknown`. Any other word is that level of reasoning.
+ */
+export function reasoningFromEffort(
+  effort: string | null | undefined,
+  unstated: ReasoningMode = "unknown",
+): { mode: ReasoningMode; level: string } {
+  if (effort == null || effort.trim() === "") return { mode: unstated, level: "unknown" }
+
+  const level = normalizeLevel(effort)
+  return NON_REASONING_EFFORTS.has(level) ? NON_REASONING : { mode: "on", level }
 }
 
 const LEVEL_ORDER: ReadonlyArray<string> = KNOWN_LEVELS

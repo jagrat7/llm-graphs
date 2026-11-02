@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { keyOfWords, matchWords } from "../../model-aggregator/match-key"
 import { MetricProvider } from "../metric-provider"
-import { describeMetrics, fetchOk, isKnownLevel, normalizeLevel, parseRows } from "../utils"
+import { describeMetrics, fetchOk, isKnownLevel, parseRows, reasoningFromEffort } from "../utils"
 import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
 
 const AGENT_VERSION = "2.0.0"
@@ -138,27 +138,20 @@ export class SWEBenchProvider
     }
   }
   toMetricRows(payload: SWEBenchPayload): Array<MetricRow> {
-    const runs = payload.rows.map((row) => {
-      const effort = row.reasoning_effort == null ? null : normalizeLevel(row.reasoning_effort)
-      const off = effort === "none"
-      return {
-        row,
-        effort,
-        off,
-        sourceModelId: row.tags
-          .find((tag) => tag.startsWith("Model: "))!
-          .slice(7)
-          .trim(),
-        mode: effort == null ? "unknown" : off ? "off" : "on",
-        level: effort == null || off ? "unknown" : effort,
-      } as const
-    })
+    const runs = payload.rows.map((row) => ({
+      row,
+      sourceModelId: row.tags
+        .find((tag) => tag.startsWith("Model: "))!
+        .slice(7)
+        .trim(),
+      ...reasoningFromEffort(row.reasoning_effort),
+    }))
     const keys = runs.map(runKey)
     // Only a rerun of one model and effort needs its folder to stay apart.
     const reruns = new Set(keys.filter((key, index) => keys.indexOf(key) !== index))
 
     return runs.map((run) => {
-      const { row, effort, off, sourceModelId, mode, level } = run
+      const { row, sourceModelId, mode, level } = run
       return {
         sourceModelId,
         rawId: row.folder,
@@ -166,7 +159,7 @@ export class SWEBenchProvider
         mode,
         level,
         ...(reruns.has(runKey(run)) ? { configuration: row.folder } : {}),
-        ...(effort == null || (!off && !isKnownLevel(effort))
+        ...(mode === "unknown" || (mode === "on" && !isKnownLevel(level))
           ? { configurationKnown: false as const }
           : {}),
         metrics: this.readMetrics(row),
