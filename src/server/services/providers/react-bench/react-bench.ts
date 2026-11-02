@@ -12,6 +12,8 @@ import type {
 const VERSION = "1.2"
 const PAGE = "https://www.reactbench.com/"
 const HARNESS = `ReactBench ${VERSION} · pass@1 over 5 trials per task`
+/** How the page streams its React flight data, one call per script element. */
+const FLIGHT_PUSH = "self.__next_f.push("
 /** Cursor-served runs carry a `cursor-` prefix the catalog doesn't use. */
 const CURSOR_PREFIX = "cursor-"
 /** Labs by the id's org prefix, or by its first word when it has none. */
@@ -79,12 +81,17 @@ function findVersion(node: unknown): unknown {
  * site's JavaScript. Versions are keyed, so a new revision cannot replace the pinned one.
  */
 export function parseReactBenchPage(html: string): ReactBenchPayload {
-  // An unreadable chunk elsewhere on the page must not hide an intact leaderboard; one
+  // Each chunk is read from within its own script element, so a malformed one cannot reach
+  // into the next. An unreadable chunk elsewhere must not hide an intact leaderboard; one
   // inside it leaves a line that fails to parse, so the leaderboard is never read partially.
-  const flight = [...html.matchAll(/self\.__next_f\.push\(([\s\S]*?)\)<\/script>/g)]
-    .map((match) => {
+  const flight = html
+    .split("</script>")
+    .map((script) => {
+      const call = script.lastIndexOf(FLIGHT_PUSH)
+      const body = call < 0 ? "" : script.slice(call + FLIGHT_PUSH.length).trimEnd()
+      if (!body.endsWith(")")) return ""
       try {
-        const chunk: unknown = JSON.parse(match[1])
+        const chunk: unknown = JSON.parse(body.slice(0, -1))
         return Array.isArray(chunk) && typeof chunk[1] === "string" ? chunk[1] : ""
       } catch {
         return ""
