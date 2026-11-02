@@ -1,3 +1,5 @@
+import { waitUntil } from "@vercel/functions"
+
 import type { MetricSource, SourceDefinition, SourcePayload } from "../providers"
 import type { AggregatorInputs, ModelSnapshot } from "./model-aggregator.types"
 
@@ -48,14 +50,18 @@ function isBuiltSnapshot(value: unknown): value is BuiltSnapshot {
 
 /**
  * Serves the snapshot from memory, checks the sources' stamps at most every few seconds with
- * one small read, and rebuilds only when a stamp moved. A cold instance first tries the snapshot
- * another instance of the same deploy built, so serverless cold starts skip the build.
+ * one small read, and rebuilds only when a stamp moved. A cold instance first takes the snapshot
+ * another instance of the same deploy built, so serverless cold starts skip the build. Once a
+ * stamp moves, the snapshot on hand keeps being served while the rebuild runs after the response;
+ * only an instance with nothing to serve builds on the request.
  */
 export class ModelAggregatorService {
   private latest: Aggregation | null = null
   private checkedAt = Number.NEGATIVE_INFINITY
   /** One check at a time, however many requests arrive while it runs. */
   private checking: Promise<Aggregation> | undefined
+  /** One build at a time, whether a request waits on it or it runs after the response. */
+  private building: Promise<FullAggregation> | undefined
 
   constructor(
     private readonly cache = new SourceCache(),
@@ -64,6 +70,8 @@ export class ModelAggregatorService {
     private readonly now: () => number = Date.now,
     /** Off in dev, so each restart doesn't leave its own copy in Redis for a week. */
     private readonly shareBuilt: boolean = !import.meta.env.DEV,
+    /** Keeps the instance alive for work the response doesn't wait on. */
+    private readonly background: (task: Promise<unknown>) => void = waitUntil,
   ) {}
 
   async getSnapshot(): Promise<ModelSnapshot> {
@@ -112,23 +120,44 @@ export class ModelAggregatorService {
       if (stamp) this.cache.refreshIfStale(source, stamp)
     }
 
-    // A source with no stamp has a copy stored before stamps existed, or none: read them all.
-    if (SOURCES.some((source) => stamps[source.cacheKey] == null)) return this.rebuild()
+    // A source with no stamp has a copy stored before stamps existed, or none: only reading them
+    // all tells what the snapshot should be.
+    const version = SOURCES.some((source) => stamps[source.cacheKey] == null)
+      ? null
+      : SOURCES.map((source) => stamps[source.cacheKey]).join("|")
+    if (version != null && this.latest?.version === version) return this.latest
 
-    const version = SOURCES.map((source) => stamps[source.cacheKey]).join("|")
-    if (this.latest?.version === version) return this.latest
-
-    const built = await this.readBuilt()
-    if (built?.version === version) {
-      this.latest = { ...built, derivation: null, report: null }
-      return this.latest
+    if (!this.latest) {
+      const built = await this.readBuilt()
+      if (built) this.latest = { ...built, derivation: null, report: null }
     }
+    if (!this.latest) return this.rebuild()
+    if (this.latest.version !== version) this.background(this.rebuildQuietly())
 
-    return this.rebuild()
+    return this.latest
+  }
+
+  /** Builds the snapshot, joining a build already running. */
+  private rebuild(): Promise<FullAggregation> {
+    this.building ??= this.build().finally(() => {
+      this.building = undefined
+    })
+
+    return this.building
+  }
+
+  /** A build no request waits on: a failure keeps the snapshot on hand, and the next check retries. */
+  private async rebuildQuietly() {
+    try {
+      await this.rebuild()
+    } catch (error) {
+      console.error("[aggregator] background rebuild failed:", error)
+    }
   }
 
   /** Reads every source's payload and builds the snapshot, as each request used to. */
-  private async rebuild(): Promise<FullAggregation> {
+  private async build(): Promise<FullAggregation> {
+    const startedAt = performance.now()
     // Listed in metadata order: the first source listing a model names it.
     const inputs: AggregatorInputs = {
       metricSources: await Promise.all(
@@ -148,10 +177,14 @@ export class ModelAggregatorService {
     this.latest = rebuilt
     this.checkedAt = this.now()
 
-    // Awaited rather than left running: a serverless instance can freeze once it responds.
-    await Promise.all([this.cache.recordStamps(stampsOf(inputs)), this.writeBuilt(rebuilt)])
-    // The report costs several times the aggregation, so it runs after the snapshot is served.
-    setTimeout(() => this.reportFor(rebuilt), 0)
+    // Saved after the response, which needs only the snapshot in memory.
+    this.background(
+      Promise.all([this.cache.recordStamps(stampsOf(inputs)), this.writeBuilt(rebuilt)]),
+    )
+    // The diagnostics report costs many times the build, so only its endpoint builds it.
+    console.info(
+      `[aggregator] built ${rebuilt.snapshot.entries.length} entries in ${Math.round(performance.now() - startedAt)} ms`,
+    )
 
     return rebuilt
   }
