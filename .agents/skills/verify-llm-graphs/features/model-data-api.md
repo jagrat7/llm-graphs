@@ -34,4 +34,4 @@ Preconditions:
 - The ETag is tied to the build id and the sources' fetch times. Restarting the server or refreshing a source changes it, so read it fresh in the same run.
 - The first snapshot request after `up` fetches every upstream source live. `up` has already made that request, so later calls are cached in memory.
 - A source that failed upstream has `fetchedAt` set to null and no rows in `variants`. That is the source's failure, not this route's (Arena 403 today; see `llmg log`).
-- Never point these calls at the production deployment or a server started with the real Upstash credentials. Doctor's `stale` check catches a server reading the shared cache.
+- Never point these calls at the production deployment or a server started with `.env`'s Upstash credentials. Doctor's `stale` check catches a server reading the shared cache.

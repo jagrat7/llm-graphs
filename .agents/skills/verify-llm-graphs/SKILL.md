@@ -25,13 +25,13 @@ $V up                 # or: $V up --port 3420
 # evidence=/home/.../llm-graphs/.verify/llm-graphs/20261026-235313-1812700
 ```
 
-`up` picks the first free port in 3417–3437, runs `bun install` if `node_modules` is missing, and starts `vite dev` in its own process group with `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` blanked. The repo `.env` points at the shared Upstash cache that production also uses. With the variables blank, the server keeps its cache in memory, so a run never reads or writes production state. `AA_API_KEY` still comes from `.env`, and Artificial Analysis needs it.
+`up` picks the first free port in 3417–3437, runs `bun install` if `node_modules` is missing, and starts `vite dev` in its own process group with `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` blanked. The repo `.env` points at a dev Upstash cache, separate from production's, that every checkout and worktree shares through the `.env` symlink. With the variables blank, the server keeps its cache in memory, so a run never reads that shared cache's data or writes into it. `AA_API_KEY` still comes from `.env`, and Artificial Analysis needs it.
 
 It returns only when ready: `/api/models/snapshot` answers with at least one entry **and** `/` renders "Compare language models". The first snapshot request fetches every upstream source live, which takes about 5s and up to 180s on a slow network. There is no seed data: the data is whatever the upstream sources serve today, so assert on structure and relations (counts, which axis says what, that a pick shows up), not on exact model names unless the step pins them itself.
 
 Every later command needs the run id: prefix it as `LLMG_RUN=<id> $V doctor`. Shell state does not persist between tool calls. With exactly one active run, the id may be omitted.
 
-Several runs can live side by side; each gets its own port, scratch dir (`$TMPDIR/llmg-verify-$UID/<id>/`), and evidence dir. Never drive a server you did not start with `up`. The user's own `bun run dev` on :3000 shares the production Redis cache.
+Several runs can live side by side; each gets its own port, scratch dir (`$TMPDIR/llmg-verify-$UID/<id>/`), and evidence dir. Never drive a server you did not start with `up`. The user's own `bun run dev` on :3000 reads and writes the shared dev Redis cache.
 
 ## Doctor
 
