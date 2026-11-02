@@ -70,7 +70,8 @@ export function AxisControls({
     // chips contain their own size and ask for none) and the strip stays symmetric about the
     // divider, centred over the chart. The row stretches the picker to the axes' height, so
     // neither pushes the chart down on its own. A phone puts the whole block under the
-    // chart instead, so the plot opens at the top of the screen.
+    // chart instead, so the plot opens at the top of the screen, and leads with the
+    // picker above the axes.
     <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 max-sm:order-last max-sm:mt-6 max-sm:mb-0 min-[56rem]:grid min-[56rem]:w-fit min-[56rem]:max-w-none min-[56rem]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[56rem]:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
@@ -85,7 +86,7 @@ export function AxisControls({
           follows the labels instead of leaving a hole before the picker, and the
           picker's column matches it. Stacked, the strip is wider than the rows, so
           they centre in it rather than leaving the spare width on the right. */}
-      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center justify-center gap-x-2 gap-y-1.5 min-[56rem]:min-w-0 min-[56rem]:flex-initial min-[56rem]:justify-start">
+      <div className="grid flex-1 grid-cols-[--spacing(6)_minmax(--spacing(32),--spacing(50))_minmax(0,max-content)] items-center justify-center gap-x-2 gap-y-1.5 max-sm:order-2 min-[56rem]:min-w-0 min-[56rem]:flex-initial min-[56rem]:justify-start">
         {AXIS_KEYS.map((key, index) => {
           const { metric, source } = axes[key]
           const swap = SWAP_PAIRS.find((pair) => pair.from === key)
@@ -125,8 +126,9 @@ export function AxisControls({
       </div>
 
       {/* Orientation is a prop rather than a class, so the stacked and side-by-side
-          rules each need their own separator; only one is ever in the tree. */}
-      <Separator className="min-[56rem]:hidden" />
+          rules each need their own separator; only one is ever in the tree. A phone
+          orders the picker, this rule, then the axes. */}
+      <Separator className="max-sm:order-1 min-[56rem]:hidden" />
       <Separator orientation="vertical" className="hidden self-stretch min-[56rem]:block" />
 
       {children}

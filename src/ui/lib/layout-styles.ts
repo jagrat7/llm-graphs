@@ -10,13 +10,14 @@ export const CHART_FRAME_CLASS = "min-h-[32rem] max-sm:min-h-[max(32rem,70svh)] 
 /**
  * Every chart's toolbar, above the plot rather than over it, since the plot's corners are
  * where points land. From `sm` up it is one row: the chart's controls on the left, Import and
- * Share on the right. A phone has no room for both, so there each group takes a centered row.
+ * Share on the right. A phone has no room for both, so there each group takes a centered row,
+ * Import and Share first, so the chart's own controls sit next to the plot.
  */
 export const CHART_TOOLBAR_CLASS = "flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 pb-2"
 export const CHART_TOOLBAR_CONTROLS_CLASS =
   "flex flex-wrap items-center gap-2 max-sm:basis-full max-sm:justify-center"
 export const CHART_TOOLBAR_ACTIONS_CLASS =
-  "ml-auto flex items-center gap-2 max-sm:ml-0 max-sm:basis-full max-sm:justify-center"
+  "ml-auto flex items-center gap-2 max-sm:order-first max-sm:ml-0 max-sm:basis-full max-sm:justify-center"
 export const TABLE_WIDTH_CLASS = "w-full min-w-[52rem]"
 /**
  * Every leaderboard cell, heading row included, shared with its skeleton so the loading
