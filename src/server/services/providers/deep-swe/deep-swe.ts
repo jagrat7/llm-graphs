@@ -1,7 +1,7 @@
 import { MetricProvider } from "../metric-provider"
 import { z } from "zod"
 
-import { fetchOk, normalizeLevel, parseRows } from "../utils"
+import { fetchOk, parseRows, reasoningFromEffort } from "../utils"
 import { deepsweMetrics } from "./metrics"
 import type { MetricRow, MetricSource } from "../provider.types"
 import type { DeepSWEPayload, DeepSWERow } from "./deep-swe.types"
@@ -56,8 +56,7 @@ export class DeepSWEProvider
     return payload.rows.map((row) => ({
       sourceModelId: row.model,
       rawId: row.model,
-      mode: row.reasoning_effort == null ? "unknown" : "on",
-      level: row.reasoning_effort == null ? "unknown" : normalizeLevel(row.reasoning_effort),
+      ...reasoningFromEffort(row.reasoning_effort),
       metrics: this.readMetrics(row),
       metadata: null,
       effortConflict: null,

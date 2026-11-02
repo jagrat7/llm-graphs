@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { MetricProvider } from "../metric-provider"
-import { describeMetrics, fetchOk, normalizeLevel, parseRows } from "../utils"
+import { describeMetrics, fetchOk, NON_REASONING, parseRows, reasoningFromEffort } from "../utils"
 import type { MetricReaders, MetricRow, MetricSource, SourcePayload } from "../provider.types"
 
 const DATASET = "v2_Semi_Private"
@@ -63,8 +63,8 @@ function configuration(row: ARCRow) {
   const budget = parameters.find((word) => /^\d+k$/i.test(word))
   const effort =
     parameters.find((word) => /^(?:none|minimal|low|medium|high|xhigh|max)$/i.test(word)) ?? budget
-  const mode = !row.reasoning || effort?.toLowerCase() === "none" ? "off" : "on"
-  const level = effort && mode === "on" ? normalizeLevel(effort) : "unknown"
+  // A Base LLM row never reasons; a CoT row that names no effort still reasons.
+  const { mode, level } = row.reasoning ? reasoningFromEffort(effort, "on") : NON_REASONING
   // Keep snapshots and model qualifiers; modelGroup sometimes groups different models together.
   const sourceModelId = row.modelId
     .toLowerCase()

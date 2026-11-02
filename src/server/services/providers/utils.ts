@@ -94,13 +94,38 @@ export const KNOWN_LEVELS = ["minimal", "low", "medium", "high", "xhigh", "max"]
 
 const KNOWN_LEVEL_SET: ReadonlySet<string> = new Set(KNOWN_LEVELS)
 
-/** Lowercases and closes up a level word, so `Xhigh`, `x-high`, and `xhigh` agree. */
+/** Other spellings of a known level, after closing up: `Extra High` and `Med`. */
+const LEVEL_ALIASES: Readonly<Record<string, string>> = { extrahigh: "xhigh", med: "medium" }
+
+/** Lowercases and closes up a level word, so `Xhigh`, `x-high`, `Extra High`, and `xhigh` agree. */
 export function normalizeLevel(word: string) {
-  return word.toLowerCase().replaceAll(/[\s_-]+/g, "")
+  const closed = word.toLowerCase().replaceAll(/[\s_-]+/g, "")
+  return LEVEL_ALIASES[closed] ?? closed
 }
 
 export function isKnownLevel(level: string) {
   return KNOWN_LEVEL_SET.has(level)
+}
+
+/** Effort words, after normalizing, that say the run doesn't reason at all. */
+const NON_REASONING_EFFORTS: ReadonlySet<string> = new Set(["none", "off"])
+
+/** How every source records a run that doesn't reason: there is no effort level to give. */
+export const NON_REASONING = { mode: "off", level: "unknown" } as const
+
+/**
+ * A source's stated reasoning effort as a mode and level. No effort says nothing, so it is
+ * `unknown/unknown` unless the source says the run reasons (`unstated: "on"`). `none` and `off`
+ * mean non-reasoning, which is `off/unknown`. Any other word is that level of reasoning.
+ */
+export function reasoningFromEffort(
+  effort: string | null | undefined,
+  unstated: ReasoningMode = "unknown",
+): { mode: ReasoningMode; level: string } {
+  if (effort == null || effort.trim() === "") return { mode: unstated, level: "unknown" }
+
+  const level = normalizeLevel(effort)
+  return NON_REASONING_EFFORTS.has(level) ? NON_REASONING : { mode: "on", level }
 }
 
 const LEVEL_ORDER: ReadonlyArray<string> = KNOWN_LEVELS
@@ -109,10 +134,17 @@ const MODE_ORDER: Record<ReasoningMode, number> = { off: 0, on: 1, unknown: 2 }
 /** A thinking-token budget standing in for an effort level, such as `16k`. */
 const BUDGET_LEVEL = /^(\d+)k$/
 
+/** One more than the highest level rank, so each mode's levels fill their own band. */
+const LEVEL_SPAN = LEVEL_ORDER.length + 3
+
 /**
- * Sort rank: known levels low to high, then token budgets smallest first, then new level
- * words, then `unknown`; non-reasoning first. A budget ranks between two whole steps, so
- * budgets order among themselves without passing a level word.
+ * Sort rank: non-reasoning first, then reasoning, then runs that don't say. Within a mode,
+ * known levels low to high, then token budgets smallest first, then new level words, then
+ * `unknown`. A budget ranks between two whole steps, so budgets order among themselves
+ * without passing a level word.
+ *
+ * Mode outranks level because non-reasoning is `off/unknown`: ranked by level, its `unknown`
+ * would put it after `max`.
  */
 export function effortOrder(mode: ReasoningMode, level: string) {
   const known = LEVEL_ORDER.indexOf(level)
@@ -126,7 +158,7 @@ export function effortOrder(mode: ReasoningMode, level: string) {
           ? LEVEL_ORDER.length + 2
           : LEVEL_ORDER.length + 1
 
-  return levelRank * 3 + MODE_ORDER[mode]
+  return MODE_ORDER[mode] * LEVEL_SPAN + levelRank
 }
 
 /** The notes a source shows beside axis titles, by metric. */
