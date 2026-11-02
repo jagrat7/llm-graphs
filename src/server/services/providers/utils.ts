@@ -109,10 +109,17 @@ const MODE_ORDER: Record<ReasoningMode, number> = { off: 0, on: 1, unknown: 2 }
 /** A thinking-token budget standing in for an effort level, such as `16k`. */
 const BUDGET_LEVEL = /^(\d+)k$/
 
+/** One more than the highest level rank, so each mode's levels fill their own band. */
+const LEVEL_SPAN = LEVEL_ORDER.length + 3
+
 /**
- * Sort rank: known levels low to high, then token budgets smallest first, then new level
- * words, then `unknown`; non-reasoning first. A budget ranks between two whole steps, so
- * budgets order among themselves without passing a level word.
+ * Sort rank: non-reasoning first, then reasoning, then runs that don't say. Within a mode,
+ * known levels low to high, then token budgets smallest first, then new level words, then
+ * `unknown`. A budget ranks between two whole steps, so budgets order among themselves
+ * without passing a level word.
+ *
+ * Mode outranks level because non-reasoning is `off/unknown`: ranked by level, its `unknown`
+ * would put it after `max`.
  */
 export function effortOrder(mode: ReasoningMode, level: string) {
   const known = LEVEL_ORDER.indexOf(level)
@@ -126,7 +133,7 @@ export function effortOrder(mode: ReasoningMode, level: string) {
           ? LEVEL_ORDER.length + 2
           : LEVEL_ORDER.length + 1
 
-  return levelRank * 3 + MODE_ORDER[mode]
+  return MODE_ORDER[mode] * LEVEL_SPAN + levelRank
 }
 
 /** The notes a source shows beside axis titles, by metric. */

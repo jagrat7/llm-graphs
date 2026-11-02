@@ -158,6 +158,35 @@ describe("model aggregation", () => {
   })
 })
 
+describe("effort order across sources", () => {
+  const all = aggregateModels(allFixtureInputs()).snapshot
+
+  it("draws ARC's non-reasoning GPT-6 Astra before its lowest effort", () => {
+    const levels = all.variants.arcPrize
+      .filter((variant) => variant.entryId === "gpt-6-astra")
+      .toSorted((left, right) => left.effortOrder - right.effortOrder)
+      .map((variant) => `${variant.mode}/${variant.level}`)
+
+    expect(levels).toEqual(["off/unknown", "on/low", "on/medium", "on/high", "on/xhigh", "on/max"])
+  })
+
+  it("never ranks a non-reasoning run after a reasoning run of the same model", () => {
+    for (const sourceVariants of Object.values(all.variants)) {
+      const reasoning = new Map<string, number>()
+      for (const variant of sourceVariants) {
+        if (variant.mode !== "on") continue
+        const key = `${variant.entryId}/${variant.harness}/${variant.configuration}`
+        reasoning.set(key, Math.min(reasoning.get(key) ?? Infinity, variant.effortOrder))
+      }
+
+      for (const variant of sourceVariants.filter((candidate) => candidate.mode === "off")) {
+        const key = `${variant.entryId}/${variant.harness}/${variant.configuration}`
+        expect(variant.effortOrder).toBeLessThan(reasoning.get(key) ?? Infinity)
+      }
+    }
+  })
+})
+
 describe("Arena display names", () => {
   const { snapshot: all, provenance: members } = aggregateModels(allFixtureInputs())
 
