@@ -337,6 +337,7 @@ function ComparePage() {
     void navigate({
       search: (previous) => ({ ...previous, models: data.defaultModels }),
       replace: true,
+      resetScroll: false,
     })
   }, [fromGraphShortcut, data, search.models, pickedModels, navigate])
 
