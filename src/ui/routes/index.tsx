@@ -493,7 +493,7 @@ function ComparePage() {
   const empty = emptyState()
 
   return (
-    <PageShell className={cn(PAGE_FILL_CLASS, "pt-8 pb-6")}>
+    <PageShell className={cn(PAGE_FILL_CLASS, "pt-8 pb-6 max-sm:pt-4")}>
       <h1 className="sr-only">Compare language models</h1>
       <AxisControls
         axes={axes}

@@ -69,8 +69,9 @@ export function AxisControls({
     // fits its content, so both columns take the wider side's width (the axes': the picker's
     // chips contain their own size and ask for none) and the strip stays symmetric about the
     // divider, centred over the chart. The row stretches the picker to the axes' height, so
-    // neither pushes the chart down on its own.
-    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 min-[56rem]:grid min-[56rem]:w-fit min-[56rem]:max-w-none min-[56rem]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[56rem]:gap-4">
+    // neither pushes the chart down on its own. A phone puts the whole block under the
+    // chart instead, so the plot opens at the top of the screen.
+    <div className="mx-auto mb-6 flex w-full max-w-lg flex-col gap-3 max-sm:order-last max-sm:mt-6 max-sm:mb-0 min-[56rem]:grid min-[56rem]:w-fit min-[56rem]:max-w-none min-[56rem]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] min-[56rem]:gap-4">
       {/* Every cell names its own column, so a row can drop its source mark and the
           rail can carry letters and hinges at once. Slack belongs to the source
           column, not the metric one: metric names are short and fixed, provider

@@ -1,8 +1,8 @@
 /**
  * A chart takes whatever height its page leaves below the controls (see `PAGE_FILL_CLASS`), so
  * a tall screen gets a tall plot instead of a guessed height and a gap below it. The floor keeps
- * it a readable plot in a short window, where the page scrolls instead. A phone's stacked
- * controls leave too little below them, so there the chart takes most of a screen of its own.
+ * it a readable plot in a short window, where the page scrolls instead. A phone stacks the
+ * controls under the chart, so there the chart takes most of a screen of its own above them.
  * Small-viewport units, so a mobile browser's toolbar showing or hiding never resizes the plot.
  * A frame whose plot needs more room (the range view's rows) grows past the floor with it.
  */
