@@ -246,6 +246,7 @@ function ComparePage() {
     void navigate({
       search: (previous) => ({ ...previous, ...update }),
       replace: true,
+      resetScroll: false,
     })
   }
 
