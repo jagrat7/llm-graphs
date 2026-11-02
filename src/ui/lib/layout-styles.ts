@@ -1,23 +1,12 @@
-import type { CSSProperties } from "react"
-
 /**
  * A chart takes whatever height its page leaves below the controls (see `PAGE_FILL_CLASS`), so
  * a tall screen gets a tall plot instead of a guessed height and a gap below it. The floor keeps
  * it a readable plot in a short window, where the page scrolls instead. A phone's stacked
  * controls leave too little below them, so there the chart takes most of a screen of its own.
  * Small-viewport units, so a mobile browser's toolbar showing or hiding never resizes the plot.
- * A frame that needs more room raises the floor through `CHART_MIN_HEIGHT_VAR`, never past it.
+ * A frame whose plot needs more room (the range view's rows) grows past the floor with it.
  */
-export const CHART_FRAME_CLASS =
-  "min-h-[max(32rem,var(--chart-min-height,0px))] max-sm:min-h-[max(32rem,70svh,var(--chart-min-height,0px))] flex-1"
-/** A frame whose content needs more than the floor (the range view's rows) asks through this. */
-export const CHART_MIN_HEIGHT_VAR = "--chart-min-height"
-export type ChartFrameStyle = CSSProperties & { [CHART_MIN_HEIGHT_VAR]?: string }
-/**
- * The height of a chart's toolbar, which a frame's minimum has to make room for. It lives in
- * `styles.css`, since it changes with the pointer's control size and with the phone layout.
- */
-export const CHART_TOOLBAR_HEIGHT = "var(--chart-toolbar-height)"
+export const CHART_FRAME_CLASS = "min-h-[32rem] max-sm:min-h-[max(32rem,70svh)] flex-1"
 /**
  * Every chart's toolbar, above the plot rather than over it, since the plot's corners are
  * where points land. From `sm` up it is one row: the chart's controls on the left, Import and

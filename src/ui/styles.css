@@ -138,9 +138,6 @@
   /* The sticky app bar, with air around its touch-size controls. A page that fills the
      viewport measures itself against it. */
   --header-height: max(3rem, calc(var(--control-lg) + 0.75rem));
-  /* A chart's toolbar: one compact control and the gap below it. A phone stacks it in two
-     rows (see `CHART_TOOLBAR_CLASS`), so there it is two controls and the gap between them. */
-  --chart-toolbar-height: calc(var(--control-sm) + 0.5rem);
   /* What a surface is: a dialog's or an empty state's title. */
   --title-font-size: 1rem;
   --title-line-height: 1.5rem;
@@ -160,13 +157,6 @@
     --field-line-height: 1.5rem;
     --title-font-size: 1.125rem;
     --title-line-height: 1.75rem;
-  }
-}
-
-/* Tailwind's `sm` breakpoint, under which a chart's toolbar splits into two rows. */
-@media (width < 40rem) {
-  :root {
-    --chart-toolbar-height: calc(2 * var(--control-sm) + 0.25rem + 0.5rem);
   }
 }
 

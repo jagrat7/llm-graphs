@@ -11,7 +11,6 @@ import { ProvidersService } from "#/server/services/providers"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
 import { standaloneChartSvg } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
-import { CHART_MIN_HEIGHT_VAR, CHART_TOOLBAR_HEIGHT } from "#/ui/lib/layout-styles"
 import { metricRecord } from "#/ui/lib/metrics"
 import { rangeMinHeight } from "#/ui/lib/range-definition"
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
@@ -504,11 +503,9 @@ describe("stacked runs", () => {
         />
       </QueryClientProvider>,
     )
-    const frame = container.querySelector<HTMLElement>('[data-chart-frame="loaded"]')!
-    // The rows' own height, plus the toolbar row above them at the pointer's control size.
-    expect(frame.style.getPropertyValue(CHART_MIN_HEIGHT_VAR)).toBe(
-      `calc(${rangeMinHeight(20)}px + ${CHART_TOOLBAR_HEIGHT})`,
-    )
+    // The rows set the plot's own minimum; the frame grows by whatever the toolbar takes.
+    const plot = container.querySelector<HTMLElement>('[data-slot="chart-plot"]')!
+    expect(plot.style.minHeight).toBe(`${rangeMinHeight(20)}px`)
   })
 
   it("keeps spans noninteractive while markers expose their original values", async () => {
