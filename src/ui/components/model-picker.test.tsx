@@ -256,6 +256,17 @@ describe("model picker search", () => {
     expect(screen.getByRole("checkbox", { name: "Alpha" })).not.toBeNull()
   })
 
+  it("leaves focus off the search when a model is removed", async () => {
+    const { onChange } = renderPicker()
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /Remove Alpha/ }))
+    })
+
+    expect(onChange).toHaveBeenCalledWith(["beta"])
+    expect(document.activeElement).not.toBe(screen.getByRole("combobox"))
+  })
+
   it("focuses the visible search with the slash shortcut", async () => {
     render(<ModelPicker models={models} selected={[]} onChange={() => {}} shortcut />)
 

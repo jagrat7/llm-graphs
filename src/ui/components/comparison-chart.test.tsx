@@ -116,7 +116,7 @@ describe("comparison chart", () => {
 
     await focusPoint(svg, 1)
 
-    const tooltip = container.querySelector<HTMLElement>(".ts-chart-tooltip")!
+    const tooltip = document.querySelector<HTMLElement>(".ts-chart-tooltip")!
     const announced = tooltip.getAttribute("aria-label") ?? tooltip.textContent ?? ""
     const card = tooltip.querySelector<HTMLElement>(".ts-chart-tooltip__body > div")
 
@@ -185,7 +185,7 @@ describe("comparison chart", () => {
       svg.dispatchEvent(new PointerEvent("pointerleave", { bubbles: true }))
     })
 
-    const tooltip = container.querySelector<HTMLElement>(".ts-chart-tooltip")
+    const tooltip = document.querySelector<HTMLElement>(".ts-chart-tooltip")
 
     expect(tooltip?.dataset.sticky).not.toBe("true")
     expect(tooltip?.getAttribute("role")).not.toBe("dialog")
@@ -206,8 +206,7 @@ describe("comparison chart", () => {
     svg.getBoundingClientRect = () => DOMRect.fromRect({ x: 0, y: 0, width, height })
     const point = marker(container, "alpha-on-high")
     const [x, y] = [Number(point.getAttribute("cx")), Number(point.getAttribute("cy"))]
-    const tooltipShown = () =>
-      container.querySelector(".ts-chart-tooltip__body")?.textContent?.includes("Alpha") ?? false
+    const tooltipShown = () => tooltipText().includes("Alpha")
     const moveTo = (clientX: number, clientY: number) =>
       act(async () => {
         svg.dispatchEvent(

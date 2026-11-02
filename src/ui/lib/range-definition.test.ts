@@ -282,16 +282,13 @@ describe("range definition", () => {
       surface: size,
       scales: {},
     }
-    const anchorOf = (rows: boolean) => {
-      const { anchor } = chartTooltip(data, sources, info, { rows })
-
-      return typeof anchor === "function" ? anchor([lowest], context) : null
-    }
+    const { anchor } = chartTooltip(data, sources, info)
 
     expect(lowest.y).toBeGreaterThan(size.height / 2)
-    expect(anchorOf(true)).toEqual({ x: chartScene.chart.x + chartScene.chart.width, y: lowest.y })
-    // The scatter keeps its fixed-height frame, so its card stays in the top corner.
-    expect(anchorOf(false)?.y).toBe(chartScene.chart.y)
+    expect(typeof anchor === "function" ? anchor([lowest], context) : null).toEqual({
+      x: chartScene.chart.x + chartScene.chart.width,
+      y: lowest.y,
+    })
   })
 
   it("ticks a duration on whole minutes when it is the metric that varies", () => {

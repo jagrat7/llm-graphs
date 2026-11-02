@@ -9,7 +9,7 @@ import type { ProviderName, ProvidersInfo } from "#/server/api"
 import { CHART_TOOLTIP_GAP } from "#/ui/lib/chart-styles"
 import { formatMetric, metricPresentation } from "#/ui/lib/metrics"
 
-/** Below this width the card stops chasing the pointer and sits in the top-right corner. */
+/** Below this width the card stops chasing the pointer and pins to the plot's right edge. */
 export const PINNED_TOOLTIP_WIDTH = 640
 
 /**
@@ -58,16 +58,6 @@ export function chartTooltip(
   data: PlotData,
   sources: Record<"x" | "y", ProviderName | null>,
   info: ProvidersInfo,
-  {
-    rows = false,
-  }: {
-    /**
-     * The range view grows taller than the screen with its rows, so a card pinned to
-     * the plot's top would scroll out of sight; it pins beside the focused row instead,
-     * and is placed within the visible viewport rather than the whole chart.
-     */
-    rows?: boolean
-  } = {},
 ) {
   return {
     use: tooltip,
@@ -78,18 +68,17 @@ export function chartTooltip(
 
       return point == null ? { rows: [] } : pointTooltipContent(point, data, sources, info)
     },
-    // Narrow screens pin the card to the plot's right edge instead of the point: at the
-    // top for the scatter, and on the focused row for ranges, opening below or above it.
+    // Narrow screens pin the card to the plot's right edge, level with the focused point,
+    // opening below or above it so the point stays in sight.
     anchor: (_points, { focus, plot, surface }) =>
       surface.width < PINNED_TOOLTIP_WIDTH
-        ? { x: plot.x + plot.width, y: rows ? focus.primary.y : plot.y }
+        ? { x: plot.x + plot.width, y: focus.primary.y }
         : { x: focus.primary.x, y: focus.primary.y },
-    placement: rows
-      ? ["right", "bottom-left", "top-left", "left"]
-      : ["right", "left", "bottom-left", "top", "bottom"],
+    placement: ["right", "bottom-left", "top-left", "left"],
     offset: CHART_TOOLTIP_GAP,
     // The portal resolves placement against the viewport and follows page scroll, so a
-    // card for a row near the screen's edge flips to the side that is actually visible.
-    ...(rows ? { portal } : {}),
+    // card near the screen's edge flips to the side that is actually visible. Laid out
+    // inside the chart instead, a phone's browser scrolled the page when the card opened.
+    portal,
   } satisfies ChartTooltipOptions<PlotPoint> & { use: typeof tooltip }
 }

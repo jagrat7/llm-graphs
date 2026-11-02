@@ -137,8 +137,7 @@ export function ModelPicker({
     if (hidden.length > 0 || !moreOpen) return
 
     setMoreOpen(false)
-    document.getElementById(inputId)?.focus()
-  }, [hidden.length, moreOpen, inputId])
+  }, [hidden.length, moreOpen])
 
   // Closing the checklist unmounts its rows before they can report leaving.
   function handleListOpenChange(open: boolean) {
@@ -154,10 +153,8 @@ export function ModelPicker({
     onChange(selectedSet.has(model) ? selected.filter((id) => id !== model) : [...selected, model])
   }
 
-  // The remove button goes with its entry, so focus moves to the search rather than the page.
   function removeModel(model: string) {
     onChange(selected.filter((id) => id !== model))
-    document.getElementById(inputId)?.focus()
   }
 
   useEffect(() => {
