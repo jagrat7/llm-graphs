@@ -12,6 +12,7 @@ A reader starts on a default set of models for the current benchmark, can pick t
 - `picks-unknown` shows an empty state with a recovery action when no pick matches.
 - `picks-picker` adds and removes models through the picker popover and chips **(browser)**.
 - `picks-reset` drops custom picks back to the defaults **(browser)**.
+- `picks-chart-active` lights a pick's entry in the key while one of its points is hovered or focused on the 2D or 3D chart **(browser)**.
 
 ## How to get to it (user POV)
 
@@ -42,6 +43,7 @@ Preconditions:
   5. `Reset` deletes the cookie, drops `models=`, and restores the default chips.
 
   Evidence is `model-picks/NN-*.png`, `.aria.yml`, and `steps.jsonl`.
+- **Chart point lights its pick (browser).** Run `llmg browse chart-point-pill.mjs`. Hovering a 2D point sets `data-active` on exactly the tooltip model's `[data-slot=model-picker-entry]`, with the muted background and a colour logo. Moving off the chart clears it, and focusing a 3D point lights that point's model. `key-*.png` are crops of the key. `EXPECT=none` records the state without asserting it, for a before run on a revision without the feature.
 - **Proof.** Keep `picks-default`, `picks-url`, and `picks-persist` facts side by side. The cookie-only load showing the same two chips as the URL load is the persistence proof. For the browser path, keep `model-picks/steps.jsonl` with screenshots `02` (picker open) and `04` (after reload).
 
 ## Gotchas

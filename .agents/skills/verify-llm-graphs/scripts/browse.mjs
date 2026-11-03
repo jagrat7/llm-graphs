@@ -2,11 +2,12 @@
  * Runs one browser journey against a verify-llm-graphs server and records evidence for each step.
  * Started by `llmg browse <journey.mjs>`, which passes the run's URL and evidence directory.
  *
- * A journey file default-exports `async ({ page, context, base, step, check, cookies, saveDownload })`:
+ * A journey file default-exports `async ({ page, context, base, step, check, cookies, saveDownload, dir })`:
  *   step(label, fn)     runs fn, then saves a screenshot, an ARIA snapshot, the URL, and the app cookies
  *   check(ok, message)  fails the journey with `message` unless ok is truthy
  *   cookies()           the app's `settings` and `picked-models` cookies, decoded, or null when unset
  *   saveDownload(d)     saves a Playwright download into the evidence directory and returns its path
+ *   dir                 the journey's evidence directory, for extra artifacts such as cropped screenshots
  */
 import { appendFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { createRequire } from "node:module"
@@ -93,7 +94,7 @@ async function saveDownload(download) {
 const journey = (await import(pathToFileURL(resolve(journeyPath)).href)).default
 let failure = null
 try {
-  await journey({ page, context, base: values.base, step, check, cookies, saveDownload })
+  await journey({ page, context, base: values.base, step, check, cookies, saveDownload, dir })
 } catch (error) {
   failure = error
   await page.screenshot({ path: join(dir, "failure.png") }).catch(() => {})
