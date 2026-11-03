@@ -41,7 +41,7 @@ export function ChartImportButton({ className }: { className?: string }) {
         </DialogHeader>
         <div className="flex flex-col items-center gap-3 py-4 text-center">
           <p className="text-foreground text-lg font-medium">Soon™</p>
-          <DialogDescription>Want this feature? Spam me on GitHub.</DialogDescription>
+          <DialogDescription>Want this feature?</DialogDescription>
           <a
             href={IMPORT_FEATURE_REQUEST_URL}
             target="_blank"
@@ -49,7 +49,7 @@ export function ChartImportButton({ className }: { className?: string }) {
             className={cn(buttonVariants({ variant: "outline", size: "sm" }), "mt-1 gap-1.5")}
           >
             <RiGithubFill aria-hidden="true" />
-            Request it on GitHub
+            Spam me on GitHub
           </a>
         </div>
       </DialogContent>
