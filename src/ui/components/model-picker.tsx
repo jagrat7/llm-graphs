@@ -58,6 +58,8 @@ type ModelPickerProps = {
   onReset?: () => void
   /** Reports the model whose entry is hovered or focused, so the chart can emphasise it. */
   onHighlightChange?: (model: string | null) => void
+  /** The model whose point the chart has under the pointer or focus; its entry lights up. */
+  activeModel?: string | null
   className?: string
   disabled?: boolean
   /** Focuses the search on `/`. Only one picker on a page should claim the key. */
@@ -70,6 +72,7 @@ export function ModelPicker({
   onChange,
   onReset,
   onHighlightChange,
+  activeModel = null,
   className,
   disabled = false,
   shortcut = false,
@@ -325,6 +328,7 @@ export function ModelPicker({
               <LegendEntry
                 key={model.model}
                 model={model}
+                active={model.model === activeModel}
                 onRemove={() => removeModel(model.model)}
                 {...highlightHandlers(model.model)}
               />
@@ -343,7 +347,11 @@ export function ModelPicker({
                         variant="ghost"
                         size="sm"
                         aria-label={`Show ${hidden.length} more selected models`}
-                        className="text-muted-foreground h-chip w-full justify-start px-1.5"
+                        // A chart point of a model folded in here lights the count instead.
+                        data-active={
+                          hidden.some((model) => model.model === activeModel) ? "" : undefined
+                        }
+                        className="text-muted-foreground data-active:bg-muted data-active:text-foreground h-chip w-full justify-start px-1.5"
                       />
                     }
                   >
@@ -361,6 +369,7 @@ export function ModelPicker({
                         <LegendEntry
                           key={model.model}
                           model={model}
+                          active={model.model === activeModel}
                           onRemove={() => onChange(selected.filter((id) => id !== model.model))}
                           {...highlightHandlers(model.model)}
                         />
@@ -400,17 +409,23 @@ export function ModelPicker({
   )
 }
 
-/** One pick in the key: the chart's mark for it, its name, and a way to drop it. */
+/**
+ * One pick in the key: the chart's mark for it, its name, and a way to drop it. While one
+ * of its points is active on the chart, it lights as a hover would, minus the remove
+ * button, which the pointer is nowhere near.
+ */
 function LegendEntry({
   model,
+  active = false,
   onRemove,
   ...props
-}: { model: Model; onRemove: () => void } & HTMLAttributes<HTMLLIElement>) {
+}: { model: Model; active?: boolean; onRemove: () => void } & HTMLAttributes<HTMLLIElement>) {
   return (
     <li
       data-slot="model-picker-entry"
+      data-active={active ? "" : undefined}
       title={model.displayName}
-      className="group/entry text-control hover:bg-muted focus-within:bg-muted relative flex min-w-0 items-center gap-1.5 rounded-sm ps-1.5 font-medium transition-colors"
+      className="group/entry text-control hover:bg-muted focus-within:bg-muted data-active:bg-muted relative flex min-w-0 items-center gap-1.5 rounded-sm ps-1.5 font-medium transition-colors"
       {...props}
     >
       {/* Grey at rest so the key doesn't compete with the chart; a hover or focus brings
@@ -418,7 +433,7 @@ function LegendEntry({
       <ModelLogo
         logoUrl={model.logoUrl}
         color={model.chartColor}
-        className="size-3 grayscale transition-[filter] group-focus-within/entry:grayscale-0 group-hover/entry:grayscale-0 pointer-coarse:grayscale-0"
+        className="size-3 grayscale transition-[filter] group-focus-within/entry:grayscale-0 group-hover/entry:grayscale-0 group-data-active/entry:grayscale-0 pointer-coarse:grayscale-0"
       />
       <span className="min-w-0 flex-1 truncate">{model.displayName}</span>
       {/* Laid over the name's tail rather than beside it, so showing it never re-truncates

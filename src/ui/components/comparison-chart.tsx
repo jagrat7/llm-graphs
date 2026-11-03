@@ -1,7 +1,7 @@
 import { createChartRuntime } from "@tanstack/charts"
 import { renderChartSvg } from "@tanstack/charts/svg"
 import { Chart } from "@tanstack/charts/react/tooltip"
-import { useId, useMemo, useRef, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 
 import type { ChartDefinition, ChartSize, ChartTextMeasurer } from "@tanstack/charts"
 import type { Metric } from "#/ui/lib/metrics"
@@ -271,6 +271,7 @@ export function ComparisonChart({
   getShareLink,
   logMetrics,
   onLogMetricChange,
+  onActiveModelChange,
 }: {
   models: Array<Model>
   sources: Record<"x" | "y", ProviderName | null>
@@ -283,6 +284,8 @@ export function ComparisonChart({
   /** Metrics the reader put on a log scale; every other axis is linear. */
   logMetrics: ReadonlyArray<Metric>
   onLogMetricChange: (metric: Metric, log: boolean) => void
+  /** Reports the model whose point is under the pointer or keyboard focus, or null. */
+  onActiveModelChange?: (model: string | null) => void
 }) {
   const info = useProvidersInfo()
   const frameRef = useRef<HTMLDivElement>(null)
@@ -345,6 +348,10 @@ export function ComparisonChart({
       ? rangeDefinition(data, { ...options, flat })
       : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid })
   }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, paperGrid])
+
+  // Switching views remounts the plot, and unmounting drops it, without either reporting
+  // its focused point going, so the active model is let go here.
+  useEffect(() => () => onActiveModelChange?.(null), [onActiveModelChange, view])
 
   if (data.points.length === 0) {
     return <DataState className={CHART_FRAME_CLASS} title="No models have both selected metrics" />
@@ -432,6 +439,7 @@ export function ComparisonChart({
             }
             initialWidth={1200}
             measureText={measureText}
+            onFocusChange={(point) => onActiveModelChange?.(point?.datum.model.model ?? null)}
             style={{ height: "100%" }}
             // A custom body drops the library's card chrome, so the card brings its own.
             renderTooltipBody={({ points, primaryPoint }) => {

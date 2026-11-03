@@ -239,6 +239,9 @@ function ComparePage() {
   // Distinguishes "user just added Z" (animate the cube open) from a deep link (start solved).
   const [morphPhase, setMorphPhase] = useState<MorphPhase>("instant")
   const [highlightedModel, setHighlightedModel] = useState<string | null>(null)
+  // The other way round: a point active on the chart lights its model's entry in the key.
+  // Kept apart from the highlight so a hovered point never dims the chart it sits on.
+  const [chartActiveModel, setChartActiveModel] = useState<string | null>(null)
   // Saved here or in another tab; a shared link's models still override them below.
   const pickedModels = usePickedModels(savedPicks)
 
@@ -430,6 +433,7 @@ function ComparePage() {
       onChange={pickModels}
       onReset={search.models || pickedModels ? resetModels : undefined}
       onHighlightChange={setHighlightedModel}
+      activeModel={chartActiveModel}
       disabled={controlsDisabled}
       shortcut
     />
@@ -552,6 +556,7 @@ function ComparePage() {
                 onExitComplete={handleExitComplete}
                 getShareLink={shareLink}
                 logMetrics={logMetrics}
+                onActiveModelChange={setChartActiveModel}
               />
             </ChartChunkErrorBoundary>
           ) : (
@@ -567,6 +572,7 @@ function ComparePage() {
                 getShareLink={shareLink}
                 logMetrics={logMetrics}
                 onLogMetricChange={setLogMetric}
+                onActiveModelChange={setChartActiveModel}
               />
             </ClientOnly>
           )}

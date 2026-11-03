@@ -1086,6 +1086,7 @@ export function ComparisonChart3D({
   onExitComplete,
   getShareLink,
   logMetrics = [],
+  onActiveModelChange,
 }: {
   models: Array<Model>
   metrics: Record<"x" | "y" | "z", Metric>
@@ -1096,6 +1097,8 @@ export function ComparisonChart3D({
   getShareLink?: () => string
   /** Metrics the link puts on a log scale; every other axis is linear. */
   logMetrics?: ReadonlyArray<Metric>
+  /** Reports the model whose point is active, or null. */
+  onActiveModelChange?: (model: string | null) => void
 }) {
   const info = useProvidersInfo()
   const reduceMotion = useReducedMotion()
@@ -1216,6 +1219,14 @@ export function ComparisonChart3D({
   }, [data, info, metrics, positions, showPointLabels, sources])
 
   const activePoint = activeId == null ? null : (data.pointById.get(activeId) ?? null)
+  const activeModel = activePoint?.model.model ?? null
+
+  useEffect(() => {
+    onActiveModelChange?.(activeModel)
+  }, [activeModel, onActiveModelChange])
+
+  // An unmounting chart never reports its point going, so it lets go of the model itself.
+  useEffect(() => () => onActiveModelChange?.(null), [onActiveModelChange])
 
   useEffect(() => setWebgl(supportsWebGL()), [])
 

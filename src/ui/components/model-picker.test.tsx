@@ -190,6 +190,36 @@ describe("model picker key", () => {
     expect(document.querySelectorAll("[data-slot=model-picker-entry]")).toHaveLength(8)
     expect(screen.getByRole("button", { name: "Show 2 more selected models" })).not.toBeNull()
   })
+
+  it("lights the entry of the model active on the chart, and only that one", () => {
+    render(
+      <ModelPicker
+        models={models}
+        selected={["alpha", "beta"]}
+        onChange={() => {}}
+        activeModel="beta"
+      />,
+    )
+
+    expect(pill("Beta").hasAttribute("data-active")).toBe(true)
+    expect(pill("Alpha").hasAttribute("data-active")).toBe(false)
+  })
+
+  it("lights the count when the chart's active model is folded into it", () => {
+    render(
+      <ModelPicker
+        models={picks(10).map(makeModel)}
+        selected={picks(10)}
+        onChange={() => {}}
+        activeModel="model09"
+      />,
+    )
+
+    const more = screen.getByRole("button", { name: "Show 2 more selected models" })
+
+    expect(more.hasAttribute("data-active")).toBe(true)
+    expect(document.querySelector("[data-slot=model-picker-entry][data-active]")).toBeNull()
+  })
 })
 
 describe("model picker search", () => {
