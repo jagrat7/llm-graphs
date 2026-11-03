@@ -379,10 +379,13 @@ function unlabeled(row: MetricRow) {
  * configuration at named efforts. It is most likely one of those efforts or the API default,
  * so it has no place on the effort line and would be drawn after `max`. A model listed
  * only without an effort keeps its row, and a non-reasoning run is never dropped: it is a
- * mode, not a missing level.
+ * mode, not a missing level. A named run whose labels contradict each other is refused, so it
+ * cannot vouch for the line either.
  */
 export function withoutUnlabeledRuns(rows: ReadonlyArray<MetricRow>): Array<MetricRow> {
-  const labeledRuns = new Set(rows.filter((row) => row.level !== "unknown").map(runOf))
+  const labeledRuns = new Set(
+    rows.filter((row) => row.level !== "unknown" && !row.effortConflict).map(runOf),
+  )
 
   return rows.filter((row) => !unlabeled(row) || !labeledRuns.has(runOf(row)))
 }

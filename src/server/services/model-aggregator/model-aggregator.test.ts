@@ -235,6 +235,15 @@ describe("withoutUnlabeledRuns", () => {
       ),
     ).toEqual(["on/high/fallbacks", "unknown/unknown"])
   })
+
+  it("keeps an unlabeled run when the only named run contradicts itself", () => {
+    const conflicted = { ...metricRow("on", "high"), effortConflict: "slug says non-reasoning" }
+
+    expect(shape(withoutUnlabeledRuns([conflicted, metricRow("unknown", "unknown")]))).toEqual([
+      "on/high",
+      "unknown/unknown",
+    ])
+  })
 })
 
 describe("Arena display names", () => {
