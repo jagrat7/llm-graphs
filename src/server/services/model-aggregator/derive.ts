@@ -364,6 +364,29 @@ function emptyVariants(): Record<ProviderName, Array<ModelVariant>> {
   return ProvidersService.record(() => [])
 }
 
+/** A run's place apart from its effort: the harness and configuration one effort line shares. */
+function runOf(row: MetricRow) {
+  return `${row.harness ?? ""}\u0000${row.configuration ?? ""}`
+}
+
+/** A reasoning (or possibly reasoning) run that names no effort. */
+function unlabeled(row: MetricRow) {
+  return row.mode !== "off" && row.level === "unknown"
+}
+
+/**
+ * Drops a run that names no effort when the same source lists that model, harness, and
+ * configuration at named efforts. It is most likely one of those efforts or the API default,
+ * so it has no place on the effort line and would be drawn after `max`. A model listed
+ * only without an effort keeps its row, and a non-reasoning run is never dropped: it is a
+ * mode, not a missing level.
+ */
+export function withoutUnlabeledRuns(rows: ReadonlyArray<MetricRow>): Array<MetricRow> {
+  const labeledRuns = new Set(rows.filter((row) => row.level !== "unknown").map(runOf))
+
+  return rows.filter((row) => !unlabeled(row) || !labeledRuns.has(runOf(row)))
+}
+
 function compareVariants(left: ModelVariant, right: ModelVariant) {
   return (
     left.entryId.localeCompare(right.entryId) ||
@@ -445,12 +468,16 @@ export function aggregateModels(inputs: AggregatorInputs): Derivation {
       joinedBy: cluster.joinedBy,
     })
 
+    const rowsBySource = new Map<ProviderName, Array<MetricRow>>()
     for (const member of cluster.members) {
       if (!isMetricSource(member.source)) continue
+      for (const row of member.rows) attachedRows.add(row)
+      rowsBySource.set(member.source, [...(rowsBySource.get(member.source) ?? []), ...member.rows])
+    }
 
-      for (const row of member.rows) {
-        attachedRows.add(row)
-        variants[member.source].push({
+    for (const [source, rows] of rowsBySource) {
+      for (const row of withoutUnlabeledRuns(rows)) {
+        variants[source].push({
           entryId: id,
           mode: row.mode,
           level: row.level,

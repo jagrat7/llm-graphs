@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 
-import { aggregateModels, type Derivation } from "./derive"
+import { aggregateModels, type Derivation, withoutUnlabeledRuns } from "./derive"
 import { buildDiagnostics } from "./diagnostics"
-import { ProvidersService } from "../providers"
+import { type MetricRow, ProvidersService } from "../providers"
 import { allFixtureInputs, fixtureInputs, fixtures } from "./fixture-inputs"
 
 const derivation = aggregateModels(fixtureInputs())
@@ -185,6 +185,56 @@ describe("effort order across sources", () => {
       }
     }
   })
+
+  it("drops AutomationBench's unlabeled GPT-5.6 Luna run beside its named efforts", () => {
+    const levels = all.variants.automationBench
+      .filter((variant) => variant.entryId === "gpt-5-6-luna")
+      .toSorted((left, right) => left.effortOrder - right.effortOrder)
+      .map((variant) => `${variant.mode}/${variant.level}`)
+
+    expect(levels).toEqual(["on/low", "on/medium", "on/high", "on/xhigh", "on/max"])
+  })
+
+  it("keeps a model AutomationBench lists only without an effort", () => {
+    const kimi = all.variants.automationBench.filter((variant) => variant.entryId === "kimi-k3")
+
+    expect(kimi.map((variant) => `${variant.mode}/${variant.level}`)).toEqual(["unknown/unknown"])
+  })
+
+  it("never draws an unlabeled reasoning run on a line of named efforts", () => {
+    for (const sourceVariants of Object.values(all.variants)) {
+      const named = new Set(
+        sourceVariants
+          .filter((variant) => variant.level !== "unknown")
+          .map((variant) => `${variant.entryId}/${variant.harness}/${variant.configuration}`),
+      )
+
+      for (const variant of sourceVariants) {
+        if (variant.mode === "off" || variant.level !== "unknown") continue
+        const key = `${variant.entryId}/${variant.harness}/${variant.configuration}`
+        expect(named.has(key), `${key} ${variant.mode}/${variant.level}`).toBe(false)
+      }
+    }
+  })
+})
+
+describe("withoutUnlabeledRuns", () => {
+  it("keeps a non-reasoning run beside a reasoning run with no level", () => {
+    expect(
+      shape(withoutUnlabeledRuns([metricRow("off", "unknown"), metricRow("on", "unknown")])),
+    ).toEqual(["off/unknown", "on/unknown"])
+  })
+
+  it("judges each configuration on its own", () => {
+    expect(
+      shape(
+        withoutUnlabeledRuns([
+          metricRow("on", "high", "fallbacks"),
+          metricRow("unknown", "unknown"),
+        ]),
+      ),
+    ).toEqual(["on/high/fallbacks", "unknown/unknown"])
+  })
 })
 
 describe("Arena display names", () => {
@@ -238,6 +288,25 @@ describe("models.dev listing", () => {
     expect(buildDiagnostics(all).failures.duplicateEntryIds).toEqual([])
   })
 })
+
+function metricRow(mode: MetricRow["mode"], level: string, configuration?: string): MetricRow {
+  return {
+    sourceModelId: "m",
+    rawId: "m",
+    mode,
+    level,
+    ...(configuration ? { configuration } : {}),
+    metrics: {},
+    metadata: { name: "m", creator: null, releaseDate: null },
+    effortConflict: null,
+  }
+}
+
+function shape(rows: Array<MetricRow>) {
+  return rows.map(
+    (kept) => `${kept.mode}/${kept.level}${kept.configuration ? `/${kept.configuration}` : ""}`,
+  )
+}
 
 /** One line per entry, so a rule change diffs as exactly the entries it touched. */
 function snapshotText({ snapshot: result, provenance: sources }: Derivation) {
