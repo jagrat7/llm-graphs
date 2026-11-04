@@ -16,6 +16,8 @@ Environment variables, all optional:
 | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `AA_API_KEY`                                         | [Artificial Analysis API](https://artificialanalysis.ai/documentation) key. Without it, that source is unavailable. |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shares the source cache across server instances. Without them, each server caches in memory.                        |
+| `VITE_WATCHTOWER_WEBSITE_ID`                         | Watchtower (self-hosted Umami) website ID, read at build time. Without it, no page-view tracker loads.              |
+| `VITE_WATCHTOWER_SCRIPT_URL`                         | Overrides the tracker URL. Defaults to `https://watchtower-mu-seven.vercel.app/script.js`.                          |
 
 Sources are fetched on the server, cached, and refreshed in the background once stale. A failed refresh keeps the last good copy.
 
