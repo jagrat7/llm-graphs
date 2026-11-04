@@ -26,25 +26,9 @@ interface MyRouterContext {
 // step: no stored value means the system preference decides.
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var resolved=stored==='light'||stored==='dark'?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved}catch(e){}})()`
 
-// Watchtower is a self-hosted Umami. Only builds given a website ID load its tracker, so local dev
-// and preview deploys stay out of the numbers. The tracker follows client-side route changes itself.
-const WATCHTOWER_WEBSITE_ID = import.meta.env.VITE_WATCHTOWER_WEBSITE_ID
-const WATCHTOWER_SCRIPT_URL =
-  import.meta.env.VITE_WATCHTOWER_SCRIPT_URL || "https://watchtower-mu-seven.vercel.app/script.js"
-const WATCHTOWER_SCRIPT = {
-  src: WATCHTOWER_SCRIPT_URL,
-  defer: true,
-  "data-website-id": WATCHTOWER_WEBSITE_ID,
-  // Without it the tracker posts to this app's own /api/send. The script's directory is the API
-  // base, as upstream Umami assumes.
-  "data-host-url": WATCHTOWER_SCRIPT_URL.slice(
-    0,
-    Math.max(0, WATCHTOWER_SCRIPT_URL.lastIndexOf("/")),
-  ),
-  // The chart keeps its controls in the query, so counting the path alone stops each control
-  // change from being a page view.
-  "data-exclude-search": "true",
-}
+// Watchtower (self-hosted Umami) page views, only in builds given a website ID. Counts paths
+// alone, since the chart's controls live in the query.
+const WATCHTOWER_ID = import.meta.env.VITE_WATCHTOWER_WEBSITE_ID
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   // Settings come from the request's cookie, so the server renders with this reader's own.
@@ -94,7 +78,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { rel: "apple-touch-icon", href: "/logo192.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
-    scripts: WATCHTOWER_WEBSITE_ID ? [WATCHTOWER_SCRIPT] : [],
+    scripts: WATCHTOWER_ID
+      ? [
+          {
+            src: "https://watchtower-mu-seven.vercel.app/script.js",
+            defer: true,
+            "data-website-id": WATCHTOWER_ID,
+            "data-exclude-search": "true",
+          },
+        ]
+      : [],
   }),
   shellComponent: RootDocument,
 })
