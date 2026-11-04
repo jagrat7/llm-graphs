@@ -31,6 +31,16 @@ const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getIte
 const WATCHTOWER_WEBSITE_ID = import.meta.env.VITE_WATCHTOWER_WEBSITE_ID
 const WATCHTOWER_SCRIPT_URL =
   import.meta.env.VITE_WATCHTOWER_SCRIPT_URL || "https://watchtower-mu-seven.vercel.app/script.js"
+const WATCHTOWER_SCRIPT = {
+  src: WATCHTOWER_SCRIPT_URL,
+  defer: true,
+  "data-website-id": WATCHTOWER_WEBSITE_ID,
+  // Without it the tracker posts to this app's own /api/send.
+  "data-host-url": new URL(WATCHTOWER_SCRIPT_URL).origin,
+  // The chart keeps its controls in the query, so counting the path alone stops each control
+  // change from being a page view.
+  "data-exclude-search": "true",
+}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   // Settings come from the request's cookie, so the server renders with this reader's own.
@@ -80,9 +90,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { rel: "apple-touch-icon", href: "/logo192.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
-    scripts: WATCHTOWER_WEBSITE_ID
-      ? [{ src: WATCHTOWER_SCRIPT_URL, defer: true, "data-website-id": WATCHTOWER_WEBSITE_ID }]
-      : [],
+    scripts: WATCHTOWER_WEBSITE_ID ? [WATCHTOWER_SCRIPT] : [],
   }),
   shellComponent: RootDocument,
 })
