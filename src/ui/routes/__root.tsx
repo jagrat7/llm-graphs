@@ -35,8 +35,12 @@ const WATCHTOWER_SCRIPT = {
   src: WATCHTOWER_SCRIPT_URL,
   defer: true,
   "data-website-id": WATCHTOWER_WEBSITE_ID,
-  // Without it the tracker posts to this app's own /api/send.
-  "data-host-url": new URL(WATCHTOWER_SCRIPT_URL).origin,
+  // Without it the tracker posts to this app's own /api/send. The script's directory is the API
+  // base, as upstream Umami assumes.
+  "data-host-url": WATCHTOWER_SCRIPT_URL.slice(
+    0,
+    Math.max(0, WATCHTOWER_SCRIPT_URL.lastIndexOf("/")),
+  ),
   // The chart keeps its controls in the query, so counting the path alone stops each control
   // change from being a page view.
   "data-exclude-search": "true",
