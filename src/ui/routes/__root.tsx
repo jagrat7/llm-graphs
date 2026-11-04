@@ -26,6 +26,10 @@ interface MyRouterContext {
 // step: no stored value means the system preference decides.
 const THEME_INIT_SCRIPT = `(function(){try{var stored=window.localStorage.getItem('theme');var resolved=stored==='light'||stored==='dark'?stored:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var root=document.documentElement;root.classList.remove('light','dark');root.classList.add(resolved);root.style.colorScheme=resolved}catch(e){}})()`
 
+// Watchtower (self-hosted Umami) page views, only in builds given a website ID. Counts paths
+// alone, since the chart's controls live in the query.
+const WATCHTOWER_ID = import.meta.env.VITE_WATCHTOWER_WEBSITE_ID
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   // Settings come from the request's cookie, so the server renders with this reader's own.
   beforeLoad: async ({ context }) => {
@@ -74,6 +78,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { rel: "apple-touch-icon", href: "/logo192.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
+    scripts: WATCHTOWER_ID
+      ? [
+          {
+            src: "https://watchtower-mu-seven.vercel.app/script.js",
+            defer: true,
+            "data-website-id": WATCHTOWER_ID,
+            "data-exclude-search": "true",
+          },
+        ]
+      : [],
   }),
   shellComponent: RootDocument,
 })
