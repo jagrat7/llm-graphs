@@ -1,0 +1,14 @@
+{
+  "type": "web",
+  "title": "LLM Graphs",
+  "description": "Interactive 2D and 3D charts for comparing language models across benchmarks, cost, speed, and quality.",
+  "tags": ["TypeScript", "React", "Three.js"],
+  "image": "docs/images/chart-dark.png",
+  "images": [
+    "docs/images/chart-dark.png",
+    "docs/images/chart-light.png",
+    "docs/images/chart-3d.png",
+    "docs/images/mobile.png",
+    "docs/images/chart-arena.png"
+  ]
+}
