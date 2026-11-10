@@ -224,9 +224,17 @@ export function resolveSource(
   info: ProvidersInfo,
   scoreSource?: ProviderName | null,
 ): ProviderName {
-  // Without a score axis, read the first benchmark that publishes this task metric.
-  if (metric === "cost" || metric === "duration")
-    return scoreSource ?? metricProviders(metric, info)[0]
+  if (metric === "cost" || metric === "duration") {
+    if (scoreSource != null) return scoreSource
+    // Without a score axis, cost and duration share the first benchmark that publishes both,
+    // so a chart of one against the other compares the same runs.
+    const durations = metricProviders("duration", info)
+
+    return (
+      metricProviders("cost", info).find((candidate) => durations.includes(candidate)) ??
+      metricProviders(metric, info)[0]
+    )
+  }
 
   const sources = metricProviders(metric, info)
 
