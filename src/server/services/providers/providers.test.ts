@@ -18,8 +18,9 @@ function aaPrices(input: number | null, output: number | null) {
 
 describe("ProvidersService", () => {
   it("offers each metric from the sources that publish it, default first", () => {
-    expect(ProvidersService.providersFor("score")[0]).toBe("deepswe")
-    expect(ProvidersService.providersFor("costPerTask")[0]).toBe("deepswe")
+    expect(ProvidersService.providersFor("score")[0]).toBe("frontierCode")
+    expect(ProvidersService.providersFor("costPerTask")[0]).toBe("frontierCode")
+    expect(ProvidersService.providersFor("durationSeconds")[0]).toBe("deepswe")
     expect(ProvidersService.providersFor("costPerMTokens")[0]).toBe("artificialAnalysis")
   })
 

@@ -15,7 +15,7 @@ const info = ProvidersService.info()
 
 describe("provider metadata", () => {
   it("binds task cost to the score benchmark, including a benchmark with no task cost", () => {
-    expect(resolveSource("cost", "artificialAnalysis", info)).toBe("deepswe")
+    expect(resolveSource("cost", "artificialAnalysis", info)).toBe("frontierCode")
     expect(resolveSource("cost", undefined, info, "artificialAnalysis")).toBe("artificialAnalysis")
     expect(metricProviders("cost", info)).toContain("artificialAnalysis")
     expect(resolveSource("cost", undefined, info, "metr")).toBe("metr")
@@ -32,7 +32,7 @@ describe("provider metadata", () => {
     expect(resolveSource("score", "artificialAnalysis", info)).toBe("artificialAnalysis")
     expect(resolveSource("speed", "removed-provider", info)).toBe("artificialAnalysis")
     expect(resolveSource("duration", undefined, info)).toBe("deepswe")
-    expect(resolveSource("cost", "toString", info)).toBe("deepswe")
+    expect(resolveSource("cost", "toString", info)).toBe("frontierCode")
     expect(isSource("toString", info)).toBe(false)
   })
 
