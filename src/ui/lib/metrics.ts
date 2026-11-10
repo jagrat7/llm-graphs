@@ -224,8 +224,9 @@ export function resolveSource(
   info: ProvidersInfo,
   scoreSource?: ProviderName | null,
 ): ProviderName {
+  // Without a score axis, read the first benchmark that publishes this task metric.
   if (metric === "cost" || metric === "duration")
-    return scoreSource ?? info.metricProviders.score[0]
+    return scoreSource ?? metricProviders(metric, info)[0]
 
   const sources = metricProviders(metric, info)
 
