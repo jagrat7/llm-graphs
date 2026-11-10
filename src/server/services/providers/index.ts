@@ -21,6 +21,15 @@ import {
 } from "./provider.types"
 import { metricNotes } from "./utils"
 
+/** Benchmarks offered first for the metrics they publish, most preferred first. */
+const DEFAULT_SOURCES: Array<string> = ["frontierCode", "deepswe"]
+
+function defaultRank(name: string) {
+  const rank = DEFAULT_SOURCES.indexOf(name)
+
+  return rank === -1 ? DEFAULT_SOURCES.length : rank
+}
+
 /** Register a provider once here; downloading, metadata, diagnostics and UI discovery follow. */
 const metricSources = {
   artificialAnalysis: new ArtificialAnalysisProvider(),
@@ -58,8 +67,8 @@ export const ProvidersService = {
     return (
       ProvidersService.names
         .filter((name) => metricSources[name].metrics[metric] != null)
-        // Preserve the existing benchmark defaults as new sources are registered.
-        .toSorted((a, b) => Number(b === "deepswe") - Number(a === "deepswe"))
+        // Keep the chosen benchmark defaults as new sources are registered.
+        .toSorted((a, b) => defaultRank(a) - defaultRank(b))
     )
   },
   info(): ProvidersInfo {

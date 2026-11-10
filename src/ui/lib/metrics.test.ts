@@ -33,6 +33,9 @@ describe("provider metadata", () => {
     expect(resolveSource("speed", "removed-provider", info)).toBe("artificialAnalysis")
     expect(resolveSource("duration", undefined, info)).toBe("deepswe")
     expect(resolveSource("cost", "toString", info)).toBe("deepswe")
+    // A chart of cost against duration reads both from one benchmark, even when the
+    // default score benchmark publishes only one of them.
+    expect(resolveSource("cost", undefined, info)).toBe(resolveSource("duration", undefined, info))
     expect(isSource("toString", info)).toBe(false)
   })
 
