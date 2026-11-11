@@ -94,6 +94,7 @@ export default async function barView({ page, step, check, saveDownload }) {
       pageOverflow: document.documentElement.scrollWidth > window.innerWidth,
     }))
   })
+  check(phone.scrollWidth > phone.clientWidth, "the bars scroll sideways inside the chart")
   check(phone.pageOverflow === false, "the page itself never scrolls sideways")
 
   return { opened, hovered, phone }

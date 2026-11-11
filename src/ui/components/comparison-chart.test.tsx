@@ -554,6 +554,37 @@ describe("stacked runs", () => {
     expect(title?.getAttribute("stroke")).toBeNull()
   })
 
+  it("fades other groups' logos with their bars while a bar has focus", async () => {
+    const client = new QueryClient()
+    client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
+    const logoUrl = "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'/%3E"
+    const { container } = render(
+      <QueryClientProvider client={client}>
+        <ComparisonChart
+          models={priced.map((model) => ({ ...model, logoUrl }))}
+          sources={{ x: "artificialAnalysis", y: "deepswe" }}
+          xMetric="price"
+          yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
+        />
+      </QueryClientProvider>,
+    )
+    const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
+    const logo = (model: string) => container.querySelector(`[data-ts-key$=":${model}:logo"]`)
+    const opacity = (model: string) => Number(logo(model)?.getAttribute("opacity") ?? 1)
+
+    expect(logo("alpha")).not.toBeNull()
+
+    await focusPoint(svg, 1)
+    await settle()
+
+    expect(opacity("alpha")).toBe(1)
+    expect(opacity("beta")).toBeLessThan(1)
+    // The focused bar's outline stays on the bar.
+    expect(logo("alpha")?.getAttribute("stroke")).toBeNull()
+  })
+
   it("inspects a bar only while the pointer is on it, with its original values", async () => {
     const { container } = renderPriced()
     const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
