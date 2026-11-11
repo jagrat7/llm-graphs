@@ -62,6 +62,9 @@
   /* A model's name on the chart keeps its vendor's hue but not its lightness: marks range from
      near-black ink to mid-tone colour, and at one size a darker name reads as a larger one. */
   --vendor-label-l: 0.42;
+  /* A bar chart's lower efforts fade from the model's colour toward the sheet: paler on
+     paper, dimmer on the black sheet, so the highest effort always reads strongest. */
+  --effort-fade: 0.24;
   /* Drafted corners: tighter than the dark theme, which keeps its own below. */
   --radius: 0.3rem;
   --sidebar: oklch(0.945 0.015 88);
@@ -106,6 +109,7 @@
   --vendor-tint-c: 0.035;
   --vendor-unknown: oklch(0.7 0 0);
   --vendor-label-l: 0.84;
+  --effort-fade: -0.3;
   --radius: 0.5rem;
   --sidebar: oklch(0.17 0 0);
 }
@@ -462,8 +466,10 @@ textarea {
   }
 }
 
-/* Chart point labels sit on a background-coloured halo so grid lines never cut a name. */
-.chart-point-label {
+/* Chart point labels and bar values sit on a background-coloured halo so grid lines never
+   cut a name or a number. */
+.chart-point-label,
+.chart-bar-label {
   stroke: var(--background);
   stroke-width: 3px;
   stroke-linejoin: round;

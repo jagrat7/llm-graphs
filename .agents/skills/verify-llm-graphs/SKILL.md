@@ -11,7 +11,7 @@ LLM Graphs is one web page (`/`, "Compare language models") that plots models fr
 - **`settings` cookie:** URI-encoded JSON `{hiddenProviders, paretoFrontier, vendorLogos, paperGrid, logScale}`, holding only the fields a reader changed.
 - **`picked-models` cookie:** URI-encoded JSON array of entry ids.
 
-The primary drive is therefore HTTP: request the page the way a browser's first load does and read what it renders. The chart itself (SVG scatter/ranges, three.js cube), popovers, dialogs, the share menu, and anything that changes after hydration only exist in a browser.
+The primary drive is therefore HTTP: request the page the way a browser's first load does and read what it renders. The chart itself (SVG scatter/bars, three.js cube), popovers, dialogs, the share menu, and anything that changes after hydration only exist in a browser.
 
 Everything below uses the helper `scripts/llmg` (bash; needs `bun`, `curl`, `jq`, `ss`, `setsid`, plus `node`, Playwright, and Chromium for `browse`). Run it from the repo root as `.claude/skills/verify-llm-graphs/scripts/llmg` (or the same path under `.agents/skills/`). Run it with no arguments for usage.
 
@@ -93,7 +93,7 @@ LLMG_RUN=<id> $V api /api/models/diagnostics --name diag
 
 ### Browser (second resort)
 
-Use browser automation when the HTTP drive cannot test the change or leaves gaps in the evidence. That covers anything after hydration: chart marks and tooltips, the Ranges/Scatter toggle, log-scale toggles, Pareto and logo rendering, the picker popover and the `/` shortcut, the Settings dialog writing its cookie, the Share menu (Copy link, Download image PNG, Download data CSV), theme switching, the 3D morph, and cross-tab cookie sync.
+Use browser automation when the HTTP drive cannot test the change or leaves gaps in the evidence. That covers anything after hydration: chart marks and tooltips, the Bars/Scatter toggle, log-scale toggles, Pareto and logo rendering, the picker popover and the `/` shortcut, the Settings dialog writing its cookie, the Share menu (Copy link, Download image PNG, Download data CSV), theme switching, the 3D morph, and cross-tab cookie sync.
 
 **The user allows browser automation for this skill, but `llmg` comes first.** Cover everything the scripts can reach with `llmg page` and `llmg api`, and use the browser only for the steps marked (browser) or for a gap the scripts leave. Say which gap needed it. You don't need to ask first: this permission overrides the general "no agent-browser unless asked" rule in the repo's `CLAUDE.md`, but only for verification under this skill.
 
@@ -117,9 +117,11 @@ A journey is an ES module whose default export receives `{ page, context, base, 
 
 Evidence goes to `<evidence>/<journey-name>/`. A rerun in the same run gets `<journey-name>-2/` and so on, so a failed attempt's `failure.png` and `steps.jsonl` survive. Console errors and page errors go to `console.txt`, and `result.json` records pass or fail. Video recording is unavailable here: Playwright needs its own ffmpeg at `~/.cache/ms-playwright/ffmpeg-1013/` (from `playwright install ffmpeg`) and does not use the system `/usr/bin/ffmpeg`. Use the per-step screenshots.
 
+[`journeys/bar-view.mjs`](journeys/bar-view.mjs) checks the bar view that a metric fixed per model (token price) opens on: it counts the bars, hovers one for its tooltip, flips the theme, goes to the scatter and back, downloads the share image, and loads the link on a phone, where the bars scroll sideways inside the chart while the page itself does not. Bars are `[data-ts-key^="effort-bars-0:"]` paths; their labels, captions and axis title are `bar-labels-1:*`. Pick the metric pair with `X` and `Y`, e.g. `X=price Y=score $V browse bar-view.mjs`.
+
 The existing `dev/browser-graph-audit.js` is a separate, dev-only in-page audit (`import('/dev/browser-graph-audit.js')` in the page console) that walks every axis combination.
 
-Stable browser handles (ARIA): `Settings`, `Search models` (shortcut `/`), `Models N` (picker trigger; its popover is dialog `Models` with `Reset`, `Clear`, and one checkbox per model, named by model), `X-axis metric`, `Y-axis data source`, `Add Z axis`, `Remove Z axis and return to the 2D chart`, `Swap the X and Y axes`, `Chart view` (Ranges/Scatter), `Log scale for <label>`, `Pareto frontier`, `Share`, `Show N more selected models`, `Switch to dark theme`, `Search providers`. Visible model chips are `[data-slot="combobox-chip"]`, and their remove buttons, `[data-slot="combobox-chip-remove"]`, have **no accessible name**. Only chips inside the `Show N more` popover have `Remove <model name>`. The chart root is `[data-chart-frame="loaded"]` once drawn.
+Stable browser handles (ARIA): `Settings`, `Search models` (shortcut `/`), `Models N` (picker trigger; its popover is dialog `Models` with `Reset`, `Clear`, and one checkbox per model, named by model), `X-axis metric`, `Y-axis data source`, `Add Z axis`, `Remove Z axis and return to the 2D chart`, `Swap the X and Y axes`, `Chart view` (Bars/Scatter), `Log scale for <label>`, `Pareto frontier`, `Share`, `Show N more selected models`, `Switch to dark theme`, `Search providers`. Visible model chips are `[data-slot="combobox-chip"]`, and their remove buttons, `[data-slot="combobox-chip-remove"]`, have **no accessible name**. Only chips inside the `Show N more` popover have `Remove <model name>`. The chart root is `[data-chart-frame="loaded"]` once drawn.
 
 ## Evidence
 

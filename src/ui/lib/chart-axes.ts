@@ -62,15 +62,15 @@ export function axisDescription(
     .join(" ")
 }
 
-export function rangeAxisDescription(
+export function barAxisDescription(
   data: PlotData,
   flat: "x" | "y",
   sources: Record<"x" | "y", ProviderName | null>,
   info: ProvidersInfo,
 ) {
   const spread = flat === "x" ? "y" : "x"
-  const horizontal = metricAxisTitle(data.metrics[spread]!, sources[spread], info)
-  const rowMetric = metricAxisTitle(data.metrics[flat]!, sources[flat], info)
+  const vertical = metricAxisTitle(data.metrics[spread]!, sources[spread], info)
+  const groupMetric = metricAxisTitle(data.metrics[flat]!, sources[flat], info)
 
-  return `Horizontal axis: ${horizontal}${logNote(data, spread)}. Vertical axis: model configurations, ordered by their minimum ${rowMetric}. Row captions show this metric's value or range across efforts. Each marker represents one effort; inspect it for both exact metric values.`
+  return `Vertical axis: ${vertical}, from zero. Horizontal axis: one group of bars per model configuration, ordered by their minimum ${groupMetric}. Group captions show this metric's value or range across efforts. Each bar represents one effort, lettered beneath it (L low, M medium, H high, X xhigh, Mx max); inspect it for both exact metric values.`
 }

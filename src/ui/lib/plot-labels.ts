@@ -31,13 +31,18 @@ export const LABEL_COLLISION_GAP = 4
 /** Average glyph width as a share of the font size — enough to reserve label boxes. */
 export const LABEL_WIDTH_RATIO = 0.56
 
+/** A run's colour at the one lightness every name shares, so no name outweighs another. */
+export function seriesLabelColor(color: string) {
+  return `oklch(from ${color} var(--vendor-label-l) c h)`
+}
+
 function seriesLabelAt(series: PlotSeries, anchor: PlotPoint): SeriesLabel {
   return {
     key: series.key,
     pointId: anchor.id,
     name: series.label,
     effort: anchor.model.effort === "default" ? null : anchor.model.effort.toUpperCase(),
-    color: `oklch(from ${series.color} var(--vendor-label-l) c h)`,
+    color: seriesLabelColor(series.color),
     ids: new Set(series.points.map((point) => point.id)),
   }
 }

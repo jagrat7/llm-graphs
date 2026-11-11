@@ -2,7 +2,6 @@ import type {
   ChartFocusAnchor,
   ChartMarkState,
   ChartPoint,
-  ChartValue,
   MarkRenderContext,
   SceneLabel,
   SceneNode,
@@ -20,10 +19,8 @@ import {
 } from "#/ui/lib/chart-styles"
 import { minorRulings } from "#/ui/lib/paper-rulings"
 import {
-  LABEL_COLLISION_GAP,
   LABEL_EFFORT_SIZE,
   LABEL_NAME_SIZE,
-  LABEL_WIDTH_RATIO,
   placeSeriesLabels,
   type LabelPosition,
 } from "#/ui/lib/plot-labels"
@@ -84,32 +81,19 @@ export function markerHalf(point: PlotPoint) {
   return point.logoUrl == null ? POINT_RADIUS : LOGO_SIZE / 2
 }
 
-/** Which value of a point each positional scale reads; the scatter reads both metrics. */
-export type PlotEncoding = Record<"x" | "y", (point: PlotPoint) => ChartValue>
-
-export const SCATTER_ENCODING: PlotEncoding = {
-  x: (point) => point.values.x,
-  y: (point) => point.values.y,
-}
-
-function encodedChannels(data: PlotData, encoding: PlotEncoding) {
+function scatterChannels(data: PlotData) {
   return {
-    x: { scale: "x", values: data.points.map(encoding.x) },
-    y: { scale: "y", values: data.points.map(encoding.y) },
+    x: { scale: "x", values: data.points.map((point) => point.values.x) },
+    y: { scale: "y", values: data.points.map((point) => point.values.y) },
   }
 }
 
-/** Band scales resolve to the band centre, so a row's markers sit on its midline. */
-function positionsOf(
-  data: PlotData,
-  { scales }: Pick<MarkRenderContext, "scales">,
-  encoding: PlotEncoding = SCATTER_ENCODING,
-) {
+function positionsOf(data: PlotData, { scales }: Pick<MarkRenderContext, "scales">) {
   const positions = new Map<string, LabelPosition>()
 
   for (const point of data.points) {
-    const x = scales.x.map(encoding.x(point))
-    const y = scales.y.map(encoding.y(point))
+    const x = scales.x.map(point.values.x)
+    const y = scales.y.map(point.values.y)
 
     if (Number.isFinite(x) && Number.isFinite(y)) positions.set(point.id, { x, y })
   }
@@ -117,7 +101,7 @@ function positionsOf(
   return positions
 }
 
-const stateTransition = {
+export const FOCUS_TRANSITION = {
   type: "tween",
   duration: CHART_TRANSITION_MS,
   easing: "ease-out",
@@ -130,33 +114,31 @@ const stateTransition = {
  * gesture, so it wins over a pill highlight: the focused run is fully lit even when
  * another model's pill is highlighted, matching what the labels' `focusOpacity` does.
  */
-const FOCUS_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
+export const SERIES_FOCUS_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
   {
     when: ({ matches }) => !matches("series"),
     style: { opacity: DIMMED_OPACITY },
-    transition: stateTransition,
+    transition: FOCUS_TRANSITION,
   },
   {
     when: ({ matches }) => matches("series"),
     style: { opacity: 1, strokeOpacity: ACTIVE_LINE_OPACITY },
-    transition: stateTransition,
+    transition: FOCUS_TRANSITION,
   },
-  // Dots grow under the pointer; logos keep their box and rely on the focus ring.
-  { when: { focus: "primary" }, style: { r: ACTIVE_POINT_RADIUS }, transition: stateTransition },
 ]
 
-/** How a run's connecting line is drawn: a thin path in the scatter, a thick span in rows. */
-export type RunStyle = { strokeWidth: number; strokeOpacity: number; span: boolean }
-
-const SCATTER_RUN: RunStyle = { strokeWidth: 2, strokeOpacity: LINE_OPACITY, span: false }
+const FOCUS_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
+  ...SERIES_FOCUS_STATES,
+  // Dots grow under the pointer; logos keep their box and rely on the focus ring.
+  { when: { focus: "primary" }, style: { r: ACTIVE_POINT_RADIUS }, transition: FOCUS_TRANSITION },
+]
 
 /**
  * Each model's effort run: a connecting line under one marker per effort. Logos are
  * painted as rects filled with the model colour and masked by the vendor logo
  * (`logoClass` maps a logo URL to the class carrying that mask); models without a logo
  * get a plain dot. Markers are the run's only interactive geometry; the connecting line
- * just follows its points' focus state. A `span` run is drawn from its leftmost to its
- * rightmost marker instead of in effort order, which is what a range row needs.
+ * just follows its points' focus state.
  */
 export function modelRunsMark(
   data: PlotData,
@@ -164,14 +146,10 @@ export function modelRunsMark(
     highlight,
     frontier,
     logoClass,
-    encoding = SCATTER_ENCODING,
-    run = SCATTER_RUN,
   }: Emphasis & {
     /** Model id to emphasise from outside the chart, e.g. a hovered picker pill. */
     highlight: string | null
     logoClass: Map<string, string>
-    encoding?: PlotEncoding
-    run?: RunStyle
   },
 ) {
   const emphasis = { highlight, frontier }
@@ -181,10 +159,10 @@ export function modelRunsMark(
 
     return {
       id,
-      channels: encodedChannels(data, encoding),
+      channels: scatterChannels(data),
       states: { data: data.points, definitions: FOCUS_STATES },
       render(context) {
-        const positions = positionsOf(data, context, encoding)
+        const positions = positionsOf(data, context)
         const lines: Array<SceneNode> = []
         const markers: Array<SceneNode> = []
 
@@ -205,8 +183,8 @@ export function modelRunsMark(
               groupLabel: series.label,
               datum: point,
               datumIndex: point.index,
-              xValue: encoding.x(point),
-              yValue: encoding.y(point),
+              xValue: point.values.x,
+              yValue: point.values.y,
               x: position.x,
               y: position.y,
               color: point.color,
@@ -245,24 +223,17 @@ export function modelRunsMark(
           }
 
           if (owners.length > 1) {
-            const path = run.span
-              ? [
-                  owners.reduce((left, point) => (point.x < left.x ? point : left)),
-                  owners.reduce((right, point) => (point.x > right.x ? point : right)),
-                ]
-              : owners
-
             lines.push({
               kind: "polyline",
               key: `${id}:line:${series.key}`,
               ariaHidden: true,
-              points: path.map((point) => [point.x, point.y] as const),
+              points: owners.map((point) => [point.x, point.y] as const),
               pointOwners: owners,
               style: {
                 fill: "none",
                 stroke: series.color,
-                strokeWidth: run.strokeWidth,
-                strokeOpacity: run.strokeOpacity,
+                strokeWidth: 2,
+                strokeOpacity: LINE_OPACITY,
                 opacity: runLineOpacity(series, emphasis),
                 lineCap: "round",
                 lineJoin: "round",
@@ -555,94 +526,6 @@ export function paretoFrontierMark(data: PlotData, frontier: ReadonlyArray<PlotP
             },
           ],
         }
-      },
-    }
-  })
-}
-
-/** Effort names like "xhigh" read as small caps beneath their markers. */
-const EFFORT_LABEL_GAP = 6
-
-/**
- * The range view's per-marker effort names, set under each marker so a row reads
- * "low · medium · high" along its span. A name that would collide with the previous one
- * below moves above its marker; one that fits neither side is skipped, and the marker's
- * tooltip still names its effort. Names stay inside the plot and within half a row of
- * their marker, so a cramped chart drops them rather than spilling into the next row.
- */
-export function effortLabelsMark(
-  data: PlotData,
-  { encoding, highlight }: { encoding: PlotEncoding; highlight: string | null },
-) {
-  return createMark<PlotPoint>(({ markIndex }) => {
-    const id = `effort-labels-${markIndex}`
-
-    return {
-      id,
-      channels: encodedChannels(data, encoding),
-      render(context) {
-        const { chart } = context
-        const positions = positionsOf(data, context, encoding)
-        const nodes: Array<SceneLabel> = []
-        const rows = [
-          ...new Set(Array.from(positions.values(), (position) => position.y)),
-        ].toSorted((left, right) => left - right)
-        const rowHalf = Math.min(
-          Infinity,
-          ...rows.slice(1).map((y, index) => (y - rows[index]) / 2),
-        )
-
-        for (const series of data.series) {
-          const restingOpacity = isLit(series, highlight) ? 1 : DIMMED_OPACITY
-          // Right edge of the last name placed in each lane: under the row, then over it.
-          const laneRight = [-Infinity, -Infinity]
-          const named = series.points
-            .flatMap((point) => {
-              const position = positions.get(point.id)
-
-              return position && point.model.effort !== "default" ? [{ point, position }] : []
-            })
-            .toSorted((left, right) => left.position.x - right.position.x)
-
-          for (const { point, position } of named) {
-            const text = point.model.effort
-            const half = (text.length * LABEL_EFFORT_SIZE * LABEL_WIDTH_RATIO) / 2
-            const offset = markerHalf(point) + EFFORT_LABEL_GAP
-            const reach = offset + LABEL_EFFORT_SIZE
-
-            if (reach > rowHalf || half * 2 > chart.width) continue
-
-            const fits = [
-              position.y + reach <= chart.y + chart.height,
-              position.y - reach >= chart.y,
-            ]
-            const x = Math.min(Math.max(position.x, chart.x + half), chart.x + chart.width - half)
-            const lane = laneRight.findIndex(
-              (right, index) => fits[index] && x - half >= right + LABEL_COLLISION_GAP,
-            )
-
-            if (lane === -1) continue
-
-            laneRight[lane] = x + half
-            nodes.push({
-              kind: "label",
-              key: `${id}:${point.id}`,
-              className: CHART_LABEL_CLASS,
-              ariaHidden: true,
-              x,
-              y: lane === 0 ? position.y + reach : position.y - offset,
-              anchor: "middle",
-              text,
-              fontSize: LABEL_EFFORT_SIZE,
-              fontWeight: 500,
-              style: { fill: "var(--muted-foreground)", opacity: restingOpacity },
-              focusOpacity: ({ focus }) =>
-                focus == null ? undefined : focus.primary.group === series.key ? 1 : DIMMED_OPACITY,
-            })
-          }
-        }
-
-        return { nodes: [{ kind: "group", key: id, ariaHidden: true, children: nodes }] }
       },
     }
   })

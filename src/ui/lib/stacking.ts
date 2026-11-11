@@ -4,7 +4,7 @@ import type { PlotData, PlotSeries } from "#/ui/lib/comparison-plot-data"
  * A metric that is fixed per model — token price is the usual one — gives every effort
  * of a model the same position on that axis, so each run collapses into a vertical (or
  * horizontal) stack of unlabelled markers. A scatter has nothing to say along that axis
- * within a model, so the comparison reads better as one row per model.
+ * within a model, so the comparison reads better as one group of bars per model.
  *
  * Returns the axis most multi-effort runs stack on, otherwise null. A run flat on both
  * axes sits on one spot either way, so it counts towards neither.
@@ -39,12 +39,12 @@ export function isFlat(series: PlotSeries, axis: "x" | "y") {
 
 type Span = { min: number; max: number }
 
-/** One row per model for the range view: its value on the flat axis and its effort span. */
-export type RangeRow = {
+/** One group of bars per model: its value on the flat axis and the span of its bars. */
+export type BarGroup = {
   series: PlotSeries
   /**
    * The model's value on the flat axis, e.g. its token price. Only most models need be
-   * flat for the range view, so a model whose efforts differ keeps its full span here.
+   * flat for the bar view, so a model whose efforts differ keeps its full span here.
    */
   fixed: Span
   spread: Span
@@ -55,10 +55,10 @@ function spanOf(values: Array<number>): Span {
 }
 
 /**
- * Rows ordered along the flat metric — the axis the reader picked — so moving down the
- * list still walks that axis, ties broken by the best result on the other one.
+ * Groups ordered along the flat metric — the axis the reader picked — so reading left to
+ * right still walks that axis, ties broken by the best result on the other one.
  */
-export function rangeRows(data: PlotData, flat: "x" | "y"): Array<RangeRow> {
+export function barGroups(data: PlotData, flat: "x" | "y"): Array<BarGroup> {
   const spread = flat === "x" ? "y" : "x"
 
   return data.series
