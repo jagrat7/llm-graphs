@@ -42,7 +42,7 @@ import {
 } from "./icons"
 import { project } from "./project"
 import { readTokens, type Theme } from "./tokens"
-import type { DemoModule, ExtraEntry, Sources } from "./types"
+import type { DemoModule, ExtraEntry, Preset, Sources } from "./types"
 import { Button, Sortable, SortableHandle, SortableItem, cn } from "./ui"
 
 const capital = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
@@ -237,11 +237,14 @@ function usePageTheme() {
       setDark(html, false)
       return true
     }
-    const asked = new URLSearchParams(location.search).get("theme")
+    const param = new URLSearchParams(location.search).get("theme")
+    const asked = param === "light" || param === "dark" ? param : undefined
     const site: Theme = take() ? "dark" : "light"
-    apply(asked === "light" || asked === "dark" ? asked : site)
+    apply(asked ?? site)
+    // A theme provider may put the mark back after this runs. It comes off again, and the page
+    // follows it unless the address asked for a theme.
     const observer = new MutationObserver(() => {
-      if (take()) apply("dark")
+      if (take() && !asked) apply("dark")
     })
     observer.observe(html, {
       attributes: true,
@@ -697,15 +700,19 @@ const LIBRARIES: Record<string, string> = {
     is read from components.json and the stylesheet as they are now. A choice the setup doesn't
     say is left out. */
 function choices({ sources: { shadcn, preset }, tokens }: Design) {
-  const values = preset.values ?? {}
+  const values: NonNullable<Preset["values"]> = preset.values ?? {}
   /** A choice shadcn/create has no option for, so the preset code holds a stand-in for it. */
   const own = (name: string) => preset.fallbacks?.includes(name)
   const named = (name: string | undefined) => (name ? words(name) : undefined)
+  /** A choice by its name in the preset: the project's own value (or "Custom", if the page
+      can't tell what it is) when the preset only holds a stand-in. */
+  const choice = (name: keyof typeof values, mine?: string): { value?: string; own?: boolean } =>
+    own(name) ? { value: mine || "Custom", own: true } : { value: named(values[name]) }
   const sans = tokens.fontFace("font-sans")
   const list: { label: string; value?: string; own?: boolean; glyph: ReactNode }[] = [
     {
       label: "Component library",
-      value: preset.base && (LIBRARIES[preset.base] ?? preset.base),
+      value: preset.base ? (LIBRARIES[preset.base] ?? preset.base) : undefined,
       glyph: <Blocks />,
     },
     {
@@ -718,30 +725,25 @@ function choices({ sources: { shadcn, preset }, tokens }: Design) {
       value: words(shadcn.tailwind.baseColor),
       glyph: <span className="bg-muted-foreground size-4 rounded-full" />,
     },
-    {
-      label: "Theme",
-      value: own("theme") ? project.name : named(values.theme),
-      own: own("theme"),
-      glyph: <Marker className="size-4" />,
-    },
-    {
-      label: "Chart colour",
-      value: own("chartColor") ? project.name : named(values.chartColor),
-      own: own("chartColor"),
-      glyph: <span className="bg-chart-2 size-4 rounded-full" />,
-    },
+    { label: "Theme", ...choice("theme", project.name), glyph: <Marker className="size-4" /> },
+    // Only where the stylesheet has chart colours to show.
+    ...(tokens.value("light", "chart-2")
+      ? [
+          {
+            label: "Chart colour",
+            ...choice("chartColor"),
+            glyph: <span className="bg-chart-2 size-4 rounded-full" />,
+          },
+        ]
+      : []),
     {
       label: "Heading",
-      value: own("fontHeading")
-        ? tokens.fontFace("font-heading") || sans
-        : named(values.fontHeading),
-      own: own("fontHeading"),
+      ...choice("fontHeading", tokens.fontFace("font-heading") || sans),
       glyph: <span className="font-sans text-[15px] font-bold">Aa</span>,
     },
     {
       label: "Font",
-      value: own("font") ? sans : named(values.font),
-      own: own("font"),
+      ...choice("font", sans),
       glyph: <span className="font-sans text-[15px]">Aa</span>,
     },
     {
@@ -751,8 +753,7 @@ function choices({ sources: { shadcn, preset }, tokens }: Design) {
     },
     {
       label: "Radius",
-      value: own("radius") ? tokens.radius : named(values.radius),
-      own: own("radius"),
+      ...choice("radius", tokens.radius),
       glyph: (
         <span
           className="size-4 border-t-2 border-r-2 border-current"
@@ -760,24 +761,10 @@ function choices({ sources: { shadcn, preset }, tokens }: Design) {
         />
       ),
     },
-    {
-      label: "Menu",
-      value: shadcn.menuColor
-        ? named(shadcn.menuColor)
-        : own("menuColor")
-          ? project.name
-          : named(values.menuColor),
-      own: !shadcn.menuColor && own("menuColor"),
-      glyph: <Menu />,
-    },
+    { label: "Menu", ...choice("menuColor", named(shadcn.menuColor)), glyph: <Menu /> },
     {
       label: "Menu accent",
-      value: shadcn.menuAccent
-        ? named(shadcn.menuAccent)
-        : own("menuAccent")
-          ? project.name
-          : named(values.menuAccent),
-      own: !shadcn.menuAccent && own("menuAccent"),
+      ...choice("menuAccent", named(shadcn.menuAccent)),
       glyph: <MousePointer2 />,
     },
   ]

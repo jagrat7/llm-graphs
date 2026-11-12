@@ -9,7 +9,7 @@ import { Suspense, lazy } from "react"
 const DesignPage = import.meta.env.DEV ? lazy(() => import("#/ui/design")) : null
 
 export const Route = createFileRoute("/design")({
-  beforeLoad: () => {
+  loader: () => {
     if (!import.meta.env.DEV) throw notFound()
   },
   component: Design,

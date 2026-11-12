@@ -131,18 +131,19 @@ function SortableItem({
 function SortableHandle({ className, children, ...props }: React.ComponentProps<"button">) {
   const handle = React.use(SortableItemContext)
   if (!handle) throw new Error("SortableHandle must be inside a SortableItem")
+  const { attributes, listeners, setActivatorNodeRef } = handle
 
   return (
     <button
       type="button"
-      ref={handle.setActivatorNodeRef}
+      ref={setActivatorNodeRef}
       data-slot="sortable-handle"
       className={cn(
         "flex size-6 shrink-0 cursor-grab touch-none items-center justify-center rounded-sm border border-transparent text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 active:cursor-grabbing [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-3.5",
         className,
       )}
-      {...handle.attributes}
-      {...handle.listeners}
+      {...attributes}
+      {...listeners}
       {...props}
     >
       {children ?? (
