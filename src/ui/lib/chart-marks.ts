@@ -269,10 +269,7 @@ export function modelLabelsMark(data: PlotData, emphasis: Emphasis) {
 
     return {
       id,
-      channels: {
-        x: { scale: "x", values: data.points.map((point) => point.values.x) },
-        y: { scale: "y", values: data.points.map((point) => point.values.y) },
-      },
+      channels: scatterChannels(data),
       render(context) {
         const { chart } = context
         const seriesByKey = new Map(data.series.map((series) => [series.key, series]))
@@ -354,10 +351,7 @@ export function pointGuidesMark(data: PlotData) {
 
       return {
         id,
-        channels: {
-          x: { scale: "x", values: data.points.map((point) => point.values.x) },
-          y: { scale: "y", values: data.points.map((point) => point.values.y) },
-        },
+        channels: scatterChannels(data),
         render(context) {
           const { chart } = context
           const positions = positionsOf(data, context)

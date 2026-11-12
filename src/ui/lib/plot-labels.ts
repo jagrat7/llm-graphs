@@ -107,14 +107,18 @@ const LABEL_SIDES_BOTTOM: ReadonlyArray<LabelSide> = ["left", "right", "bottom",
 /** Tried in order; the wider gaps only matter once every effort of a run is boxed in. */
 const LABEL_GAP_STEPS = [LABEL_PIN_GAP, LABEL_PIN_GAP + 12, LABEL_PIN_GAP + 26]
 
-function overlaps(box: LabelBounds, taken: Array<LabelBounds>) {
-  return taken.some(
-    (other) =>
-      box.left < other.right + LABEL_COLLISION_GAP &&
-      box.right > other.left - LABEL_COLLISION_GAP &&
-      box.top < other.bottom + LABEL_COLLISION_GAP &&
-      box.bottom > other.top - LABEL_COLLISION_GAP,
+/** Whether two boxes come within `gap` pixels of each other. */
+export function boxesOverlap(a: LabelBounds, b: LabelBounds, gap = 0) {
+  return (
+    a.left < b.right + gap &&
+    a.right > b.left - gap &&
+    a.top < b.bottom + gap &&
+    a.bottom > b.top - gap
   )
+}
+
+function overlaps(box: LabelBounds, taken: Array<LabelBounds>) {
+  return taken.some((other) => boxesOverlap(box, other, LABEL_COLLISION_GAP))
 }
 
 /** Block geometry for one candidate side at `gap` pixels out from the anchor marker. */

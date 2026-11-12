@@ -5,6 +5,7 @@ import type { ChartMarkState, ChartPoint, SceneLabel, SceneNode } from "@tanstac
 import type { PlotData, PlotDomain, PlotPoint } from "#/ui/lib/comparison-plot-data"
 import type { ProviderName, ProvidersInfo } from "#/server/api"
 import type { Metric } from "#/ui/lib/metrics"
+import type { LabelBounds } from "#/ui/lib/plot-labels"
 import type { BarGroup } from "#/ui/lib/stacking"
 
 import { axisPresentation } from "#/ui/lib/chart-axes"
@@ -23,6 +24,7 @@ import {
   LABEL_EFFORT_SIZE,
   LABEL_NAME_SIZE,
   LABEL_WIDTH_RATIO,
+  boxesOverlap,
   seriesLabelColor,
 } from "#/ui/lib/plot-labels"
 import { barGroups } from "#/ui/lib/stacking"
@@ -244,12 +246,6 @@ function barDomain(values: ReadonlyArray<number>): PlotDomain {
   return { min: low < 0 ? low - span * HEADROOM : 0, max: high + span * HEADROOM }
 }
 
-type Box = { left: number; right: number; top: number; bottom: number }
-
-function overlaps(a: Box, b: Box) {
-  return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
-}
-
 /**
  * Focus lights a bar's whole group, like a run in the scatter, and outlines the bar
  * itself. Only the bars take these; the logos fade with their group but never outline.
@@ -318,7 +314,7 @@ function barsMark(data: PlotData, options: BarMarkOptions) {
         const values: Array<SceneLabel> = []
         const letters: Array<SceneLabel> = []
         const captions: Array<SceneNode> = []
-        const placed: Array<Box> = []
+        const placed: Array<LabelBounds> = []
         const { slot, cells } = layoutBars(groups, chart.x, chart.width)
 
         for (const { group, left, right, center, bars: slots } of cells) {
@@ -372,7 +368,7 @@ function barsMark(data: PlotData, options: BarMarkOptions) {
               box.left >= chart.x &&
               box.right <= chart.x + chart.width &&
               box.top >= chart.y - VALUE_SIZE &&
-              !placed.some((other) => overlaps(box, other))
+              !placed.some((other) => boxesOverlap(box, other))
             ) {
               placed.push(box)
               values.push({
