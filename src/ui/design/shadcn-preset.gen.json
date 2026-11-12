@@ -1,0 +1,17 @@
+{
+  "base": "base",
+  "code": "b1Dazm5I",
+  "values": {
+    "style": "mira",
+    "baseColor": "zinc",
+    "theme": "neutral",
+    "chartColor": "neutral",
+    "iconLibrary": "remixicon",
+    "font": "instrument-sans",
+    "fontHeading": "inherit",
+    "radius": "default",
+    "menuAccent": "subtle",
+    "menuColor": "default"
+  },
+  "fallbacks": ["theme", "chartColor", "radius", "menuAccent", "menuColor"]
+}

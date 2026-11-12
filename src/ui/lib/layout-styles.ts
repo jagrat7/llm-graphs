@@ -4,7 +4,7 @@
  * it a readable plot in a short window, where the page scrolls instead. A phone stacks the
  * controls under the chart, so there the chart takes most of a screen of its own above them.
  * Small-viewport units, so a mobile browser's toolbar showing or hiding never resizes the plot.
- * A frame whose plot needs more room (the range view's rows) grows past the floor with it.
+ * The bar view keeps its plot at least as wide as its bars need, scrolling sideways past that.
  */
 export const CHART_FRAME_CLASS = "min-h-[32rem] max-sm:min-h-[max(32rem,70svh)] flex-1"
 /**

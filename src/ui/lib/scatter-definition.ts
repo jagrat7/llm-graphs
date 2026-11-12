@@ -12,7 +12,7 @@ import {
   paretoFrontierMark,
   pointGuidesMark,
 } from "#/ui/lib/chart-marks"
-import { CHART_GRID_MINOR_OPACITY, CHART_GRID_OPACITY } from "#/ui/lib/chart-styles"
+import { CHART_GRID_MINOR_OPACITY, CHART_GRID_OPACITY, CHART_THEME } from "#/ui/lib/chart-styles"
 import { axisPresentation } from "#/ui/lib/chart-axes"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
 import { metricTicks, padDomain } from "#/ui/lib/comparison-plot-data"
@@ -112,11 +112,7 @@ export function scatterDefinition(
         ),
       },
     },
-    theme: {
-      foreground: "var(--foreground)",
-      muted: "var(--muted-foreground)",
-      grid: "var(--border)",
-    },
+    theme: CHART_THEME,
     focusRing: { radius: FOCUS_RING_RADIUS, strokeWidth: 1.5, fill: "none" },
     // Inspect only what is under the pointer: a marker's own dot or logo box, no reach.
     maxFocusDistance: 0,
