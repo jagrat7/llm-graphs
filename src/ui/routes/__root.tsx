@@ -1,7 +1,12 @@
 import type { QueryClient } from "@tanstack/react-query"
 
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router"
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+  useRouterState,
+} from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { Analytics } from "@vercel/analytics/react"
 
@@ -95,6 +100,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootDocument({ children }: { children: React.ReactNode }) {
   // Absent when the root's beforeLoad never ran, as on an error page; the defaults stand then.
   const savedSettings = Route.useRouteContext({ select: (context) => context.savedSettings })
+  // The design page (dev only) is a page of its own, with its own header and theme toggle.
+  const designPage = useRouterState({
+    select: (state) =>
+      import.meta.env.DEV && state.matches.some((match) => match.routeId === "/design"),
+  })
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -105,7 +115,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="font-sans antialiased">
         <SavedSettingsContext value={savedSettings ?? DEFAULT_SETTINGS}>
           <TooltipProvider>
-            <AppHeader />
+            {designPage ? null : <AppHeader />}
             {children}
           </TooltipProvider>
         </SavedSettingsContext>

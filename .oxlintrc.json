@@ -65,6 +65,20 @@
       }
     },
     {
+      "files": [
+        "src/ui/design/page.tsx",
+        "src/ui/design/tokens.ts",
+        "src/ui/design/types.ts",
+        "src/ui/design/demo.tsx",
+        "src/ui/design/icons.tsx"
+      ],
+      "rules": {
+        "unicorn/consistent-function-scoping": "off",
+        "unicorn/no-array-sort": "off",
+        "eslint/no-shadow": "off"
+      }
+    },
+    {
       "files": ["src/**/*.test.{ts,tsx}"],
       "rules": {
         "local/no-server-deep-imports": "off"
