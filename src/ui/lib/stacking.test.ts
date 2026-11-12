@@ -4,7 +4,7 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { buildPlotData } from "#/ui/lib/comparison-plot-data"
 import { metricRecord } from "#/ui/lib/metrics"
-import { rangeRows, stackedAxis } from "#/ui/lib/stacking"
+import { barGroups, stackedAxis } from "#/ui/lib/stacking"
 
 function makeModel({
   model,
@@ -107,19 +107,17 @@ describe("stacked axis detection", () => {
   })
 })
 
-describe("range rows", () => {
-  it("orders models along the flat metric with each effort span", () => {
+describe("bar groups", () => {
+  it("orders models along the flat metric, best result first on a tie", () => {
     const data = buildPlotData(
       [...run("astra", 20, [25, 41]), ...run("sonnet", 4, [18, 45]), ...run("kimi", 4, [22])],
       { x: "price", y: "score" },
     )
 
-    expect(
-      rangeRows(data, "x").map(({ series, fixed, spread }) => [series.key, fixed, spread]),
-    ).toEqual([
-      ["sonnet", { min: 4, max: 4 }, { min: 18, max: 45 }],
-      ["kimi", { min: 4, max: 4 }, { min: 22, max: 22 }],
-      ["astra", { min: 20, max: 20 }, { min: 25, max: 41 }],
+    expect(barGroups(data, "x").map(({ series, fixed }) => [series.key, fixed])).toEqual([
+      ["sonnet", { min: 4, max: 4 }],
+      ["kimi", { min: 4, max: 4 }],
+      ["astra", { min: 20, max: 20 }],
     ])
   })
 
@@ -139,7 +137,7 @@ describe("range rows", () => {
       ],
       { x: "price", y: "score" },
     )
-    const mixed = rangeRows(data, "x").find((row) => row.series.key === "mixed")
+    const mixed = barGroups(data, "x").find((row) => row.series.key === "mixed")
 
     expect(mixed?.fixed).toEqual({ min: 2, max: 20 })
   })

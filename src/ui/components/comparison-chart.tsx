@@ -15,7 +15,7 @@ import { PointDetails } from "#/ui/components/point-details"
 import { Toggle } from "#/ui/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "#/ui/components/ui/toggle-group"
 import { isRatioMetric, metricPresentation } from "#/ui/lib/metrics"
-import { axisDescription, rangeAxisDescription } from "#/ui/lib/chart-axes"
+import { axisDescription, barAxisDescription } from "#/ui/lib/chart-axes"
 import { CHART_EXPORT_DEFS_ATTRIBUTE, SHARE_PLOT_SIZE, svgPlotImage } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
 import { useChartTextMeasurer } from "#/ui/lib/chart-text"
@@ -34,8 +34,8 @@ import {
   CHART_TOOLBAR_CONTROLS_CLASS,
 } from "#/ui/lib/layout-styles"
 import { PARETO_STYLE } from "#/ui/lib/chart-marks"
+import { barDefinition, barsMinWidth } from "#/ui/lib/bar-definition"
 import { drawnFrontier } from "#/ui/lib/pareto"
-import { rangeDefinition, rangeMinHeight } from "#/ui/lib/range-definition"
 import { scatterDefinition } from "#/ui/lib/scatter-definition"
 import { useSetting } from "#/ui/lib/settings"
 import { stackedAxis } from "#/ui/lib/stacking"
@@ -80,7 +80,7 @@ function LogoMasks({ logoClass }: { logoClass: Map<string, string> }) {
   )
 }
 
-type ChartView = "ranges" | "scatter"
+type ChartView = "bars" | "scatter"
 
 /**
  * The plot laid out afresh at the shared image's size rather than the screen's. It is
@@ -119,11 +119,11 @@ async function sharePlotImage(
   }
 }
 
-function describeRanges(data: PlotData) {
+function describeBars(data: PlotData) {
   const modelNoun = data.modelCount === 1 ? "model" : "models"
-  const rowNoun = data.series.length === 1 ? "row" : "rows"
+  const groupNoun = data.series.length === 1 ? "group" : "groups"
 
-  return `Range chart of ${data.modelCount} ${modelNoun} in ${data.series.length} ${rowNoun}, one per model configuration, its efforts spread along the varying metric. Use arrow keys to move between points.`
+  return `Bar chart of ${data.modelCount} ${modelNoun} in ${data.series.length} ${groupNoun}, one per model configuration, with one bar per effort sized by the varying metric. Use arrow keys to move between bars.`
 }
 
 /** A highlighted model wins over the frontier's emphasis, so the description says which fades. */
@@ -195,7 +195,7 @@ const LOG_SWATCH = "M2 2 V11 M10 5 V11 M14.5 5 V11 M17 5 V11 M18.5 2 V11"
 
 /**
  * Puts one axis on a log scale or back. It starts linear, and names the metric rather
- * than the axis, since the range view lays either metric out left to right.
+ * than the axis, since the views lay a metric out on whichever side suits them.
  */
 function LogToggle({
   label,
@@ -233,8 +233,8 @@ function LogToggle({
 }
 
 /**
- * Lets the reader go back to the scatter when stacked efforts default to ranges. The
- * range view's axis title already says how rows are sorted, so the switch stays bare.
+ * Lets the reader go back to the scatter when stacked efforts default to bars. The
+ * bar view's axis title already says how groups are sorted, so the switch stays bare.
  */
 function StackedViewSwitch({
   view,
@@ -253,10 +253,10 @@ function StackedViewSwitch({
       onValueChange={(values) => {
         const next = values[0]
 
-        if (next === "ranges" || next === "scatter") onChange(next)
+        if (next === "bars" || next === "scatter") onChange(next)
       }}
     >
-      <ToggleGroupItem value="ranges">Ranges</ToggleGroupItem>
+      <ToggleGroupItem value="bars">Bars</ToggleGroupItem>
       <ToggleGroupItem value="scatter">Scatter</ToggleGroupItem>
     </ToggleGroup>
   )
@@ -324,8 +324,8 @@ export function ComparisonChart({
   // view that suits it.
   const metricsKey = `${xMetric}/${yMetric}`
   const [choices, setChoices] = useState<Record<string, ChartView>>({})
-  const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "ranges")
-  // The range view has no numeric axis to draw it along, so only the scatter shows it.
+  const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "bars")
+  // The bar view has no numeric axis to draw it along, so only the scatter shows it.
   const frontier = useMemo(() => (view === "scatter" ? drawnFrontier(data) : []), [data, view])
   // One switch for every pair of metrics: someone who hides the frontier wants it gone.
   // It is the same setting the header's settings carry, so the choice outlives the visit.
@@ -333,18 +333,53 @@ export function ComparisonChart({
   const [paperGrid] = useSetting("paperGrid")
   const hasFrontier = frontier.length > 0
   const showFrontier = hasFrontier && frontierOn
-  // Rows in the range view have no numeric scale along the fixed metric, so only the
-  // metric that spreads gets a switch there.
-  const logAxes = (["x", "y"] as const).filter(
-    (axis) => data.logAllowed[axis] && !(view === "ranges" && axis === flat),
-  )
-  const definition = useMemo(() => {
-    const options = { highlight: lit, info, logoClass, sources: { x: xSource, y: ySource } }
+  // Everything the bar view and the scatter draw differently, decided in one place.
+  const plot = useMemo(() => {
+    const plotSources = { x: xSource, y: ySource }
+    const options = { highlight: lit, info, logoClass, sources: plotSources }
 
-    return view === "ranges" && flat != null
-      ? rangeDefinition(data, { ...options, flat })
-      : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid })
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, paperGrid])
+    if (view === "bars" && flat != null) {
+      return {
+        definition: barDefinition(data, { ...options, flat }),
+        label: describeBars(data),
+        description: barAxisDescription(data, flat, plotSources, info),
+        // Bars keep a readable width on a narrow screen, which scrolls sideways to reach them.
+        minWidth: barsMinWidth(data),
+        // Bars stand on zero and groups have no scale at all, so only the scatter goes log.
+        logAxes: [],
+      }
+    }
+
+    const litLabel =
+      data.series.find((series) => series.points[0]?.model.model === lit)?.label ?? null
+
+    return {
+      definition: scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid }),
+      label: describePlot(data),
+      description: [
+        axisDescription(data, plotSources, info),
+        showFrontier && describeFrontier(frontier, litLabel),
+      ]
+        .filter(Boolean)
+        .join(" "),
+      minWidth: undefined,
+      logAxes: (["x", "y"] as const).filter((axis) => data.logAllowed[axis]),
+    }
+  }, [
+    data,
+    flat,
+    view,
+    lit,
+    info,
+    logoClass,
+    xSource,
+    ySource,
+    frontierOn,
+    paperGrid,
+    showFrontier,
+    frontier,
+  ])
+  const { definition, minWidth } = plot
 
   if (data.points.length === 0) {
     return <DataState className={CHART_FRAME_CLASS} title="No models have both selected metrics" />
@@ -360,7 +395,7 @@ export function ComparisonChart({
       <div className={CHART_TOOLBAR_CLASS}>
         <div className={CHART_TOOLBAR_CONTROLS_CLASS}>
           {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
-          {logAxes.map((axis) => (
+          {plot.logAxes.map((axis) => (
             <LogToggle
               key={axis}
               label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
@@ -384,16 +419,13 @@ export function ComparisonChart({
             renderPlot={(scale) => {
               if (!frameRef.current) throw new Error("Chart is not mounted")
 
-              // Rows keep the height they need to stay apart, as they do on screen.
-              const height =
-                view === "ranges"
-                  ? Math.max(SHARE_PLOT_SIZE.height, rangeMinHeight(data.series.length))
-                  : SHARE_PLOT_SIZE.height
+              // Bars keep the width they need to stay apart, as they do on screen.
+              const width = Math.max(SHARE_PLOT_SIZE.width, minWidth ?? 0)
 
               return sharePlotImage(
                 frameRef.current,
                 definition,
-                { width: SHARE_PLOT_SIZE.width, height },
+                { width, height: SHARE_PLOT_SIZE.height },
                 measureText,
                 scale,
               )
@@ -403,36 +435,21 @@ export function ComparisonChart({
       </div>
       {/* The plot fills a layer over its box rather than sizing by percentage: the box's
           height comes from the page's flex column, which a percentage can't resolve against.
-          The range view's rows set the box's own minimum, so the frame grows past its floor
-          by whatever the toolbar above takes, however many rows it wraps to. */}
-      <div
-        data-slot="chart-plot"
-        className="relative min-h-0 flex-1"
-        style={view === "ranges" ? { minHeight: rangeMinHeight(data.series.length) } : undefined}
-      >
-        <div className="absolute inset-0">
+          The bar view's groups set the layer's minimum width, so a narrow screen scrolls
+          sideways through them rather than squeezing every bar to a hairline. */}
+      <div data-slot="chart-plot" className="relative min-h-0 flex-1">
+        <div
+          data-slot="chart-scroll"
+          className={`absolute inset-0 ${minWidth == null ? "" : "overflow-x-auto overflow-y-hidden"}`}
+        >
           <Chart
             key={view}
             definition={definition}
-            ariaLabel={view === "ranges" ? describeRanges(data) : describePlot(data)}
-            ariaDescription={
-              view === "ranges" && flat != null
-                ? rangeAxisDescription(data, flat, sources, info)
-                : [
-                    axisDescription(data, sources, info),
-                    showFrontier &&
-                      describeFrontier(
-                        frontier,
-                        data.series.find((series) => series.points[0]?.model.model === lit)
-                          ?.label ?? null,
-                      ),
-                  ]
-                    .filter(Boolean)
-                    .join(" ")
-            }
+            ariaLabel={plot.label}
+            ariaDescription={plot.description}
             initialWidth={1200}
             measureText={measureText}
-            style={{ height: "100%" }}
+            style={{ height: "100%", minWidth }}
             // A custom body drops the library's card chrome, so the card brings its own.
             renderTooltipBody={({ points, primaryPoint }) => {
               const point = focusedPoint(points, primaryPoint)

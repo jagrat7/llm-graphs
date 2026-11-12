@@ -9,10 +9,11 @@ import type { Model } from "#/ui/lib/model-view"
 
 import { ProvidersService } from "#/server/services/providers"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
+import { barsMinWidth } from "#/ui/lib/bar-definition"
 import { standaloneChartSvg } from "#/ui/lib/chart-image"
 import { CHART_TOOLTIP_CARD_CLASS, CHART_TOOLTIP_WIDTH } from "#/ui/lib/chart-styles"
+import { buildPlotData } from "#/ui/lib/comparison-plot-data"
 import { metricRecord } from "#/ui/lib/metrics"
-import { rangeMinHeight } from "#/ui/lib/range-definition"
 import { providersInfoQueryOptions } from "#/ui/lib/use-providers-info"
 
 function makeModel({
@@ -375,6 +376,23 @@ const tooltipText = () => document.querySelector(".ts-chart-tooltip__body")?.tex
 
 const viewButton = (name: string) => screen.getByRole("button", { name })
 
+/** A bar's box, read back from its rounded path: left, right, top and bottom edges. */
+function barBox(container: HTMLElement, id: string) {
+  const path = container.querySelector(`[data-ts-key="effort-bars-0:${id}"]`)
+  const d = path?.getAttribute("d") ?? ""
+  const xs = [...d.matchAll(/[MHL]([\d.]+)/g)].map((match) => Number(match[1]))
+  const ys = [...d.matchAll(/[MV](?:[\d.]+,)?([\d.]+)/g)].map((match) => Number(match[1]))
+
+  expect(path).not.toBeNull()
+
+  return {
+    left: Math.min(...xs) - 3,
+    right: Math.max(...xs) + 3,
+    top: Math.min(...ys),
+    bottom: Math.max(...ys),
+  }
+}
+
 describe("stacked runs", () => {
   // Every effort of a model shares its token price, so each run stacks on one x value.
   const priced = [
@@ -417,17 +435,19 @@ describe("stacked runs", () => {
     )
   }
 
-  it("switches to one row per model and can go back to the scatter", async () => {
+  it("switches to one group of bars per model and can go back to the scatter", async () => {
     const { container } = renderPriced()
+    const bars = () => container.querySelectorAll('path[data-ts-key^="effort-bars-0:alpha-"]')
 
-    expect(viewButton("Ranges").getAttribute("aria-pressed")).toBe("true")
-    expect(container.textContent).toContain("Alpha · $4")
-    expect(screen.getByRole("img", { name: /^Range chart of 2 models/ })).toBeTruthy()
+    expect(viewButton("Bars").getAttribute("aria-pressed")).toBe("true")
+    expect(bars()).not.toHaveLength(0)
+    expect(container.textContent).toContain("Models, sorted by token price")
+    expect(screen.getByRole("img", { name: /^Bar chart of 2 models/ })).toBeTruthy()
 
     await act(async () => fireEvent.click(viewButton("Scatter")))
 
     expect(viewButton("Scatter").getAttribute("aria-pressed")).toBe("true")
-    expect(container.textContent).not.toContain("Alpha · $4")
+    expect(bars()).toHaveLength(0)
     expect(screen.getByRole("img", { name: /^2D scatter plot/ })).toBeTruthy()
     // Token price does not trade off against Score the way task cost does.
     expect(screen.queryByRole("button", { name: "Pareto frontier" })).toBeNull()
@@ -439,12 +459,21 @@ describe("stacked runs", () => {
     expect(screen.queryByRole("group", { name: "Chart view" })).toBeNull()
   })
 
-  it("describes the displayed range axes, then restores the scatter description", async () => {
+  it("offers no log switch while bars stand on zero", async () => {
+    renderPriced()
+
+    expect(screen.queryByRole("button", { name: /^Log scale for/ })).toBeNull()
+
+    await act(async () => fireEvent.click(viewButton("Scatter")))
+    expect(screen.getByRole("button", { name: "Log scale for Token price" })).toBeTruthy()
+  })
+
+  it("describes the displayed bar axes, then restores the scatter description", async () => {
     const { container } = renderPriced()
     const description = () => container.querySelector("svg.ts-chart desc")?.textContent ?? ""
 
-    expect(description()).toContain("Horizontal axis: Score")
-    expect(description()).toContain("Vertical axis: model configurations")
+    expect(description()).toContain("Vertical axis: Score")
+    expect(description()).toContain("Horizontal axis: one group of bars per model configuration")
     expect(description()).toContain("Token price")
     expect(description()).not.toContain("Horizontal axis: Token price")
 
@@ -475,16 +504,16 @@ describe("stacked runs", () => {
 
     await act(async () => fireEvent.click(viewButton("Scatter")))
     rerender(chart(true))
-    expect(viewButton("Ranges").getAttribute("aria-pressed")).toBe("true")
+    expect(viewButton("Bars").getAttribute("aria-pressed")).toBe("true")
     await act(async () => fireEvent.click(viewButton("Scatter")))
-    await act(async () => fireEvent.click(viewButton("Ranges")))
+    await act(async () => fireEvent.click(viewButton("Bars")))
     rerender(chart(false))
     expect(viewButton("Scatter").getAttribute("aria-pressed")).toBe("true")
     rerender(chart(true))
-    expect(viewButton("Ranges").getAttribute("aria-pressed")).toBe("true")
+    expect(viewButton("Bars").getAttribute("aria-pressed")).toBe("true")
   })
 
-  it("gives dense ranges room to grow beyond the scatter frame", () => {
+  it("keeps dense bars readable by scrolling sideways rather than squeezing them", () => {
     const client = new QueryClient()
     client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
     const crowd = Array.from({ length: 20 }, (_, index) =>
@@ -502,44 +531,94 @@ describe("stacked runs", () => {
         />
       </QueryClientProvider>,
     )
-    // The rows set the plot's own minimum; the frame grows by whatever the toolbar takes.
-    const plot = container.querySelector<HTMLElement>('[data-slot="chart-plot"]')!
-    expect(plot.style.minHeight).toBe(`${rangeMinHeight(20)}px`)
+    const scroll = container.querySelector<HTMLElement>('[data-slot="chart-scroll"]')!
+    const host = scroll.querySelector<HTMLElement>(":scope > *")!
+    const expected = barsMinWidth(buildPlotData(crowd, { x: "price", y: "score" }))
+
+    expect(scroll.className).toContain("overflow-x-auto")
+    expect(host.style.minWidth).toBe(`${expected}px`)
+    expect(expected).toBeGreaterThan(1000)
   })
 
-  it("keeps spans noninteractive while markers expose their original values", async () => {
+  it("outlines only the focused bar, never the labels around it", async () => {
+    const { container } = renderPriced()
+    const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
+
+    await focusPoint(svg, 1)
+    await settle()
+
+    const node = (key: string) => container.querySelector(`[data-ts-key="effort-bars-0:${key}"]`)
+
+    expect(node("alpha-on-high")?.getAttribute("stroke")).toBe("var(--foreground)")
+    expect(node("alpha-on-high")?.getAttribute("stroke-width")).toBe("1.5")
+    expect(node("alpha-on-low")?.getAttribute("stroke")).toBeNull()
+    expect(node("alpha-on-high:value")?.getAttribute("stroke")).toBeNull()
+    expect(node("title")?.getAttribute("stroke")).toBeNull()
+  })
+
+  it("fades other groups' logos with their bars while a bar has focus", async () => {
+    const client = new QueryClient()
+    client.setQueryData(providersInfoQueryOptions.queryKey, ProvidersService.info())
+    const logoUrl = "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'/%3E"
+    const { container } = render(
+      <QueryClientProvider client={client}>
+        <ComparisonChart
+          models={priced.map((model) => ({ ...model, logoUrl }))}
+          sources={{ x: "artificialAnalysis", y: "deepswe" }}
+          xMetric="price"
+          yMetric="score"
+          logMetrics={[]}
+          onLogMetricChange={() => {}}
+        />
+      </QueryClientProvider>,
+    )
+    const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
+    const logo = (model: string) => container.querySelector(`[data-ts-key$=":${model}:logo"]`)
+    const opacity = (model: string) => Number(logo(model)?.getAttribute("opacity") ?? 1)
+
+    expect(logo("alpha")).not.toBeNull()
+
+    await focusPoint(svg, 1)
+    await settle()
+
+    expect(opacity("alpha")).toBe(1)
+    expect(opacity("beta")).toBeLessThan(1)
+    // The focused bar's outline stays on the bar.
+    expect(logo("alpha")?.getAttribute("stroke")).toBeNull()
+  })
+
+  it("inspects a bar only while the pointer is on it, with its original values", async () => {
     const { container } = renderPriced()
     const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
     const [, , width, height] = svg.getAttribute("viewBox")!.split(" ").map(Number)
     svg.getBoundingClientRect = () => DOMRect.fromRect({ x: 0, y: 0, width, height })
-    const low = container.querySelector('[data-ts-key="model-runs-0:alpha-on-low"]')!
-    const high = container.querySelector('[data-ts-key="model-runs-0:alpha-on-high"]')!
-    const x = Number(low.getAttribute("cx"))
-    const y = Number(low.getAttribute("cy"))
-    const move = (clientX: number) =>
+    const low = barBox(container, "alpha-on-low")
+    const high = barBox(container, "alpha-on-high")
+    const move = (clientX: number, clientY: number) =>
       act(async () => {
         svg.dispatchEvent(
           new PointerEvent("pointermove", {
             clientX,
-            clientY: y,
+            clientY,
             bubbles: true,
             pointerType: "mouse",
           }),
         )
       })
 
-    await move((x + Number(high.getAttribute("cx"))) / 2)
+    // The gap between two efforts' bars belongs to neither.
+    await move((low.right + high.left) / 2, low.bottom - 2)
     expect(tooltipText()).not.toContain("Alpha")
-    await move(x)
+    await move((low.left + low.right) / 2, (low.top + low.bottom) / 2)
     expect(tooltipText()).toContain("Alpha")
     expect(tooltipText()).toContain("40%")
   })
 
   /**
-   * A phone-sized range chart taller than the screen, scrolled so `rowId`'s marker sits
-   * just above the viewport's bottom edge; returns where the card was placed.
+   * The bar chart scrolled so `barId`'s top sits just above the viewport's bottom edge;
+   * returns where the card was placed.
    */
-  async function cardNearViewportBottom(rowId: string, surface: { width: number; height: number }) {
+  async function cardNearViewportBottom(barId: string, surface: { width: number; height: number }) {
     const viewport = { width: surface.width, height: 700 }
     const card = { width: 200, height: 240 }
     let scrolled = 0
@@ -565,9 +644,9 @@ describe("stacked runs", () => {
     try {
       const { container } = renderPriced()
       const svg = container.querySelector<SVGSVGElement>("svg.ts-chart")!
-      const rowMarker = container.querySelector(`[data-ts-key="model-runs-0:${rowId}"]`)!
-      const x = Number(rowMarker.getAttribute("cx"))
-      const y = Number(rowMarker.getAttribute("cy"))
+      const box = barBox(container, barId)
+      const x = (box.left + box.right) / 2
+      const y = box.top + 2
 
       scrolled = y - (viewport.height - 10)
       await act(async () => {
@@ -585,14 +664,14 @@ describe("stacked runs", () => {
       const top = Number.parseFloat(element.style.top)
       const left = Number.parseFloat(element.style.left)
 
-      return { viewport, card, markerTop: y - scrolled, top, left, hidden: element.hidden }
+      return { viewport, card, barTop: box.top - scrolled, top, left, hidden: element.hidden }
     } finally {
       for (const spy of restore) spy.mockRestore()
     }
   }
 
-  it("keeps a lower row's card on screen when the chart is scrolled, on a phone", async () => {
-    const { viewport, card, markerTop, top, left, hidden } = await cardNearViewportBottom(
+  it("keeps a bar's card on screen when the chart is scrolled, on a phone", async () => {
+    const { viewport, card, barTop, top, left, hidden } = await cardNearViewportBottom(
       "beta-on-low",
       { width: 360, height: 1230 },
     )
@@ -602,11 +681,11 @@ describe("stacked runs", () => {
     expect(top + card.height).toBeLessThanOrEqual(viewport.height)
     expect(left).toBeGreaterThanOrEqual(0)
     expect(left + card.width).toBeLessThanOrEqual(viewport.width)
-    // No room below the row, so the card opens above it rather than past the screen edge.
-    expect(top + card.height).toBeLessThanOrEqual(markerTop)
+    // No room below the bar's top, so the card opens above it rather than past the screen edge.
+    expect(top + card.height).toBeLessThanOrEqual(barTop)
   })
 
-  it("keeps a lower row's card on screen when the chart is scrolled, on desktop", async () => {
+  it("keeps a bar's card on screen when the chart is scrolled, on desktop", async () => {
     const { viewport, card, top, left, hidden } = await cardNearViewportBottom("beta-on-high", {
       width: 1200,
       height: 1230,
