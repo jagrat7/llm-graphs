@@ -437,7 +437,7 @@ describe("stacked runs", () => {
 
   it("switches to one group of bars per model and can go back to the scatter", async () => {
     const { container } = renderPriced()
-    const bars = () => container.querySelectorAll('[data-ts-key^="effort-bars-0:alpha-"]')
+    const bars = () => container.querySelectorAll('path[data-ts-key^="effort-bars-0:alpha-"]')
 
     expect(viewButton("Bars").getAttribute("aria-pressed")).toBe("true")
     expect(bars()).not.toHaveLength(0)
@@ -547,11 +547,13 @@ describe("stacked runs", () => {
     await focusPoint(svg, 1)
     await settle()
 
-    const focused = container.querySelector('[data-ts-key="effort-bars-0:alpha-on-high"]')
-    const title = container.querySelector('[data-ts-key="bar-labels-1:title"]')
+    const node = (key: string) => container.querySelector(`[data-ts-key="effort-bars-0:${key}"]`)
 
-    expect(focused?.getAttribute("stroke")).toBe("var(--foreground)")
-    expect(title?.getAttribute("stroke")).toBeNull()
+    expect(node("alpha-on-high")?.getAttribute("stroke")).toBe("var(--foreground)")
+    expect(node("alpha-on-high")?.getAttribute("stroke-width")).toBe("1.5")
+    expect(node("alpha-on-low")?.getAttribute("stroke")).toBeNull()
+    expect(node("alpha-on-high:value")?.getAttribute("stroke")).toBeNull()
+    expect(node("title")?.getAttribute("stroke")).toBeNull()
   })
 
   it("fades other groups' logos with their bars while a bar has focus", async () => {

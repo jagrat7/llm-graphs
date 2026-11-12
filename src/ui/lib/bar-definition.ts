@@ -8,8 +8,14 @@ import type { Metric } from "#/ui/lib/metrics"
 import type { BarGroup } from "#/ui/lib/stacking"
 
 import { axisPresentation } from "#/ui/lib/chart-axes"
-import { DIMMED_OPACITY, FOCUS_TRANSITION, SERIES_FOCUS_STATES, isLit } from "#/ui/lib/chart-marks"
-import { CHART_AXIS_TITLE_SIZE, CHART_GRID_OPACITY } from "#/ui/lib/chart-styles"
+import {
+  DIMMED_OPACITY,
+  FOCUS_TRANSITION,
+  SERIES_FOCUS_STATES,
+  groupFocusOpacity,
+  isLit,
+} from "#/ui/lib/chart-marks"
+import { CHART_AXIS_TITLE_SIZE, CHART_GRID_OPACITY, CHART_THEME } from "#/ui/lib/chart-styles"
 import { chartTooltip } from "#/ui/lib/chart-tooltip"
 import { metricTicks } from "#/ui/lib/comparison-plot-data"
 import { formatMetric, metricAxisLabel } from "#/ui/lib/metrics"
@@ -41,7 +47,7 @@ const Y_AXIS_ROOM = 84
 const TICK_SPACING_Y = 64
 
 /** Class on the values over the bars; `styles.css` gives them a background halo. */
-export const BAR_LABEL_CLASS = "chart-bar-label"
+const BAR_LABEL_CLASS = "chart-bar-label"
 const VALUE_SIZE = LABEL_EFFORT_SIZE + 0.5
 const VALUE_GAP = 4
 const CAPTION_VALUE_SIZE = LABEL_EFFORT_SIZE + 1
@@ -55,8 +61,9 @@ const EFFORT_BASELINE = 13
 const LOGO_TOP = 20
 const NAME_BASELINE = LOGO_TOP + CAPTION_LOGO_SIZE + 4 + LABEL_NAME_SIZE
 const LINE_STEP = 13
-/** Two name lines, the fixed value under them, and the axis title. */
-const BOTTOM_MARGIN = NAME_BASELINE + LINE_STEP * 2 + 26
+/** Under two name lines and the fixed value below them. */
+const TITLE_BASELINE = NAME_BASELINE + LINE_STEP * 2 + 20
+const BOTTOM_MARGIN = TITLE_BASELINE + 6
 /** How far lower efforts drop chroma as they fade toward the sheet; see `--effort-fade`. */
 const FADE_CHROMA = 0.35
 
@@ -173,8 +180,8 @@ function slotFor(counts: ReadonlyArray<number>, width: number) {
   }
 }
 
-export type BarSlot = { point: PlotPoint; center: number; width: number; fade: number }
-export type GroupSlot = {
+type BarSlot = { point: PlotPoint; center: number; width: number; fade: number }
+type GroupSlot = {
   group: BarGroup
   left: number
   right: number
@@ -194,7 +201,7 @@ export function layoutBars(groups: ReadonlyArray<BarGroup>, left: number, width:
   const spare = Math.max(0, width - cells.reduce((sum, cell) => sum + cell, 0)) / groups.length
   let cursor = left
 
-  return groups.map((group, groupIndex): GroupSlot => {
+  const placed = groups.map((group, groupIndex): GroupSlot => {
     const bars = counts[groupIndex]
     const cell = cells[groupIndex] + spare
     const start = cursor
@@ -216,6 +223,8 @@ export function layoutBars(groups: ReadonlyArray<BarGroup>, left: number, width:
       })),
     }
   })
+
+  return { slot, cells: placed }
 }
 
 /** The width the bars need before slots drop under `MIN_SLOT`; a narrower screen scrolls. */
@@ -243,37 +252,26 @@ function overlaps(a: Box, b: Box) {
 
 /**
  * Focus lights a bar's whole group, like a run in the scatter, and outlines the bar
- * itself. The outline only widens a stroke the bars already carry at zero width, so a
- * logo sharing the focused bar's ownership gains nothing from it.
+ * itself. Only the bars take these; the logos fade with their group but never outline.
  */
 const BAR_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
   ...SERIES_FOCUS_STATES,
-  { when: { focus: "primary" }, style: { strokeWidth: 1.5 }, transition: FOCUS_TRANSITION },
+  {
+    when: { focus: "primary" },
+    style: { stroke: "var(--foreground)", strokeWidth: 1.5 },
+    transition: FOCUS_TRANSITION,
+  },
 ]
 
 type BarMarkOptions = {
   groups: ReadonlyArray<BarGroup>
   spread: "x" | "y"
   highlight: string | null
-}
-
-/**
- * Both bar marks read the same channels, so the y domain stays the bars' own. Along x a
- * bar's channel is its place in the reading order; pixels come from `layoutBars`.
- */
-function barChannels(data: PlotData, { groups, spread }: BarMarkOptions) {
-  const ordered = groups.flatMap((group) => group.series.points)
-  const order = new Map(ordered.map((point, index) => [point.id, index]))
-  const unit = (point: PlotPoint) =>
-    ((order.get(point.id) ?? 0) + 0.5) / Math.max(1, ordered.length)
-
-  return {
-    unit,
-    channels: {
-      x: { scale: "x", values: data.points.map(unit) },
-      y: { scale: "y", values: data.points.map((point) => point.values[spread]) },
-    },
-  }
+  logoClass: Map<string, string>
+  /** The caption's last line: the model's value on the flat metric. */
+  flatText: (group: BarGroup) => string
+  title: string
+  formatValue: (value: number) => string
 }
 
 /** Where a bar stands: from zero to its value, never thinner than `MIN_BAR_HEIGHT`. */
@@ -284,58 +282,60 @@ function barExtent(value: number, zero: number, end: number) {
   return { below, height, top: below ? zero : Math.min(end, zero - MIN_BAR_HEIGHT) }
 }
 
-function restOpacity(group: BarGroup, highlight: string | null) {
-  return isLit(group.series, highlight) ? 1 : DIMMED_OPACITY
-}
-
-/** A label lit with its group while one of the group's bars has focus, faded otherwise. */
-function groupFocusOpacity(group: BarGroup): SceneLabel["focusOpacity"] {
-  return ({ focus }) =>
-    focus == null ? undefined : focus.primary.group === group.series.key ? 1 : DIMMED_OPACITY
-}
-
 /**
- * One bar per effort, the chart's only interactive geometry. Each owns its point, which
- * sits on the bar's free end so the tooltip opens beside its value. Each group's logo
- * lives here too, owned by the group's bars, so it fades with them under focus: a label
- * has `focusOpacity` for that, a logo's masked rect does not.
+ * The bars and everything they carry: one bar per effort, the chart's only interactive
+ * geometry, with its value over it and its effort under it; each group's logo, name and
+ * fixed value; the zero line and the models' axis title. Each bar owns its point, which
+ * sits on the bar's free end so the tooltip opens beside its value. The bars and logos
+ * each take their own focus states, so a focused bar's outline never reaches a logo, and
+ * text fades with its group through `focusOpacity`. A value that would collide with one
+ * already placed is left out; the bar's tooltip still has it.
  */
-function effortBarsMark(
-  data: PlotData,
-  options: BarMarkOptions & { logoClass: Map<string, string> },
-) {
-  const { unit, channels } = barChannels(data, options)
+function barsMark(data: PlotData, options: BarMarkOptions) {
+  const { groups, spread, highlight } = options
+  const ordered = groups.flatMap((group) => group.series.points)
+  const order = new Map(ordered.map((point, index) => [point.id, index]))
+  // Interaction reads each point's x value, so a bar's is its place in the reading order;
+  // its pixels come from `layoutBars`.
+  const unit = (point: PlotPoint) =>
+    ((order.get(point.id) ?? 0) + 0.5) / Math.max(1, ordered.length)
 
   return createMark<PlotPoint>(({ markIndex }) => {
     const id = `effort-bars-${markIndex}`
 
     return {
       id,
-      channels,
-      states: { data: data.points, definitions: BAR_STATES },
+      channels: {
+        x: { scale: "x", values: data.points.map(unit) },
+        y: { scale: "y", values: data.points.map((point) => point.values[spread]) },
+      },
       render({ chart, scales }) {
         const zero = scales.y.map(0)
         const bottom = chart.y + chart.height
+        const points: Array<ChartPoint<PlotPoint>> = []
         const bars: Array<SceneNode> = []
         const logos: Array<SceneNode> = []
+        const values: Array<SceneLabel> = []
+        const letters: Array<SceneLabel> = []
+        const captions: Array<SceneNode> = []
+        const placed: Array<Box> = []
+        const { slot, cells } = layoutBars(groups, chart.x, chart.width)
 
-        for (const { group, center, bars: slots } of layoutBars(
-          options.groups,
-          chart.x,
-          chart.width,
-        )) {
-          const rest = restOpacity(group, options.highlight)
+        for (const { group, left, right, center, bars: slots } of cells) {
+          const { series } = group
+          const rest = isLit(series, highlight) ? 1 : DIMMED_OPACITY
+          const focusOpacity = groupFocusOpacity(series.key)
           const owners: Array<ChartPoint<PlotPoint>> = []
 
           for (const { point, center: x, width, fade } of slots) {
-            const value = point.values[options.spread]
+            const value = point.values[spread]
             const { below, height, top } = barExtent(value, zero, scales.y.map(value))
             const radius = Math.min(BAR_RADIUS, width / 3, height)
             const chartPoint: ChartPoint<PlotPoint> = {
               key: `${id}:${point.id}`,
               markId: id,
-              group: group.series.key,
-              groupLabel: group.series.label,
+              group: series.key,
+              groupLabel: series.label,
               datum: point,
               datumIndex: point.index,
               xValue: unit(point),
@@ -354,88 +354,10 @@ function effortBarsMark(
               width,
               height,
               cornerRadii: below ? [0, 0, radius, radius] : [radius, radius, 0, 0],
-              style: {
-                fill: barColor(point.color, fade),
-                stroke: "var(--foreground)",
-                strokeWidth: 0,
-                opacity: rest,
-              },
+              style: { fill: barColor(point.color, fade), opacity: rest },
               interaction: { point: chartPoint },
             })
-          }
 
-          const logoUrl = group.series.points[0]?.logoUrl
-          const logo = logoUrl == null ? undefined : options.logoClass.get(logoUrl)
-
-          if (logo) {
-            logos.push({
-              kind: "rect",
-              key: `${id}:${group.series.key}:logo`,
-              className: logo,
-              ariaHidden: true,
-              pointOwners: owners,
-              x: center - CAPTION_LOGO_SIZE / 2,
-              y: bottom + LOGO_TOP,
-              width: CAPTION_LOGO_SIZE,
-              height: CAPTION_LOGO_SIZE,
-              style: { fill: seriesLabelColor(group.series.color), opacity: rest },
-            })
-          }
-        }
-
-        return {
-          nodes: [
-            { kind: "group", key: id, ariaHidden: true, children: bars },
-            { kind: "group", key: `${id}:logos`, ariaHidden: true, children: logos },
-          ],
-        }
-      },
-    }
-  })
-}
-
-/**
- * Everything the bars carry that is not a bar: the zero line, each bar's value over it
- * and its effort under it, each group's name and fixed value, and the models' axis title. It takes no
- * focus states, so a focused bar's outline never spreads to the text; labels fade with
- * their group instead. A value that would collide with one already placed is left out,
- * and the bar's tooltip still has it.
- */
-function barLabelsMark(
-  data: PlotData,
-  options: BarMarkOptions & {
-    /** The caption's last line: the model's value on the flat metric. */
-    flatText: (group: BarGroup) => string
-    title: string
-    formatValue: (value: number) => string
-  },
-) {
-  const { channels } = barChannels(data, options)
-
-  return createMark<PlotPoint>(({ markIndex }) => {
-    const id = `bar-labels-${markIndex}`
-
-    return {
-      id,
-      channels,
-      render({ chart, scales }) {
-        const zero = scales.y.map(0)
-        const bottom = chart.y + chart.height
-        const values: Array<SceneLabel> = []
-        const letters: Array<SceneLabel> = []
-        const captions: Array<SceneNode> = []
-        const placed: Array<Box> = []
-        const layout = layoutBars(options.groups, chart.x, chart.width)
-        const slot = layout[0]?.bars[0] ? layout[0].bars[0].width / BAR_FILL : 0
-
-        for (const { group, left, right, center, bars: slots } of layout) {
-          const { series } = group
-          const rest = restOpacity(group, options.highlight)
-          const focusOpacity = groupFocusOpacity(group)
-
-          for (const { point, center: x } of slots) {
-            const value = point.values[options.spread]
-            const { below, height, top } = barExtent(value, zero, scales.y.map(value))
             const text = options.formatValue(value)
             const half = (text.length * VALUE_SIZE * LABEL_WIDTH_RATIO) / 2
             const baseline = below ? top + height + VALUE_GAP + VALUE_SIZE : top - VALUE_GAP
@@ -492,7 +414,27 @@ function barLabelsMark(
             }
           }
 
+          points.push(...owners)
+
           const labelColor = seriesLabelColor(series.color)
+          const logoUrl = series.points[0]?.logoUrl
+          const logo = logoUrl == null ? undefined : options.logoClass.get(logoUrl)
+
+          if (logo) {
+            logos.push({
+              kind: "rect",
+              key: `${id}:${series.key}:logo`,
+              className: logo,
+              ariaHidden: true,
+              pointOwners: owners,
+              x: center - CAPTION_LOGO_SIZE / 2,
+              y: bottom + LOGO_TOP,
+              width: CAPTION_LOGO_SIZE,
+              height: CAPTION_LOGO_SIZE,
+              style: { fill: labelColor, opacity: rest },
+            })
+          }
+
           const lines = captionLines(series.label, right - left - 6)
           const shared = { ariaHidden: true, x: center, anchor: "middle", focusOpacity } as const
 
@@ -520,6 +462,12 @@ function barLabelsMark(
           })
         }
 
+        const states = (definitions: ReadonlyArray<ChartMarkState<PlotPoint>>) => ({
+          data: data.points,
+          definitions,
+          points,
+        })
+
         return {
           nodes: [
             {
@@ -532,6 +480,20 @@ function barLabelsMark(
               y2: zero,
               style: { stroke: "var(--muted-foreground)", strokeOpacity: 0.6, strokeWidth: 1 },
             },
+            {
+              kind: "group",
+              key: `${id}:bars`,
+              ariaHidden: true,
+              states: states(BAR_STATES),
+              children: bars,
+            },
+            {
+              kind: "group",
+              key: `${id}:logos`,
+              ariaHidden: true,
+              states: states(SERIES_FOCUS_STATES),
+              children: logos,
+            },
             { kind: "group", key: `${id}:values`, ariaHidden: true, children: values },
             { kind: "group", key: `${id}:efforts`, ariaHidden: true, children: letters },
             { kind: "group", key: `${id}:captions`, ariaHidden: true, children: captions },
@@ -540,7 +502,7 @@ function barLabelsMark(
               key: `${id}:title`,
               ariaHidden: true,
               x: chart.x + chart.width / 2,
-              y: bottom + BOTTOM_MARGIN - 6,
+              y: bottom + TITLE_BASELINE,
               anchor: "middle",
               text: options.title,
               fontSize: CHART_AXIS_TITLE_SIZE,
@@ -595,11 +557,12 @@ export function barDefinition(
     fixed.min === fixed.max
       ? formatFlat(fixed.min)
       : `${formatFlat(fixed.min)}–${formatFlat(fixed.max)}`
-  const options: BarMarkOptions = { groups, spread, highlight }
   const marks = [
-    effortBarsMark(data, { ...options, logoClass }),
-    barLabelsMark(data, {
-      ...options,
+    barsMark(data, {
+      groups,
+      spread,
+      highlight,
+      logoClass,
       flatText,
       title: `Models, sorted by ${lowerFirst(metricAxisLabel(flatMetric, sources[flat], info))}`,
       formatValue: (value) => barValueText(value, spreadMetric, sources[spread], info),
@@ -635,11 +598,7 @@ export function barDefinition(
             axis: { ...valueAxis, line: false },
           },
         },
-        theme: {
-          foreground: "var(--foreground)",
-          muted: "var(--muted-foreground)",
-          grid: "var(--border)",
-        },
+        theme: CHART_THEME,
       }
     },
     // The focused bar takes an outline instead of a ring around its top.

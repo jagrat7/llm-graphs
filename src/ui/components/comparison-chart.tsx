@@ -333,19 +333,53 @@ export function ComparisonChart({
   const [paperGrid] = useSetting("paperGrid")
   const hasFrontier = frontier.length > 0
   const showFrontier = hasFrontier && frontierOn
-  // Bars stand on zero and groups have no scale at all, so only the scatter goes log.
-  const logAxes =
-    view === "bars" ? [] : (["x", "y"] as const).filter((axis) => data.logAllowed[axis])
-  const definition = useMemo(() => {
-    const options = { highlight: lit, info, logoClass, sources: { x: xSource, y: ySource } }
+  // Everything the bar view and the scatter draw differently, decided in one place.
+  const plot = useMemo(() => {
+    const plotSources = { x: xSource, y: ySource }
+    const options = { highlight: lit, info, logoClass, sources: plotSources }
 
-    return view === "bars" && flat != null
-      ? barDefinition(data, { ...options, flat })
-      : scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid })
-  }, [data, flat, view, lit, info, logoClass, xSource, ySource, frontierOn, paperGrid])
+    if (view === "bars" && flat != null) {
+      return {
+        definition: barDefinition(data, { ...options, flat }),
+        label: describeBars(data),
+        description: barAxisDescription(data, flat, plotSources, info),
+        // Bars keep a readable width on a narrow screen, which scrolls sideways to reach them.
+        minWidth: barsMinWidth(data),
+        // Bars stand on zero and groups have no scale at all, so only the scatter goes log.
+        logAxes: [],
+      }
+    }
 
-  // Bars keep a readable width on a narrow screen, which scrolls sideways to reach them.
-  const minWidth = view === "bars" ? barsMinWidth(data) : undefined
+    const litLabel =
+      data.series.find((series) => series.points[0]?.model.model === lit)?.label ?? null
+
+    return {
+      definition: scatterDefinition(data, { ...options, frontier: frontierOn, paperGrid }),
+      label: describePlot(data),
+      description: [
+        axisDescription(data, plotSources, info),
+        showFrontier && describeFrontier(frontier, litLabel),
+      ]
+        .filter(Boolean)
+        .join(" "),
+      minWidth: undefined,
+      logAxes: (["x", "y"] as const).filter((axis) => data.logAllowed[axis]),
+    }
+  }, [
+    data,
+    flat,
+    view,
+    lit,
+    info,
+    logoClass,
+    xSource,
+    ySource,
+    frontierOn,
+    paperGrid,
+    showFrontier,
+    frontier,
+  ])
+  const { definition, minWidth } = plot
 
   if (data.points.length === 0) {
     return <DataState className={CHART_FRAME_CLASS} title="No models have both selected metrics" />
@@ -361,7 +395,7 @@ export function ComparisonChart({
       <div className={CHART_TOOLBAR_CLASS}>
         <div className={CHART_TOOLBAR_CONTROLS_CLASS}>
           {hasFrontier && <FrontierToggle pressed={frontierOn} onPressedChange={setFrontierOn} />}
-          {logAxes.map((axis) => (
+          {plot.logAxes.map((axis) => (
             <LogToggle
               key={axis}
               label={metricPresentation(data.metrics[axis]!, sources[axis], info).label}
@@ -411,22 +445,8 @@ export function ComparisonChart({
           <Chart
             key={view}
             definition={definition}
-            ariaLabel={view === "bars" ? describeBars(data) : describePlot(data)}
-            ariaDescription={
-              view === "bars" && flat != null
-                ? barAxisDescription(data, flat, sources, info)
-                : [
-                    axisDescription(data, sources, info),
-                    showFrontier &&
-                      describeFrontier(
-                        frontier,
-                        data.series.find((series) => series.points[0]?.model.model === lit)
-                          ?.label ?? null,
-                      ),
-                  ]
-                    .filter(Boolean)
-                    .join(" ")
-            }
+            ariaLabel={plot.label}
+            ariaDescription={plot.description}
             initialWidth={1200}
             measureText={measureText}
             style={{ height: "100%", minWidth }}

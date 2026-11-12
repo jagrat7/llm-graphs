@@ -127,6 +127,12 @@ export const SERIES_FOCUS_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
   },
 ]
 
+/** A label lit with its run while one of the run's points has focus, faded otherwise. */
+export function groupFocusOpacity(group: string): SceneLabel["focusOpacity"] {
+  return ({ focus }) =>
+    focus == null ? undefined : focus.primary.group === group ? 1 : DIMMED_OPACITY
+}
+
 const FOCUS_STATES: ReadonlyArray<ChartMarkState<PlotPoint>> = [
   ...SERIES_FOCUS_STATES,
   // Dots grow under the pointer; logos keep their box and rely on the focus ring.
@@ -284,8 +290,7 @@ export function modelLabelsMark(data: PlotData, emphasis: Emphasis) {
         const nodes = placed.flatMap((label): Array<SceneLabel> => {
           const series = seriesByKey.get(label.key)
           const restingOpacity = series == null ? 1 : nameOpacity(series, emphasis)
-          const focusOpacity: SceneLabel["focusOpacity"] = ({ focus }) =>
-            focus == null ? undefined : focus.primary.group === label.key ? 1 : DIMMED_OPACITY
+          const focusOpacity = groupFocusOpacity(label.key)
           const shared = {
             className: CHART_LABEL_CLASS,
             ariaHidden: true,

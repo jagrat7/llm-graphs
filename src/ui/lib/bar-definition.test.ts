@@ -129,7 +129,7 @@ describe("bar definition", () => {
 
   it("stands every bar on zero", () => {
     const chartScene = barScene(models)
-    const baseline = find(chartScene, "bar-labels-1:baseline")
+    const baseline = find(chartScene, "effort-bars-0:baseline")
 
     expect(baseline).toMatchObject({ kind: "rule" })
     if (baseline?.kind !== "rule") return
@@ -274,7 +274,7 @@ describe("bar layout", () => {
   const groups = barGroups(data, "x")
 
   it("gives a group with more efforts a wider cell, and keeps every bar inside the plot", () => {
-    const layout = layoutBars(groups, 50, 600)
+    const layout = layoutBars(groups, 50, 600).cells
     const widths = layout.map((group) => group.right - group.left)
 
     expect(layout.map((group) => group.group.series.key)).toEqual([
@@ -292,9 +292,9 @@ describe("bar layout", () => {
   })
 
   it("stops bars growing on a wide plot and spreads the groups out instead", () => {
-    const wider = layoutBars(groups, 0, 4000)
-    const wide = layoutBars(groups, 0, 3000)
-    const narrow = layoutBars(groups, 0, 300)
+    const wider = layoutBars(groups, 0, 4000).cells
+    const wide = layoutBars(groups, 0, 3000).cells
+    const narrow = layoutBars(groups, 0, 300).cells
 
     expect(wide[0].bars[0].width).toBeGreaterThan(narrow[0].bars[0].width)
     expect(wider[0].bars[0].width).toBe(wide[0].bars[0].width)
@@ -308,7 +308,7 @@ describe("bar layout", () => {
       ),
       makeModel({ model: "lone", score: 30, costPerMTokens: 8 }),
     ]
-    const layout = layoutBars(barGroups(plotData(crowd), "x"), 0, 200)
+    const layout = layoutBars(barGroups(plotData(crowd), "x"), 0, 200).cells
     const lone = layout.find((group) => group.group.series.key === "lone")!
 
     expect(lone.right - lone.left).toBeGreaterThanOrEqual(64)

@@ -39,7 +39,7 @@ export function isFlat(series: PlotSeries, axis: "x" | "y") {
 
 type Span = { min: number; max: number }
 
-/** One group of bars per model: its value on the flat axis and the span of its bars. */
+/** One group of bars per model, with its value on the flat axis. */
 export type BarGroup = {
   series: PlotSeries
   /**
@@ -47,7 +47,6 @@ export type BarGroup = {
    * flat for the bar view, so a model whose efforts differ keeps its full span here.
    */
   fixed: Span
-  spread: Span
 }
 
 function spanOf(values: Array<number>): Span {
@@ -65,12 +64,13 @@ export function barGroups(data: PlotData, flat: "x" | "y"): Array<BarGroup> {
     .map((series) => ({
       series,
       fixed: spanOf(series.points.map((point) => point.values[flat])),
-      spread: spanOf(series.points.map((point) => point.values[spread])),
+      best: Math.max(...series.points.map((point) => point.values[spread])),
     }))
     .toSorted(
       (left, right) =>
         left.fixed.min - right.fixed.min ||
         left.fixed.max - right.fixed.max ||
-        right.spread.max - left.spread.max,
+        right.best - left.best,
     )
+    .map(({ series, fixed }) => ({ series, fixed }))
 }

@@ -37,6 +37,12 @@ export const CHART_TOOLTIP_CLASS = `pointer-events-none z-10 ${CHART_TOOLTIP_CAR
 /** ease-out-quart, matching the transition curve in `styles.css`. */
 export const CHART_EASE = [0.22, 1, 0.36, 1] as const
 export const CHART_TRANSITION_MS = 200
+/** The 2D chart's axis and grid colours, from the page's theme tokens. */
+export const CHART_THEME = {
+  foreground: "var(--foreground)",
+  muted: "var(--muted-foreground)",
+  grid: "var(--border)",
+} as const
 
 /** SVG takes these as numbers; the DOM label layer needs them as CSS lengths. */
 export function chartFontRem(size: number) {

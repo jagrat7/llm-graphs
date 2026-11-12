@@ -43,12 +43,20 @@ export default async function barView({ page, step, check, saveDownload }) {
   check(opened.label?.startsWith("Bar chart of"), "the chart announces itself as a bar chart")
 
   const hovered = await step("hover a bar", async () => {
-    const box = await bars.nth(Math.floor(opened.bars / 2)).boundingBox()
+    const bar = bars.nth(Math.floor(opened.bars / 2))
+    const box = await bar.boundingBox()
     await page.mouse.move(box.x + box.width / 2, box.y + box.height - 3)
     await tooltip.first().waitFor({ timeout: 5_000 })
-    return { tooltip: (await tooltip.first().textContent()).trim().slice(0, 120) }
+    await page.waitForTimeout(400)
+    return {
+      tooltip: (await tooltip.first().textContent()).trim().slice(0, 120),
+      outline: await bar.getAttribute("stroke-width"),
+      outlinedLogos: await frame.locator('[data-ts-key$=":logo"][stroke]').count(),
+    }
   })
   check(hovered.tooltip.length > 0, "a hovered bar shows its tooltip")
+  check(hovered.outline === "1.5", "the hovered bar takes an outline")
+  check(hovered.outlinedLogos === 0, "the outline never reaches a logo")
 
   await step("dark theme", async () => {
     await page.mouse.move(0, 0)

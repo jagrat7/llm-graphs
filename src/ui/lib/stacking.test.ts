@@ -108,18 +108,16 @@ describe("stacked axis detection", () => {
 })
 
 describe("bar groups", () => {
-  it("orders models along the flat metric with each effort span", () => {
+  it("orders models along the flat metric, best result first on a tie", () => {
     const data = buildPlotData(
       [...run("astra", 20, [25, 41]), ...run("sonnet", 4, [18, 45]), ...run("kimi", 4, [22])],
       { x: "price", y: "score" },
     )
 
-    expect(
-      barGroups(data, "x").map(({ series, fixed, spread }) => [series.key, fixed, spread]),
-    ).toEqual([
-      ["sonnet", { min: 4, max: 4 }, { min: 18, max: 45 }],
-      ["kimi", { min: 4, max: 4 }, { min: 22, max: 22 }],
-      ["astra", { min: 20, max: 20 }, { min: 25, max: 41 }],
+    expect(barGroups(data, "x").map(({ series, fixed }) => [series.key, fixed])).toEqual([
+      ["sonnet", { min: 4, max: 4 }],
+      ["kimi", { min: 4, max: 4 }],
+      ["astra", { min: 20, max: 20 }],
     ])
   })
 
