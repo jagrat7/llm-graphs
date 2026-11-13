@@ -29,6 +29,7 @@ export const project: Project = {
       <TokenWordmark />
     </a>
   ),
+  editor: (file) => `/__open-in-editor?file=${encodeURIComponent(file)}`,
   uiImport: "#/ui/components/ui",
   demos: Object.values(import.meta.glob<DemoModule>("./demos/*.demo.tsx", { eager: true })),
   theme: { storageKey: THEME_STORAGE_KEY },
