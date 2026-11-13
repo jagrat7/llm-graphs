@@ -11,3 +11,16 @@ export {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/ui/components/ui/dropdown-menu"
+
+export {
+  RiBox3Line as Blocks,
+  RiArrowRightSLine as ChevronRight,
+  RiContractUpDownLine as ChevronsDownUp,
+  RiExpandUpDownLine as ChevronsUpDown,
+  RiMenuLine as Menu,
+  RiMoonLine as Moon,
+  RiCursorLine as MousePointer2,
+  RiSearchLine as Search,
+  RiShapesLine as Shapes,
+  RiSunLine as Sun,
+} from "@remixicon/react"
