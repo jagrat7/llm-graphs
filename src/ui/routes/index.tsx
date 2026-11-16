@@ -24,6 +24,7 @@ import type { PickedModels } from "#/ui/lib/picked-models"
 import type { ComparisonSettings } from "#/ui/lib/comparison-view"
 
 import { AxisControls } from "#/ui/components/axis-controls"
+import { CategoryTabs } from "#/ui/components/category-tabs"
 import { ChartSkeleton } from "#/ui/components/chart-skeleton"
 import { ComparisonChart } from "#/ui/components/comparison-chart"
 import { DataError, DataState } from "#/ui/components/data-state"
@@ -41,6 +42,7 @@ import {
   shareSources,
   upgradeLegacySearch,
 } from "#/ui/lib/graph-state"
+import { activeCategoryGraph, CATEGORY_GRAPHS, categoryGraphSearch } from "#/ui/lib/category-graphs"
 import { buildPlotData, plotQuality } from "#/ui/lib/comparison-plot-data"
 import { chartMarkdown, prefersMarkdown } from "#/ui/lib/chart-markdown"
 import { Alert, AlertTitle } from "#/ui/components/ui/alert"
@@ -275,6 +277,19 @@ function ComparePage() {
     return { x: choices("x"), y: choices("y"), z: choices("z") }
   }, [search, info, snapshot])
 
+  // A chip whose benchmark sent nothing this time is switched off rather than opening an empty chart.
+  const unavailableCategories = useMemo(
+    () =>
+      snapshot
+        ? CATEGORY_GRAPHS.filter((graph) => {
+            const candidate = categoryGraphSearch(graph, info)
+
+            return candidate != null && !hasMeaningfulComparison(candidate, info, snapshot)
+          }).map((graph) => graph.key)
+        : [],
+    [info, snapshot],
+  )
+
   /** Changing a metric drops its source override so the new metric starts on its own default. */
   function handleMetricChange(axis: AxisKey, metric: Metric | null) {
     if (axis === "z") {
@@ -494,8 +509,9 @@ function ComparePage() {
   const empty = emptyState()
 
   return (
-    <PageShell className={cn(PAGE_FILL_CLASS, "pt-8 pb-6 max-sm:pt-4")}>
+    <PageShell className={cn(PAGE_FILL_CLASS, "pt-5 pb-6 max-sm:pt-3")}>
       <h1 className="sr-only">Compare language models</h1>
+      <CategoryTabs active={activeCategoryGraph(axes, info)} unavailable={unavailableCategories} />
       <AxisControls
         axes={axes}
         onAxisChange={handleAxisChange}
