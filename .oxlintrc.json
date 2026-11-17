@@ -42,7 +42,10 @@
       }
     ],
     "local/no-theme-variants": "error",
+    "react/immutability": "warn",
+    "react/incompatible-library": "warn",
     "react/react-in-jsx-scope": "off",
+    "react/set-state-in-effect": "warn",
     "unicorn/filename-case": [
       "error",
       {
