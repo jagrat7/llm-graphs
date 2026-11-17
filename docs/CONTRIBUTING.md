@@ -2,7 +2,7 @@
 
 ## Running locally
 
-Requires [Bun](https://bun.sh/) 1.4.3 or later.
+Requires [Bun](https://bun.sh/).
 
 ```bash
 bun install
@@ -25,7 +25,7 @@ Sources are fetched on the server, cached, and refreshed in the background once 
 | Command                   | What it runs                                                                |
 | ------------------------- | --------------------------------------------------------------------------- |
 | `bun run test`            | Vitest. Tests use committed fixtures and make no upstream requests.         |
-| `bun run typecheck`       | Bun's TypeScript checker                                                    |
+| `bun run typecheck`       | tsrs, the Rust port of TypeScript                                           |
 | `bun run lint`            | oxlint (type-aware), with custom rules in `dev/oxlint/`                     |
 | `bun run fmt`             | oxfmt                                                                       |
 | `bun run build`           | Production build (Nitro server, deployed on Vercel)                         |
