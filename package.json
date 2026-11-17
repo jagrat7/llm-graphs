@@ -11,7 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "bun check",
+    "typecheck": "tsrs --noEmit --fast",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "fmt": "oxfmt .",
@@ -80,9 +80,6 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vitest": "^4.1.5"
-  },
-  "engines": {
-    "bun": ">=1.4.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
