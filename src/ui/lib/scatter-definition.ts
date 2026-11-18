@@ -75,7 +75,7 @@ export function scatterDefinition(
   const yTicks = ownTicks("y")
   const scaleFor = (axis: "x" | "y", { min, max }: { min: number; max: number }) =>
     data.scales[axis] === "log" ? scaleLog().domain([min, max]) : scaleLinear().domain([min, max])
-  const front = frontier ? drawnFrontier(data) : []
+  const front = frontier ? drawnFrontier(data, sources, info) : []
   const onFront = front.length > 0 ? new Set(front.map((point) => point.id)) : undefined
 
   return defineChart({

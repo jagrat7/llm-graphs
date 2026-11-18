@@ -121,6 +121,7 @@ export type MetricPresentation = {
   label: string
   unit: string
   format: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
+  better?: "higher" | "lower"
 }
 
 export type MeasurementInfo = {

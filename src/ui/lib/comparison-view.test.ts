@@ -12,6 +12,21 @@ const { snapshot } = aggregateModels(allFixtureInputs())
 const search = { x: "cost", y: "score" } as const
 const settings = DEFAULT_SETTINGS
 
+it("opens the raw ClutterBench chart on the cleanest models with a published cost", () => {
+  const { defaultModels, models } = comparisonModels(
+    snapshot,
+    info,
+    { ...search, ySource: "clutterBench" },
+    settings,
+  )
+
+  expect(defaultModels[0]).toBe("claude-sonnet-5-5")
+  expect(models).toContainEqual(
+    expect.objectContaining({ model: defaultModels[0], level: "low", score: 28.8 }),
+  )
+  expect(models.some((model) => model.model === "gpt-6-2-sol")).toBe(false)
+})
+
 describe("comparison slice", () => {
   it("opens on the same models the whole snapshot would", () => {
     const whole = comparisonModels(snapshot, info, search, settings)

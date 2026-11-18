@@ -42,7 +42,12 @@ function metricLines(info: ProvidersInfo) {
     const { label, better } = METRIC_CONFIG[metric]
     // Each benchmark reports its score in its own unit, which Sources gives.
     const name = metric === "score" ? label : metricAxisLabel(metric, null, info)
-    const direction = better == null ? "" : `, ${better} is better`
+    const direction =
+      metric === "score"
+        ? ", direction depends on the benchmark"
+        : better == null
+          ? ""
+          : `, ${better} is better`
     const sources = FOLLOWS_SCORE.has(metric)
       ? "always the Score axis's benchmark"
       : metricProviders(metric, info)

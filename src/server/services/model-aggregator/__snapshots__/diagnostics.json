@@ -13,6 +13,8 @@
     "reactBench": null,
     "sweBench": null,
     "liveCodeBench": null,
+    "clutterBench": null,
+    "clutterBenchSimple": null,
     "modelsDevListing": null,
     "modelsDev": "2026-10-27T08:36:54.701Z"
   },
@@ -62,6 +64,12 @@
     "liveCodeBench.keyClashes": 0,
     "liveCodeBench.unmatched": 0,
     "liveCodeBench.nearMisses": 0,
+    "clutterBench.keyClashes": 0,
+    "clutterBench.unmatched": 0,
+    "clutterBench.nearMisses": 0,
+    "clutterBenchSimple.keyClashes": 0,
+    "clutterBenchSimple.unmatched": 0,
+    "clutterBenchSimple.nearMisses": 0,
     "modelsDevListing.keyClashes": 0,
     "modelsDevListing.unmatched": 0,
     "modelsDevListing.nearMisses": 0,
@@ -3421,6 +3429,14 @@
       "unmatched": []
     },
     "liveCodeBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "clutterBench": {
+      "keyClashes": [],
+      "unmatched": []
+    },
+    "clutterBenchSimple": {
       "keyClashes": [],
       "unmatched": []
     },

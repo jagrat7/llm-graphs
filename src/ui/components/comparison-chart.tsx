@@ -326,7 +326,10 @@ export function ComparisonChart({
   const [choices, setChoices] = useState<Record<string, ChartView>>({})
   const view: ChartView = flat == null ? "scatter" : (choices[metricsKey] ?? "bars")
   // The bar view has no numeric axis to draw it along, so only the scatter shows it.
-  const frontier = useMemo(() => (view === "scatter" ? drawnFrontier(data) : []), [data, view])
+  const frontier = useMemo(
+    () => (view === "scatter" ? drawnFrontier(data, { x: xSource, y: ySource }, info) : []),
+    [data, view, xSource, ySource, info],
+  )
   // One switch for every pair of metrics: someone who hides the frontier wants it gone.
   // It is the same setting the header's settings carry, so the choice outlives the visit.
   const [frontierOn, setFrontierOn] = useSetting("paretoFrontier")

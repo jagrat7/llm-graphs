@@ -1,0 +1,792 @@
+{
+  "fetchedAt": "2026-11-18T09:51:36.511Z",
+  "payload": {
+    "rows": [
+      {
+        "model": "sol62-xhigh",
+        "name": "GPT-6.2 Sol (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 16.3,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol62",
+        "name": "GPT-6.2 Sol (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 17,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol62-high",
+        "name": "GPT-6.2 Sol (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 17,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol62-medium",
+        "name": "GPT-6.2 Sol (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 17.2,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra62-medium",
+        "name": "GPT-6.2 Astra (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 24,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sonnet",
+        "name": "Claude Sonnet 5.5 (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 28.8,
+          "usd": 0.03257,
+          "sec": 32
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra62-xhigh",
+        "name": "GPT-6.2 Astra (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 30.2,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "opus",
+        "name": "Claude Opus 5.5 (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 31.3,
+          "usd": 0.06787,
+          "sec": 36
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "fable",
+        "name": "Claude Fable 5.2 (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 31.6,
+          "usd": null,
+          "sec": 123
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra-xhigh",
+        "name": "GPT-6 Astra (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 33.2,
+          "usd": 0.34899,
+          "sec": 157
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "grok-high",
+        "name": "Grok 4.7 (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 33.8,
+          "usd": 0.29126,
+          "sec": 818
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sonnet-medium",
+        "name": "Claude Sonnet 5.5 (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 35,
+          "usd": 0.03969,
+          "sec": 36
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sonnet-high",
+        "name": "Claude Sonnet 5.5 (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 36.5,
+          "usd": 0.06731,
+          "sec": 55
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra62-high",
+        "name": "GPT-6.2 Astra (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 36.6,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "haiku-xhigh",
+        "name": "Claude Haiku 5.5 (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 37.8,
+          "usd": 0.01603,
+          "sec": 322
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra-none",
+        "name": "GPT-6.1 Terra (none)",
+        "effort": "none",
+        "result": {
+          "n": 6,
+          "clutter": 38.2,
+          "usd": null,
+          "sec": 356
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra-high",
+        "name": "GPT-6.1 Terra (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 38.2,
+          "usd": null,
+          "sec": 146
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sonnet-xhigh",
+        "name": "Claude Sonnet 5.5 (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 40.1,
+          "usd": 0.17865,
+          "sec": 143
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra62",
+        "name": "GPT-6.2 Astra (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 40.6,
+          "usd": null,
+          "sec": null
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "deepseek-xhigh",
+        "name": "DeepSeek V4.1 Flash (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 40.8,
+          "usd": 0.0115,
+          "sec": 91
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra-max",
+        "name": "GPT-6.1 Terra (max)",
+        "effort": "max",
+        "result": {
+          "n": 6,
+          "clutter": 41,
+          "usd": null,
+          "sec": 350
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "opus-xhigh",
+        "name": "Claude Opus 5.5 (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 41.7,
+          "usd": 0.51748,
+          "sec": 295
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "haiku",
+        "name": "Claude Haiku 5.5 (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 41.8,
+          "usd": 0.00482,
+          "sec": 48
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "grok",
+        "name": "Grok 4.7 (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 42.5,
+          "usd": 0.04809,
+          "sec": 128
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol-medium",
+        "name": "GPT-6.1 Sol (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 42.7,
+          "usd": 0.04,
+          "sec": 111
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra-high",
+        "name": "GPT-6 Astra (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 43,
+          "usd": 0.20772,
+          "sec": 100
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "deepseek",
+        "name": "DeepSeek V4.1 Flash (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 43.3,
+          "usd": 0.01134,
+          "sec": 117
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra",
+        "name": "GPT-6.1 Terra (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 44,
+          "usd": null,
+          "sec": 44
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra-xhigh",
+        "name": "GPT-6.1 Terra (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 45.5,
+          "usd": null,
+          "sec": 251
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol",
+        "name": "GPT-6.1 Sol (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 45.6,
+          "usd": 0.03159,
+          "sec": 78
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol-high",
+        "name": "GPT-6.1 Sol (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 45.8,
+          "usd": 0.05139,
+          "sec": 128
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra",
+        "name": "GPT-6 Astra (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 45.8,
+          "usd": 0.16294,
+          "sec": 69
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "haiku-medium",
+        "name": "Claude Haiku 5.5 (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 46.3,
+          "usd": 0.00712,
+          "sec": 88
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "deepseek-high",
+        "name": "DeepSeek V4.1 Flash (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 46.3,
+          "usd": 0.01192,
+          "sec": 101
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "terra-medium",
+        "name": "GPT-6.1 Terra (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 46.4,
+          "usd": null,
+          "sec": 170
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "grok-xhigh",
+        "name": "Grok 4.7 (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 46.4,
+          "usd": 0.3159,
+          "sec": 1094
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "deepseek-max",
+        "name": "DeepSeek V4.1 Flash (max)",
+        "effort": "max",
+        "result": {
+          "n": 6,
+          "clutter": 46.6,
+          "usd": 0.03272,
+          "sec": 338
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "deepseek-medium",
+        "name": "DeepSeek V4.1 Flash (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 46.8,
+          "usd": 0.00854,
+          "sec": 65
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "astra-medium",
+        "name": "GPT-6 Astra (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 47.7,
+          "usd": 0.16058,
+          "sec": 79
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "opus-medium",
+        "name": "Claude Opus 5.5 (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 47.9,
+          "usd": 0.17474,
+          "sec": 91
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "haiku-high",
+        "name": "Claude Haiku 5.5 (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 48.9,
+          "usd": 0.0091,
+          "sec": 238
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "opus-high",
+        "name": "Claude Opus 5.5 (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 48.9,
+          "usd": 0.25398,
+          "sec": 128
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "sol-xhigh",
+        "name": "GPT-6.1 Sol (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 52.1,
+          "usd": 0.07981,
+          "sec": 207
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "luna-high",
+        "name": "GPT-6 Luna (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 53.5,
+          "usd": 0.00371,
+          "sec": 75
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "grok-medium",
+        "name": "Grok 4.7 (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 53.9,
+          "usd": 0.19153,
+          "sec": 492
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "luna-medium",
+        "name": "GPT-6 Luna (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 56.1,
+          "usd": 0.00178,
+          "sec": 45
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "gemini-flash",
+        "name": "Gemini 3.8 Flash (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 60.9,
+          "usd": 0.09692,
+          "sec": 237
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "luna",
+        "name": "GPT-6 Luna (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 61.4,
+          "usd": 0.00181,
+          "sec": 53
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "wonder",
+        "name": "Muse Wonder",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 62.1,
+          "usd": 0.17611,
+          "sec": 106
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "luna-xhigh",
+        "name": "GPT-6 Luna (xhigh)",
+        "effort": "xhigh",
+        "result": {
+          "n": 6,
+          "clutter": 64.3,
+          "usd": 0.00734,
+          "sec": 137
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "gemini-flash-medium",
+        "name": "Gemini 3.8 Flash (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 70,
+          "usd": 0.22807,
+          "sec": 471
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "carbon-high",
+        "name": "Gemini 4 Carbon (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 71.1,
+          "usd": null,
+          "sec": 1201
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "argon",
+        "name": "Gemini 4 Argon (low)",
+        "effort": "low",
+        "result": {
+          "n": 6,
+          "clutter": 72.6,
+          "usd": 0.39131,
+          "sec": 576
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "gemini-flash-high",
+        "name": "Gemini 3.8 Flash (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 74.1,
+          "usd": 0.35312,
+          "sec": 684
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "argon-medium",
+        "name": "Gemini 4 Argon (medium)",
+        "effort": "medium",
+        "result": {
+          "n": 6,
+          "clutter": 76.5,
+          "usd": 0.69887,
+          "sec": 1085
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      },
+      {
+        "model": "argon-high",
+        "name": "Gemini 4 Argon (high)",
+        "effort": "high",
+        "result": {
+          "n": 6,
+          "clutter": 79.5,
+          "usd": 0.83194,
+          "sec": 1224
+        },
+        "builtAt": "2026-11-17T20:22:54.669Z",
+        "grader": "consensus-v4",
+        "pricesFetchedAt": "2026-10-19T14:04:39.722Z"
+      }
+    ],
+    "dropped": []
+  }
+}
