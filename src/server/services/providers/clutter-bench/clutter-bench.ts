@@ -86,7 +86,7 @@ export class ClutterBenchProvider
   readonly href = `${PAGE}#leaderboard`
   readonly abbreviation = "CB"
   readonly publisher = "Adam Holter"
-  readonly category = "agents"
+  readonly category = "ui"
   readonly summary: string
   readonly refreshWindowMs = 60 * 60 * 1000
   readonly metrics: MetricReaders<ClutterBenchRow> = {

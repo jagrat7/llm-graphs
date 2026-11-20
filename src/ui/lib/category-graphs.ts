@@ -21,7 +21,7 @@ export const CATEGORY_GRAPHS = [
   { key: "agents", label: "Automation", category: "agents", y: "score", x: "cost" },
   { key: "reasoning", label: "Puzzles", category: "reasoning", y: "score", x: "cost" },
   { key: "chat", label: "Writing", category: "preference", y: "score", x: "votes" },
-  { key: "speed", label: "Speed", category: "market", y: "speed", x: "price" },
+  { key: "ui", label: "UI", category: "ui", y: "score", x: "cost" },
 ] as const satisfies ReadonlyArray<CategoryGraph>
 
 /** Subjects with no benchmark registered yet, shown so a reader knows they are coming. */

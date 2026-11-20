@@ -6,8 +6,8 @@ import {
   RiCodeSSlashLine,
   RiImageLine,
   RiMicLine,
+  RiPaletteLine,
   RiRobot2Line,
-  RiSpeedUpLine,
   RiVideoLine,
 } from "@remixicon/react"
 import { Link } from "@tanstack/react-router"
@@ -31,7 +31,7 @@ const ICONS: Record<CategoryKey, RemixiconComponentType> = {
   agents: RiRobot2Line,
   reasoning: RiPuzzleLine,
   chat: RiQuillPenLine,
-  speed: RiSpeedUpLine,
+  ui: RiPaletteLine,
   image: RiImageLine,
   video: RiVideoLine,
   speech: RiMicLine,
