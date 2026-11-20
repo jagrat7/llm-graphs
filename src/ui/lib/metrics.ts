@@ -162,6 +162,14 @@ export function metricPresentation(
     : (info?.presentation[source]?.[METRIC_CONFIG[metric].dataKey] ?? fallback)
 }
 
+export function metricDirection(metric: Metric, source: ProviderName | null, info?: ProvidersInfo) {
+  const config = METRIC_CONFIG[metric]
+  return (
+    (source == null ? undefined : info?.presentation[source]?.[config.dataKey]?.better) ??
+    config.better
+  )
+}
+
 /**
  * Whether a metric, as this source reports it, is a ratio-scale quantity that may go
  * log. A source can turn a plain metric into one: METR's score is a task horizon in hours.

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import type { Model } from "#/ui/lib/model-view"
 
+import { ProvidersService } from "#/server/services/providers"
 import { buildPlotData, type PlotMetrics } from "#/ui/lib/comparison-plot-data"
 import { metricRecord } from "#/ui/lib/metrics"
 import { drawnFrontier, hasParetoFrontier, paretoFrontier } from "#/ui/lib/pareto"
@@ -87,6 +88,26 @@ describe("pareto frontier", () => {
       "slow-unknown-unknown",
     ])
   })
+
+  it.each(["clutterBench", "clutterBenchSimple"] as const)(
+    "favors lower clutter in the %s frontier",
+    (source) => {
+      const input = [
+        makeModel({ model: "cheap", score: 50, costPerTask: 1 }),
+        makeModel({ model: "clean", score: 0, costPerTask: 2 }),
+        makeModel({ model: "worse", score: 75, costPerTask: 2 }),
+      ]
+      const info = ProvidersService.info()
+      const byCost = buildPlotData(input, { x: "cost", y: "score" })
+      const byScore = buildPlotData(input, { x: "score", y: "cost" })
+      expect(
+        paretoFrontier(byCost, { x: source, y: source }, info).map((point) => point.id),
+      ).toEqual(["cheap-unknown-unknown", "clean-unknown-unknown"])
+      expect(
+        paretoFrontier(byScore, { x: source, y: source }, info).map((point) => point.id),
+      ).toEqual(["clean-unknown-unknown", "cheap-unknown-unknown"])
+    },
+  )
 
   it("keeps one of two variants with identical values", () => {
     const input = [

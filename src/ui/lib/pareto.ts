@@ -1,6 +1,9 @@
 import type { PlotData, PlotPoint } from "#/ui/lib/comparison-plot-data"
+import type { ProviderName, ProvidersInfo } from "#/server/api"
 
-import { METRIC_CONFIG } from "#/ui/lib/metrics"
+import { METRIC_CONFIG, metricDirection } from "#/ui/lib/metrics"
+
+type AxisSources = Record<"x" | "y", ProviderName | null>
 
 /**
  * Whether the scatter draws a Pareto frontier: Score on one axis against a metric it
@@ -26,11 +29,15 @@ export function hasParetoFrontier(data: PlotData) {
  * low effort can sit on the frontier while its high effort does not. Points with the same
  * values on both axes keep only the first.
  */
-export function paretoFrontier(data: PlotData): Array<PlotPoint> {
+export function paretoFrontier(
+  data: PlotData,
+  sources?: AxisSources,
+  info?: ProvidersInfo,
+): Array<PlotPoint> {
   if (!hasParetoFrontier(data)) return []
 
   const sign = (axis: "x" | "y") =>
-    METRIC_CONFIG[data.metrics[axis]!].better === "higher" ? 1 : -1
+    metricDirection(data.metrics[axis]!, sources?.[axis] ?? null, info) === "higher" ? 1 : -1
   const sx = sign("x")
   const sy = sign("y")
   // With both axes turned into "higher is better", walk from the best x down and keep
@@ -59,8 +66,12 @@ export function paretoFrontier(data: PlotData): Array<PlotPoint> {
  * when each dearer model also scores higher, the line would retrace the points and mute
  * nothing, reading as one more model's run.
  */
-export function drawnFrontier(data: PlotData): Array<PlotPoint> {
-  const frontier = paretoFrontier(data)
+export function drawnFrontier(
+  data: PlotData,
+  sources?: AxisSources,
+  info?: ProvidersInfo,
+): Array<PlotPoint> {
+  const frontier = paretoFrontier(data, sources, info)
 
   return frontier.length > 1 && frontier.length < data.points.length ? frontier : []
 }

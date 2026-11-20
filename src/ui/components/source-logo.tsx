@@ -86,6 +86,8 @@ const SOURCE_MARKS: Record<ProviderName, SourceMark> = {
   reactBench: { src: "/benchmarks/react-bench.svg" },
   sweBench: { src: "/benchmarks/swe-bench.svg" },
   liveCodeBench: { src: "/benchmarks/live-code-bench.svg" },
+  clutterBench: { src: "/benchmarks/clutter-bench.svg" },
+  clutterBenchSimple: { src: "/benchmarks/clutter-bench.svg" },
   modelsDevListing: { src: "/benchmarks/models-dev.svg" },
 }
 

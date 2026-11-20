@@ -42,6 +42,14 @@ const CATEGORIES: ReadonlyArray<{
   },
   { key: "reasoning", title: "Reasoning", graphs: [["score", "cost"]] },
   {
+    key: "ui",
+    title: "UI",
+    graphs: [
+      ["score", "cost"],
+      ["score", "duration"],
+    ],
+  },
+  {
     key: "preference",
     title: "Human preference",
     graphs: [["score", "votes"]],

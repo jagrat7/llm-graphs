@@ -6,7 +6,7 @@ import type {
   ProvidersInfo,
 } from "#/server/api"
 
-import { metricProviders, metricRecord } from "#/ui/lib/metrics"
+import { metricDirection, metricProviders, metricRecord } from "#/ui/lib/metrics"
 
 type ModelEntry = ModelSnapshot["entries"][number]
 type ModelVariant = ModelSnapshot["variants"][ProviderName][number]
@@ -254,13 +254,14 @@ function toModel(
 }
 
 /** Each entry's best score in one source. */
-function bestScores(snapshot: ModelSnapshot, source: ProviderName) {
+function bestScores(snapshot: ModelSnapshot, source: ProviderName, info: ProvidersInfo) {
   const best = new Map<string, number>()
+  const sign = metricDirection("score", source, info) === "lower" ? -1 : 1
 
   for (const variant of snapshot.variants[source]) {
     const score = variant.metrics.score
     if (score == null) continue
-    best.set(variant.entryId, Math.max(score, best.get(variant.entryId) ?? -Infinity))
+    best.set(variant.entryId, Math.max(sign * score, best.get(variant.entryId) ?? -Infinity))
   }
 
   return best
@@ -297,7 +298,7 @@ function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null, in
   const existing = cached.get(key)
   if (existing) return existing
   if (scoreSource != null) {
-    const result = bestScores(snapshot, scoreSource)
+    const result = bestScores(snapshot, scoreSource, info)
     cached.set(key, result)
     return result
   }
@@ -305,7 +306,7 @@ function strengths(snapshot: ModelSnapshot, scoreSource: ProviderName | null, in
   const totals = new Map<string, { sum: number; count: number }>()
 
   for (const source of metricProviders("score", info)) {
-    for (const [entryId, percentile] of percentiles(bestScores(snapshot, source))) {
+    for (const [entryId, percentile] of percentiles(bestScores(snapshot, source, info))) {
       const total = totals.get(entryId) ?? { sum: 0, count: 0 }
       totals.set(entryId, { sum: total.sum + percentile, count: total.count + 1 })
     }

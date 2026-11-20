@@ -152,7 +152,7 @@ export class ReactBenchProvider
   readonly href = PAGE
   readonly abbreviation = "RB"
   readonly publisher = "Million"
-  readonly category = "coding"
+  readonly category = "ui"
   readonly summary =
     "Real React work from open-source repos, passing only when hidden tests pass and React Doctor finds no new issues."
   readonly cacheKey = `llm-scores:source:reactBench:${VERSION}:v1`

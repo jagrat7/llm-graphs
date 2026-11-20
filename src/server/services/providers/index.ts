@@ -5,6 +5,7 @@ import { ArenaProvider } from "./arena/arena"
 import { AutomationBenchProvider } from "./automation-bench/automation-bench"
 import { ARCPrizeProvider } from "./arc-prize/arc-prize"
 import { CursorBenchProvider } from "./cursor-bench/cursor-bench"
+import { ClutterBenchProvider } from "./clutter-bench/clutter-bench"
 import { FrontierCodeProvider } from "./frontier-code/frontier-code"
 import { ReactBenchProvider } from "./react-bench/react-bench"
 import { SWEBenchProvider } from "./swe-bench/swe-bench"
@@ -45,6 +46,8 @@ const metricSources = {
   reactBench: new ReactBenchProvider(),
   sweBench: new SWEBenchProvider(),
   liveCodeBench: new LiveCodeBenchProvider(),
+  clutterBench: new ClutterBenchProvider("raw"),
+  clutterBenchSimple: new ClutterBenchProvider("simple"),
   modelsDevListing: new ModelsDevListingProvider(),
 }
 

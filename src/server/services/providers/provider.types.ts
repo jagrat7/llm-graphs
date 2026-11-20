@@ -3,7 +3,7 @@ export type ProviderName = import("./index").RegisteredProviderName
 export type SourceName = ProviderName | "modelsDev"
 
 /** What a source is for, which groups it in the sources dialog. */
-export type SourceCategory = "coding" | "agents" | "reasoning" | "preference" | "market"
+export type SourceCategory = "coding" | "agents" | "reasoning" | "ui" | "preference" | "market"
 
 export type SourceDefinition<TPayload> = {
   readonly name: SourceName
@@ -121,6 +121,7 @@ export type MetricPresentation = {
   label: string
   unit: string
   format: "percent" | "number" | "hours" | "currency" | "integer" | "tokens"
+  better?: "higher" | "lower"
 }
 
 export type MeasurementInfo = {
