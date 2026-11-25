@@ -122,6 +122,9 @@ function ExamplesPage() {
             graph={graph}
             examples={examples}
             groups={groups.filter((group) => group.category === graph.key)}
+            compare={withPosts.flatMap((group) =>
+              group.category === graph.key ? group.models : [],
+            )}
           />
         ))
       )}
@@ -133,17 +136,19 @@ function CategoryExamples({
   graph,
   examples,
   groups,
+  compare,
 }: {
   graph: (typeof CATEGORY_GRAPHS)[number]
   examples: ModelExamples
   groups: ModelExamples["groups"]
+  compare: ReadonlyArray<string>
 }) {
   const info = useProvidersInfo()
   const search = categoryGraphSearch(graph, info)
   const posts = new Map(examples.posts.map((post) => [post.id, post]))
 
   return (
-    <section aria-labelledby={`examples-${graph.key}`} className="flex flex-col gap-6">
+    <section aria-labelledby={`examples-${graph.key}`} className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <h2 id={`examples-${graph.key}`} className="text-lg font-medium">
           {graph.label}
@@ -151,7 +156,7 @@ function CategoryExamples({
         {search ? (
           <Link
             to="/"
-            search={{ ...search, models: groups.flatMap((group) => group.models) }}
+            search={{ ...search, models: [...new Set(compare)] }}
             className={cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-1.5")}
           >
             <RiLineChartLine aria-hidden="true" />
@@ -159,17 +164,14 @@ function CategoryExamples({
           </Link>
         ) : null}
       </div>
-      {groups.map((group) => (
-        <div key={group.label} className="flex flex-col gap-3">
-          <h3 className="text-muted-foreground text-sm font-medium">{group.label}</h3>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-            {group.posts.flatMap((id) => {
-              const post = posts.get(id)
-              return post ? [<XPostCard key={id} post={post} />] : []
-            })}
-          </div>
-        </div>
-      ))}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        {groups.flatMap((group) =>
+          group.posts.flatMap((id) => {
+            const post = posts.get(id)
+            return post ? [<XPostCard key={id} post={post} label={group.label} />] : []
+          }),
+        )}
+      </div>
     </section>
   )
 }

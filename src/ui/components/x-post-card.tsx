@@ -5,7 +5,7 @@ import type { XPost } from "#/server/api"
 import { COUNT_TEXT_CLASS } from "#/ui/lib/text-styles"
 import { cn } from "#/ui/lib/utils"
 
-export function XPostCard({ post }: { post: XPost }) {
+export function XPostCard({ post, label }: { post: XPost; label?: string }) {
   const [cover, ...more] = post.media
 
   return (
@@ -41,6 +41,7 @@ export function XPostCard({ post }: { post: XPost }) {
         </div>
       ) : null}
       <div className="flex flex-1 flex-col gap-3 p-3">
+        {label ? <p className="text-muted-foreground text-xs font-medium">{label}</p> : null}
         <p className="line-clamp-3 text-sm/snug">{post.text}</p>
         <div className="text-muted-foreground mt-auto flex items-center gap-2 text-xs">
           <img

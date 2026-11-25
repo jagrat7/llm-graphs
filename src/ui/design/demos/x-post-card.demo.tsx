@@ -51,8 +51,12 @@ export default function XPostCardDemo() {
     <Rows>
       <Row label="states">
         <div className="grid w-full grid-cols-2 gap-3 md:grid-cols-4">
-          {POSTS.map((item) => (
-            <XPostCard key={item.id} post={item} />
+          {POSTS.map((item, index) => (
+            <XPostCard
+              key={item.id}
+              post={item}
+              label={index === 0 ? "GPT Image 2.5" : undefined}
+            />
           ))}
         </div>
       </Row>
