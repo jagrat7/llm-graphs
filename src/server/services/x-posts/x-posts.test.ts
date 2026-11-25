@@ -18,6 +18,7 @@ it("reads a post from X's embed data without its trailing media link", () => {
         type: "animated_gif",
         media_url_https: "https://pbs.twimg.com/tweet_video_thumb/a.jpg",
         original_info: { width: 2530, height: 2506 },
+        ext_alt_text: "Two cubes and their reflection",
       },
     ],
   })
@@ -26,7 +27,7 @@ it("reads a post from X's embed data without its trailing media link", () => {
     url: "https://x.com/DanDr1s/status/2097402355251593558",
     text: "Passed the mirror test 🧊",
     author: { avatarUrl: "https://pbs.twimg.com/profile_images/1/a_bigger.jpg" },
-    media: [{ kind: "gif", width: 2530, height: 2506 }],
+    media: [{ kind: "gif", width: 2530, height: 2506, alt: "Two cubes and their reflection" }],
   })
 })
 

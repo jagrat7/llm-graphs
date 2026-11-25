@@ -19,7 +19,7 @@ const NAV_LINK_CLASS = cn(
 export default function AppHeader() {
   return (
     <header className="border-border/60 bg-background/85 h-header sticky top-0 z-40 border-b backdrop-blur-md">
-      <div className={cn(PAGE_COLUMN_CLASS, "flex h-full items-center gap-2")}>
+      <div className={cn(PAGE_COLUMN_CLASS, "flex h-full items-center gap-1 sm:gap-2")}>
         <Link
           to="/"
           search={{ x: "cost", y: "score" }}
@@ -29,12 +29,12 @@ export default function AppHeader() {
           <TokenWordmark />
         </Link>
 
-        <nav aria-label="Pages" className="ml-2 flex items-center gap-1">
+        <nav aria-label="Pages" className="flex items-center gap-1 sm:ml-2">
           <Link
             to="/"
             search={{ x: "cost", y: "score" }}
             activeOptions={{ exact: true, includeSearch: false }}
-            className={NAV_LINK_CLASS}
+            className={cn(NAV_LINK_CLASS, "max-sm:hidden")}
           >
             <RiLineChartLine aria-hidden="true" />
             <span className="max-sm:sr-only">Graphs</span>

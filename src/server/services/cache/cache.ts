@@ -228,12 +228,15 @@ export class SourceCache {
     return this.resolvedStore
   }
 
-  async read<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
+  async read<T>(
+    source: SourceDefinition<T>,
+    background: (task: Promise<unknown>) => void = (task) => void task,
+  ): Promise<CachedPayload<T> | null> {
     const cached = await this.stored(source)
     if (!cached) return this.fillCold(source)
 
     if (this.now() - Date.parse(cached.fetchedAt) > source.refreshWindowMs) {
-      void this.refreshInBackground(source)
+      background(this.refreshInBackground(source))
     }
 
     return cached

@@ -19,7 +19,7 @@ export function XPostCard({ post }: { post: XPost }) {
         <div className="bg-muted relative aspect-[4/3] overflow-hidden">
           <img
             src={cover.previewUrl}
-            alt=""
+            alt={cover.alt ?? ""}
             loading="lazy"
             className="size-full object-cover transition-transform duration-300 group-hover/post:scale-[1.03] motion-reduce:transition-none"
           />

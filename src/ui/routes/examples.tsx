@@ -15,11 +15,13 @@ import { cn } from "#/ui/lib/utils"
 const examplesQuery = queryOptions({
   queryKey: ["x-posts", "examples"],
   queryFn: () => api.xPosts.examples(),
-  staleTime: Infinity,
+  staleTime: 5 * 60 * 1000,
 })
 
 export const Route = createFileRoute("/examples")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(examplesQuery),
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(examplesQuery)
+  },
   head: () => ({ meta: [{ title: `Examples on X — ${APP_NAME}` }] }),
   component: ExamplesPage,
 })

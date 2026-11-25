@@ -3,7 +3,7 @@ import { z } from "zod"
 import type { SourceDefinition } from "../providers"
 
 import { fetchOk } from "../providers/utils"
-import { MODEL_EXAMPLES, type ModelExamples } from "./examples"
+import { MODEL_EXAMPLES, type ExamplePost, type ModelExamples } from "./examples"
 
 const EMBED_DATA = "https://cdn.syndication.twimg.com/tweet-result"
 const STATUS_URL = /^https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/(\d{5,25})$/
@@ -12,6 +12,7 @@ const mediaSchema = z.object({
   type: z.enum(["photo", "video", "animated_gif"]),
   media_url_https: z.url(),
   original_info: z.object({ width: z.number().positive(), height: z.number().positive() }),
+  ext_alt_text: z.string().trim().min(1).nullish(),
 })
 
 const embedSchema = z.object({
@@ -40,6 +41,7 @@ export type XPost = {
     previewUrl: string
     width: number
     height: number
+    alt: string | null
   }>
 }
 
@@ -81,36 +83,48 @@ export function parseEmbed(raw: unknown): XPost {
       previewUrl: media.media_url_https,
       width: media.original_info.width,
       height: media.original_info.height,
+      alt: media.ext_alt_text ?? null,
     })),
   }
 }
 
-async function fetchPost(url: string) {
+async function fetchPost({ url, alt }: ExamplePost): Promise<XPost> {
   const id = postId(url)
   const response = await fetchOk("X", `${EMBED_DATA}?id=${id}&token=${embedToken(id)}&lang=en`, {
     timeoutMs: 10_000,
   })
-  return parseEmbed(await response.json())
+  const post = parseEmbed(await response.json())
+  const [cover, ...rest] = post.media
+  return cover ? { ...post, media: [{ ...cover, alt: cover.alt ?? alt }, ...rest] } : post
 }
 
 export async function fetchExamples(
   examples: ReadonlyArray<ModelExamples> = MODEL_EXAMPLES,
 ): Promise<XPostsPayload> {
-  const urls = [...new Set(examples.flatMap((example) => example.posts))]
-  const results = await Promise.allSettled(urls.map(fetchPost))
-  const posts = results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []))
-  const dropped = results.flatMap((result, index) =>
-    result.status === "rejected" ? [{ url: urls[index], reason: String(result.reason) }] : [],
-  )
-  if (posts.length === 0) throw new Error("X returned none of the example posts")
+  const requested = [
+    ...new Map(
+      examples.flatMap((example) => example.posts).map((post) => [post.url, post]),
+    ).values(),
+  ]
+  const results = await Promise.allSettled(requested.map(fetchPost))
+  const byUrl = new Map<string, XPost>()
+  const dropped: XPostsPayload["dropped"] = []
+  results.forEach((result, index) => {
+    const { url } = requested[index]
+    if (result.status === "fulfilled") byUrl.set(url, result.value)
+    else dropped.push({ url, reason: String(result.reason) })
+  })
+  if (byUrl.size * 2 < requested.length)
+    throw new Error(`X returned only ${byUrl.size} of ${requested.length} example posts`)
 
-  const found = new Set(posts.map((post) => post.id))
-  const groups = examples.map((example) => ({
-    ...example,
-    posts: example.posts.map(postId).filter((id) => found.has(id)),
-  }))
-
-  return { groups, posts, dropped }
+  return {
+    groups: examples.map((example) => ({
+      ...example,
+      posts: example.posts.flatMap((post) => byUrl.get(post.url)?.id ?? []),
+    })),
+    posts: [...byUrl.values()],
+    dropped,
+  }
 }
 
 function listHash(values: ReadonlyArray<string>) {
@@ -121,7 +135,7 @@ function listHash(values: ReadonlyArray<string>) {
 
 export const xPostsSource: SourceDefinition<XPostsPayload> = {
   name: "xPosts",
-  cacheKey: `llm-scores:x-posts:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts]))}`,
+  cacheKey: `llm-scores:x-posts:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
   refreshWindowMs: 6 * 60 * 60 * 1000,
   fetchPayload: () => fetchExamples(),
 }
