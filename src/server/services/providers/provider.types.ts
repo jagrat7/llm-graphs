@@ -6,7 +6,7 @@ export type SourceName = ProviderName | "modelsDev"
 export type SourceCategory = "coding" | "agents" | "reasoning" | "preference" | "market" | "image"
 
 export type SourceDefinition<TPayload> = {
-  readonly name: SourceName
+  readonly name: SourceName | "xPosts"
   readonly cacheKey: string
   readonly refreshWindowMs: number
   fetchPayload(): Promise<TPayload>
