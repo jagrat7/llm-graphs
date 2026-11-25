@@ -25,6 +25,7 @@ const BOARD = {
     },
     { modelId: "p-image-ideogram-low", battles: 900, winRate: 40, elo: 1100 },
     { modelId: "gemini-2.5-flash-image", battles: 5000, winRate: 55, elo: 1221 },
+    { modelId: "gemini-2.0-preview", battles: 1687, winRate: 41.1, elo: 1093 },
     { modelId: "negative", battles: 10, winRate: 50, elo: -3 },
     { modelId: "unlisted", battles: 10, winRate: 50, elo: 1000 },
     { modelId: "malformed", battles: 10, winRate: 50, elo: 1000 },
@@ -41,6 +42,10 @@ const REGISTRY = {
     "p-image-ideogram-low": { displayName: "p-image-ideogram (very_low)", provider: "prunaai" },
     "gemini-2.5-flash-image": {
       displayName: "Gemini 2.5 Flash Image (Nano Banana)",
+      provider: "google",
+    },
+    "gemini-2.0-preview": {
+      displayName: "Gemini 2.0 Flash Image Gen (Preview)",
       provider: "google",
     },
     negative: { displayName: "Negative", provider: null },
@@ -75,6 +80,7 @@ it("reads each image model's rating, cost, time and votes, apart from its settin
     ],
     ["p-image-ideogram", "quality very low", expect.objectContaining({ score: 1100 })],
     ["Gemini 2.5 Flash Image", undefined, expect.objectContaining({ score: 1221 })],
+    ["Gemini 2.0 Flash Image Gen Preview", undefined, expect.objectContaining({ score: 1093 })],
   ])
   expect(rows[0]).toMatchObject({ mode: "off", level: "default", metadata: { creator: "OpenAI" } })
   expect(rows[1].measurements?.score?.interval).toEqual({ low: 1441, high: 1449 })

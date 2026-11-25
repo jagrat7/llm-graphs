@@ -9,6 +9,7 @@ const PAGE = `https://www.designarena.ai/leaderboard?section=${BOARD}&board=${BO
 const FLIGHT_PUSH = "self.__next_f.push("
 const TRAILING_PARENTHETICAL = /^(.+?)\s*\(([^()]+)\)$/
 const NAMED_SETTINGS = /^(?:[a-z]+:\s*[^,]+,?\s*)+$/i
+const RELEASE_STAGE = /^(?:preview|beta|experimental)$/i
 const QUALITY_LEVEL = /^(?:very[ _])?(?:low|medium|high)$|^(?:auto|max)$/i
 /** Labs by DesignArena's provider slug, where the slug isn't the lab's name. */
 const CREATORS: Record<string, string> = {
@@ -135,6 +136,7 @@ export function designArenaModel(displayName: string) {
   if (QUALITY_LEVEL.test(inside)) {
     return { name, configuration: `quality ${inside.replace("_", " ").toLowerCase()}` }
   }
+  if (RELEASE_STAGE.test(inside)) return { name: `${name} ${inside}`, configuration: null }
   return { name, configuration: null }
 }
 

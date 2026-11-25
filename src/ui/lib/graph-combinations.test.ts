@@ -47,10 +47,10 @@ it("validates every registered benchmark and metric set against one shared snaps
       expect(offered, key).toHaveLength(0)
       continue
     }
+    if (offered.length === 0) continue // Safe refusal when configurations cannot match.
     const comparable =
       new Set(offered.map((row) => row.model)).size >= 2 &&
       bindings.every((binding) => new Set(offered.map((row) => row[binding.metric])).size >= 2)
-    if (!comparable) continue
     const picks = defaultPicks(
       snapshot,
       offered,
@@ -92,7 +92,12 @@ it("validates every registered benchmark and metric set against one shared snaps
         validProvenance,
       },
       key,
-    ).toEqual({ meaningful: true, excluded: 0, validCoordinates: true, validProvenance: true })
+    ).toEqual({
+      meaningful: comparable,
+      excluded: 0,
+      validCoordinates: true,
+      validProvenance: true,
+    })
   }
   for (const source of info.metricProviders.score) {
     const compatible = compatibleComparison(
