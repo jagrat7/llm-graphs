@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DesignRouteImport } from './routes/design'
+import { Route as ExamplesRouteImport } from './routes/examples'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
 import { Route as ApiModelsSnapshotRouteImport } from './routes/api.models.snapshot'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const DesignRoute = DesignRouteImport.update({
   id: '/design',
   path: '/design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamplesRoute = ExamplesRouteImport.update({
+  id: '/examples',
+  path: '/examples',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
@@ -44,6 +50,7 @@ const ApiModelsSnapshotRoute = ApiModelsSnapshotRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/design': typeof DesignRoute
+  '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/design': typeof DesignRoute
+  '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/design': typeof DesignRoute
+  '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/design'
+    | '/examples'
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/design'
+    | '/examples'
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/design'
+    | '/examples'
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DesignRoute: typeof DesignRoute
+  ExamplesRoute: typeof ExamplesRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
   ApiModelsSnapshotRoute: typeof ApiModelsSnapshotRoute
@@ -109,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/design'
       fullPath: '/design'
       preLoaderRoute: typeof DesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/examples': {
+      id: '/examples'
+      path: '/examples'
+      fullPath: '/examples'
+      preLoaderRoute: typeof ExamplesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/llms.txt': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DesignRoute: DesignRoute,
+  ExamplesRoute: ExamplesRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
   ApiModelsSnapshotRoute: ApiModelsSnapshotRoute,
