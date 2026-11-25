@@ -1,3 +1,4 @@
+import { queryOptions } from "@tanstack/react-query"
 import { createIsomorphicFn } from "@tanstack/react-start"
 
 import type { ModelSnapshot } from "#/server/api"
@@ -14,3 +15,11 @@ export const fetchModelSnapshot = createIsomorphicFn()
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- our own route serializes this type
     return (await response.json()) as ModelSnapshot
   })
+
+/** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
+export const modelSnapshotQuery = queryOptions({
+  queryKey: ["models", "snapshot"],
+  queryFn: () => fetchModelSnapshot(),
+  staleTime: Infinity,
+  gcTime: Infinity,
+})

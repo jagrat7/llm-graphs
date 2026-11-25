@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query"
 import type { ErrorInfo, ReactNode } from "react"
 
-import { queryOptions, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import {
   ClientOnly,
   createFileRoute,
@@ -52,7 +52,7 @@ import { readPickedModels, savePickedModels, usePickedModels } from "#/ui/lib/pi
 import { useSettings } from "#/ui/lib/settings"
 import { providersInfoQueryOptions, useProvidersInfo } from "#/ui/lib/use-providers-info"
 import { api } from "#/server/api"
-import { fetchModelSnapshot } from "#/ui/lib/model-snapshot"
+import { modelSnapshotQuery as snapshotQuery } from "#/ui/lib/model-snapshot"
 import { useReducedMotion } from "#/ui/lib/use-reduced-motion"
 import { cn } from "#/ui/lib/utils"
 
@@ -107,14 +107,6 @@ class ChartChunkErrorBoundary extends Component<
     )
   }
 }
-
-/** Every model and its metrics. Never stale, so the data on screen only changes on reload. */
-const snapshotQuery = queryOptions({
-  queryKey: ["models", "snapshot"],
-  queryFn: () => fetchModelSnapshot(),
-  staleTime: Infinity,
-  gcTime: Infinity,
-})
 
 type ComparisonRequest = {
   info: ProvidersInfo

@@ -3,7 +3,7 @@ import type { FocusEvent, HTMLAttributes } from "react"
 import { RiArrowDownSLine, RiCloseLine, RiListCheck, RiSearchLine } from "@remixicon/react"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 
-import type { Model } from "#/ui/lib/model-view"
+import type { PickableModel } from "#/ui/lib/model-view"
 
 import { groupByVendor, ModelChecklist } from "#/ui/components/model-checklist"
 import { ModelLogo } from "#/ui/components/model-logo"
@@ -51,7 +51,7 @@ const OVERFLOW_RULE_CLASS = cn(COLUMN_RULE_CLASS, "*:nth-[2n]:after:hidden")
 const SKELETON_WIDTHS = ["w-20", "w-16", "w-24", "w-14", "w-20", "w-16", "w-24", "w-12", "w-20"]
 
 type ModelPickerProps = {
-  models: Array<Model>
+  models: Array<PickableModel>
   selected: Array<string>
   onChange: (models: Array<string>) => void
   /** Restores the default comparison; the list offers a reset only when this is given. */
@@ -62,6 +62,7 @@ type ModelPickerProps = {
   disabled?: boolean
   /** Focuses the search on `/`. Only one picker on a page should claim the key. */
   shortcut?: boolean
+  placeholder?: string
 }
 
 export function ModelPicker({
@@ -73,6 +74,7 @@ export function ModelPicker({
   className,
   disabled = false,
   shortcut = false,
+  placeholder = "Search or browse models",
 }: ModelPickerProps) {
   const inputId = useId()
   const anchor = useComboboxAnchor()
@@ -189,14 +191,16 @@ export function ModelPicker({
         multiple
         value={value}
         // The combobox only knows the models offered here; picks this benchmark lacks stay picked.
-        onValueChange={(next: Array<Model>) =>
+        onValueChange={(next: Array<PickableModel>) =>
           onChange([
             ...selected.filter((id) => !options.some((option) => option.model === id)),
             ...next.map((model) => model.model),
           ])
         }
-        itemToStringLabel={(model: Model) => model.displayName}
-        isItemEqualToValue={(item: Model, candidate: Model) => item.model === candidate.model}
+        itemToStringLabel={(model: PickableModel) => model.displayName}
+        isItemEqualToValue={(item: PickableModel, candidate: PickableModel) =>
+          item.model === candidate.model
+        }
         /* In multi-select Base UI treats the *last* value as the selected index and
            opens scrolled to it — alphabetical order made that a jump to the bottom.
            Highlighting the first item instead keeps the list where it starts. */
@@ -204,7 +208,7 @@ export function ModelPicker({
         // Arrowing (or pointing) through the list is the keyboard route to the same
         // emphasis a hovered entry gives. The automatic first-item highlight on open is
         // not a gesture, so it is ignored.
-        onItemHighlighted={(model: Model | undefined, { reason }: { reason: string }) =>
+        onItemHighlighted={(model: PickableModel | undefined, { reason }: { reason: string }) =>
           setListModel(reason === "none" ? null : (model?.model ?? null))
         }
         onOpenChange={(open: boolean) => {
@@ -220,7 +224,7 @@ export function ModelPicker({
         <div ref={anchor}>
           <ComboboxInput
             id={inputId}
-            placeholder="Search or browse models"
+            placeholder={placeholder}
             aria-keyshortcuts={shortcut ? "/" : undefined}
             title={shortcut ? "Search models (/)" : "Search models"}
             showTrigger={false}
@@ -376,7 +380,7 @@ export function ModelPicker({
           <ComboboxEmpty>No models found.</ComboboxEmpty>
           <ComboboxList className="max-h-56">
             <ComboboxCollection>
-              {(model: Model) => (
+              {(model: PickableModel) => (
                 // Says what a click will do, so the row needs no check of its own.
                 <ComboboxItem key={model.model} value={model} showIndicator={false}>
                   <ModelLogo
@@ -405,7 +409,7 @@ function LegendEntry({
   model,
   onRemove,
   ...props
-}: { model: Model; onRemove: () => void } & HTMLAttributes<HTMLLIElement>) {
+}: { model: PickableModel; onRemove: () => void } & HTMLAttributes<HTMLLIElement>) {
   return (
     <li
       data-slot="model-picker-entry"

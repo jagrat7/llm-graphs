@@ -1,8 +1,10 @@
 export type ExamplePost = { url: string; alt: string }
 
+export type ExampleCategory = "coding" | "agents" | "reasoning" | "chat" | "speed" | "image"
+
 export type ModelExamples = {
   label: string
-  category: "image"
+  category: ExampleCategory
   models: ReadonlyArray<string>
   posts: ReadonlyArray<ExamplePost>
 }

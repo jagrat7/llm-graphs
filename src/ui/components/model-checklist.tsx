@@ -2,7 +2,7 @@ import type { CSSProperties, HTMLAttributes } from "react"
 
 import { useState } from "react"
 
-import type { Model } from "#/ui/lib/model-view"
+import type { PickableModel } from "#/ui/lib/model-view"
 
 import { ModelLogo } from "#/ui/components/model-logo"
 import { Button } from "#/ui/components/ui/button"
@@ -30,7 +30,7 @@ export type VendorGroup = {
   label: string
   logoUrl: string | null
   /** Newest release first, so the preview shows what people are comparing now. */
-  models: Array<Model>
+  models: Array<PickableModel>
 }
 
 /**
@@ -38,7 +38,7 @@ export type VendorGroup = {
  * proxy for which labs people come to compare, and a stable order is what makes
  * the list learnable. Models without a vendor share one group at the end.
  */
-export function groupByVendor(models: ReadonlyArray<Model>): Array<VendorGroup> {
+export function groupByVendor(models: ReadonlyArray<PickableModel>): Array<VendorGroup> {
   const groups = new Map<string, VendorGroup>()
 
   for (const model of models) {
@@ -85,7 +85,7 @@ export function ModelChecklist({ groups, selected, onToggle, rowProps }: ModelCh
   // rows stay put until the list closes: unchecking one must not pull it, or its
   // vendor, out from under the pointer or keyboard focus.
   const [kept, setKept] = useState<ReadonlySet<string>>(() => new Set(selected))
-  const isKept = (model: Model) => kept.has(model.model) || selected.has(model.model)
+  const isKept = (model: PickableModel) => kept.has(model.model) || selected.has(model.model)
 
   function toggle(model: string) {
     setKept((current) => (current.has(model) ? current : new Set(current).add(model)))
