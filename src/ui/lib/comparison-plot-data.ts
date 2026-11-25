@@ -156,7 +156,10 @@ export function padDomain(
     return { min: domain.min - fallback, max: domain.max + fallback }
   }
 
-  return { min: domain.min - span * ratio, max: domain.max + span * ratio }
+  // Padding never takes an all-positive axis below zero, where no cost or count can sit.
+  const min = domain.min - span * ratio
+
+  return { min: domain.min > 0 ? Math.max(0, min) : min, max: domain.max + span * ratio }
 }
 
 /**
