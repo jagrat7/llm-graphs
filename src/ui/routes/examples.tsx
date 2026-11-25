@@ -38,7 +38,9 @@ function ExamplesPage() {
             key={graph.key}
             graph={graph}
             examples={examples}
-            groups={examples.groups.filter((group) => group.category === graph.key)}
+            groups={examples.groups.filter(
+              (group) => group.category === graph.key && group.posts.length > 0,
+            )}
           />
         ))
       ) : (
