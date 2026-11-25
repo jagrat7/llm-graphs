@@ -48,6 +48,9 @@ it("validates every registered benchmark and metric set against one shared snaps
       continue
     }
     if (offered.length === 0) continue // Safe refusal when configurations cannot match.
+    const comparable =
+      new Set(offered.map((row) => row.model)).size >= 2 &&
+      bindings.every((binding) => new Set(offered.map((row) => row[binding.metric])).size >= 2)
     const picks = defaultPicks(
       snapshot,
       offered,
@@ -83,13 +86,20 @@ it("validates every registered benchmark and metric set against one shared snaps
     )
     expect(
       {
+        drawn: plot.points.length > 0,
         meaningful: plotQuality(plot).meaningful,
         excluded: plot.excludedCount,
         validCoordinates,
         validProvenance,
       },
       key,
-    ).toEqual({ meaningful: true, excluded: 0, validCoordinates: true, validProvenance: true })
+    ).toEqual({
+      drawn: true,
+      meaningful: comparable,
+      excluded: 0,
+      validCoordinates: true,
+      validProvenance: true,
+    })
   }
   for (const source of info.metricProviders.score) {
     const compatible = compatibleComparison(

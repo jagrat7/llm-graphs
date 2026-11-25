@@ -105,6 +105,8 @@ export function logoDataUrl(svg: string | undefined) {
 }
 
 export function effortLabel(mode: ReasoningMode, level: string) {
+  // A model with one setting, such as an image model, gets no effort tag.
+  if (level === "default") return "default"
   if (level === "unknown") {
     return mode === "on" ? "effort unknown" : mode === "off" ? "non-reasoning" : "reasoning unknown"
   }

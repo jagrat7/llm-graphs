@@ -9,6 +9,7 @@ import { FrontierCodeProvider } from "./frontier-code/frontier-code"
 import { ReactBenchProvider } from "./react-bench/react-bench"
 import { SWEBenchProvider } from "./swe-bench/swe-bench"
 import { LiveCodeBenchProvider } from "./live-code-bench/live-code-bench"
+import { DesignArenaProvider } from "./design-arena/design-arena"
 import { TerminalBenchProvider } from "./terminal-bench/terminal-bench"
 import { TerminalBenchScienceProvider } from "./terminal-bench-science/terminal-bench-science"
 import { ModelsDevProvider } from "./models-dev/models-dev"
@@ -45,6 +46,7 @@ const metricSources = {
   reactBench: new ReactBenchProvider(),
   sweBench: new SWEBenchProvider(),
   liveCodeBench: new LiveCodeBenchProvider(),
+  designArena: new DesignArenaProvider(),
   modelsDevListing: new ModelsDevListingProvider(),
 }
 

@@ -94,7 +94,7 @@ export function PointDetails({
               >
                 {formatMetric(point.values[axis], metric, source, info)}
                 {metric === "cost"
-                  ? "/task"
+                  ? presentation.unit.replace(/^\$/, "")
                   : presentation.format === "currency"
                     ? "/M tokens"
                     : null}
