@@ -47,6 +47,14 @@ const CATEGORIES: ReadonlyArray<{
     graphs: [["score", "votes"]],
   },
   {
+    key: "image",
+    title: "Image generation",
+    graphs: [
+      ["score", "cost"],
+      ["score", "duration"],
+    ],
+  },
+  {
     key: "market",
     title: "Prices, speed and specs",
     graphs: [
