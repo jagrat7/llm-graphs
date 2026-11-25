@@ -86,6 +86,7 @@ it("validates every registered benchmark and metric set against one shared snaps
     )
     expect(
       {
+        drawn: plot.points.length > 0,
         meaningful: plotQuality(plot).meaningful,
         excluded: plot.excludedCount,
         validCoordinates,
@@ -93,6 +94,7 @@ it("validates every registered benchmark and metric set against one shared snaps
       },
       key,
     ).toEqual({
+      drawn: true,
       meaningful: comparable,
       excluded: 0,
       validCoordinates: true,
