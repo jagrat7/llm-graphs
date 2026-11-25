@@ -47,9 +47,10 @@ it("validates every registered benchmark and metric set against one shared snaps
       expect(offered, key).toHaveLength(0)
       continue
     }
-    // Safe refusal when configurations cannot match, or only one model has every axis: the page
-    // asks for a second model instead of drawing a lone point.
-    if (new Set(offered.map((row) => row.model)).size < 2) continue
+    const comparable =
+      new Set(offered.map((row) => row.model)).size >= 2 &&
+      bindings.every((binding) => new Set(offered.map((row) => row[binding.metric])).size >= 2)
+    if (!comparable) continue
     const picks = defaultPicks(
       snapshot,
       offered,

@@ -7,8 +7,9 @@ const BOARD = "image"
 const PAGE = `https://www.designarena.ai/leaderboard?section=${BOARD}&board=${BOARD}`
 /** How the page streams its React flight data, one call per script element. */
 const FLIGHT_PUSH = "self.__next_f.push("
-/** A display name's trailing settings, as in "GPT Image 2.6 Flare (quality: low, complexity: low)". */
-const SETTINGS = /^(.+?)\s*\(((?:[a-z]+:\s*[^,()]+,?\s*)+)\)$/i
+const TRAILING_PARENTHETICAL = /^(.+?)\s*\(([^()]+)\)$/
+const NAMED_SETTINGS = /^(?:[a-z]+:\s*[^,]+,?\s*)+$/i
+const QUALITY_LEVEL = /^(?:very[ _])?(?:low|medium|high)$|^(?:auto|max)$/i
 /** Labs by DesignArena's provider slug, where the slug isn't the lab's name. */
 const CREATORS: Record<string, string> = {
   openai: "OpenAI",
@@ -31,10 +32,10 @@ const boardRowSchema = z.object({
   avgGenerationTimeMs: z.number().positive().nullish(),
   avgCostUsd: z.number().nonnegative().nullish(),
 })
-const registrySchema = z.record(
-  z.string(),
-  z.object({ displayName: z.string().trim().min(1), provider: z.string().nullish() }),
-)
+const registryEntrySchema = z.object({
+  displayName: z.string().trim().min(1),
+  provider: z.string().nullish(),
+})
 const rowSchema = boardRowSchema.extend({
   displayName: z.string().min(1),
   provider: z.string().nullable(),
@@ -93,8 +94,15 @@ export function parseDesignArenaPage(html: string): DesignArenaPayload {
     .parse(objectAt(text, boardAt))
   const registryAt = text.indexOf('"registry":{"models":')
   if (registryAt < 0) throw new Error("DesignArena model registry missing")
-  const registry = registrySchema.parse(
-    objectAt(text, text.indexOf("{", registryAt + '"registry":{"models":'.length - 1)),
+  const registry = new Map(
+    Object.entries(
+      z
+        .record(z.string(), z.unknown())
+        .parse(objectAt(text, text.indexOf("{", registryAt + '"registry":{"models":'.length - 1))),
+    ).flatMap(([id, entry]) => {
+      const parsed = registryEntrySchema.safeParse(entry)
+      return parsed.success ? [[id, parsed.data] as const] : []
+    }),
   )
   const updatedAt = board.metadata?.lastUpdateTime ?? null
 
@@ -102,7 +110,7 @@ export function parseDesignArenaPage(html: string): DesignArenaPayload {
     "DesignArena",
     board.data.map((row) => {
       const id = row != null && typeof row === "object" ? Reflect.get(row, "modelId") : null
-      const model = typeof id === "string" ? registry[id] : undefined
+      const model = typeof id === "string" ? registry.get(id) : undefined
       return model && row != null && typeof row === "object"
         ? { ...row, displayName: model.displayName, provider: model.provider ?? null, updatedAt }
         : row
@@ -112,18 +120,22 @@ export function parseDesignArenaPage(html: string): DesignArenaPayload {
   )
 }
 
-/** Splits a display name's trailing settings off, so a model's settings share one entry. */
 export function designArenaModel(displayName: string) {
-  const match = SETTINGS.exec(displayName)
+  const match = TRAILING_PARENTHETICAL.exec(displayName)
   if (!match) return { name: displayName, configuration: null }
-  return {
-    name: match[1],
-    configuration: match[2]
+  const [, name, inside] = match
+  if (NAMED_SETTINGS.test(inside)) {
+    const configuration = inside
       .split(",")
       .map((part) => part.replace(/:\s*/, " ").trim())
       .filter(Boolean)
-      .join(", "),
+      .join(", ")
+    return { name, configuration }
   }
+  if (QUALITY_LEVEL.test(inside)) {
+    return { name, configuration: `quality ${inside.replace("_", " ").toLowerCase()}` }
+  }
+  return { name, configuration: null }
 }
 
 function creator(provider: string | null) {
