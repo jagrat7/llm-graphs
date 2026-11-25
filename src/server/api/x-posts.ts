@@ -4,11 +4,12 @@ import { XPostsService } from "../services/x-posts"
 import { snapshot } from "./models"
 
 export const examples = createServerFn({ method: "GET" }).handler(async () => {
-  const payload = await XPostsService.examples()
+  const [payload, { entries, logos }] = await Promise.all([XPostsService.examples(), snapshot()])
   if (payload == null) return null
 
-  const covered = new Set(payload.groups.flatMap((group) => group.models))
-  const { entries, logos } = await snapshot()
+  const covered = new Set(
+    payload.groups.flatMap((group) => (group.posts.length > 0 ? group.models : [])),
+  )
   const models = entries.flatMap((entry) =>
     covered.has(entry.id)
       ? [

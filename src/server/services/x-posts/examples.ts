@@ -132,9 +132,9 @@ export const MODEL_EXAMPLES: ReadonlyArray<ModelExamples> = [
     ],
   },
   {
-    label: "Claude Opus 5.5",
+    label: "Claude Opus 5.5 vs Claude Opus 5",
     category: "chat",
-    models: ["claude-opus-5-5"],
+    models: ["claude-opus-5-5", "claude-opus-5"],
     posts: [
       {
         url: "https://x.com/claudeai/status/2102435529044250670",
@@ -154,14 +154,21 @@ export const MODEL_EXAMPLES: ReadonlyArray<ModelExamples> = [
     ],
   },
   {
-    label: "Gemini 4 Hydrogen",
+    label: "Gemini 4 Hydrogen vs Gemini 3.8 Flash",
     category: "speed",
-    models: ["gemini-4-hydrogen"],
+    models: ["gemini-4-hydrogen", "gemini-3-8-flash"],
     posts: [
       {
         url: "https://x.com/Bhavani_00007/status/2120959112934834412",
         alt: "Two stacked 3D scenes of a cartoon rooster on a desert farm road, the top labelled Gemini 4 Hydrogen and the bottom Gemini 3.8 Flash.",
       },
+    ],
+  },
+  {
+    label: "Gemini 4 Hydrogen",
+    category: "speed",
+    models: ["gemini-4-hydrogen"],
+    posts: [
       {
         url: "https://x.com/SidraMiconi/status/2120948703095820743",
         alt: "A glowing orange stellar core surrounded by concentric rings and scattered particle streaks on a black background.",
