@@ -11,7 +11,7 @@ export type SourceDefinition<TPayload> = {
   readonly refreshWindowMs: number
   fetchPayload(): Promise<TPayload>
   /** Reject semantically empty refreshes before replacing a last good snapshot. */
-  validatePayload?(payload: TPayload): void
+  validatePayload?(payload: TPayload, previous?: TPayload): void
 }
 
 /** A source that publishes metrics, and says how each one is calculated from its rows. */

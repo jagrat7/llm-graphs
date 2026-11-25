@@ -1,5 +1,5 @@
 import { expect, it } from "vitest"
-import { parseEmbed, postId } from "./x-posts"
+import { parseEmbed, postId, xPostsSource, type XPostsPayload } from "./x-posts"
 
 it("reads a post from X's embed data without its trailing media link", () => {
   const post = parseEmbed({
@@ -34,4 +34,26 @@ it("reads a post from X's embed data without its trailing media link", () => {
 it("only takes links to posts on x.com", () => {
   expect(postId("https://x.com/cfryant/status/2107552426148745491")).toBe("2107552426148745491")
   expect(() => postId("https://example.com/cfryant/status/2107552426148745491")).toThrow()
+})
+
+it("shows what loaded on a cold start, but keeps the last copy over a mostly failed refresh", () => {
+  const post = parseEmbed({
+    id_str: "1",
+    text: "One that loaded",
+    display_text_range: [0, 15],
+    created_at: "2026-09-08T19:11:04.000Z",
+    favorite_count: 1,
+    user: { name: "A", screen_name: "a", profile_image_url_https: "https://pbs.twimg.com/a.jpg" },
+  })
+  const partial: XPostsPayload = {
+    groups: [],
+    posts: [post],
+    dropped: [
+      { url: "https://x.com/a/status/2", reason: "X returned 503" },
+      { url: "https://x.com/a/status/3", reason: "X returned 503" },
+    ],
+  }
+
+  expect(() => xPostsSource.validatePayload?.(partial)).not.toThrow()
+  expect(() => xPostsSource.validatePayload?.(partial, partial)).toThrow("only 1 of 3")
 })

@@ -350,13 +350,19 @@ export class SourceCache {
 
     try {
       payload = await source.fetchPayload()
-      source.validatePayload?.(payload)
     } catch (error) {
       console.warn(`[source-cache] ${source.name} refresh failed:`, error)
       return null
     }
 
     const current = await this.stored(source)
+    try {
+      source.validatePayload?.(payload, current?.payload)
+    } catch (error) {
+      console.warn(`[source-cache] ${source.name} refresh failed:`, error)
+      return null
+    }
+
     if (current && Date.parse(current.fetchedAt) > startedAt) return current
 
     const entry = { payload, fetchedAt: new Date(this.now()).toISOString() }

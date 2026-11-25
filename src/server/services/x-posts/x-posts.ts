@@ -114,8 +114,7 @@ export async function fetchExamples(
     if (result.status === "fulfilled") byUrl.set(url, result.value)
     else dropped.push({ url, reason: String(result.reason) })
   })
-  if (byUrl.size * 2 < requested.length)
-    throw new Error(`X returned only ${byUrl.size} of ${requested.length} example posts`)
+  if (byUrl.size === 0) throw new Error("X returned none of the example posts")
 
   return {
     groups: examples.map((example) => ({
@@ -138,4 +137,9 @@ export const xPostsSource: SourceDefinition<XPostsPayload> = {
   cacheKey: `llm-scores:x-posts:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
   refreshWindowMs: 6 * 60 * 60 * 1000,
   fetchPayload: () => fetchExamples(),
+  validatePayload(payload, previous) {
+    const requested = payload.posts.length + payload.dropped.length
+    if (previous && payload.posts.length * 2 < requested)
+      throw new Error(`X returned only ${payload.posts.length} of ${requested} example posts`)
+  },
 }
