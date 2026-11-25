@@ -138,8 +138,9 @@ export const xPostsSource: SourceDefinition<XPostsPayload> = {
   refreshWindowMs: 6 * 60 * 60 * 1000,
   fetchPayload: () => fetchExamples(),
   validatePayload(payload, previous) {
-    const requested = payload.posts.length + payload.dropped.length
-    if (previous && payload.posts.length * 2 < requested)
+    const loaded = payload.posts.length
+    const requested = loaded + payload.dropped.length
+    if (previous && loaded < previous.posts.length && loaded * 2 < requested)
       throw new Error(`X returned only ${payload.posts.length} of ${requested} example posts`)
   },
 }

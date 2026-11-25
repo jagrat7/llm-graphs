@@ -36,7 +36,7 @@ it("only takes links to posts on x.com", () => {
   expect(() => postId("https://example.com/cfryant/status/2107552426148745491")).toThrow()
 })
 
-it("shows what loaded on a cold start, but keeps the last copy over a mostly failed refresh", () => {
+it("keeps the last copy only over a refresh that loads fewer posts and loses most", () => {
   const post = parseEmbed({
     id_str: "1",
     text: "One that loaded",
@@ -54,6 +54,10 @@ it("shows what loaded on a cold start, but keeps the last copy over a mostly fai
     ],
   }
 
+  const full: XPostsPayload = { ...partial, posts: [post, post, post], dropped: [] }
+
   expect(() => xPostsSource.validatePayload?.(partial)).not.toThrow()
-  expect(() => xPostsSource.validatePayload?.(partial, partial)).toThrow("only 1 of 3")
+  expect(() => xPostsSource.validatePayload?.(partial, full)).toThrow("only 1 of 3")
+  expect(() => xPostsSource.validatePayload?.(partial, partial)).not.toThrow()
+  expect(() => xPostsSource.validatePayload?.(full, partial)).not.toThrow()
 })
