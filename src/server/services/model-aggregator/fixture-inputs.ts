@@ -18,11 +18,13 @@ import frontierCodeFixture from "./fixtures/frontier-code.json"
 import reactBenchFixture from "./fixtures/react-bench.json"
 import sweBenchFixture from "./fixtures/swe-bench.json"
 import liveCodeBenchFixture from "./fixtures/live-code-bench.json"
+import designArenaFixture from "./fixtures/design-arena.json"
 import { catalogInput, metricSourceInput } from "./inputs"
 
 export const fixtures = {
   sweBench: sweBenchFixture,
   liveCodeBench: liveCodeBenchFixture,
+  designArena: designArenaFixture,
   cursorBench: cursorBenchFixture,
   frontierCode: frontierCodeFixture,
   reactBench: reactBenchFixture,
@@ -56,6 +58,7 @@ export function allFixtureInputs(): AggregatorInputs {
   inputs.metricSources.push(
     metricSourceInput(ProvidersService.metricSources.sweBench, fixtures.sweBench),
     metricSourceInput(ProvidersService.metricSources.liveCodeBench, fixtures.liveCodeBench),
+    metricSourceInput(ProvidersService.metricSources.designArena, fixtures.designArena),
     metricSourceInput(ProvidersService.metricSources.cursorBench, fixtures.cursorBench),
     metricSourceInput(ProvidersService.metricSources.frontierCode, fixtures.frontierCode),
     metricSourceInput(ProvidersService.metricSources.reactBench, fixtures.reactBench),

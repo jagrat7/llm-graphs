@@ -3,7 +3,7 @@ export type ProviderName = import("./index").RegisteredProviderName
 export type SourceName = ProviderName | "modelsDev"
 
 /** What a source is for, which groups it in the sources dialog. */
-export type SourceCategory = "coding" | "agents" | "reasoning" | "preference" | "market"
+export type SourceCategory = "coding" | "agents" | "reasoning" | "preference" | "market" | "image"
 
 export type SourceDefinition<TPayload> = {
   readonly name: SourceName
