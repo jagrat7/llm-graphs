@@ -9,6 +9,12 @@ export type ModelExamples = {
   posts: ReadonlyArray<ExamplePost>
 }
 
+/** Post ids never shown, even when discovery finds them. */
+export const BLOCKED_POSTS: ReadonlyArray<string> = []
+
+/** X handles whose posts discovery skips. */
+export const BLOCKED_AUTHORS: ReadonlyArray<string> = []
+
 export const MODEL_EXAMPLES: ReadonlyArray<ModelExamples> = [
   {
     label: "Claude Fable 5.2",

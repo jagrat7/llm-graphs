@@ -3,6 +3,7 @@ import { z } from "zod"
 import type { SourceDefinition } from "../providers"
 
 import { fetchOk } from "../providers/utils"
+import { discoveredExamples } from "./discovery"
 import { MODEL_EXAMPLES, type ExamplePost, type ModelExamples } from "./examples"
 
 const EMBED_DATA = "https://cdn.syndication.twimg.com/tweet-result"
@@ -113,12 +114,15 @@ export function parseEmbed(raw: unknown): XPost {
   }
 }
 
-async function fetchPost({ url, alt }: ExamplePost): Promise<XPost> {
-  const id = postId(url)
+export async function loadPost(id: string): Promise<XPost> {
   const response = await fetchOk("X", `${EMBED_DATA}?id=${id}&token=${embedToken(id)}&lang=en`, {
     timeoutMs: 10_000,
   })
-  const post = parseEmbed(await response.json())
+  return parseEmbed(await response.json())
+}
+
+async function fetchPost({ url, alt }: ExamplePost): Promise<XPost> {
+  const post = await loadPost(postId(url))
   const [cover, ...rest] = post.media
   return cover ? { ...post, media: [{ ...cover, alt: cover.alt ?? alt }, ...rest] } : post
 }
@@ -161,7 +165,7 @@ export const xPostsSource: SourceDefinition<XPostsPayload> = {
   name: "xPosts",
   cacheKey: `llm-scores:x-posts:v2:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
   refreshWindowMs: 6 * 60 * 60 * 1000,
-  fetchPayload: () => fetchExamples(),
+  fetchPayload: async () => fetchExamples([...MODEL_EXAMPLES, ...(await discoveredExamples())]),
   validatePayload(payload, previous) {
     const loaded = payload.posts.length
     const requested = loaded + payload.dropped.length

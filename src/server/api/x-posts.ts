@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start"
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start"
 
 import { ProvidersService, type MetricKey, type ProviderName } from "../services/providers"
 import { XPostsService } from "../services/x-posts"
@@ -49,4 +49,29 @@ export const examples = createServerFn({ method: "GET" }).handler(async () => {
   )
 
   return { ...payload, models }
+})
+
+/** Searches X for new examples of every benchmarked model. Run daily by the cron route. */
+export const discoverPosts = createServerOnlyFn(async () => {
+  const { entries, variants } = await snapshot()
+  const benchmarked = new Set(
+    Object.values(variants).flatMap((rows) => rows.map((row) => row.entryId)),
+  )
+  const makesImages = new Set(variants.designArena.map((row) => row.entryId))
+
+  return XPostsService.discover(
+    entries.flatMap((entry) =>
+      benchmarked.has(entry.id)
+        ? [
+            {
+              id: entry.id,
+              name: entry.name,
+              vendor: entry.vendor,
+              releaseDate: entry.releaseDate,
+              makesImages: makesImages.has(entry.id),
+            },
+          ]
+        : [],
+    ),
+  )
 })

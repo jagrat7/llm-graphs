@@ -269,6 +269,11 @@ export class SourceCache {
     }
   }
 
+  /** Fetches and stores a new copy now, for a caller that knows the source changed. */
+  async refreshNow<T>(source: SourceDefinition<T>) {
+    return (await inFlight.get(source.cacheKey)) ?? this.refresh(source)
+  }
+
   /** A value shared across instances, such as a built snapshot. */
   async readShared(key: string) {
     return this.store.get(key)

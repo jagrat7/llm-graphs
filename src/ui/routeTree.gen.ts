@@ -15,6 +15,7 @@ import { Route as ExamplesRouteImport } from './routes/examples'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
 import { Route as ApiModelsSnapshotRouteImport } from './routes/api.models.snapshot'
+import { Route as ApiXPostsDiscoverRouteImport } from './routes/api.x-posts.discover'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const ApiModelsSnapshotRoute = ApiModelsSnapshotRouteImport.update({
   path: '/api/models/snapshot',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiXPostsDiscoverRoute = ApiXPostsDiscoverRouteImport.update({
+  id: '/api/x-posts/discover',
+  path: '/api/x-posts/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
+  '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
+  '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/llms.txt': typeof LlmsDottxtRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
+  '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
+    | '/api/x-posts/discover'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
+    | '/api/x-posts/discover'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/llms.txt'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
+    | '/api/x-posts/discover'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
   ApiModelsSnapshotRoute: typeof ApiModelsSnapshotRoute
+  ApiXPostsDiscoverRoute: typeof ApiXPostsDiscoverRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiModelsSnapshotRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/x-posts/discover': {
+      id: '/api/x-posts/discover'
+      path: '/api/x-posts/discover'
+      fullPath: '/api/x-posts/discover'
+      preLoaderRoute: typeof ApiXPostsDiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   LlmsDottxtRoute: LlmsDottxtRoute,
   ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
   ApiModelsSnapshotRoute: ApiModelsSnapshotRoute,
+  ApiXPostsDiscoverRoute: ApiXPostsDiscoverRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

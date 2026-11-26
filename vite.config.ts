@@ -16,7 +16,12 @@ const config = defineConfig({
   define: { "import.meta.env.BUILD_ID": JSON.stringify(BUILD_ID) },
   plugins: [
     devtools(),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
+    nitro({
+      rollupConfig: { external: [/^@sentry\//] },
+      vercel: {
+        config: { version: 3, crons: [{ path: "/api/x-posts/discover", schedule: "0 6 * * *" }] },
+      },
+    }),
     tailwindcss(),
     tanstackStart({
       router: {
