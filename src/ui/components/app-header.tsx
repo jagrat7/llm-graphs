@@ -19,22 +19,17 @@ const NAV_LINK_CLASS = cn(
 export default function AppHeader() {
   return (
     <header className="border-border/60 bg-background/85 h-header sticky top-0 z-40 border-b backdrop-blur-md">
-      <div
-        className={cn(
-          PAGE_COLUMN_CLASS,
-          "grid h-full grid-cols-[1fr_auto_1fr] items-center gap-1 sm:gap-2",
-        )}
-      >
+      <div className={cn(PAGE_COLUMN_CLASS, "flex h-full items-center gap-1 sm:gap-2")}>
         <Link
           to="/"
           search={{ x: "cost", y: "score" }}
           aria-label={`${APP_NAME} home`}
-          className="text-foreground min-h-control-lg -ml-1 flex items-center justify-self-start rounded-md px-1"
+          className="text-foreground min-h-control-lg -ml-1 flex items-center rounded-md px-1"
         >
           <TokenWordmark />
         </Link>
 
-        <nav aria-label="Pages" className="flex items-center gap-1">
+        <nav aria-label="Pages" className="flex items-center gap-1 sm:ml-2">
           <Link
             to="/"
             search={{ x: "cost", y: "score" }}
@@ -50,7 +45,7 @@ export default function AppHeader() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-1 justify-self-end">
+        <div className="ml-auto flex items-center gap-1">
           <SourcesDialog />
           <SettingsMenu />
           <ThemeToggle />
