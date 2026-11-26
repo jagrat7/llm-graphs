@@ -77,7 +77,7 @@ export function PostModels({
           ) : null}
           <span className="flex min-w-0 items-center gap-1.5">
             <ModelLogo logoUrl={model.logoUrl} color={model.chartColor} className="size-3.5" />
-            <span className="truncate" style={{ color: seriesLabelColor(model.chartColor) }}>
+            <span className="min-w-0" style={{ color: seriesLabelColor(model.chartColor) }}>
               {model.displayName}
             </span>
           </span>
