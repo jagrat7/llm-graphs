@@ -37,10 +37,16 @@ const ICONS: Record<CategoryKey, RemixiconComponentType> = {
   speech: RiMicLine,
 }
 
-function CategoryIcon({ category }: { category: CategoryKey }) {
+export function CategoryIcon({
+  category,
+  className,
+}: {
+  category: CategoryKey
+  className?: string
+}) {
   const Icon = ICONS[category]
 
-  return <Icon aria-hidden="true" className="size-3.5 shrink-0" />
+  return <Icon aria-hidden="true" className={cn("size-3.5 shrink-0", className)} />
 }
 
 function ChipContent({ category, label }: { category: CategoryKey; label: string }) {
