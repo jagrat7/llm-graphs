@@ -13,7 +13,29 @@ const mediaSchema = z.object({
   media_url_https: z.url(),
   original_info: z.object({ width: z.number().positive(), height: z.number().positive() }),
   ext_alt_text: z.string().trim().min(1).nullish(),
+  video_info: z
+    .object({
+      duration_millis: z.number().nonnegative().optional(),
+      variants: z.array(
+        z.object({ content_type: z.string(), url: z.url(), bitrate: z.number().optional() }),
+      ),
+    })
+    .optional(),
 })
+
+type VideoVariants = NonNullable<z.infer<typeof mediaSchema>["video_info"]>["variants"]
+
+/** 720p on X: sharp in the viewer without pulling a 4K file. */
+const MAX_VIDEO_BITRATE = 2_500_000
+
+function videoUrl(variants: VideoVariants = []) {
+  const files = variants
+    .filter((variant) => variant.content_type === "video/mp4")
+    .toSorted((left, right) => (right.bitrate ?? 0) - (left.bitrate ?? 0))
+  const fitting = files.find((variant) => (variant.bitrate ?? 0) <= MAX_VIDEO_BITRATE)
+
+  return (fitting ?? files.at(-1))?.url ?? null
+}
 
 const embedSchema = z.object({
   id_str: z.string(),
@@ -42,6 +64,8 @@ export type XPost = {
     width: number
     height: number
     alt: string | null
+    videoUrl: string | null
+    durationMs: number | null
   }>
 }
 
@@ -84,6 +108,8 @@ export function parseEmbed(raw: unknown): XPost {
       width: media.original_info.width,
       height: media.original_info.height,
       alt: media.ext_alt_text ?? null,
+      videoUrl: videoUrl(media.video_info?.variants),
+      durationMs: media.video_info?.duration_millis ?? null,
     })),
   }
 }
@@ -134,7 +160,7 @@ function listHash(values: ReadonlyArray<string>) {
 
 export const xPostsSource: SourceDefinition<XPostsPayload> = {
   name: "xPosts",
-  cacheKey: `llm-scores:x-posts:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
+  cacheKey: `llm-scores:x-posts:v2:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
   refreshWindowMs: 6 * 60 * 60 * 1000,
   fetchPayload: () => fetchExamples(),
   validatePayload(payload, previous) {

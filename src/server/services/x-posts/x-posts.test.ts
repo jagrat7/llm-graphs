@@ -19,6 +19,15 @@ it("reads a post from X's embed data without its trailing media link", () => {
         media_url_https: "https://pbs.twimg.com/tweet_video_thumb/a.jpg",
         original_info: { width: 2530, height: 2506 },
         ext_alt_text: "Two cubes and their reflection",
+        video_info: {
+          duration_millis: 16068,
+          variants: [
+            { content_type: "application/x-mpegURL", url: "https://video.twimg.com/a.m3u8" },
+            { content_type: "video/mp4", bitrate: 832000, url: "https://video.twimg.com/360.mp4" },
+            { content_type: "video/mp4", bitrate: 2176000, url: "https://video.twimg.com/720.mp4" },
+            { content_type: "video/mp4", bitrate: 10368000, url: "https://video.twimg.com/4k.mp4" },
+          ],
+        },
       },
     ],
   })
@@ -27,7 +36,16 @@ it("reads a post from X's embed data without its trailing media link", () => {
     url: "https://x.com/DanDr1s/status/2097402355251593558",
     text: "Passed the mirror test 🧊",
     author: { avatarUrl: "https://pbs.twimg.com/profile_images/1/a_bigger.jpg" },
-    media: [{ kind: "gif", width: 2530, height: 2506, alt: "Two cubes and their reflection" }],
+    media: [
+      {
+        kind: "gif",
+        width: 2530,
+        height: 2506,
+        alt: "Two cubes and their reflection",
+        videoUrl: "https://video.twimg.com/720.mp4",
+        durationMs: 16068,
+      },
+    ],
   })
 })
 
