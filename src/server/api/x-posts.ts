@@ -4,8 +4,7 @@ import { ProvidersService, type MetricKey, type ProviderName } from "../services
 import { XPostsService } from "../services/x-posts"
 import { snapshot } from "./models"
 
-/** What a category's chart puts on Y, where a model's best run is its highest. */
-const READ_METRICS: ReadonlyArray<MetricKey> = ["score", "tokensPerSecond"]
+const HIGHER_IS_BETTER: ReadonlyArray<MetricKey> = ["score", "tokensPerSecond"]
 
 type Readings = Partial<Record<ProviderName, Partial<Record<MetricKey, number>>>>
 
@@ -25,7 +24,7 @@ export const examples = createServerFn({ method: "GET" }).handler(async () => {
       if (!covered.has(row.entryId) || row.refused) continue
       const readings = best.get(row.entryId) ?? {}
       const fromSource = (readings[source] ??= {})
-      for (const metric of READ_METRICS) {
+      for (const metric of HIGHER_IS_BETTER) {
         const value = row.metrics[metric]
         if (value != null) fromSource[metric] = Math.max(value, fromSource[metric] ?? -Infinity)
       }

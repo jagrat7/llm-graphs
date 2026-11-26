@@ -13,7 +13,7 @@ import { ModelPicker } from "#/ui/components/model-picker"
 import { PageShell } from "#/ui/components/page-shell"
 import { SourceLogo } from "#/ui/components/source-logo"
 import { buttonVariants } from "#/ui/components/ui/button"
-import { XPostCard } from "#/ui/components/x-post-card"
+import { X_POST_ROW_CLASS, XPostCard } from "#/ui/components/x-post-card"
 import { APP_NAME } from "#/ui/lib/app-meta"
 import { CATEGORY_GRAPHS, categoryGraphSearch, type CategoryKey } from "#/ui/lib/category-graphs"
 import { axisSettings } from "#/ui/lib/graph-state"
@@ -59,7 +59,13 @@ export const Route = createFileRoute("/examples")({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(examplesQuery)
   },
-  head: () => ({ meta: [{ title: `Examples on X — ${APP_NAME}` }] }),
+  head: () => ({
+    meta: [
+      { title: `Examples on X — ${APP_NAME}` },
+      // X refuses a video request that names another site as its referrer.
+      { name: "referrer", content: "same-origin" },
+    ],
+  }),
   component: ExamplesPage,
 })
 
@@ -68,13 +74,12 @@ type ExampleGroup = ModelExamples["groups"][number]
 
 const UNKNOWN_MODEL = { logoUrl: null, chartColor: vendorColor({ hue: null }) }
 
-/** A comparison's label names each model it shows, in the order the group lists them. */
 function shownModels(group: ExampleGroup, models: ReadonlyMap<string, ExampleModel>) {
   const names = group.label.split(" vs ")
+  const oneNameEach = names.length === group.models.length
 
   return names.map((displayName, index) => ({
-    ...(models.get(group.models[names.length === group.models.length ? index : 0]) ??
-      UNKNOWN_MODEL),
+    ...(models.get(group.models[oneNameEach ? index : 0]) ?? UNKNOWN_MODEL),
     displayName,
   }))
 }
@@ -130,13 +135,13 @@ function ExamplesPage() {
         }
         shortcut
         placeholder="Filter by model"
-        className="mx-auto mb-8 w-full max-w-md max-sm:mb-6"
+        className="mx-auto mb-4 min-h-[calc(var(--control-xl)+var(--chip)+0.5rem)] w-full max-w-md"
       />
       {examples == null ? (
         <DataState className="min-h-80" title="X isn't answering right now." />
       ) : shown.length === 0 ? (
         <DataState className="min-h-80" title="No examples for these models yet.">
-          <Link to="/examples" className={buttonVariants({ variant: "outline", size: "xl" })}>
+          <Link to="/examples" className={cn(buttonVariants({ variant: "outline", size: "xl" }))}>
             All examples
           </Link>
         </DataState>
@@ -161,10 +166,6 @@ function ExamplesPage() {
   )
 }
 
-/**
- * One category as a ruled row: its benchmark's readings for the models shown stand in the
- * margin, and what those models made fills the sheet beside them.
- */
 function CategoryExamples({
   graph,
   groups,
@@ -192,7 +193,7 @@ function CategoryExamples({
       aria-labelledby={headingId}
       className="border-border/60 grid gap-x-10 gap-y-4 border-t py-6 lg:grid-cols-[15rem_minmax(0,1fr)]"
     >
-      <div className="lg:sticky lg:top-[calc(var(--spacing-header)+1.5rem)] lg:self-start">
+      <div className="lg:sticky lg:top-[calc(var(--header-height)+1.5rem)] lg:self-start">
         <div className="flex items-center gap-2">
           <h2 id={headingId} className="text-title flex items-center gap-2 font-medium">
             <CategoryIcon category={graph.key} className="size-4" />
@@ -211,7 +212,7 @@ function CategoryExamples({
           ) : null}
         </div>
         {source ? (
-          <p className="text-muted-foreground text-control mt-3 flex flex-wrap justify-between gap-x-3 gap-y-0.5 px-1.5">
+          <p className="text-muted-foreground text-control mt-3 flex flex-wrap justify-between gap-x-3 gap-y-0.5">
             <span className="flex items-center gap-1.5">
               <SourceLogo source={source} className="size-3" />
               {sourceLabel(source, info)}
@@ -219,7 +220,7 @@ function CategoryExamples({
             {metricAxisLabel(graph.y, source, info)}
           </p>
         ) : null}
-        <ul className="-mx-1.5 mt-1 grid gap-x-6 px-1.5 sm:max-lg:grid-cols-2">
+        <ul className="-mx-1.5 mt-1 grid gap-x-6 sm:max-lg:grid-cols-2">
           {ranked
             .toSorted((left, right) => (reading(right) ?? -Infinity) - (reading(left) ?? -Infinity))
             .map((model) => (
@@ -235,10 +236,10 @@ function CategoryExamples({
                   }}
                   replace
                   resetScroll={false}
-                  aria-current={picked.includes(model.model) ? "true" : undefined}
+                  aria-current={picked.includes(model.model) ? "page" : undefined}
                   className={cn(
                     CHECK_ROW_CLASS,
-                    "aria-[current=true]:bg-foreground/10 -outline-offset-2 transition-colors",
+                    "aria-[current=page]:bg-foreground/10 -outline-offset-2 transition-colors",
                   )}
                 >
                   <ModelLogo
@@ -255,7 +256,7 @@ function CategoryExamples({
             ))}
         </ul>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-6 [--row:8.5rem] sm:[--row:14rem]">
+      <div className={X_POST_ROW_CLASS}>
         {groups.flatMap((group) =>
           group.posts.flatMap((id) => {
             const post = posts.get(id)

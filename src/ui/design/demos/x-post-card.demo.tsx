@@ -1,6 +1,11 @@
 import type { XPost } from "#/server/api"
 
-import { PostModels, XPostCard, type PostModel } from "#/ui/components/x-post-card"
+import {
+  PostModels,
+  X_POST_ROW_CLASS,
+  XPostCard,
+  type PostModel,
+} from "#/ui/components/x-post-card"
 import { vendorColor } from "#/ui/lib/model-view"
 
 import { Row, Rows, type DemoMeta } from "../demo"
@@ -86,7 +91,7 @@ const CARDS: Array<{ post: XPost; models: Array<PostModel> }> = [
 export default function XPostCardDemo() {
   return (
     <Rows>
-      <Row label="plates" className="items-start gap-x-3 gap-y-6 [--row:9rem]">
+      <Row label="plates" className={`${X_POST_ROW_CLASS} items-start sm:[--row:7rem]`}>
         {CARDS.map((card) => (
           <XPostCard key={card.post.id} {...card} />
         ))}

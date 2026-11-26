@@ -25,14 +25,13 @@ const mediaSchema = z.object({
 
 type VideoVariants = NonNullable<z.infer<typeof mediaSchema>["video_info"]>["variants"]
 
-/** 720p on X: sharp in the viewer without pulling a 4K file. */
-const MAX_VIDEO_BITRATE = 2_500_000
+const MAX_720P_BITRATE = 2_500_000
 
 function videoUrl(variants: VideoVariants = []) {
   const files = variants
     .filter((variant) => variant.content_type === "video/mp4")
     .toSorted((left, right) => (right.bitrate ?? 0) - (left.bitrate ?? 0))
-  const fitting = files.find((variant) => (variant.bitrate ?? 0) <= MAX_VIDEO_BITRATE)
+  const fitting = files.find((variant) => (variant.bitrate ?? 0) <= MAX_720P_BITRATE)
 
   return (fitting ?? files.at(-1))?.url ?? null
 }

@@ -31,7 +31,8 @@ export type PostModel = Pick<PickableModel, "displayName" | "logoUrl" | "chartCo
 type Media = XPost["media"][number]
 type RatioStyle = CSSProperties & { "--ratio": number }
 
-/** A plate never gets narrower than a portrait photo or wider than a two-up comparison. */
+export const X_POST_ROW_CLASS = "flex flex-wrap gap-x-3 gap-y-6 [--row:8.5rem] sm:[--row:14rem]"
+
 const RATIO_RANGE = [3 / 4, 2.2] as const
 const TEXT_RATIO = 4 / 3
 const BADGE_CLASS = cn(
@@ -58,7 +59,6 @@ function postedOn(post: XPost) {
   })
 }
 
-/** The models a post shows, named as the chart labels them; several are a comparison. */
 export function PostModels({
   models,
   className,
@@ -87,8 +87,8 @@ export function PostModels({
   )
 }
 
-function PostMedia({ media }: { media: Media }) {
-  const className = "bg-muted block max-h-[calc(100dvh-2rem)] w-full object-contain"
+function PostMedia({ media, autoPlay }: { media: Media; autoPlay: boolean }) {
+  const className = "block max-h-[calc(100dvh-2rem)] w-full object-contain"
   const style = { aspectRatio: `${media.width} / ${media.height}` }
 
   if (media.videoUrl) {
@@ -98,7 +98,7 @@ function PostMedia({ media }: { media: Media }) {
         poster={media.previewUrl}
         aria-label={media.alt ?? undefined}
         controls={media.kind === "video"}
-        autoPlay
+        autoPlay={autoPlay || media.kind === "gif"}
         muted={media.kind === "gif"}
         loop={media.kind === "gif"}
         playsInline
@@ -118,11 +118,6 @@ function PostMedia({ media }: { media: Media }) {
   )
 }
 
-/**
- * One example: the output as a plate, captioned by the model that made it. The plate opens the
- * post here; only the credit under it leaves for X. In a wrapping flex row, plates share one
- * height and take width by their shape; the row sets that height as `--row`.
- */
 export function XPostCard({
   post,
   models,
@@ -140,7 +135,7 @@ export function XPostCard({
     <figure
       style={style}
       className={cn(
-        "flex min-w-0 grow-(--ratio) basis-[calc(var(--ratio)*var(--row,14rem))] flex-col gap-2 sm:max-w-[calc(var(--ratio)*var(--row,14rem)*1.5)]",
+        "flex min-w-0 grow-(--ratio) basis-[calc(var(--ratio)*var(--row))] flex-col gap-2 sm:max-w-[calc(var(--ratio)*var(--row)*1.5)]",
         className,
       )}
     >
@@ -185,9 +180,13 @@ export function XPostCard({
             </DialogTitle>
           </DialogHeader>
           {post.media.length > 0 ? (
-            <div className="border-border flex shrink-0 flex-col gap-px max-lg:border-y lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:overflow-y-auto lg:border-r">
-              {post.media.map((media) => (
-                <PostMedia key={media.previewUrl} media={media} />
+            <div className="border-border bg-muted flex shrink-0 flex-col gap-px max-lg:border-y lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:overflow-y-auto lg:border-r">
+              {post.media.map((media, index) => (
+                <PostMedia
+                  key={`${index}:${media.previewUrl}`}
+                  media={media}
+                  autoPlay={index === 0}
+                />
               ))}
             </div>
           ) : null}
