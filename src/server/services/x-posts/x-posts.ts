@@ -4,7 +4,7 @@ import type { SourceDefinition } from "../providers"
 
 import { fetchOk } from "../providers/utils"
 import { discoveredExamples } from "./discovery"
-import { MODEL_EXAMPLES, type ExamplePost, type ModelExamples } from "./examples"
+import type { ExamplePost, ModelExamples } from "./examples"
 
 const EMBED_DATA = "https://cdn.syndication.twimg.com/tweet-result"
 const STATUS_URL = /^https:\/\/x\.com\/[A-Za-z0-9_]{1,15}\/status\/(\d{5,25})$/
@@ -128,7 +128,7 @@ async function fetchPost({ url, alt }: ExamplePost): Promise<XPost> {
 }
 
 export async function fetchExamples(
-  examples: ReadonlyArray<ModelExamples> = MODEL_EXAMPLES,
+  examples: ReadonlyArray<ModelExamples>,
 ): Promise<XPostsPayload> {
   const requested = [
     ...new Map(
@@ -143,7 +143,9 @@ export async function fetchExamples(
     if (result.status === "fulfilled") byUrl.set(url, result.value)
     else dropped.push({ url, reason: String(result.reason) })
   })
-  if (byUrl.size === 0) throw new Error("X returned none of the example posts")
+  if (requested.length > 0 && byUrl.size === 0) {
+    throw new Error("X returned none of the example posts")
+  }
 
   return {
     groups: examples.map((example) => ({
@@ -155,17 +157,11 @@ export async function fetchExamples(
   }
 }
 
-function listHash(values: ReadonlyArray<string>) {
-  let hash = 5381
-  for (const char of values.join("|")) hash = Math.imul(hash, 33) ^ char.charCodeAt(0)
-  return (hash >>> 0).toString(36)
-}
-
 export const xPostsSource: SourceDefinition<XPostsPayload> = {
   name: "xPosts",
-  cacheKey: `llm-scores:x-posts:v2:${listHash(MODEL_EXAMPLES.flatMap((example) => [example.label, ...example.models, ...example.posts.flatMap((post) => [post.url, post.alt])]))}`,
+  cacheKey: "llm-scores:x-posts:v3",
   refreshWindowMs: 6 * 60 * 60 * 1000,
-  fetchPayload: async () => fetchExamples([...MODEL_EXAMPLES, ...(await discoveredExamples())]),
+  fetchPayload: async () => fetchExamples(await discoveredExamples()),
   validatePayload(payload, previous) {
     const loaded = payload.posts.length
     const requested = loaded + payload.dropped.length

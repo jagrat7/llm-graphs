@@ -7,7 +7,6 @@ import { fetchOk } from "../providers/utils"
 import {
   BLOCKED_AUTHORS,
   BLOCKED_POSTS,
-  MODEL_EXAMPLES,
   type ExampleCategory,
   type ModelExamples,
 } from "./examples"
@@ -374,9 +373,6 @@ export async function discover(
   const known = new Set([
     ...state.seen,
     ...state.posts.map((post) => post.url.split("/").at(-1) ?? ""),
-    ...MODEL_EXAMPLES.flatMap((example) =>
-      example.posts.map((post) => post.url.split("/").at(-1) ?? ""),
-    ),
     ...BLOCKED_POSTS,
   ])
   const blockedAuthors = new Set(BLOCKED_AUTHORS.map((handle) => handle.toLowerCase()))
