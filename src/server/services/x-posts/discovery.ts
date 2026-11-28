@@ -32,7 +32,11 @@ export type DiscoveredPost = {
   foundAt: string
 }
 
-type DiscoveryState = { posts: Array<DiscoveredPost>; seen: Array<string> }
+type DiscoveryState = {
+  posts: Array<DiscoveredPost>
+  seen: Array<string>
+  filters?: number
+}
 
 export type DiscoveryReport = {
   searches: number
@@ -52,12 +56,14 @@ const DAILY_SEARCHES = 15
 const SEARCH_GAP_MS = 7_000
 const PHRASES = ["one-shot", "built with OR made with", "prompt"]
 
-const MIN_LIKES = 20
-const MIN_P_OUTPUT = 0.9
-const MIN_P_SUITABLE = 0.6
+/** Bumped whenever the filters change, so posts they rejected are screened again. */
+const FILTERS_VERSION = 2
+const MIN_LIKES = 5
+const MIN_P_OUTPUT = 0.7
+const MIN_P_SUITABLE = 0.5
 const SWITCH_MARGIN = 0.1
-const KEEP_PER_MODEL = 6
-const KEEP_PER_AUTHOR = 2
+const KEEP_PER_MODEL = 24
+const KEEP_PER_AUTHOR = 4
 const SCREENS_AT_ONCE = 4
 
 const JEV_URL = "https://api.typesafe.ai/v1/systemone"
@@ -276,7 +282,7 @@ async function search(query: string) {
       Authorization: `Bearer ${env.FIRECRAWL_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query, limit: 10, includeDomains: ["x.com"], tbs: "qdr:w" }),
+    body: JSON.stringify({ query, limit: 10, includeDomains: ["x.com"], tbs: "qdr:m" }),
   })
   const { data } = searchSchema.parse(await response.json())
   return data.web.flatMap(
@@ -298,6 +304,7 @@ const stateSchema = z.object({
     }),
   ),
   seen: z.array(z.string()),
+  filters: z.number().optional(),
 })
 
 let cache: SourceCache | undefined
@@ -305,7 +312,9 @@ let cache: SourceCache | undefined
 async function readState(): Promise<DiscoveryState> {
   cache ??= new SourceCache()
   const parsed = stateSchema.safeParse(await cache.readShared(STATE_KEY))
-  return parsed.success ? parsed.data : { posts: [], seen: [] }
+  if (!parsed.success) return { posts: [], seen: [] }
+  // Posts rejected under older, stricter filters get another look.
+  return parsed.data.filters === FILTERS_VERSION ? parsed.data : { ...parsed.data, seen: [] }
 }
 
 /** The discovered posts as example groups, one per model and category. */
@@ -451,6 +460,7 @@ export async function discover(
     {
       posts: [...state.posts, ...report.accepted],
       seen: [...known].slice(-MAX_SEEN),
+      filters: FILTERS_VERSION,
     } satisfies DiscoveryState,
     STATE_TTL_SECONDS,
   )

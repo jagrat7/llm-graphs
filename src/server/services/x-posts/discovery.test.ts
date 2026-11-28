@@ -69,7 +69,8 @@ it("keeps the searched model when another version only edges it", () => {
 })
 
 it("drops anything it isn't sure of", () => {
-  expect(judge({ ...sure, pOutput: 0.85 }, astra, [])).toBeNull()
+  expect(judge({ ...sure, pOutput: 0.6 }, astra, [])).toBeNull()
   expect(judge({ ...sure, verdict: "pointer" }, astra, [])).toBeNull()
   expect(judge({ ...sure, pSuitable: 0.4 }, astra, [])).toBeNull()
+  expect(judge({ ...sure, pOutput: 0.75 }, astra, [])).not.toBeNull()
 })
