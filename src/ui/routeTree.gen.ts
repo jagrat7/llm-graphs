@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as ExamplesRouteImport } from './routes/examples'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as ApiMcpRouteImport } from './routes/api.mcp'
 import { Route as ApiModelsDiagnosticsRouteImport } from './routes/api.models.diagnostics'
 import { Route as ApiModelsSnapshotRouteImport } from './routes/api.models.snapshot'
 import { Route as ApiXPostsDiscoverRouteImport } from './routes/api.x-posts.discover'
@@ -37,6 +38,11 @@ const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
   path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMcpRoute = ApiMcpRouteImport.update({
+  id: '/api/mcp',
+  path: '/api/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiModelsDiagnosticsRoute = ApiModelsDiagnosticsRouteImport.update({
   id: '/api/models/diagnostics',
   path: '/api/models/diagnostics',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/design': typeof DesignRoute
   '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
   '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/design': typeof DesignRoute
   '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
   '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/design': typeof DesignRoute
   '/examples': typeof ExamplesRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/api/mcp': typeof ApiMcpRoute
   '/api/models/diagnostics': typeof ApiModelsDiagnosticsRoute
   '/api/models/snapshot': typeof ApiModelsSnapshotRoute
   '/api/x-posts/discover': typeof ApiXPostsDiscoverRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/examples'
     | '/llms.txt'
+    | '/api/mcp'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
     | '/api/x-posts/discover'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/examples'
     | '/llms.txt'
+    | '/api/mcp'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
     | '/api/x-posts/discover'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/examples'
     | '/llms.txt'
+    | '/api/mcp'
     | '/api/models/diagnostics'
     | '/api/models/snapshot'
     | '/api/x-posts/discover'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   DesignRoute: typeof DesignRoute
   ExamplesRoute: typeof ExamplesRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
+  ApiMcpRoute: typeof ApiMcpRoute
   ApiModelsDiagnosticsRoute: typeof ApiModelsDiagnosticsRoute
   ApiModelsSnapshotRoute: typeof ApiModelsSnapshotRoute
   ApiXPostsDiscoverRoute: typeof ApiXPostsDiscoverRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/mcp': {
+      id: '/api/mcp'
+      path: '/api/mcp'
+      fullPath: '/api/mcp'
+      preLoaderRoute: typeof ApiMcpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/models/diagnostics': {
       id: '/api/models/diagnostics'
       path: '/api/models/diagnostics'
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   DesignRoute: DesignRoute,
   ExamplesRoute: ExamplesRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
+  ApiMcpRoute: ApiMcpRoute,
   ApiModelsDiagnosticsRoute: ApiModelsDiagnosticsRoute,
   ApiModelsSnapshotRoute: ApiModelsSnapshotRoute,
   ApiXPostsDiscoverRoute: ApiXPostsDiscoverRoute,
@@ -187,12 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

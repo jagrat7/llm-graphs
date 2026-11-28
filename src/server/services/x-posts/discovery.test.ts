@@ -1,6 +1,14 @@
 import { expect, it } from "vitest"
 
-import { judge, scheduledSearches, siblings, type DiscoveryModel } from "./discovery"
+import {
+  discoveryStats,
+  judge,
+  scheduledSearches,
+  setBlocked,
+  siblings,
+  toPostId,
+  type DiscoveryModel,
+} from "./discovery"
 
 const NOW = Date.parse("2026-11-26T06:00:00.000Z")
 
@@ -73,4 +81,28 @@ it("drops anything it isn't sure of", () => {
   expect(judge({ ...sure, verdict: "pointer" }, astra, [])).toBeNull()
   expect(judge({ ...sure, pSuitable: 0.4 }, astra, [])).toBeNull()
   expect(judge({ ...sure, pOutput: 0.75 }, astra, [])).not.toBeNull()
+})
+
+it("reads a post id from an id or any form of post link", () => {
+  expect(toPostId("2059000000000000001")).toBe("2059000000000000001")
+  expect(toPostId(" https://x.com/someone/status/2059000000000000001?s=20 ")).toBe(
+    "2059000000000000001",
+  )
+  expect(toPostId("twitter.com/someone/status/2059000000000000001/photo/1")).toBe(
+    "2059000000000000001",
+  )
+  expect(toPostId("https://x.com/someone")).toBeNull()
+})
+
+it("blocks and unblocks posts and authors", async () => {
+  await setBlocked({ post: "https://x.com/someone/status/2059000000000000001" }, true)
+  await setBlocked({ author: "@Spammer" }, true)
+  expect(await discoveryStats()).toMatchObject({
+    blockedPosts: ["2059000000000000001"],
+    blockedAuthors: ["spammer"],
+  })
+
+  await setBlocked({ author: "spammer" }, false)
+  expect((await discoveryStats()).blockedAuthors).toEqual([])
+  await expect(setBlocked({ post: "not a post" }, true)).rejects.toThrow("Not a post id or link")
 })

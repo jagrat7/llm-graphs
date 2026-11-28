@@ -32,10 +32,24 @@ export type DiscoveredPost = {
   foundAt: string
 }
 
+type RunSource = "search" | "submitted"
+
 type DiscoveryState = {
   posts: Array<DiscoveredPost>
   seen: Array<string>
   filters?: number
+  blockedPosts: Array<string>
+  blockedAuthors: Array<string>
+  runs: Array<{
+    at: string
+    source: RunSource
+    model?: string
+    searches: number
+    candidates: number
+    screened: number
+    accepted: number
+    errors: number
+  }>
 }
 
 export type DiscoveryReport = {
@@ -48,7 +62,8 @@ export type DiscoveryReport = {
 
 const STATE_KEY = "llm-scores:x-posts:discovered:v1"
 const STATE_TTL_SECONDS = 180 * 24 * 60 * 60
-const MAX_SEEN = 5000
+const MAX_SEEN = 20_000
+const MAX_RUNS = 30
 const DAY_MS = 24 * 60 * 60 * 1000
 
 /** Firecrawl's free plan allows 500 searches a month. */
@@ -64,7 +79,7 @@ const MIN_P_SUITABLE = 0.5
 const SWITCH_MARGIN = 0.1
 const KEEP_PER_MODEL = 24
 const KEEP_PER_AUTHOR = 4
-const SCREENS_AT_ONCE = 4
+const SCREENS_AT_ONCE = 6
 
 const JEV_URL = "https://api.typesafe.ai/v1/systemone"
 const FIRECRAWL_URL = "https://api.firecrawl.dev/v2/search"
@@ -290,21 +305,35 @@ async function search(query: string) {
   )
 }
 
+const postSchema = z.object({
+  url: z.string(),
+  alt: z.string(),
+  model: z.string(),
+  modelName: z.string(),
+  category: z.enum(["coding", "agents", "reasoning", "chat", "speed", "image"]),
+  likes: z.number(),
+  pOutput: z.number(),
+  foundAt: z.string(),
+})
+
+const runSchema = z.object({
+  at: z.string(),
+  source: z.enum(["search", "submitted"]),
+  model: z.string().optional(),
+  searches: z.number(),
+  candidates: z.number(),
+  screened: z.number(),
+  accepted: z.number(),
+  errors: z.number(),
+})
+
 const stateSchema = z.object({
-  posts: z.array(
-    z.object({
-      url: z.string(),
-      alt: z.string(),
-      model: z.string(),
-      modelName: z.string(),
-      category: z.enum(["coding", "agents", "reasoning", "chat", "speed", "image"]),
-      likes: z.number(),
-      pOutput: z.number(),
-      foundAt: z.string(),
-    }),
-  ),
+  posts: z.array(postSchema),
   seen: z.array(z.string()),
   filters: z.number().optional(),
+  blockedPosts: z.array(z.string()).default([]),
+  blockedAuthors: z.array(z.string()).default([]),
+  runs: z.array(runSchema).default([]),
 })
 
 let cache: SourceCache | undefined
@@ -312,19 +341,63 @@ let cache: SourceCache | undefined
 async function readState(): Promise<DiscoveryState> {
   cache ??= new SourceCache()
   const parsed = stateSchema.safeParse(await cache.readShared(STATE_KEY))
-  if (!parsed.success) return { posts: [], seen: [] }
+  if (!parsed.success) {
+    return { posts: [], seen: [], blockedPosts: [], blockedAuthors: [], runs: [] }
+  }
   // Posts rejected under older, stricter filters get another look.
   return parsed.data.filters === FILTERS_VERSION ? parsed.data : { ...parsed.data, seen: [] }
 }
 
+/** Applies `change` to the latest state, so a write never drops what another run saved meanwhile. */
+async function updateState(change: (state: DiscoveryState) => DiscoveryState) {
+  const next = change(await readState())
+  cache ??= new SourceCache()
+  await cache.writeShared(
+    STATE_KEY,
+    {
+      ...next,
+      seen: next.seen.slice(-MAX_SEEN),
+      runs: next.runs.slice(-MAX_RUNS),
+      filters: FILTERS_VERSION,
+    },
+    STATE_TTL_SECONDS,
+  )
+}
+
+const idOf = (url: string) => url.split("/").at(-1) ?? ""
+const authorOf = (url: string) => url.split("/")[3]?.toLowerCase() ?? ""
+
+function blocklist(state: DiscoveryState) {
+  return {
+    posts: new Set([...BLOCKED_POSTS, ...state.blockedPosts]),
+    authors: new Set([...BLOCKED_AUTHORS, ...state.blockedAuthors].map((h) => h.toLowerCase())),
+  }
+}
+
+/** The posts the page shows: most liked first, capped per model and per author, blocked ones left out. */
+function shownPosts(state: DiscoveryState) {
+  const blocked = blocklist(state)
+  const perGroup = new Map<string, number>()
+  const perAuthor = new Map<string, number>()
+  return state.posts
+    .toSorted((left, right) => right.likes - left.likes)
+    .filter((post) => {
+      if (blocked.posts.has(idOf(post.url)) || blocked.authors.has(authorOf(post.url))) return false
+      const group = `${post.category}:${post.model}`
+      const author = `${group}:${authorOf(post.url)}`
+      const fromGroup = perGroup.get(group) ?? 0
+      const fromAuthor = perAuthor.get(author) ?? 0
+      if (fromGroup >= KEEP_PER_MODEL || fromAuthor >= KEEP_PER_AUTHOR) return false
+      perGroup.set(group, fromGroup + 1)
+      perAuthor.set(author, fromAuthor + 1)
+      return true
+    })
+}
+
 /** The discovered posts as example groups, one per model and category. */
 export async function discoveredExamples(): Promise<Array<ModelExamples>> {
-  const { posts } = await readState()
-  const blocked = new Set(BLOCKED_POSTS)
-  const perAuthor = new Map<string, number>()
   const groups = new Map<string, ModelExamples & { posts: Array<{ url: string; alt: string }> }>()
-  for (const post of posts.toSorted((left, right) => right.likes - left.likes)) {
-    if (blocked.has(post.url.split("/").at(-1) ?? "")) continue
+  for (const post of shownPosts(await readState())) {
     const key = `${post.category}:${post.model}`
     const group = groups.get(key) ?? {
       label: post.modelName,
@@ -332,12 +405,7 @@ export async function discoveredExamples(): Promise<Array<ModelExamples>> {
       models: [post.model],
       posts: [],
     }
-    const authorKey = `${key}:${post.url.split("/")[3]?.toLowerCase()}`
-    const fromAuthor = perAuthor.get(authorKey) ?? 0
-    if (group.posts.length < KEEP_PER_MODEL && fromAuthor < KEEP_PER_AUTHOR) {
-      group.posts.push({ url: post.url, alt: post.alt })
-      perAuthor.set(authorKey, fromAuthor + 1)
-    }
+    group.posts.push({ url: post.url, alt: post.alt })
     groups.set(key, group)
   }
   return [...groups.values()]
@@ -369,22 +437,19 @@ function limited(limit: number) {
   }
 }
 
-/** Searches X for each due model, screens new posts with Jev, and keeps the sure outputs. */
-export async function discover(
-  models: ReadonlyArray<DiscoveryModel>,
-  now = Date.now(),
-): Promise<DiscoveryReport> {
-  if (!env.FIRECRAWL_API_KEY || !env.TYPESAFE_API_KEY) {
-    throw new Error("FIRECRAWL_API_KEY and TYPESAFE_API_KEY are needed to discover posts")
-  }
+/** Loads, filters and screens each post it hasn't seen, then saves the sure outputs. */
+async function screening(source: RunSource, now: number) {
+  if (!env.TYPESAFE_API_KEY) throw new Error("TYPESAFE_API_KEY is needed to screen posts")
 
   const state = await readState()
+  const blocked = blocklist(state)
   const known = new Set([
     ...state.seen,
-    ...state.posts.map((post) => post.url.split("/").at(-1) ?? ""),
-    ...BLOCKED_POSTS,
+    ...state.posts.map((post) => idOf(post.url)),
+    ...blocked.posts,
   ])
-  const blockedAuthors = new Set(BLOCKED_AUTHORS.map((handle) => handle.toLowerCase()))
+  const fresh: Array<string> = []
+  const pool = limited(SCREENS_AT_ONCE)
   const report: DiscoveryReport = {
     searches: 0,
     candidates: 0,
@@ -405,7 +470,7 @@ export async function discover(
       post.media.length === 0 ||
       post.likes < MIN_LIKES ||
       Date.parse(post.postedAt) < Date.parse(model.releaseDate ?? "") - DAY_MS ||
-      blockedAuthors.has(post.author.handle.toLowerCase())
+      blocked.authors.has(post.author.handle.toLowerCase())
     ) {
       return
     }
@@ -430,39 +495,176 @@ export async function discover(
     }
   }
 
-  const screens = limited(SCREENS_AT_ONCE)
+  return {
+    report,
+    /** Queues the posts not seen before, judged against `model` and its `family`. */
+    offer(ids: ReadonlyArray<string>, model: DiscoveryModel, family: Array<DiscoveryModel>) {
+      for (const id of ids.filter((candidate) => !known.has(candidate))) {
+        known.add(id)
+        fresh.push(id)
+        report.candidates++
+        pool.run(() => consider(id, model, family))
+      }
+    },
+    async finish(model?: string) {
+      await pool.done()
+      const accepted = new Set(report.accepted.map((post) => post.url))
+      await updateState((latest) => ({
+        ...latest,
+        posts: [...latest.posts.filter((post) => !accepted.has(post.url)), ...report.accepted],
+        seen: [...new Set([...latest.seen, ...fresh])],
+        runs: [
+          ...latest.runs,
+          {
+            at: new Date(now).toISOString(),
+            source,
+            ...(model ? { model } : {}),
+            searches: report.searches,
+            candidates: report.candidates,
+            screened: report.screened,
+            accepted: report.accepted.length,
+            errors: report.errors.length,
+          },
+        ],
+      }))
+      return report
+    },
+  }
+}
+
+/** Searches X for each due model, screens new posts with Jev, and keeps the sure outputs. */
+export async function discover(
+  models: ReadonlyArray<DiscoveryModel>,
+  now = Date.now(),
+): Promise<DiscoveryReport> {
+  if (!env.FIRECRAWL_API_KEY) throw new Error("FIRECRAWL_API_KEY is needed to search for posts")
+  const run = await screening("search", now)
 
   // Started a gap apart rather than one after another, so a slow answer doesn't add to the wait.
   const searches = scheduledSearches(models, now).map(async ({ model, query }, index) => {
     await new Promise((resolve) => setTimeout(resolve, index * SEARCH_GAP_MS))
-    let ids: Array<string>
     try {
-      ids = await search(query)
-      report.searches++
+      const ids = await search(query)
+      run.report.searches++
+      run.offer(ids, model, siblings(model, models))
     } catch (error) {
-      report.errors.push(`${query}: ${String(error)}`)
-      return
-    }
-
-    const family = siblings(model, models)
-    for (const id of ids.filter((candidate) => !known.has(candidate))) {
-      known.add(id)
-      report.candidates++
-      screens.run(() => consider(id, model, family))
+      run.report.errors.push(`${query}: ${String(error)}`)
     }
   })
   await Promise.all(searches)
-  await screens.done()
+  return run.finish()
+}
 
-  cache ??= new SourceCache()
-  await cache.writeShared(
-    STATE_KEY,
-    {
-      posts: [...state.posts, ...report.accepted],
-      seen: [...known].slice(-MAX_SEEN),
-      filters: FILTERS_VERSION,
-    } satisfies DiscoveryState,
-    STATE_TTL_SECONDS,
-  )
-  return report
+const POST_LINK = /^(?:https?:\/\/)?(?:www\.)?(?:x|twitter)\.com\/\w{1,15}\/status\/(\d{5,25})/
+
+/** A post id from an id or a post link, or null. */
+export function toPostId(input: string) {
+  const trimmed = input.trim()
+  if (/^\d{5,25}$/.test(trimmed)) return trimmed
+  return POST_LINK.exec(trimmed)?.[1] ?? null
+}
+
+/** Screens posts someone found for `modelId`, keeping the sure outputs like a search would. */
+export async function submit(
+  posts: ReadonlyArray<string>,
+  modelId: string,
+  models: ReadonlyArray<DiscoveryModel>,
+  now = Date.now(),
+) {
+  const model = models.find((candidate) => candidate.id === modelId)
+  if (!model) throw new Error(`Unknown model "${modelId}"; list_models gives the ids`)
+  const ids = [...new Set(posts.map(toPostId))]
+  const valid = ids.filter((id): id is string => id != null)
+
+  const run = await screening("submitted", now)
+  run.offer(valid, model, siblings(model, models))
+  const report = await run.finish(model.id)
+  return {
+    ...report,
+    invalid: ids.length - valid.length,
+    alreadySeen: valid.length - report.candidates,
+  }
+}
+
+export type BlockTarget = { post?: string; author?: string }
+
+/** Hides a post or every post by an author, or shows them again with `blocked` false. */
+export async function setBlocked(target: BlockTarget, blocked: boolean) {
+  const post = target.post == null ? null : toPostId(target.post)
+  if (target.post != null && post == null) throw new Error(`Not a post id or link: ${target.post}`)
+  const author = target.author?.trim().replace(/^@/, "").toLowerCase() || null
+  if (!post && !author) throw new Error("Give a post or an author")
+
+  const toggle = (list: Array<string>, item: string | null) => {
+    if (item == null) return list
+    const rest = list.filter((entry) => entry.toLowerCase() !== item)
+    return blocked ? [...rest, item] : rest
+  }
+  await updateState((state) => ({
+    ...state,
+    blockedPosts: toggle(state.blockedPosts, post),
+    blockedAuthors: toggle(state.blockedAuthors, author),
+  }))
+  return { post, author, blocked }
+}
+
+export type PostFilter = { model?: string; category?: ExampleCategory; limit?: number }
+
+/** Kept posts, most liked first, each marked with whether the page shows it. */
+export async function listPosts({ model, category, limit = 50 }: PostFilter) {
+  const state = await readState()
+  const shown = new Set(shownPosts(state).map((post) => post.url))
+  const blocked = blocklist(state)
+  const matching = state.posts
+    .filter(
+      (post) =>
+        (model == null || post.model === model) && (category == null || post.category === category),
+    )
+    .toSorted((left, right) => right.likes - left.likes)
+  return {
+    total: matching.length,
+    posts: matching.slice(0, limit).map((post) => ({
+      ...post,
+      shown: shown.has(post.url),
+      blocked: blocked.posts.has(idOf(post.url)) || blocked.authors.has(authorOf(post.url)),
+    })),
+  }
+}
+
+/** Posts kept and shown per model, the block lists, and the latest runs. */
+export async function discoveryStats() {
+  const state = await readState()
+  const shown = shownPosts(state)
+  const perModel = new Map<
+    string,
+    { model: string; modelName: string; kept: number; shown: number }
+  >()
+  for (const post of state.posts) {
+    const entry = perModel.get(post.model) ?? {
+      model: post.model,
+      modelName: post.modelName,
+      kept: 0,
+      shown: 0,
+    }
+    entry.kept++
+    perModel.set(post.model, entry)
+  }
+  for (const post of shown) {
+    const entry = perModel.get(post.model)
+    if (entry) entry.shown++
+  }
+  return {
+    kept: state.posts.length,
+    shown: shown.length,
+    seen: state.seen.length,
+    limits: {
+      perModelAndCategory: KEEP_PER_MODEL,
+      perAuthor: KEEP_PER_AUTHOR,
+      minLikes: MIN_LIKES,
+    },
+    models: [...perModel.values()].toSorted((left, right) => right.kept - left.kept),
+    blockedPosts: state.blockedPosts,
+    blockedAuthors: state.blockedAuthors,
+    runs: state.runs.slice(-10).toReversed(),
+  }
 }

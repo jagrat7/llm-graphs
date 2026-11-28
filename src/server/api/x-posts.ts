@@ -1,7 +1,7 @@
 import { createServerFn, createServerOnlyFn } from "@tanstack/react-start"
 
 import { ProvidersService, type MetricKey, type ProviderName } from "../services/providers"
-import { XPostsService } from "../services/x-posts"
+import { XPostsService, type DiscoveryModel } from "../services/x-posts"
 import { snapshot } from "./models"
 
 const HIGHER_IS_BETTER: ReadonlyArray<MetricKey> = ["score", "tokensPerSecond"]
@@ -51,27 +51,30 @@ export const examples = createServerFn({ method: "GET" }).handler(async () => {
   return { ...payload, models }
 })
 
-/** Searches X for new examples of every benchmarked model. Run daily by the cron route. */
-export const discoverPosts = createServerOnlyFn(async () => {
+/** Every benchmarked model, as discovery sees it. */
+export const discoveryModels = createServerOnlyFn(async (): Promise<Array<DiscoveryModel>> => {
   const { entries, variants } = await snapshot()
   const benchmarked = new Set(
     Object.values(variants).flatMap((rows) => rows.map((row) => row.entryId)),
   )
   const makesImages = new Set(variants.designArena.map((row) => row.entryId))
 
-  return XPostsService.discover(
-    entries.flatMap((entry) =>
-      benchmarked.has(entry.id)
-        ? [
-            {
-              id: entry.id,
-              name: entry.name,
-              vendor: entry.vendor,
-              releaseDate: entry.releaseDate,
-              makesImages: makesImages.has(entry.id),
-            },
-          ]
-        : [],
-    ),
+  return entries.flatMap((entry) =>
+    benchmarked.has(entry.id)
+      ? [
+          {
+            id: entry.id,
+            name: entry.name,
+            vendor: entry.vendor,
+            releaseDate: entry.releaseDate,
+            makesImages: makesImages.has(entry.id),
+          },
+        ]
+      : [],
   )
 })
+
+/** Searches X for new examples of every benchmarked model. Run daily by the cron route. */
+export const discoverPosts = createServerOnlyFn(async () =>
+  XPostsService.discover(await discoveryModels()),
+)
