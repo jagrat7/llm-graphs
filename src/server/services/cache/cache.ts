@@ -228,12 +228,15 @@ export class SourceCache {
     return this.resolvedStore
   }
 
-  async read<T>(source: SourceDefinition<T>): Promise<CachedPayload<T> | null> {
+  async read<T>(
+    source: SourceDefinition<T>,
+    background: (task: Promise<unknown>) => void = (task) => void task,
+  ): Promise<CachedPayload<T> | null> {
     const cached = await this.stored(source)
     if (!cached) return this.fillCold(source)
 
     if (this.now() - Date.parse(cached.fetchedAt) > source.refreshWindowMs) {
-      void this.refreshInBackground(source)
+      background(this.refreshInBackground(source))
     }
 
     return cached
@@ -264,6 +267,11 @@ export class SourceCache {
     if (this.now() - Date.parse(fetchedAt) > source.refreshWindowMs) {
       void this.refreshInBackground(source)
     }
+  }
+
+  /** Fetches and stores a new copy now, for a caller that knows the source changed. */
+  async refreshNow<T>(source: SourceDefinition<T>) {
+    return (await inFlight.get(source.cacheKey)) ?? this.refresh(source)
   }
 
   /** A value shared across instances, such as a built snapshot. */
@@ -347,13 +355,19 @@ export class SourceCache {
 
     try {
       payload = await source.fetchPayload()
-      source.validatePayload?.(payload)
     } catch (error) {
       console.warn(`[source-cache] ${source.name} refresh failed:`, error)
       return null
     }
 
     const current = await this.stored(source)
+    try {
+      source.validatePayload?.(payload, current?.payload)
+    } catch (error) {
+      console.warn(`[source-cache] ${source.name} refresh failed:`, error)
+      return null
+    }
+
     if (current && Date.parse(current.fetchedAt) > startedAt) return current
 
     const entry = { payload, fetchedAt: new Date(this.now()).toISOString() }

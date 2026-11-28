@@ -37,10 +37,16 @@ const ICONS: Record<CategoryKey, RemixiconComponentType> = {
   speech: RiMicLine,
 }
 
-function CategoryIcon({ category }: { category: CategoryKey }) {
+export function CategoryIcon({
+  category,
+  className,
+}: {
+  category: CategoryKey
+  className?: string
+}) {
   const Icon = ICONS[category]
 
-  return <Icon aria-hidden="true" className="size-3.5 shrink-0" />
+  return <Icon aria-hidden="true" className={cn("size-3.5 shrink-0", className)} />
 }
 
 function ChipContent({ category, label }: { category: CategoryKey; label: string }) {
@@ -61,11 +67,17 @@ function ChipContent({ category, label }: { category: CategoryKey; label: string
 export function CategoryTabs({
   active,
   unavailable = [],
+  target = "graph",
+  only,
 }: {
   /** The `CATEGORY_GRAPHS` key the chart on screen belongs to, if any. */
   active: CategoryKey | null
   /** Keys whose graph has nothing to draw right now, as when a benchmark is unreachable. */
   unavailable?: ReadonlyArray<CategoryKey>
+  /** Where a chip leads: that subject's graph, or its examples, where the open chip clears. */
+  target?: "graph" | "examples"
+  /** Shows only these subjects, and none of the upcoming ones. */
+  only?: ReadonlyArray<CategoryKey>
 }) {
   const info = useProvidersInfo()
 
@@ -73,14 +85,14 @@ export function CategoryTabs({
     // Only as wide as its chips, so it centres; a phone has no room for every subject on one
     // line, so there the chips wrap onto a second, centred line.
     <nav
-      aria-label="Graphs by category"
+      aria-label={target === "graph" ? "Graphs by category" : "Examples by category"}
       className="mx-auto mb-5 flex w-fit max-w-full shrink-0 flex-wrap justify-center gap-1 max-sm:mb-3"
     >
-      {CATEGORY_GRAPHS.map((graph) => {
+      {CATEGORY_GRAPHS.filter((graph) => only == null || only.includes(graph.key)).map((graph) => {
         const search = categoryGraphSearch(graph, info)
         const content = <ChipContent category={graph.key} label={graph.label} />
 
-        if (search == null || unavailable.includes(graph.key)) {
+        if ((target === "graph" && search == null) || unavailable.includes(graph.key)) {
           return (
             <span
               key={graph.key}
@@ -90,6 +102,30 @@ export function CategoryTabs({
             >
               {content}
             </span>
+          )
+        }
+
+        const chipClass = cn(
+          TAB_CLASS,
+          "text-muted-foreground hover:text-foreground transition-colors",
+          "aria-[current=page]:bg-foreground/10 aria-[current=page]:text-foreground",
+        )
+
+        if (target === "examples" || search == null) {
+          return (
+            <Link
+              key={graph.key}
+              to="/examples"
+              search={(previous) => ({
+                ...previous,
+                category: graph.key === active ? undefined : graph.key,
+              })}
+              resetScroll={false}
+              aria-current={graph.key === active ? "page" : undefined}
+              className={chipClass}
+            >
+              {content}
+            </Link>
           )
         }
 
@@ -111,17 +147,13 @@ export function CategoryTabs({
             // The router marks a link "page" itself when the URL matches it exactly; this keeps
             // the same mark once the reader has adjusted the chart within the subject.
             aria-current={graph.key === active ? "page" : undefined}
-            className={cn(
-              TAB_CLASS,
-              "text-muted-foreground hover:text-foreground transition-colors",
-              "aria-[current=page]:bg-foreground/10 aria-[current=page]:text-foreground",
-            )}
+            className={chipClass}
           >
             {content}
           </Link>
         )
       })}
-      {UPCOMING_CATEGORIES.map(({ key, label }) => (
+      {(only == null ? UPCOMING_CATEGORIES : []).map(({ key, label }) => (
         <span key={key} aria-disabled="true" className={cn(TAB_CLASS, "text-muted-foreground/60")}>
           <ChipContent category={key} label={label} />
           <span className="border-border text-2xs rounded-sm border border-dashed px-1">soon</span>

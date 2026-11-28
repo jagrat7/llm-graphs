@@ -33,6 +33,11 @@ export type Model = Record<MetricKey, number | null> & {
   measurements?: ModelVariant["measurements"]
 }
 
+export type PickableModel = Pick<
+  Model,
+  "model" | "displayName" | "vendor" | "releaseDate" | "logoUrl" | "chartColor"
+>
+
 /** A metric the view reads, and the source it reads it from. */
 export type MetricBinding = {
   metric: MetricKey
